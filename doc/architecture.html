@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE>NextText Architecture</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.4  (Win32)">
+	<META NAME="CREATED" CONTENT="20050510;11311515">
+	<META NAME="CHANGED" CONTENT="20050511;10101034">
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1>NextText Architecture</H1>
+<P><FONT SIZE=2>Copyright (C) 2004,2005 Jason Lewis<BR>
+$Revision: 1.16 $
+$Date: 2005/05/19 14:13:20 $ </FONT>
+</P>
+<H2>Static Diagram</H2>
+<P>This diagram describes the associations of the various classes
+that make up the NextText library. It covers both the internals of
+the library and the interface exposed to users of the library.   Like
+in UML, arrows indicate the direction of association between classes.
+  No arrows means a bi-directional association.   White tipped arrows
+represent <I>extends</I> or <I>implements</I>.</P>
+<P><IMG SRC="NTClassDiagram.gif" NAME="Graphic1" ALIGN=LEFT WIDTH=923 HEIGHT=550 BORDER=0><BR CLEAR=LEFT>In
+order to avoid cluttering the high level class diagram, some classes
+have been omitted, notably:</P>
+<P>1. Other property types in net.nexttext.property<BR>2. InputSource
+and InputEvent implementations ( Mouse, Keyboard, Speech, etc.. ) in
+net.nexttext.input<BR>3. Other Java2DRendererCallbacks <BR>4.
+Implementations of AbstractAction (there are a lot of them, and they
+are frequently updated).<BR>5. Utility classes/interfaces like
+Vector3, Locatable, Boundable<BR>6. Exceptions</P>
+<H3>Book</H3>
+<P>The Book's main purpose is to provide a place to find the other
+parts of the NextText system, and to start the simulator thread.
+Ideally, an application could run multiple NextText instances by
+having multiple books. 
+</P>
+<H3>Renderer</H3>
+<P>The Renderer is accessed as a member of the book. It is
+responsible for actually drawing the text, as delegated by the
+Simulator. The system is designed to allow different renderers to be
+used, several may be available by default. In addition, an
+application may wish to provide its own Renderer. 
+</P>
+<P>The information about TextObjects used by the Renderer is a vector
+curve description of the glyph, specified as a member of
+TextObjectGlyph. 
+</P>
+<P>Renderers include a callback facility to allow the main
+application to draw additional decoration such as grids, or object
+hierarchy blobs, and some may be provided with the renderer. These
+callbacks are specific to each renderer. 
+</P>
+<P>The renderer provides a method getCanvas(), which returns an awt
+Component, and allows users to determine the canvas size, and
+initialize mouse and keyboard inputs. It is preferred that this
+Component is not drawn to directly. Use callbacks instead. 
+</P>
+<H3>Simulator</H3>
+<P>The simulator provides the core processing loop for behaviours. It
+traverses the BehaviourList, and calls behave() on each behaviour. It
+then updates the Spatial Structure with the new locations of the
+objects. Finally, it calls the Renderer to draw the TextObjects. 
+</P>
+<P>The Simulator has a pause method, which will pause operation as
+soon as the current simulation &amp; rendering iteration is complete.
+It is undesirable to stop the thread in the middle of this process. 
+</P>
+<P>The Simulator thread can be throttled to a certain number of
+frames per second, which is useful to ensure that an application will
+move at the same rate on faster hardware. 
+</P>
+<H4>Simulator Thread</H4>
+<P>The thread loops, performing the following actions in order: 
+</P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0in">Update the SpatialList. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Call the Renderer. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Run the Behaviours. 
+	</P>
+	<LI><P>Update the frame count. 
+	</P>
+</OL>
+<P>Each iteration of the loop is synchronized on the book object.
+When an application updates the TextObject tree, it must also
+synchronize on the book. The TextObjectBuilder does this
+automatically. 
+</P>
+<H3>TextObject</H3>
+<P>The main text data is stored in a tree structure, with nodes of
+type TextObject. Leaf nodes are usually renderable glyph objects,
+while non-leaf nodes are always non-renderable grouping nodes. The
+groupings of the tree may be used for semantic classification, such
+as letters grouped into words, words grouped into sentences, etc.
+However, the tree can support other structures too. 
+</P>
+<P>Each TextObject has a set of named properties, which are used to
+store information for behaviours and the renderer.  In order to encourage
+proper interaction between behaviours, a 
+
+<a href="propertyNames.html">list of property names</a> is maintained.
+
+The properties are grouped according to a registering package.  Those in the
+standard package are initialized in the object upon construction.  Those in
+other packages are initialized by the actions of that package, such as the
+abstract PhysicsAction.  In this way, if an action inherits correctly, then it
+need never fear that the properties it needs are there.
+
+</P>
+<H4>TextObjectGroup</H4>
+<P>TextObjectGroup extends TextObject by having children of type
+TextObject. 
+</P>
+<H4>TextObjectGlyph</H4>
+<P>TextObjectGlyph extends TextObject by having a String member which
+is the glyph that it represents, and a vector curve representation of
+itself. The glyph is best treated as a single character. 
+</P>
+<P>Currently, the Glyphs are renderered using a list of Contours and
+a set of Control Points.  Each Contour vector contains index values
+to the set of Control Points.  For instance, the B shape has three
+contours, one outer outline and two more for the holes.   Control
+Points are stored in one set so that they can be uniformally
+processed by DForm actions.  The Shape data is originally extracted
+from the GlyphVector class in java.awt.font.</P>
+<P>The following diagram illustrate the Shape information as read
+from the GlyphVector.  It contains Line and Quad segments:</P>
+<P><IMG SRC="glyphVectorDiagram.gif" NAME="Graphic2" ALIGN=LEFT WIDTH=594 HEIGHT=570 BORDER=0><BR CLEAR=LEFT>This
+data is converted by the TextObjectGlyph class into our own format
+made up only of Quads, as illustrated by this diagram:</P>
+<P><BR><BR>
+</P>
+<P><IMG SRC="controlPointsDiagram.gif" NAME="Graphic3" ALIGN=LEFT WIDTH=859 HEIGHT=576 BORDER=0><BR CLEAR=LEFT><BR><BR>
+</P>
+<P>In this format, any three consecutive control points represent a
+quadatric curve, as shown in the close up.  This mean that the
+&quot;start&quot; point of a curve segment is also the &quot;anchor&quot;
+of another segment. The result is a curve that will deform smootly. 
+Note that to preserve sharp corners, successive Control Points are
+created at the same location.   This information can be used to
+generate a Java GeneralPath object which can be rendered using
+Java2D.    The code that generates a GeneralPath out of the Control
+Points information is in the Java2DRenderer.</P>
+<P><B>TextObjectBuilder</B></P>
+<P>The TextObjectBuilder makes adding TextObjects to NextText easier.
+It provides methods that generate TextObjects from String objects and
+add them to NextText as words or phrases. A TextObjectBuilder is
+configured with a location in the NextText TextObject tree, and an
+initial set of properties and behaviours. The TextObjectBuilder also
+provides rules for layout, and can adjust position of new and
+exisiting glyphs and words according to those rules. 
+</P>
+<H3>Property</H3>
+<P>Property objects specify the values of named properties of
+TextObjects and Actions. They store and make accessible the original
+value that they were created with. Each type of data has its own
+subclass of Property: 
+</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">NumberProperty 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Vector3Property<BR>A 3-tuple used
+	for positions and vectors. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Vector3PropertyList</P>
+	<P STYLE="margin-bottom: 0in">A List containing Vector3Property
+	objects</P>
+	<LI><P STYLE="margin-bottom: 0in">StringProperty 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">BooleanProperty 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">ColorProperty 
+	</P>
+	<LI><P>ShapeProperty 
+	</P>
+</UL>
+<P>Properties are stored in a PropertySet object, which contains
+method to read, write and initialize new properties.</P>
+<H3>SpatialList</H3>
+<P>The SpatialList is an alternative view of all of the TextObjects,
+from a spatial perspective. Its purpose is to provide an easy way to
+determine spatial relations between TextObjects, useful to many
+behaviours. 
+</P>
+<P>Applications have to manually add TextObjects to this list, or use
+the TextObjectBuilder, which can do it automatically. 
+</P>
+<P>Position of objects is generally stored as an offset from their
+parent object. This makes determining all objects' positions
+intensive, because position calculation requires traversal to the
+root of the tree for each leaf. To counteract this, in the future
+NextText may calculate and store absolute position as the spatial
+list is developed. 
+</P>
+<H3>BehaviourList</H3>
+<P>Active behaviours are stored in a single list, which is processed
+by the simulator thread.  Each Behaviour tracks the objects it should
+act on, so they are not stored in the BehaviourList. 
+</P>
+<H3>Behaviours</H3>
+<P>The Behaviour model is based on two type of objects: Behaviours
+and Actions.</P>
+<P><STRONG>Action</STRONG>: Actions are the bits that manipulate the
+TextObjects's properties.   Actions are usually simple blocks of code
+doing a specific task.   <BR><B>Behaviour: </B><SPAN STYLE="font-weight: medium">Behaviours
+act as a top-level container for one or more actions.  They maintain
+a list of TextObjects to affect, and handle addition or removal of
+objects from that list.   </SPAN>
+</P>
+<P>The following diagram illustrate the flow of control in the
+Behaviour/Action chain:</P>
+<P><IMG SRC="behaviourDiagram1.gif" NAME="Graphic4" ALIGN=LEFT WIDTH=619 HEIGHT=162 BORDER=0><BR CLEAR=LEFT><BR><BR>
+</P>
+<P>Some actions allow you to &quot;chain&quot; with other actions to
+create more elaborate constructs, such as Conditions, Chain or
+Multiplexers.   For instance, a FadeTo black then destroy the object
+is constructed as follows around the Chain action:</P>
+<P><BR><BR>
+</P>
+<P><IMG SRC="behaviourDiagram2.gif" NAME="Graphic5" ALIGN=LEFT WIDTH=595 HEIGHT=158 BORDER=0><BR CLEAR=LEFT>Some
+actions extend the basic AbstractAction class, such as PhysicsAction,
+to provide an additional set of properties to be added to
+TextObjects.  
+</P>
+<P><BR><BR>
+</P>
+<H3>InputManager</H3>
+<P>This is the main class which allows behaviours to interact with
+the user. The behaviour requests named input sources from this class.
+The application can remove and add input sources through this class
+too. The input source namespace is described in an appendix to this
+document. 
+</P>
+<H3>InputSource</H3>
+<P>An InputSource provides a non-blocking interface to external
+events, allowing behaviours to be interactive. The InputSource class
+provides generic access to events through an EventIterator,
+subclasses provide specialized state information. InputSources do not
+provide notification to Behaviours, they must be polled. An
+InputSource's state must be updated before an event is sent, so that
+systems reacting to events can be sure that if they then check the
+state, the received event is reflected there. 
+</P>
+<P>There are several types of InputSource, each with its own abstract
+subclass of InputSource. Concrete subclasses of these provide actual
+implementations of the input source. Each type of input source has an
+associated type of event. The following types of input sources are
+defined, along with the natural default concrete implementations: 
+</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">MouseInput 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Keyboard 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">TextStream 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Speech 
+	</P>
+	<LI><P>VideoSegmenter 
+	</P>
+</UL>
+<H3>EventIterator</H3>
+<P>This class is used to iterate over events from a specific
+InputSource. It differs slightly from a usual Java iterator, in that
+events can be added, so hasNext() can return true even if it has
+returned false in the past. Also, events are buffered at the
+InputSource level, so if an EventIterator is not polled sufficiently
+often, events may be lost. 
+</P>
+<H3>Event</H3>
+<P>Event is an interface, with subclasses generally corresponding to
+the types of input sources. 
+</P>
+<H2>Appendix 1 NameSpaces</H2>
+<P>Inputs</P>
+<P>The following input names are defined. 
+</P>
+<TABLE WIDTH=632 BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=106>
+	<COL WIDTH=507>
+	<TR>
+		<TD WIDTH=106>
+			<P>Keyboard 
+			</P>
+		</TD>
+		<TD WIDTH=507>
+			<P>Get events from the system keyboard. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=106>
+			<P>Mouse 
+			</P>
+		</TD>
+		<TD WIDTH=507>
+			<P>Get events from the system mouse. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=106>
+			<P>TextStream 
+			</P>
+		</TD>
+		<TD WIDTH=507>
+			<P>Get character events from a text stream. By default this is
+			attached to the keyboard. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=106>
+			<P>Speech 
+			</P>
+		</TD>
+		<TD WIDTH=507>
+			<P>Events from a SpeechRecognition engine. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=106>
+			<P>VideoSegmenter 
+			</P>
+		</TD>
+		<TD WIDTH=507>
+			<P>Objects segmented from a video stream. 
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H2>Appendix 2 Open Issues and Historical Notes</H2>
+<P>The open issue section has been moved to Bugzilla and on the Wiki
+at obx.hexagram.ca.  It is accessible from the NextText project page.
+</P>
+</BODY>
+</HTML>

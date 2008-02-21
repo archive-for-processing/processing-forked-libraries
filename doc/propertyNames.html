@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE>NextText Property Names</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.4  (Win32)">
+	<META NAME="CREATED" CONTENT="20050511;11343867">
+	<META NAME="CHANGED" CONTENT="20050511;11391439">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1>NextText Property Names</H1>
+<P><FONT SIZE=2>Copyright (C) 2004,2005 Jason Lewis<BR>
+$Revision: 1.6 $ $Date:
+2004/09/09 22:54:11 $ </FONT>
+</P>
+<P>In order to encourage proper interaction between behaviours, they
+have to have a common understanding of what the properties of a text
+object mean. This registration list provides that understanding, by
+defining the property type and meaning associated with each name.
+This scheme is preferred to a hierarchical naming scheme, because it
+encourages interesting interaction of behaviours. Registration is
+mandatory because new versions of the library may define new property
+names. 
+</P>
+<P>There is no convention for Experimental/Development property
+names, because this approach has been shown to be problematic. Once
+you have decided to use a property, register it. 
+</P>
+<H2>Property Names</H2>
+<TABLE BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=122>
+	<COL WIDTH=149>
+	<COL WIDTH=163>
+	<COL WIDTH=747>
+	<TR>
+		<TH WIDTH=122>
+			<P>Name 
+			</P>
+		</TH>
+		<TH WIDTH=149>
+			<P>Registering Application 
+			</P>
+		</TH>
+		<TH WIDTH=163>
+			<P>Type 
+			</P>
+		</TH>
+		<TH WIDTH=747>
+			<P>Description 
+			</P>
+		</TH>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Position 
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>Standard</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>VectorProperty 
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The offset position of this object from its parent. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Rotation
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>Standard</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>NumberProperty
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The clockwise rotation of this object in radians.
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Color 
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>Standard</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>ColorProperty 
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The colour of the object. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>BirthDateTime 
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>Standard</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>DateTimeProperty 
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The time that this object was born. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Control Points</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>Standard</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>Vector3PropertyList</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The list containing a Glyph's set of Control Points.  This
+			property is only for TextObjectGlyphs, not for TextObjectGroups or
+			any other TextObject.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Mass</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>PhysicsAction</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>NumberProperty</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The mass of this object.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Velocity 
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>PhysicsAction</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>VectorProperty 
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The velocity of this object. 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>Force 
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>PhysicsAction</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>VectorProperty 
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The instantaneous force on this object.  This is reset to zero
+			on each frame by the Move action.
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>AngularVelocity
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>PhysicsAction</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>NumberProperty
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The angular velocity of this object, clockwise in radians.
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=122>
+			<P>AngularForce 
+			</P>
+		</TD>
+		<TD WIDTH=149>
+			<P>PhysicsAction</P>
+		</TD>
+		<TD WIDTH=163>
+			<P>NumberProperty 
+			</P>
+		</TD>
+		<TD WIDTH=747>
+			<P>The instantaneous angular force (torque) on this object.  This
+			is reset to zero on each frame by the Move action.
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+<H2> 
+</H2>
+</BODY>
+</HTML>

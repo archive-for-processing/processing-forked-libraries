@@ -1,0 +1,436 @@
+<html>
+  <head>
+    <title>NextText Requirements</title>
+  </head>
+  <body>
+
+    <h1>NextText Requirements</h1>
+
+    <font size="-1">
+      Copyright Jason Lewis 2004<br>
+      $Revision: 1.4 $ $Date: 2004/07/02 18:18:55 $
+    </font>
+
+
+    <h2>Primary Purpose</h2>
+
+    <p>
+      The strength of NextText will be its live interactive nature.  It's
+      primary purpose is the creation of applications that take advantage of
+      this interactive feature.  Secondarily, it will be useful for the
+      production of pre-recorded animations.
+    </p>
+
+    <h2>Core</h2>
+
+    <p>
+      The NextText core consists of a datastructure containing text and
+      behaviours, a processing thread which applies the behaviours and
+      renders the text, and a set of input sources to feed the behaviours.  Users
+      of the library may create and apply behaviours and input sources.
+    </p>
+
+    <h3>Text Data</h3>
+
+    <table border>
+      <tr>
+        <td>
+          Hierarchy
+        </td>
+        <td>
+          The text data must be represented in a hierarchical format, so that
+          smaller units are grouped together conceptually into larger units.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Semantic Property
+        </td>
+        <td>
+          Each text data unit (datum) must be able to have a semantic concept
+          attached to it, such as &quot;word&quot;, &quot;glyph&quot;, etc.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Spatial Representation
+        </td>
+        <td>
+          There must be a spatial representation such that the location of the
+          text data within the frame can be easily determined, and to
+          facilitate determining interactions such as collisions.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Live Editing
+        </td>
+        <td>
+          The library user must be able to edit the Text Data while the
+          behaviours are running.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Rendering Properties
+        </td>
+        <td>
+          Each text datum must have properties describing how it is drawn to
+          the screen.  The user of the library and behaviours must have fine
+          control over these properties.
+        </td>
+      </tr>
+    </table>
+
+    <h3>Rendering</h3>
+
+    <table border>
+      <tr>
+        <td>
+          Performance
+        </td>
+        <td>
+          This is the most important feature from a performance perspective.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Behaviours
+        </td>
+        <td>
+          As part of rendering, behaviours must be applied.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Curves
+        </td>
+        <td>
+          Rendering should support representations of glyphs as curves.  If
+          this is a problem for performance, then these requirements should be
+          revisited.
+        </td>
+      </tr>
+    </table>
+
+    <h3>Behaviours</h3>
+
+    <table border>
+      <tr>
+        <td>
+          Applying
+        </td>
+        <td>
+          It must be possible to apply behaviours to any node in the text
+          hierarchy.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Order
+        </td>
+        <td>
+          The order in which behaviours are evaluated should be configurable by
+          the user.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DefaultOrder
+        </td>
+        <td>
+          A default order for behaviours must be defined to ease effort for the
+          user.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Extensibility
+        </td>
+        <td>
+          The user must be able to create new behaviours.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Access
+        </td>
+        <td>
+          Behaviours must have access to the text datastructure (including
+          active behaviours), the spatial datastructure, and input modules.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Common Facilities
+        </td>
+        <td>
+          The behaviour interface can provide facilities for behaviours to use,
+          such as &quot;delay&quot;, &quot;terminate/detach&quot;, etc.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Uniformity
+        </td>
+        <td>
+          Behaviours aren't to be split into softtype and others like they were
+          in ActiveText.
+        </td>
+      </tr>
+    </table>
+
+    <h3>Core Behaviour Set</h3>
+
+    <p>The following core behaviours will be included:</p>
+
+    <table border>
+      <tr>
+        <td>
+          Move
+        </td>
+        <td>
+          Move an object using the rules of elementary mechanics.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          StayInWindow
+        </td>
+        <td>
+          Constrain an object, such that it always remains in the window.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Cruise
+        </td>
+        <td>
+          Accelerate an object.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          MoveAwayFromMouse
+        </td>
+        <td>
+          Accelerate an object away from the mouse.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Fade
+        </td>
+        <td>
+          Change an object's colour, so it fades into the background.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Wave
+        </td>
+        <td>
+          Move a group of objects in a wave form.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Pull
+        </td>
+        <td>
+          Distort a glyph so that it is stretched in the direction of the
+          mouse.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Pulse
+        </td>
+        <td>
+          Distort a glyph so that it grows and shrinks in size.
+        </td>
+      </tr>
+    </table>
+
+    <h3>Input</h3>
+
+    <table border>
+      <tr>
+        <td>
+          Extensibility
+        </td>
+        <td>
+          The user must be able to extend the input model by creating new
+          sources of input, and overriding existing ones.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Accessibility
+        </td>
+        <td>
+          Inputs must have well defined names so that behaviours can find them,
+          such as &quot;mouse&quot;, &quot;keyboard&quot;, etc.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Scripting
+        </td>
+        <td>
+          The system must be able to support scripted inputs, and handle them
+          simultaneously with interactive ones.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Core Input Set
+        </td>
+        <td>
+          The following core inputs will be included: Keyboard, Mouse,
+          TextStream.
+        </td>
+      </tr>
+    </table>
+
+    <h3>Non Requirements</h3>
+
+    <p>
+      The following are things that the library is not expected to do.
+    </p>
+
+    <table border>
+      <tr>
+        <td>
+          Undo
+        </td>
+        <td>
+          The library will not provide facilities for undoing changes to the
+          Text Data or behaviour list.  Applications are expected to provide
+          this facility themselves.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Behaviour Undo
+        </td>
+        <td>
+          When a behaviour is removed from an object it is not expected to undo
+          all of the work that it did on that object.  It will leave it
+          displaced or distorted, as it was when it was removed.  This facility
+          is deemed to difficult to implement because of the interactions
+          between all the behaviours.
+        </td>
+      </tr>
+    </table>
+
+
+    <h2>Phase 2 Features</h2>
+
+    <p>
+      The following features are required, but constitute a phase 2 release.
+      The core design must take these into account.
+    </p>
+
+    <h3>Production</h3>
+
+    <p>
+      Production is the creation of movies or still images using NextText.
+      Editing features and better quality rendering are needed to support this.
+      The following are very rough requirements for these features.
+    </p>
+
+    <table border>
+      <tr>
+        <td>
+          FrameStep
+        </td>
+        <td>
+          Support stepping forward and backward through updates to the
+          datastructure and rendering frames.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          FrameEdit
+        </td>
+        <td>
+          Support editing the datastructure in order to modify the rendering
+          frame.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          InputStoring
+        </td>
+        <td>
+          Store input such that it can be played back to the animation.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          TextObjectPlayback
+        </td>
+        <td>
+          Support frame playback at the text object level, rather than the
+          whole frame.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Serialization
+        </td>
+        <td>
+          Support serialization of textobject data to a file, preferably in a
+          human readable format.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          HighResolution
+        </td>
+        <td>
+          Support highresolution frame rendering, to a file.
+        </td>
+      </tr>
+    </table>
+
+    <h3>Extended Input Sources</h3>
+
+    <p>
+      There are many possible input sources, some of which may be more
+      generally useful or fun.  Video and speech recognition are notable.
+    </p>
+
+    <h2>Open Issues</h2>
+
+    <h3>3D</h3>
+
+    <p>
+      Using 3 dimensions is a natural extension, but one that presents a lot of
+      questions about appearance and rendering.  One simple use of 3D would be
+      to provide layering, where text is rendered in different planes, but does
+      not change size.  Of course, this would not provide any sort of 3D feel.
+      Another slightly more advanced is to use depth, but a fixed camera.  The
+      final addition of a movable camera requires a decision about how text
+      should appear when viewed from different angles.
+    </p>
+
+    <h3>Bitmaps</h3>
+
+    <p>
+      Vector representation of the letterforms is preferred, since it provides
+      smoother distortions, scales well to larger projections, looks better at
+      higher resolutions, and provides a more natural interface for
+      manipulations.  However, this all comes at a performance cost.
+    </p>
+
+    <p>
+      A different option is to use bitmap representation of the letterforms,
+      and distort them with control points.  The expected performance will be
+      better, but the appearance and flexibility are lost.  This option can be
+      considered if performance is no good.
+    </p>
+
+  </body>
+</html>

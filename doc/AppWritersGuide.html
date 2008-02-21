@@ -1,0 +1,660 @@
+<html>
+  <head>
+    <title>NextText Application Writers' Guide</title>
+  </head>
+  <body>
+
+    <h1>NextText Application Writers' Guide</h1>
+
+    <h2>Overview</h2>
+
+    <p>
+      NextText is a Java library for building applications to display text in a
+      dynamic and interactive way.  The library creates a panel and draws text
+      in there which moves and changes shape according to a set of rules.  The
+      application writer has full control over the text and the rules defining
+      its behaviour.
+    </p>
+
+    <p>
+      Text is stored in a hierarchical structure, whose contents are defined by
+      the application writer, and which may change while the application is
+      running.  The application writer defines rules for movement and visual
+      changes to the text by creating &quot;Behaviours&quot;.  Behaviours are
+      typically static throughout the lifetime of the application, although it
+      is permissible to add and remove them while the application is running.
+      Since the text being handled by NextText is expected to change, it's
+      perfectly normal for text to be added to and removed from Behaviours as
+      the application runs.  Some Behaviours are provided already built by
+      NextText, while others may be built by the application writer, using
+      building blocks, called Actions.
+    </p>
+
+    <p>
+      In order to help create interactive applications, NextText provides a way
+      for Behaviours to be affected by the user through what are known as
+      InputSources.  Currently the only NextText provided InputSources are for
+      the mouse and keyboard.  (The video and speech InputSources are slated to
+      be moved into TextEngine, because they don't quite work in the same way.)
+    </p>
+
+    <h3>The Book</h3>
+
+    <p>
+      The entry point into NextText is the Book, which must be created before
+      anything else can be done with the library.  Text and Behaviours must be
+      registered with the Book in order to affect the display.
+    </p>
+
+    <h3>Text Hierarchy</h3>
+
+    <p>
+      Within the book, all text is stored hierarchically.  The hierarchy is
+      formed of instances of TextObject, which has two subclasses:
+      TextObjectGlyph which are terminal nodes containing a single glyph to be
+      drawn; and TextObjectGroup which contain no character to be drawn, but
+      serve only to group the nodes below them.  Applications will typically
+      apply even more structure to the hierarchy, such as grouping glyphs into
+      words, words into phrases, and enforcing a strict height on the hierarchy
+      and meaning to the objects at each level.
+    </p>
+
+    <p>
+      While it is not problematic to have TextObjects not attached to the
+      hierarchy, these TextObjects will never be drawn.
+    </p>
+
+    <p>
+      The easiest way to add text to the hierarchy is by using a
+      TextObjectBuilder, which can completely free the application writer from
+      having to manipulate the hierarchy directly.  A TextObjectBuilder can be
+      configured in many ways, including defining where in the hierarchy the
+      new text should be added.
+    </p>
+
+    <h3>Behaviours</h3>
+
+    <p>
+      Behaviours are the rules that define what the displayed text does.
+      TextObjects need to be added to Behaviours in order to be affected,
+      granting good control over how Behaviours work.  Depending on the
+      specific Behaviour, it may affect all of a TextObject's descendants, or
+      just the TextObject itself.
+    </p>
+
+    <p>
+      Behaviours are created by piecing together building blocks called
+      Actions.  NextText comes with a large collection of Actions already
+      written, split into several packages.  The control Actions do not affect
+      TextObjects directly, they affect how other Actions are called.  The
+      standard Actions deal with movement, colour and other basic effects.  The
+      physics Actions deal with movement, but governed using an elementary
+      mechanics model.  The dform Actions modify the shape of glyphs.
+    </p>
+
+
+    <h3>Input Sources</h3>
+
+    <p>
+      Input sources provide the link between the application and the user.  The
+      basic input sources are Mouse and Keyboard, and some of the basic control
+      actions use them.  In addition NextText includes Video and Speech inputs,
+      although none of the Actions use them, and they may be moved into a
+      separate module in the future.
+    </p>
+
+    <p>
+      Each InputSource consists of a queue of events, as well as state
+      members.  The state members are useful in cases such as a mouse pointer,
+      where the Action only cares about the current position of the mouse,
+      while the event queues are important in cases where each event is
+      important, such as counting mouse clicks.  InputSources do not provide
+      notification or callback methods because Behaviours need to be restricted
+      to a single thread of the control, provided by the Simulator.
+    </p>
+
+    <h3>Logging</h3>
+
+    <p>
+      The NextText Book provides a logging facility.  All NextText generated
+      messages, (with the exception of those from InputSources) will be written
+      to this logging method.  All messages will be written to standard
+      output.  In addition, a PrintWriter can be passed to the book, and all
+      messages will be duplicated to that PrintWriter.
+    </p>
+
+    <h3>Other Classes</h3>
+
+    <h4>Locatable</h4>
+
+    <p>
+      The Locatable interface is used by Actions which work with the location
+      of an object.  Using this interface means that Actions can use any number
+      of objects without caring about their real types.  Many NextText objects
+      implement this interface, including TextObject, Vector3, and Mouse.  In
+      addition RandomLocation is a Locatable which returns a random location
+      each time it is checked.
+    </p>
+
+    <h4>Shape</h4>
+
+    <p>
+      The java.awt.Shape interface is used by Actions which work with the shape
+      of an object.  None of the NextText objects implement this interface,
+      mostly because it's rather complicated.  However, the bounding polygon
+      methods of TextObject return Shapes, as do the getBounds() methods of AWT
+      Components.
+    </p>
+
+    <h2>TextObjects</h2>
+
+    <p>
+      TextObjects hold the displayed text.  The most basic is the
+      TextObjectGlyph, which holds a single character, along with its visible
+      features such as font and position.  TextObjectGroups are used to collect
+      other TextObjects into larger groups with application-defined meanings
+      such as word, sentence, paragraph, etc.  Using this system, TextObjects
+      are formed into a hierarchy, which is managed by the Book.  The Book
+      supports a single hierarchy, as long as it has a TextObjectRoot at its
+      root.
+    </p>
+
+    <p>
+      Note that TextObjects have both a class inheritance relationship, as well
+      as a data structure hierarchy, with different parent/child
+      relationships.  It might take some getting used to, but it provides
+      shorter code with less duplication.
+    </p>
+
+    <p>
+      Application writers need to understand the structure of the TextObject
+      hierarchy, but should only rarely need to delve into its details,
+      primarily because the TextObjectBuilder should handle most of this work.
+      On occasion it may be necessary to iterate over descendants using
+      TextObjectIterator, or TextObjectGlyphIterator, or even over direct
+      children (see Bug #152).  It should never
+    </p>
+
+    <h3>Changing the hierarchy</h3>
+
+    <p>
+      New objects may be added to the hierarchy at anytime, typically this will
+      be handled by the TextObjectBuilder.  Objects should be removed from the
+      hierarchy only using the <code>Book.removeObject()</code> method, which
+      takes care of some synchronization issues, and ensures that the object
+      will be removed from all necessary data structures.
+    </p>
+
+    <p>
+      While not fully tested, it should be acceptable to move an object from
+      one location in the hierarchy to another.  However, this may cause
+      unusual behaviour if the applications Behaviours are not created
+      accordingly.
+    </p>
+
+    <h3>Properties</h3>
+
+    <p>
+      TextObjects have a set of named Properties, which are used to store most
+      of their modifiable features.  These Property objects are tightly bound
+      to TextObjects, and once they are attached, Property objects cannot be
+      removed or renamed.  All Property names need to be registered in the <a
+      href="propertyNames.html">Property Names Document</a>, to ensure proper
+      interoperation by all code using them.  In addition to name, the type (eg
+      Number or Vector) of each property must also be registered.
+    </p>
+
+    <p>
+      The meaning of the various properties is not always obvious, so I'll
+      explain the standard ones here.  Note that Vector3 properties are not
+      typically in global or window coordinates, so cannot be directly compared
+      with a mouse pointer position for instance.  See the section on
+      coordinate systems for more help on working with these relative
+      positions.
+    </p>
+
+    <ul>
+      <li>
+        <p>
+          <b>Position</b> is unusual because it is relative to the parent
+          TextObjectGroup in the hierarchy.  Consequently, in order to get the
+          position of the TextObject on the screen it is necessary to examine
+          the position of all of its ancestors.  TextObject provides a
+          convenience accessor to determine its screen position
+          <code>getPositionAbsolute()</code>, which returns only a Vector3, but
+          which may be useful in many cases.
+        </p>
+      </li>
+
+      <li>
+        <p>
+           <b>Rotation</b> is relative in the same way as position.  It
+           describes a rotation of a TextObjectGlyph's control points, or a
+           TextObjectGroup's children around the TextObject's position.
+        </p>
+      </li>
+
+      <li>
+        <p>
+          <b>Color</b> [sic.] holds the colour of the TextObject.  In order to
+          save specifying the colour of each and every TextObject, colours may
+          be inherited from the parent, by setting ColorProperty.isInherited to
+          true.  When this is true, the simulator will look at the parent's
+          ColorProperty in order to determine what colour to draw the
+          TextObject.
+        </p>
+      </li>
+
+      <li>
+        <p>
+          <b>Control Points</b> is a list of Vector3s which describe the shape
+          of a TextObjectGlyph.  It is not present for any other TextObject.
+          By changing the values of these points the shape of the glyph can be
+          changed, or deformed.  The list elements describe points with
+          Vector3s relative to the position of the glyph, not in global screen
+          coordinates.  It is typically reasonable to treat these as points on
+          the outline of the glyph, although this is not strictly-speaking
+          true.  In fact the control points describe the curves which make up
+          the outline.  See the Architecture document, and the implementation
+          of TextObjectGlyph for more details.
+        </p>
+      </li>
+
+      <li>
+        <p>
+          <b>BirthDateTime</b> is an immutable property which holds the time at
+          which the TextObject was created.
+        </p>
+      </li>
+    </ul>
+
+    <p>
+      The physics properties are described later in the physics section.  Other
+      properties will be described in the documentation for whichever
+      application defined them.
+    </p>
+
+    <p>
+      <h4>Property Change Listeners</h4>
+    </p>
+
+    <p>
+      A system for receiving notifications for property changes has been
+      implemented.  This is achieved by registering a PropertyChangeListener
+      with the Property in question.  While this mechanism is only used
+      internally currently, it's likely to have uses externally as well.  Note
+      that changing the TextObject whose Property triggered the listener may
+      produce unexpected results because it's likely that the change was
+      triggered by a Behaviour which is currently interacting with that object.
+    </p>
+
+    <h3>Vector3 Calculations and Coordinate Systems</h3>
+
+    <p>
+      Throughout the hierarchy the Position, Rotation, and Control Points
+      properties describe spatial locations, but in a manner relative to other
+      objects in the hierarchy.  Unfortunately it is not always useful to have
+      these values be relative in this way, for instance when it is necessary
+      to compare them with a global value like the position of the mouse.
+    </p>
+
+    <p>
+      For this reason, the same Vector3 value can represent a different point
+      on the screen, depending on where in the TextObject hierarchy it resides.
+      We use the concept of a coordinate system, which is a map from Vector3s
+      to points in space.  The most obvious coordinate system is that for the
+      NextText window, with (0,0) corresponding to the top-left point, and x
+      increasing for points to the right, y increasing for points below.  This
+      coordinate system is known as global, absolute or screen coordinates,
+      although I suspect window coordinates might be a more appropriate name.
+    </p>
+
+    <p>
+      The position of the root of the TextObject hierarchy is a Vector3 in
+      global coordinate system, so a value of (20,20) would place it 20 pixels
+      to the right of and below the top left corner of the NextText window.
+      However, typically the position of the TextObjectRoot is not particularly
+      relevant because it doesn't represent a unit of text which is drawn
+      together, and its position remains at (0,0).
+    </p>
+
+    <p>
+      Similarly every TextObject's position is relative to its parent's
+      position, so siblings' positions all exist in the same coordinate system,
+      and may be compared directly.  The parent is located at (0,0) in this
+      coordinate system.  However, to compare a TextObject's position with a
+      global position, like that of the mouse, it must be translated into
+      global coordinates.  This can be achieved by calling
+      TextObject.getPositionAbsolute(), or by transforming its position using
+      its parent's coordinate system, which can be found by calling
+      TextObject.getParent().getAbsoluteCoordinateSystem().
+    </p>
+
+    <p>
+      A TextObject's control points may be translated into global coordinates
+      using its own global coordinate system, which is returned by
+      getAbsoluteCoordinateSystem().
+    </p>
+
+    <p>
+      In reality things are a little more complex, because the Rotation
+      property is also relative to the parent, and is also handled by
+      coordinate systems.  However, the situation is completely analogous, so
+      doesn't bear much more explanation.
+    </p>
+
+    <h2>Actions and Behaviours</h2>
+
+    <p>
+      The typical NextText application will only have a few Behaviours, which
+      specify how the text behaves at the highest level, describing things such
+      as a scripted movement from the initial appearance to the final
+      disappearance of a word.  Behaviours are assembled from Actions, which
+      are essentially the components of a simple Behaviour programming
+      language.  They are assembled at run time, by the instantiation of
+      various Action objects, although this process is usually performed at the
+      initialization stage of the application.
+    </p>
+
+    <p>
+      All NextText applications will need to assemble their own Behaviours from
+      Actions, and many will also need to write some Actions of their own.
+    </p>
+
+    <h3>Assembling Behaviours</h3>
+
+    <p>
+      Each Action performs a simple task, either modifying a TextObject, or
+      calling another Action if circumstances are correct.  They are assembled
+      into a tree like structure, with control starting out at the root of the
+      tree, and being passed as appropriate by each action.  In order to be
+      added to the book, the root of the tree of actions is used to construct a
+      new net.nexttext.behaviour.Behaviour, which is then added via
+      Book.addBehaviour().  Now TextObjects can be added and removed from the
+      behaviour.
+    </p>
+
+    <p>
+      Actions which call other Actions are called control Actions, and their
+      constructors take one or more Action arguments.  Actions will often take
+      other objects in their constructors, and typically no accessors are
+      provided to modify these parameters after their construction.  The fact
+      that Actions are largely not modifiable after construction has not proved
+      to be a problem in practice, because Behaviours are static in the
+      majority of cases.
+    </p>
+
+    <p>
+      After working on a particular TextObject, every Action will return an
+      ActionResult object to indicate its state for that particular TextObject.
+      The caller can then use this result to adjust its on behaviour.  This
+      mechanism is particularly important for Actions which take more than a
+      single frame to perform their task, so they can be treated appropriately
+      by control Actions.  At the moment the important thing about
+      ActionResults is communicating if an Actions has completed its task.
+    </p>
+
+    <p>
+      If Behaviours are acting strangely, perhaps running once, or repeating
+      things unnecessarily, then it may be necessary to look at the various
+      ActionResults, and how these are handled by the control Actions,
+      particularly Chain and Multiplexer.  An important case of this is if a
+      Behaviour is only running once at the top most level, it might be
+      necessary to add a Repeat Action between it and the book.
+    </p>
+
+    <h3>Creating Actions</h3>
+
+    <p>
+      It will not be uncommon for an application to need new Actions, in which
+      case they will have to be written.  It is a good idea to look at existing
+      Actions to understand what needs to be done.  In all but the strangest
+      cases actions will inherit from AbstractAction, sometimes even through
+      another subclass.  The Action interface defines all of the things that
+      each Action must do, but some may already be taken care of by abstract
+      implementors.
+    </p>
+
+    <ul>
+      <li>
+        <p>
+          Every Action must define a behave() method.  There are several such
+          methods with different signatures, but the one that takes a single 
+          TextObject is usually all that is needed.  This method is where the
+          actual work of the Action is done, and is called once for each
+          TextObject on each frame where the Action is needed.
+        </p>
+        <p>
+          The behave() method returns an ActionResult object, which has several
+          boolean parameters which may affect the behaviour of the calling
+          Action.  In particular, if ActionResult.complete is true, then this
+          Action may not be called again with the TextObject, or if it is, it
+          should be treated as &quot;starting again&quot;.  Some control
+          actions may track ActionResult.event, and use it as a way to end an
+          Action, especially if ActionResult.cancomplete is false.
+        </p>
+      </li>
+      <li>
+        <p>
+          Every Action must provide a complete() method, which is called when
+          the Action no longer needs to work with an object.  This is useful
+          for Actions which need to maintain consistency from frame to frame,
+          and keep state for each TextObject to achieve this.  However, for
+          external reasons they may no longer be required to work with a
+          specific TextObject, in which case their complete() method will be
+          called, allowing them to clean up any state.
+        </p>
+      </li>
+      <li>
+        <p>
+          Actions should implement a getRequiredProperties() method in order to
+          have the Behaviour initialize any special properties they need in all
+          TextObjects they will be working with.  In this way they can assume
+          that a property is defined and of the correct type when calling
+          getProperty() in their behave() method.
+        </p>
+      </li>
+    </ul>
+
+    <p>
+      Actions which affect TextObjects do so by modifying properties.  Each
+      TextObject has a set of named properties, which are accessed using the
+      getProperty() method.  Property objects are tightly bound to TextObjects,
+      meaning getProperty() is guaranteed to always return the same unique
+      object for each TextObject and name.  This reduces the risk that an
+      Action's changes will be lost.  Once the Property object is received, it
+      is modified using its set() methods.  There are several subclasses of
+      Property, each for a different type of data, and each property name is
+      connected with a different type as defined in the <a
+      href="propertyNames.html">Property Names Document</a>.  It may be assumed
+      that all registered properties are present, and that get() will return an
+      object of the correct type.  Some Actions may wish to define new
+      TextObject properties, in which case they must be registered in the <a
+      href="propertyNames.html">Property Names Document</a>.
+    </p>
+
+    <p>
+      One important thing that many Actions may need to do is distinguish
+      between incoming TextObjectGroups and TextObjectGlyphs.  The
+      <code>instanceof</code> operator is used to do this.
+    </p>
+
+    <p>
+      NextText includes many subclasses of Action, which deal with some of
+      these requirements, making writing specific types of Actions easier.
+      Some of them also provide additional facilities.
+    </p>
+
+    <p>
+      <b>AbstractAction</b> is an abstract class which implements Action and
+      provides a few additional facilities.  Every Action in NextText inherits
+      from AbstractAction, and most other Actions should too.  (In retrospect,
+      there probably isn't a good reason to separate Action and
+      AbstractAction.)  The provided facilities are:
+    </p>
+    <ul>
+      <li>
+        <p>
+          System to maintain state for each TextObject, and across frames, with
+          the <code>textObjectData</code> member which is a Map from
+          TextObjects to a subclass-defined object, and an implementation of
+          <code>complete()</code> which cleans up the map as necessary.
+        </p>
+      </li>
+      <li>
+        <p>
+          Stub behave() methods, which just throw an
+          UnsupportedActionException.
+        </p>
+      </li>
+      <li>
+        <p>
+          Stub of <code>getRequiredProperties()</code> which just returns an
+          empty map.
+        </p>
+      </li>
+      <li>
+        <p>
+          Display name, which may be useful in the future if Actions are to be
+          loaded up into UIs.
+        </p>
+      </li>
+      <li>
+        <p>
+          A property set for Actions to hold properties much like TextObjects
+          do.
+        </p>
+      </li>
+      <li>
+        <p>
+          Accessors for the basic TextObject properties Position, Rotation, and
+          Colour.
+        </p>
+      </li>
+    </ul>
+
+    <p>
+      <b>PhysicsAction</b> is a subclass of AbstractAction which should be
+      extended by Actions which modify the physics properties (as defined in
+      the propertynames document) of TextObjects.  PhysicsAction provides an
+      implementation of getRequiredProperties() which initializes the physics
+      properties, as convenience methods for accessing those properties.
+      Finally, it provides some methods useful for applying forces and
+      accelerations to objects.
+    </p>
+
+    <p>
+      <b>DForm</b> is a subclass of AbstractAction which should be extended by
+      Actions which modify the shape of visible TextObjects.  It defines an
+      abstract behave method which takes TextObjectGlyph, and implements the
+      standard one which takes TextObject to call it.  It also provides a
+      convenience method for accessing a TextObject's control points.
+    </p>
+
+
+    <p>
+      <b>Condition</b> is a subclass of AbstractAction which should be extended
+      by Actions that perform a different task depending on a boolean
+      condition.  Conditions are the simplest control actions.  An Action which
+      extends Condition need only provide an implementation of the abstract
+      condition() method, and a constructor which takes two actions as
+      arguments and calls super(trueAction, falseAction).
+    </p>
+
+    <h2>NextText Extensions</h2>
+
+    <p>
+      NextText extensions can be created by defining new properties, and
+      creating new Actions which use those properties.  However, extensions are
+      limited to the standard properties for describing how to draw
+      TextObjects, namely position, rotation, colour, and control points.
+      Currently NextText's Physics features are treated as an extension
+    </p>
+
+    <h3>Physics</h3>
+
+    <p>
+      Physics is an extension which allows an application to manipulate
+      TextObjects using principles of elementary mechanics.  It is completely
+      optional, and some applications may choose to ignore it.  In order for
+      the Physics Actions to do anything, the Move Action must affect a
+      TextObject, which takes care of the basic Physics simulation. 
+    </p>
+
+    <p>
+      The following properties are defined by the Physics extension:
+    </p>
+
+    <ul>
+      <li>
+        <p>
+          <b>Mass</b> is a number which is used in calculations of force from
+          acceleration.  It may be used in future versions of the collision
+          calculations.
+        </p>
+      </li>	
+      <li>
+        <p>
+          <b>Velocity</b> is a Vector3 which describes the current velocity of
+          the object.  It is measure in pixels/frame.  On each frame, it is
+          added to the Position of the object, which means that it will affect
+          all of the object's children too, due to the relative nature of
+          Position.
+        </p>
+      </li>
+      <li>
+        <p>
+          <b>Force</b> is a Vector3 which describes the instantaneous force on
+          the object.  On each frame, the Force is divided by the mass of the
+          object, and added to the object's velocity.  After this Force is
+          reset to zero, so other Actions can specify it for the next frame.
+        </p>
+      </li>
+      <li>
+        <p>
+          <b>AngularVelocity</b> is a Number which is added to the rotation of
+          the TextObject on each frame.
+        </p>
+      </li>
+      <li>
+        <p>
+          <b>AngularForce</b> is a Number which is added to the AngularVelocity
+          of the TextObject and then reset to zero, on each frame.
+        </p>
+      </li>
+    </ul>
+
+    <p>
+      PhysicsAction is an abstract action from which all of the physics Actions
+      inherit.  It provides easy accessors to the Physics properties, and
+      ensures that they are included in getRequiredProperties().
+    </p>
+
+    <h2>Drawing non-Text</h2>
+
+    <p>
+      Many NextText applications will want to draw things in addition to the
+      text, which is done using renderer callbacks.  NextText is designed to be
+      able to support multiple Renderers, although at the moment there is only
+      one implemented, the Java2DRenderer.  The Java2DRenderer specifies
+      callbacks of type Java2DRendererCallable which are used for drawing
+      additional things.  There are two sets of callbacks, those called before
+      the text is drawn, and those called after.
+    </p>
+
+    <h2>Error Messages</h2>
+
+    <p>
+      On occasion NextText may produce informational error messages.  These
+      messages will always be written to the terminal output, and may be
+      written to another location, such as a file, if the application writer
+      wishes it.  This is useful for long-running applications, such as
+      CitySpeak, which may generate too much output to make looking in terminal
+      history feasible.  In order to write output to another file, the
+      application must register a PrintWriter using Book.setLogger().  Once
+      this is configured, it may even be desirable to have the application use
+      Book.log() for its own logging too.
+    </p>
+
+  </body>
+</html>

@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <title>NextText Quickstart Guide</title>
+  </head>
+  <body>
+
+    <h1>NextText Quickstart Guide</h1>
+
+    <p>
+      This guide is for the person who is too lazy to figure out NextText by
+      reading the Application Writers' Guide and the library documentation.
+      It's a step-by-step description of writing a simple NextText application.
+    </p>
+
+    <h2>Main application class</h2>
+
+    <p>
+      In order to use NextText, a main application class needs to be written,
+      and it needs to create a window to contain NextText.  The following code
+      is a simple way of doing this.
+    </p>
+
+    <pre>
+import javax.swing.JFrame;
+
+public class NextTextExample {
+
+    public static void main(String[] args) {
+
+        int width = 800;
+        int height = 600;
+        int insetsWidth = 0;
+        int insetsHeight = 0;
+
+        JFrame frame  = new JFrame("NextText Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        insetsWidth = frame.getInsets().left + frame.getInsets().right;
+        insetsHeight = frame.getInsets().top + frame.getInsets().bottom;
+        frame.setSize(width + insetsWidth, height + insetsHeight);
+        frame.validate();
+
+        Book book = new Book(width, height);
+		frame.add(book.getRenderer().getCanvas());
+
+		book.getSimulator().start();
+    }
+}
+    </pre>
+
+    <h2>Adding some text</h2>
+
+    <p>
+      Add some text using a TextObjectBuilder.
+    </p>
+
+    <pre>
+        TextObjectBuilder tob = new TextObjectBuilder(book);
+        tob.setParent(book.getTextRoot());
+
+        tob.build("Hello World!", new Vector3(200, 200));
+    </pre>
+
+    <h2>Factory Behaviours</h2>
+
+    <p>
+      It's there, but it's not very exciting though, so let's add some more
+      text, but make it throb.
+    </p>
+
+    <pre>
+        AbstractBehaviour throb = DFormFactory.throb();
+        book.addBehaviour(throb);
+        tob.addGlyphBehaviour(throb);
+        tob.build("Hello Pulsar!", new Vector3(250, 400));
+    </pre>
+
+    <p>
+      Now let's use the physics extensions and make that text move around.
+    </p>
+
+    <pre>
+        AbstractBehaviour move = PhysicsFactory.move();
+        book.addBehaviour(move);
+        tob.addGlyphBehaviour(move);
+        AbstractBehaviour stayInWindow = PhysicsFactory.stayInWindow();
+        book.addBehaviour(stayInWindow);
+        tob.addGlyphBehaviour(stayInWindow);
+        AbstractBehaviour explode = PhysicsFactory.explode();
+        book.addBehaviour(explode);
+        tob.addGlyphBehaviour(explode);
+
+        tob.build("Boom!", new Vector3(450, 300));
+    </pre>
+
+    <h2>Assembling Behaviours</h2>
+
+    <p>
+      The factory behaviours are cute, but I want more flexibility!  Let's
+      create a behaviour out of some Actions.  The following creates a scripted
+      behaviour, the glyphs start by jiggling randomly in the bottom right
+      corner of the screen for 10 seconds, the for the next 10 seconds they are
+      affected by a light gravity which bounces them from the bottom of the
+      window.  Finally they move to a location near the top of the screen,
+      where they enter a chaotic state.
+    </p>
+
+    <pre>
+        Chain myActionChain = new Chain();
+        myActionChain.add(new Timer(new RandomMotion(), 10));
+        myActionChain.add(new Timer(new Gravity(0.01), 10));
+        myActionChain.add(new MoveTo(new Vector3(400, 50), 5));
+        myActionChain.add(new Repeat(new ChaosPull(new Vector3(400,50)), 1000));
+
+        AbstractBehaviour shakeIt = new Behaviour(myActionChain);
+        book.addBehaviour(shakeIt);
+        tob.addGlyphBehaviour(shakeIt);
+        tob.build("ShakeIt", new Vector3(700, 550));
+    </pre>
+
+    <h2>The Result</h2>
+
+    <p>
+      For convenience, here's the <a href="NextTextExample.java">complete code</a>.
+    </p>
+
+  </body>
+</html>
