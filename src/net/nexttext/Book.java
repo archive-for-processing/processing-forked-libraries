@@ -35,9 +35,8 @@ import net.nexttext.property.StrokeProperty;
  * <p>The Book has its own step(), draw(), and stepAndDraw() methods which replace
  * the Simulator loop found in regular NextText applications.</p>
  * <p>Any updates to the TextObject tree must be synchronized on the Book. </p>
- *
- * $Id$
  */
+ /* $Id$ */
 public class Book {
 
 	public static TextObjectBuilder toBuilder;
@@ -250,51 +249,62 @@ public class Book {
     
     /**
      * Builds a tree of TextObjects from the given string, at the specified 
-     * location, using the stroke and fill colours set in the PApplet.
+     * location, using the stroke and fill colors set in the PApplet.
      * 
      * @param text the String to create the TextObjectGroup from
      * @param x the x-coordinate of the created TextObjectGroup
      * @param y the y-coordinate of the created TextObjectGroup
+     * 
+     * @return TextObjectGroup the built TextObjectGroup
      */
-    public void addText(String text, int x, int y) {
-        setStrokeAndFill(); 
-        toBuilder.build(text, x, y);
+    public TextObjectGroup addText(String text, int x, int y) {
+    	TextObjectGroup newTog = toBuilder.build(text, x, y);
+    	setStrokeAndFill(newTog); 
+
+        return newTog;
     }
     
     /**
      * Builds a tree of TextObjects on the given Page from the given string, 
-     * at the specified location, using the stroke and fill colours set in 
+     * at the specified location, using the stroke and fill colors set in 
      * the PApplet.
      * 
      * @param text the String to create the TextObjectGroup from
      * @param x the x-coordinate of the created TextObjectGroup
      * @param y the y-coordinate of the created TextObjectGroup
      * @param pageName the name of the Page to build on
+     * 
+     * @return TextObjectGroup the built TextObjectGroup
      */
-    public void addText(String text, int x, int y, String pageName) {
+    public TextObjectGroup addText(String text, int x, int y, String pageName) {
     	TextObjectGroup tempTog = toBuilder.getParent();
     	toBuilder.setParent(((TextPage)getPage(pageName)).getTextRoot());
-    	addText(text, x, y);
+    	TextObjectGroup newTog = addText(text, x, y);
     	toBuilder.setParent(tempTog);
+    	return newTog;
     }
     
     /**
      * Builds a tree of TextObjects from the given string, at the specified
-     * location, using the stroke and fill colours set in the PApplet.
+     * location, using the stroke and fill colors set in the PApplet.
      * 
      * @param text the String to create the TextObjectGroup from
      * @param x the x-coordinate of the created TextObjectGroup
      * @param y the y-coordinate of the created TextObjectGroup
      * @param lineLength the max number of characters per line
+     * 
+     * @return TextObjectGroup the built TextObjectGroup
      */
-    public void addText(String text, int x, int y, int lineLength) {
-        setStrokeAndFill();
-        toBuilder.buildSentence(text, x, y, lineLength);
+    public TextObjectGroup addText(String text, int x, int y, int lineLength) {
+    	TextObjectGroup newTog = toBuilder.buildSentence(text, x, y, lineLength);
+    	setStrokeAndFill(newTog);
+
+        return newTog;
     }
     
     /**
      * Builds a tree of TextObjects on the given Page from the given string, 
-     * at the specified location, using the stroke and fill colours set in 
+     * at the specified location, using the stroke and fill colors set in 
      * the PApplet.
      * 
      * @param text the String to create the TextObjectGroup from
@@ -302,23 +312,35 @@ public class Book {
      * @param y the y-coordinate of the created TextObjectGroup
      * @param lineLength the max number of characters per line
      * @param pageName the name of the Page to build on
+     * 
+     * @return TextObjectGroup the built TextObjectGroup
      */
-    public void addText(String text, int x, int y, int lineLength, String pageName) {
+    public TextObjectGroup addText(String text, int x, int y, int lineLength, String pageName) {
     	TextObjectGroup tempTog = toBuilder.getParent();
     	toBuilder.setParent(((TextPage)getPage(pageName)).getTextRoot());
-    	addText(text, x, y, lineLength);
+    	TextObjectGroup newTog = addText(text, x, y, lineLength);
     	toBuilder.setParent(tempTog);
+    	return newTog;
     }
     
     /**
-     * Sets the stroke and fill properties based on the colours set in the PApplet.
+     * Sets the stroke and fill properties based on the colors set in the PApplet.
+     * 
+     * @param to the TextObject to apply the color properties to
      */
-    private void setStrokeAndFill() {
-    	setStroke();
-    	setFill();
+    private void setStrokeAndFill(TextObject to) {
+    	setStroke(to);
+    	setFill(to);
     }
     
-    private void setStroke() {
+    /**
+     * Sets the stroke properties based on the colors set in the PApplet.
+     * 
+     * @param to the TextObject to apply the color properties to
+     */
+    private void setStroke(TextObject to) {
+    	ColorProperty colProp = to.getStrokeColor();
+    	
     	if (pApplet.g.stroke) {
     		// set the stroke cap
     		int cap;
@@ -349,27 +371,37 @@ public class Book {
 	    	}
     	
 	    	// set the stroke property
-	    	toBuilder.removeGroupProperty("Stroke");
-        	toBuilder.addGroupProperty("Stroke", new StrokeProperty(new BasicStroke(pApplet.g.strokeWeight, cap, join)));
+	    	StrokeProperty strokeProp = to.getStroke();
+	    	strokeProp.setOriginal(new BasicStroke(pApplet.g.strokeWeight, cap, join));
+	    	strokeProp.set(new BasicStroke(pApplet.g.strokeWeight, cap, join));
     		
-        	// set the stroke color property
-            toBuilder.removeGroupProperty("StrokeColor");
-        	toBuilder.addGroupProperty("StrokeColor", new ColorProperty(new Color(pApplet.g.strokeColor, true)));
+	    	// set the stroke color property
+	    	colProp.setOriginal(new Color(pApplet.g.strokeColor, true));
+	    	colProp.set(new Color(pApplet.g.strokeColor, true));
             
     	} else {
     		// set the stroke color property to transparent
-    		toBuilder.removeGroupProperty("StrokeColor");
-        	toBuilder.addGroupProperty("StrokeColor", new ColorProperty(new Color(0, 0, 0, 0)));
+    		colProp.setOriginal(new Color(0, 0, 0, 0));
+	    	colProp.set(new Color(0, 0, 0, 0));
         }
     }
     
-    private void setFill() {
-    	toBuilder.removeGroupProperty("Color");
+    /**
+     * Sets the fill properties based on the colors set in the PApplet.
+     * 
+     * @param to the TextObject to apply the color properties to
+     */
+    private void setFill(TextObject to) {
+    	ColorProperty colProp = to.getColor();
+    	
     	if (pApplet.g.fill) {
             // set the fill color property
-        	toBuilder.addGroupProperty("Color", new ColorProperty(new Color(pApplet.g.fillColor, true)));
+    		colProp.setOriginal(new Color(pApplet.g.fillColor, true));
+    		colProp.set(new Color(pApplet.g.fillColor, true));
         } else {
-        	toBuilder.addGroupProperty("Color", new ColorProperty(new Color(0, 0, 0, 0)));
+        	// set the fill color property to transparent
+        	colProp.setOriginal(new Color(0, 0, 0, 0));
+        	colProp.set(new Color(0, 0, 0, 0));
         }
     }
     
