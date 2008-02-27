@@ -13,26 +13,29 @@
     <path id="nexttext.classpath">
     	<pathelement location="classes"/>
   	</path>
+	<path id="processing.classpath">
+	    <pathelement location="/Developer/Applications/Java/Processing 0135/lib/core.jar"/>
+	</path>
 
 	<target name="jar">
-		<mkdir dir="classes"/>
+		<mkdir dir="bin"/>
     	<mkdir dir="lib"/>
 
     	<javac srcdir="src"
-               destdir="classes"
+               destdir="bin"
                deprecation="true"
                debug="true">
       		<classpath refid="nexttext.classpath"/>
+    		<classpath refid="processing.classpath"/>
     	</javac>
 
-    	<jar destfile="lib/nexttext.jar" basedir="classes"/>
+    	<jar destfile="lib/nexttext.jar" basedir="bin"/>
   	</target>
 	
 	<target name="javadoc">
 		<mkdir dir="javadoc"/>
 	    <javadoc access="private" 
 	    	     author="true" 
-	    	     classpath="/Applications/Processing 0130/lib/core.jar" 
 	    	     destdir="javadoc" 
 	    	     doctitle="NextText for Processing" 
 	    	     nodeprecated="false" 
@@ -48,11 +51,12 @@
 	    	     version="true">
 	    	<link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
 	    	<link href="http://dev.processing.org/reference/everything/javadoc/"/>
+	    	<classpath refid="processing.classpath"/>
 	    </javadoc>
 	</target>
 
    	<target name="clean">
-    	<delete dir="classes"/>
+    	<delete dir="bin"/>
    		<delete dir="lib"/>
     	<delete dir="javadoc"/>
   	</target>
