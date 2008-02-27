@@ -560,6 +560,31 @@ public class Book {
         }
     }
     
+    /**
+     * Removes all the TextObjects from all the TextPages in the Book, except for all the TextObjectRoots.
+     */
+    public void clear() {
+    	Iterator i = pages.values().iterator();
+        while (i.hasNext()) {
+        	Page page = (Page)i.next();
+        	if (page instanceof TextPage) {
+        		TextPage textPage = (TextPage)page;
+        		removeChildren(textPage.getTextRoot());
+        	}
+        }
+    }
+    
+    /**
+     * Removes all the TextObjects from the given TextPage, except for the TextObjectRoot.
+     * @param pageName the name of the TextPage to clear
+     */
+    public void clearPage(String pageName) {
+    	if (pages.get(pageName) instanceof TextPage) {
+    		TextPage textPage = (TextPage)pages.get(pageName);
+    		removeChildren(textPage.getTextRoot());
+    	}
+    }
+    
     // font property setters and getters
     public void setLineHeight(double d) { toBuilder.setLineHeight(d); }
     public double getLineHeight() { return toBuilder.getLineHeight(); }
