@@ -55,11 +55,9 @@ import net.nexttext.property.ColorProperty;
  *
  * @see TextObject
  */
- 
+/* Id */ 
 public class TextObjectGlyph extends TextObject {
 	
-	static final String REVISION = "$CVSHeader: NextText/src/net/nexttext/TextObjectGlyph.java,v 1.45 2006/06/07 19:57:49 dissent Exp $";
-
     // The FontRenderContext is necessary for determing glyph outlines, but is
     // never modified.
     static FontRenderContext frc = new FontRenderContext(null, false, false);
@@ -136,6 +134,8 @@ public class TextObjectGlyph extends TextObject {
 		this.font 	= font; 
 
         properties.init("Control Points", new Vector3PropertyList());
+        
+        glyphChanged();
 
         // When the control points change, the renderer cache is no longer
         // valid, and the glyph has been deformed.
@@ -144,8 +144,6 @@ public class TextObjectGlyph extends TextObject {
                     glyphDeformed();
                 }
             });
-
-        glyphChanged();
 	}
 	
 	/**
