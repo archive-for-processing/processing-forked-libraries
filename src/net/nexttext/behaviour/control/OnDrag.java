@@ -19,15 +19,15 @@ import net.nexttext.processing.*;
  * which was dragged, so it's only appropriate to use this Locatable in the
  * true condition of OnDrag.  </p>
  */
+/* Id */
 public class OnDrag extends Condition implements Locatable {
   
-    static final String REVISION = "$Header: /Volumes/Storage/Data/Groups/obx/CVS/NextText/src/net/nexttext/behaviour/control/OnDrag.java,v 1.3.2.2 2007/10/25 21:02:21 elie Exp $";
-
     private ProcessingMouse mouse;
     private int buttonToCheck;
     private boolean dragging;
     private Vector3 dragOffset;
     private TextObject lastDragged;
+    private TextObject currDragged;
 
     /**
      * Creates an OnDrag which performs the given Action when the mouse 
@@ -88,21 +88,21 @@ public class OnDrag extends Condition implements Locatable {
     	if (mouse.isPressed(buttonToCheck)) {
     		if (to.getBoundingPolygon().contains(mouse.getX(), mouse.getY())) {
     			if (!dragging) {
+    				// lock the mouse to the TextObject
     				dragging = true;
     				dragOffset = new Vector3(mouse.getX(), mouse.getY());
     				dragOffset.sub(to.getPositionAbsolute());
+    				currDragged = to;
     			}
-    		}
-    		
-    		if (dragging) {
-    			lastDragged = to;
     		}
         } else {
             dragging = false;
+            lastDragged = currDragged;
+            currDragged = null;
         	dragOffset = new Vector3();
         }
     	
-        return dragging;
+        return (dragging && (currDragged == to));
     }
 
     /**
