@@ -263,8 +263,8 @@ public class TextObjectBuilder {
     /**
      * Build a tree of TextObjects from the given string.
      *
-     * <p>The returned TextObject tree will be layed out so that no more than
-     * linelength characters appear on a single line.  </p>
+     * <p>The returned TextObject tree will be laid out so that no more than
+     * lineLength characters appear on a single line.  </p>
      */
     public TextObjectGroup buildSentence( String text, Vector3 pos, int lineLength ) {
     	// Pre-process the text
@@ -435,10 +435,22 @@ public class TextObjectBuilder {
 
             TextObject child = newGroup.getLeftMostChild();
             while (child != null) {
-                Iterator bI = glyphBehaviours.iterator();
-                while (bI.hasNext()) {
-                    ((AbstractBehaviour) bI.next()).addObject(child);
-                }
+            	if (child instanceof TextObjectGlyph) {
+            		Iterator bI = glyphBehaviours.iterator();
+            		while (bI.hasNext()) {
+            			((AbstractBehaviour) bI.next()).addObject(child);
+            		}
+            	} else {
+            		// we can assume grandChild is a TextObjectGlyph because of the way build() and buildSentence() work
+            		TextObject grandChild = ((TextObjectGroup)child).getLeftMostChild();
+            		while (grandChild != null) {
+            			Iterator bI = glyphBehaviours.iterator();
+                		while (bI.hasNext()) {
+                			((AbstractBehaviour) bI.next()).addObject(grandChild);
+                		}
+                		grandChild = grandChild.getRightSibling();
+            		}
+            	}
                 child = child.getRightSibling();
             }
         }
