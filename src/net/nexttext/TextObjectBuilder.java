@@ -116,10 +116,10 @@ public class TextObjectBuilder {
     }
 
 
-    boolean centerGroup = false;
+    boolean alignCenter = false;
     /** Center the group around position, or leave it as default layout. */
-    public void setCenterGroup(boolean centerGroup) {
-        this.centerGroup = centerGroup;
+    public void setAlignCenter(boolean alignCenter) {
+        this.alignCenter = alignCenter;
     }
 
 
@@ -222,7 +222,7 @@ public class TextObjectBuilder {
     public TextObjectGroup build(String text, Vector3 pos) {
         
         TextObjectGroup newGroup = createGroup( text, pos );
-        applyBuilderOptions(newGroup);
+        applyBuilderOptions(newGroup, false);
         return newGroup;
     }
     
@@ -281,7 +281,7 @@ public class TextObjectBuilder {
             
             // If the token is a \n begin a new line
             if (tokenStr.equals("\n")) {
-            	gOffset.x = pos.x;
+            	gOffset.x = 0;
             	gOffset.add(lineHeight);
             	continue;
             }
@@ -293,7 +293,7 @@ public class TextObjectBuilder {
             newGroup.attachChild( token );
         }
         
-        applyBuilderOptions(newGroup);        
+        applyBuilderOptions(newGroup, true);        
         return newGroup;
     }
     
@@ -399,21 +399,13 @@ public class TextObjectBuilder {
 
     /**
      * Applies the builder's parameters. 
+     * @param newGroup the TextObjectGroup to apply the parameters to
+     * @param isSentence whether the passed group was built using buildSentence() or not
      */
-    private void applyBuilderOptions( TextObjectGroup newGroup ) {
+    private void applyBuilderOptions(TextObjectGroup newGroup, boolean isSentence) {
         
-        if (centerGroup) {
-            // Move children of the group to make the position its center,
-            // by adding the offset from the center of the bounding box to
-            // the group position, to the position of each glyph.
-            Rectangle bb = newGroup.getBoundingPolygon().getBounds();
-            Vector3 offset = newGroup.getPositionAbsolute();
-            offset.sub(new Vector3(bb.getCenterX(), bb.getCenterY()));
-            TextObject child = newGroup.getLeftMostChild();
-            while (child != null) {
-                child.getPosition().add(offset);
-                child = child.getRightSibling();
-            }
+        if (alignCenter) {
+        	centerGroup(newGroup, isSentence);
         }
 
         synchronized (book) {
@@ -435,13 +427,14 @@ public class TextObjectBuilder {
 
             TextObject child = newGroup.getLeftMostChild();
             while (child != null) {
-            	if (child instanceof TextObjectGlyph) {
+            	if (!isSentence) {
+            		// we can assume child is a TextObjectGlyph because of the way build() works
             		Iterator bI = glyphBehaviours.iterator();
             		while (bI.hasNext()) {
             			((AbstractBehaviour) bI.next()).addObject(child);
             		}
             	} else {
-            		// we can assume grandChild is a TextObjectGlyph because of the way build() and buildSentence() work
+            		// we can assume grandChild is a TextObjectGlyph because of the way buildSentence() works
             		TextObject grandChild = ((TextObjectGroup)child).getLeftMostChild();
             		while (grandChild != null) {
             			Iterator bI = glyphBehaviours.iterator();
@@ -454,6 +447,80 @@ public class TextObjectBuilder {
                 child = child.getRightSibling();
             }
         }
+    }
+    
+
+    
+    /**
+     * Move children of the group to make the position its center. This is done
+     * by adding the offset from the center of the bounding box to the group 
+     * position, to the position of each glyph.
+     * 
+     * @param newGroup the TextObjectGroup to center
+     * @param isSentence whether the passed group was built using buildSentence() or not
+     */
+    private void centerGroup(TextObjectGroup newGroup, boolean isSentence) {
+    	if (!isSentence) {
+        	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
+        	Vector3 offset = newGroup.getPositionAbsolute();
+        	offset.sub(new Vector3(bb.getCenterX(), bb.getCenterY()));
+        	TextObject child = newGroup.getLeftMostChild();
+        	while (child != null) {
+        		child.getPosition().add(offset);
+        		child = child.getRightSibling();
+        	}
+        } else {
+        	// When the group is a sentence, we need to check the y-pos of 
+        	// each child group as they may be positioned on different lines.
+        	TextObjectGroup firstInLine = (TextObjectGroup)newGroup.getLeftMostChild();
+        	while (firstInLine != null) {
+        		// start a new line and calculate a new bounding box
+        		double currY = firstInLine.getPositionAbsolute().y;
+        		Rectangle bb = firstInLine.getBounds();
+        		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
+        		if (sibling == null) {
+        			// only one group in this sentence, center it
+        			centerLine(firstInLine, sibling, bb);
+                	// set first group to null to exit the loop
+                	firstInLine = null;
+        		}
+            	while (sibling != null) {
+            		// if the sibling is on the same line...
+            		if (currY == sibling.getPositionAbsolute().y) {
+            			// ...add its bounds to the line's bounding box
+            			bb = bb.union(sibling.getBounds());
+            			sibling = (TextObjectGroup)sibling.getRightSibling();
+            			if (sibling == null) {
+            				// we reached the end of the group, center the line
+            	    		centerLine(firstInLine, sibling, bb);
+                        	// set first group and sibling to null to exit the loop
+                        	firstInLine = sibling = null;
+            			}
+            		// the sibling is on a new line
+            		} else {
+            			// center the previous line
+            			centerLine(firstInLine, sibling, bb);
+                    	// set the sibling as the new start group of the line
+                    	firstInLine = sibling;
+                    	sibling = null;
+            		}
+            	}
+        	}
+        }
+    }
+    
+    private void centerLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds) {
+    	Vector3 offset = first.getPositionAbsolute();
+    	offset.sub(new Vector3(lineBounds.getCenterX(), lineBounds.getCenterY()));
+    	TextObjectGroup currChild = first;
+    	while (currChild != limit) {
+    		TextObject grandChild = currChild.getLeftMostChild();
+    		while (grandChild != null) {
+    			grandChild.getPosition().add(offset);
+    			grandChild = grandChild.getRightSibling();
+    		}
+    		currChild = (TextObjectGroup)currChild.getRightSibling();
+    	}
     }
     
     public void setLineHeight(double d) { lineHeight.y = d; }

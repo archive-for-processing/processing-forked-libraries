@@ -590,6 +590,8 @@ public class Book {
     public double getLineHeight() { return toBuilder.getLineHeight(); }
     public void setTrackingOffset(double d) { toBuilder.setTrackingOffset(d); }
     public double getTrackingOffset() { return toBuilder.getTrackingOffset(); }
+    
+    public void setAlignCenter(boolean b) { toBuilder.setAlignCenter(b); }
 
     //////////////////////////////////////////////////////////////////////
     // Rudimentary Logging System
