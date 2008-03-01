@@ -591,7 +591,7 @@ public class Book {
     public void setTrackingOffset(double d) { toBuilder.setTrackingOffset(d); }
     public double getTrackingOffset() { return toBuilder.getTrackingOffset(); }
     
-    public void setAlignCenter(boolean b) { toBuilder.setAlignCenter(b); }
+    public void textAlign(int i) { toBuilder.textAlign(i); }
 
     //////////////////////////////////////////////////////////////////////
     // Rudimentary Logging System

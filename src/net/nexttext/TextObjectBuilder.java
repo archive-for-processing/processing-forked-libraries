@@ -21,11 +21,13 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.*;
 
+import processing.core.*;
+
 /**
  * Factory class used for creating TextObjects and adding them to NextText.
  *
  * <p>A TextObjectBuilder provides methods which take Strings and build
- * hierarchys of TextObjects from them.  It can be configured in the following
+ * hierarchies of TextObjects from them.  It can be configured in the following
  * ways: </p>
  *
  * <ul>
@@ -40,17 +42,15 @@ import java.util.regex.*;
  *   <li>Specify the relation of position to the group.  </li>
  * </ul>
  *
- * <p>Future facilities which would be useful inclued: </p>
+ * <p>Future facilities which would be useful if included: </p>
  *
  * <ul>
  *   <li>Specify rules for laying out text: spacing, kerning, and paragraph
  *   layout. </li>
  * </ul>
  */
-
+/* Id */
 public class TextObjectBuilder {
-
-	static final String REVISION = "$Header: /Volumes/Storage/Data/Groups/obx/CVS/NextText/src/net/nexttext/TextObjectBuilder.java,v 1.21.6.2 2007/09/25 21:34:22 elie Exp $";
 
     //////////////////////////////////////////////////////////////////////
     // Internal Members
@@ -65,7 +65,7 @@ public class TextObjectBuilder {
     // Constructors
     
     /**
-     * Instantiates the NTPTextObjectBuilder.
+     * Instantiates the TextObjectBuilder.
      * 
      * @param book the Book to build TextObjects into
      */
@@ -75,7 +75,7 @@ public class TextObjectBuilder {
     }
     
     /**
-     * Instantiates the NTPTextObjectBuilder.
+     * Instantiates the TextObjectBuilder.
      * 
      * @param book the Book
      * @param page the Page to build TextObjects into
@@ -116,10 +116,10 @@ public class TextObjectBuilder {
     }
 
 
-    boolean alignCenter = false;
-    /** Center the group around position, or leave it as default layout. */
-    public void setAlignCenter(boolean alignCenter) {
-        this.alignCenter = alignCenter;
+    int align = PConstants.LEFT;
+    /** Set the horizontal alignment type of the group around the position. */
+    public void textAlign(int align) {
+        this.align = align;
     }
 
 
@@ -404,8 +404,8 @@ public class TextObjectBuilder {
      */
     private void applyBuilderOptions(TextObjectGroup newGroup, boolean isSentence) {
         
-        if (alignCenter) {
-        	centerGroup(newGroup, isSentence);
+        if (align != PConstants.LEFT) {
+        	alignGroup(newGroup, isSentence);
         }
 
         synchronized (book) {
@@ -459,11 +459,15 @@ public class TextObjectBuilder {
      * @param newGroup the TextObjectGroup to center
      * @param isSentence whether the passed group was built using buildSentence() or not
      */
-    private void centerGroup(TextObjectGroup newGroup, boolean isSentence) {
+    private void alignGroup(TextObjectGroup newGroup, boolean isSentence) {
     	if (!isSentence) {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
         	Vector3 offset = newGroup.getPositionAbsolute();
-        	offset.sub(new Vector3(bb.getCenterX(), bb.getCenterY()));
+        	if (align == PConstants.CENTER) {
+        		offset.sub(new Vector3(bb.getCenterX(), bb.getCenterY()));
+        	} else if (align == PConstants.RIGHT) {
+        		offset.sub(new Vector3(bb.getX()+bb.getWidth(), bb.getY()+bb.getHeight()));
+        	}
         	TextObject child = newGroup.getLeftMostChild();
         	while (child != null) {
         		child.getPosition().add(offset);
@@ -480,7 +484,7 @@ public class TextObjectBuilder {
         		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
         		if (sibling == null) {
         			// only one group in this sentence, center it
-        			centerLine(firstInLine, sibling, bb);
+        			alignLine(firstInLine, sibling, bb);
                 	// set first group to null to exit the loop
                 	firstInLine = null;
         		}
@@ -492,14 +496,14 @@ public class TextObjectBuilder {
             			sibling = (TextObjectGroup)sibling.getRightSibling();
             			if (sibling == null) {
             				// we reached the end of the group, center the line
-            	    		centerLine(firstInLine, sibling, bb);
+            	    		alignLine(firstInLine, sibling, bb);
                         	// set first group and sibling to null to exit the loop
                         	firstInLine = sibling = null;
             			}
             		// the sibling is on a new line
             		} else {
             			// center the previous line
-            			centerLine(firstInLine, sibling, bb);
+            			alignLine(firstInLine, sibling, bb);
                     	// set the sibling as the new start group of the line
                     	firstInLine = sibling;
                     	sibling = null;
@@ -509,9 +513,13 @@ public class TextObjectBuilder {
         }
     }
     
-    private void centerLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds) {
+    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds) {
     	Vector3 offset = first.getPositionAbsolute();
-    	offset.sub(new Vector3(lineBounds.getCenterX(), lineBounds.getCenterY()));
+    	if (align == PConstants.CENTER) {
+    		offset.sub(new Vector3(lineBounds.getCenterX(), lineBounds.getCenterY()));
+    	} else if (align == PConstants.RIGHT) {
+    		offset.sub(new Vector3(lineBounds.getX()+lineBounds.getWidth(), lineBounds.getY()+lineBounds.getHeight()));
+    	}
     	TextObjectGroup currChild = first;
     	while (currChild != limit) {
     		TextObject grandChild = currChild.getLeftMostChild();
