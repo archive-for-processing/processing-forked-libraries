@@ -1,19 +1,30 @@
-//
-// Copyright (C) 2005,2006 Jason Lewis
-//
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.nexttext.behaviour.dform;
 
-import net.nexttext.Locatable;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.Vector3;
-import net.nexttext.property.NumberProperty;
 import net.nexttext.property.Vector3PropertyList;
 import net.nexttext.property.Vector3Property;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A DForm which reverts TextObject to its original shape.
@@ -26,10 +37,9 @@ import java.util.Map;
  * to change it so that it can terminate. If needs be, the Reform could be put
  * into a Repeat behaviour. </p>
  */
+/* $Id$ */
 public class Reform extends DForm {
     
-    static final String REVISION = "$CVSHeader: NextText/src/net/nexttext/behaviour/dform/Reform.java,v 1.5 2006/02/27 18:49:41 dissent Exp $";
-
     public static final int STYLE_LINEAR = 1;
     public static final int STYLE_EXPONENTIAL = 2;    
     

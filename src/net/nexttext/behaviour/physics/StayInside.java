@@ -1,6 +1,21 @@
-//
-// Copyright (C) 2004,2005,2006 Jason Lewis
-// 
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.nexttext.behaviour.physics;
 
@@ -17,9 +32,8 @@ import net.nexttext.property.Vector3Property;
  * will want to combine this action with another one which moves the object 
  * inside the Shape first.
  */
+/* $Id$ */
 public class StayInside extends PhysicsAction {
-    
-    static final String REVISION = "$CVSHeader: NextText/src/net/nexttext/behaviour/physics/StayInside.java,v 1.3 2005/10/18 20:51:07 dissent Exp $";
     
     protected Shape shape;
     

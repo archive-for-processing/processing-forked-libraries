@@ -1,6 +1,21 @@
-//
-// Copyright (C) 2006 Jason Lewis
-//
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.nexttext.behaviour.control;
 
@@ -21,9 +36,8 @@ import net.nexttext.behaviour.Action;
  * action, which it will call, allowing it to be inserted anywhere in the
  * action tree.  Messages are sent to the Book's log.</p>
  */
+/* $Id$ */
 public class DebugLog extends AbstractAction {
-
-    static final String REVISION = "$CVSHeader$";
 
     Action action = null;
     String prefix;

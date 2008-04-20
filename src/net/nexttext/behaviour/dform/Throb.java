@@ -1,10 +1,24 @@
-//
-// Copyright (C) 2005 Jason Lewis
-//
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.nexttext.behaviour.dform;
 
-import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
@@ -13,9 +27,7 @@ import net.nexttext.property.Vector3Property;
 
 import java.awt.Rectangle;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A DForm which throbs the TextObject.
@@ -41,10 +53,9 @@ import java.util.Map;
  * way to correct this problem is to cache the period and scale along with the
  * frame count, and only update them when a throb is completed.  </p>
  */
+/* $Id$ */
 public class Throb extends DForm {
     
-    static final String REVISION = "$CVSHeader: NextText/src/net/nexttext/behaviour/dform/Throb.java,v 1.2 2005/05/16 16:55:46 dissent Exp $";
-
     /**
      * @param scale is amount the object's size will increase, as a multplier.
      * @param period is the period of the throb, in frames.

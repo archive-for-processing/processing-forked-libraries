@@ -1,23 +1,35 @@
-//
-// Copyright (C) 2004,2005,2006 Jason Lewis
-//
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.nexttext;
 
 import java.awt.Font;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-import java.util.Set;
 
 import net.nexttext.property.Property;
 import net.nexttext.property.PropertyChangeListener;
@@ -55,7 +67,7 @@ import net.nexttext.property.ColorProperty;
  *
  * @see TextObject
  */
-/* Id */ 
+/* $Id$ */ 
 public class TextObjectGlyph extends TextObject {
 	
     // The FontRenderContext is necessary for determing glyph outlines, but is

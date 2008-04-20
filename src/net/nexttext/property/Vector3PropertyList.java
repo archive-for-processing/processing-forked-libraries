@@ -1,11 +1,25 @@
-//
-// Copyright (C) 2004,2005,2006 Jason Lewis
-//
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.nexttext.property;
 
 import net.nexttext.property.Property;
-import net.nexttext.Vector3;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -28,10 +42,8 @@ import java.util.Iterator;
  * <li>Add all of the <code>Vector3</code> mathematical methods.  </li>
  * </ul>
  */
-
+/* $Id$ */
 public class Vector3PropertyList extends Property implements PropertyChangeListener {
-	
-	static final String REVISION = "$CVSHeader: NextText/src/net/nexttext/property/Vector3PropertyList.java,v 1.7 2006/02/08 18:02:32 dissent Exp $";
 	
 	private ArrayList list;
 	

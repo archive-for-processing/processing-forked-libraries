@@ -1,6 +1,21 @@
-//
-//Copyright (C) 2004, 2005 Jason Lewis
-//
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
  
 package net.nexttext.behaviour.physics;
 
@@ -12,14 +27,12 @@ import net.nexttext.behaviour.control.OnCollision;
 import net.nexttext.behaviour.control.OnDrag;
 import net.nexttext.behaviour.standard.DoNothing;
 import net.nexttext.behaviour.standard.Follow;
-import net.nexttext.input.Mouse;
 
 /**
  * The factory of Physics behaviours.
  */
+/* $Id$ */
 public class PhysicsFactory {
-
-    static final String REVISION = "$Header: /Volumes/Storage/Data/Groups/obx/CVS/NextText/src/net/nexttext/behaviour/physics/PhysicsFactory.java,v 1.4.8.1 2007/09/22 16:06:21 elie Exp $";
     
     /**
      * Collide is a behaviour which performs collision response when TextObjects
