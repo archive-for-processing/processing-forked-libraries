@@ -87,6 +87,7 @@ public class TextObjectBuilder {
     public TextObjectBuilder(Book book) {
     	this.book = book;
     	setParent(book.getTextRoot());
+    	setFont(new Font("courier", 0, 18)); //default font
     }
     
     /**
@@ -98,12 +99,13 @@ public class TextObjectBuilder {
     public TextObjectBuilder(Book book, TextPage page) {
     	this.book = book;
     	setParent(page.getTextRoot());
+    	setFont(new Font("courier", 0, 18)); //default font
     }
 
     //////////////////////////////////////////////////////////////////////
     // Configurable parameters
 
-    Font font = new Font("courier", 0, 18);
+    Font font;
     private Vector3 spaceOffset; // Width of a space character
     private Vector3 trackingOffset; // Space between two characters
     private Vector3 lineHeight;  // Height of a line
