@@ -29,7 +29,8 @@ void setup() {
   textFont(font);
   textAlign(CENTER);
   fill(255);
-  noStroke();
+  stroke(96);
+  strokeWeight(5);
 
   // create the follow mouse Behaviour
   AbstractAction follow = new Repeat(new MoveTo(Book.mouse, 1), 0);

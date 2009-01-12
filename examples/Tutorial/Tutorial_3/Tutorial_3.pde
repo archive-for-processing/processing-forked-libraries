@@ -1,5 +1,3 @@
-import processing.opengl.*;
-
 import net.nexttext.*;
 import net.nexttext.behaviour.*;
 import net.nexttext.behaviour.control.*;
@@ -29,7 +27,8 @@ void setup() {
   textFont(font);
   textAlign(CENTER);
   fill(255);
-  noStroke();
+  stroke(96);
+  strokeWeight(5);
 
   // build the text
   book.addText("NextText", width/2, height/2);

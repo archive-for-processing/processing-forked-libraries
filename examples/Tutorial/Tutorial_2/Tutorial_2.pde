@@ -1,5 +1,3 @@
-import processing.opengl.*;
-
 import net.nexttext.*;
 import net.nexttext.behaviour.*;
 import net.nexttext.behaviour.control.*;

@@ -1,10 +1,9 @@
-import processing.opengl.*;
-
 import net.nexttext.*;
 import net.nexttext.behaviour.*;
 import net.nexttext.behaviour.control.*;
 import net.nexttext.behaviour.standard.*;
 import net.nexttext.behaviour.dform.*;
+import net.nexttext.renderer.*;
 
 /**
  * A NextText sketch where where clicking the first mouse button pulls the 
@@ -22,7 +21,7 @@ PFont gangOfThree;
 
 void setup() {
   // init the applet
-  size(640, 360, OPENGL);
+  size(640, 360);
   smooth();
   
   // create the book
