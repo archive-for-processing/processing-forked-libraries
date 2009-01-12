@@ -82,9 +82,8 @@ public class Book {
      * @param p the parent PApplet
      */
     public Book(PApplet p) {
-        this (p, PConstants.JAVA2D);
-    }
-    
+        this (p, "best fit");
+    }   
     
     /**
      * Instantiates the Book.
@@ -95,17 +94,29 @@ public class Book {
     public Book(PApplet p, String rendererType) {
         this.p = p;
         
+        // initialize the renderer
         if (rendererType == PConstants.JAVA2D) {
             try {
                 defaultRenderer = new Java2DTextPageRenderer(p); 
             } catch (ClassCastException e) {
                 PGraphics.showException("The NextText and PApplet renderers are incompatible! Use the default renderer if you don't know what you are doing!");
             }
-        } else {
+        } else if (rendererType == PConstants.OPENGL) {
             try {
                 defaultRenderer = new PGraphicsTextPageRenderer(p); 
             } catch (NoClassDefFoundError e) {
                 PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
+            }
+        } else {
+            // try both, starting with the prettier one
+            try {
+                defaultRenderer = new Java2DTextPageRenderer(p); 
+            } catch (ClassCastException e) {
+                try {
+                    defaultRenderer = new PGraphicsTextPageRenderer(p); 
+                } catch (NoClassDefFoundError err) {
+                    PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
+                }
             }
         }
         
@@ -113,7 +124,6 @@ public class Book {
     	behaviourList = new LinkedList<AbstractBehaviour>();
     	textRoot = new TextObjectRoot(this);
         spatialList = new SpatialList();
-        
         
         // create a default text page
         TextPage defaultTextPage = new TextPage(this, defaultRenderer);
