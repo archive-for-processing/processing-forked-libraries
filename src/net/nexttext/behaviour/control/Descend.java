@@ -27,6 +27,7 @@ import net.nexttext.TextObject;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 /**
  * Perform the given action on the TextObject's descendants.
@@ -42,13 +43,13 @@ public class Descend extends AbstractAction {
     protected Action descendantAction;
     protected int depth;
 
-    // Behaviours perform a property initialization on each TextObject added to
-    // them.  However, since descendants are not initialized by the Behaviour,
-    // this Action has to initialize them itself.  Required properties are only
+    // Behaviours perform a property initialisation on each TextObject added to
+    // them.  However, since descendants are not initialised by the Behaviour,
+    // this Action has to initialise them itself.  Required properties are only
     // determined once, and stored in descendantReqProps.  Each TextObject only
-    // needs to be initialized once, so those that have been initialized are
+    // needs to be initialised once, so those that have been initialised are
     // remembered in initedDescendants.
-    protected Map descendantReqProps;    
+    protected Map<String, Property> descendantReqProps;    
     /* 
      * Using a WeakHashMap here makes this action less prone to memory
      * leaks should the structure of a TextObject being processed by this
@@ -59,7 +60,7 @@ public class Descend extends AbstractAction {
      * being processed by descend.
      * 
      */
-    protected WeakHashMap initedDescendants = new WeakHashMap();
+    protected WeakHashMap<TextObject, Boolean> initedDescendants = new WeakHashMap<TextObject, Boolean>();
 
     public Descend(Action descendantAction) {
         this(descendantAction, 1);
@@ -87,9 +88,9 @@ public class Descend extends AbstractAction {
     public ActionResult behave(TextObject to) {
 
         ActionResult res = new ActionResult();
-        LinkedList descendants = getDescendants(to);
+        LinkedList<TextObject> descendants = getDescendants(to);
         while (!descendants.isEmpty()) {
-            TextObject desc = (TextObject)descendants.removeFirst();
+            TextObject desc = descendants.removeFirst();
             initRequiredProperties(desc);
             res.combine(descendantAction.behave(desc));
         }
@@ -106,9 +107,9 @@ public class Descend extends AbstractAction {
      */
     public void complete(TextObject to) {
         super.complete(to);
-        LinkedList descendants = getDescendants(to);
+        LinkedList<TextObject> descendants = getDescendants(to);
         while (!descendants.isEmpty()) {
-            TextObject descendant = (TextObject)descendants.removeFirst();
+            TextObject descendant = descendants.removeFirst();
             descendantAction.complete(descendant);
             initedDescendants.remove(descendant);
         }        
@@ -117,17 +118,17 @@ public class Descend extends AbstractAction {
     /**
      * Get the descendants to be acted upon.
      */
-    private LinkedList getDescendants(TextObject to) {
+    private LinkedList<TextObject> getDescendants(TextObject to) {
         // Loop over depth, creating a new List of objects at each step,
         // populating it with the children of the objects from the previous
         // iteration.
-        LinkedList descendants = new LinkedList();
+        LinkedList<TextObject> descendants = new LinkedList<TextObject>();
         descendants.add(to);
         for (int i = 0; i < depth; i++) {
             // objects from the last iteration become the parents of the next
             // iteration.
-            LinkedList parents = descendants;
-            descendants = new LinkedList();
+            LinkedList<TextObject> parents = descendants;
+            descendants = new LinkedList<TextObject>();
             while (!parents.isEmpty()) {
                 TextObjectGroup tog = (TextObjectGroup) parents.removeFirst();
                 TextObject child = tog.getLeftMostChild();
@@ -141,16 +142,16 @@ public class Descend extends AbstractAction {
     }
 
     /**
-     * Initialize the required properties of descendantAction on a child.
+     * Initialise the required properties of descendantAction on a child.
      *
-     * <p>Since the behaviour does not and cannot initialize the children of
+     * <p>Since the behaviour does not and cannot initialise the children of
      * the TextObject automatically, it needs to be done each time behave() is
      * called.  </p>
      */
     private void initRequiredProperties(TextObject to) {
         if (initedDescendants.get(to) == null) {
             to.initProperties(descendantReqProps);
-            initedDescendants.put(to, new Boolean(true));
+            initedDescendants.put(to, true);
         }
     }
 }

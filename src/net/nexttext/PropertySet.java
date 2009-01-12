@@ -41,7 +41,7 @@ import net.nexttext.property.Property;
 /* $Id$ */
 public class PropertySet {
     
-    HashMap properties = new HashMap();
+    HashMap<String, Property> properties = new HashMap<String, Property>();
     
     /**
      * Initialize the property with this value, if it's not already defined.
@@ -62,12 +62,12 @@ public class PropertySet {
      * <p>See initProperty(String, Property).  Map keys must be Strings, values
      * must be Properties.</p>
      */
-    public void init(Map properties) {
+    public void init(Map<String, Property> properties) {
         // Initialize the required properties on the TextObject.
-        Iterator i = properties.entrySet().iterator();
+        Iterator<Map.Entry<String, Property>> i = properties.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry e = (Map.Entry) i.next();
-            init((String) e.getKey(), (Property) e.getValue());
+            Map.Entry<String, Property> e = i.next();
+            init(e.getKey(), e.getValue());
         }
     }
     
@@ -77,7 +77,7 @@ public class PropertySet {
     }
 
     /** Names of all the properties, in an unmodifiable set. */
-    public Set getNames() {
+    public Set<String> getNames() {
         return java.util.Collections.unmodifiableSet(properties.keySet());
     }
     
@@ -85,9 +85,9 @@ public class PropertySet {
      * Resets all the properties to their original value.
      */
     public void reset() {        
-        java.util.Iterator i = getNames().iterator();
+        Iterator<String> i = getNames().iterator();
         while (i.hasNext()) {
-            get((String) i.next()).reset();
+            get(i.next()).reset();
         }
     }
 }

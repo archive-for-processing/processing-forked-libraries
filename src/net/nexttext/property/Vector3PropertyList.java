@@ -45,13 +45,13 @@ import java.util.Iterator;
 /* $Id$ */
 public class Vector3PropertyList extends Property implements PropertyChangeListener {
 	
-	private ArrayList list;
+	private ArrayList<Vector3Property> list;
 	
 	/**
 	 * Default constructor.  Creates an empty Vector3PropertyList.
 	 */
 	public Vector3PropertyList() {
-        list = new ArrayList();
+        list = new ArrayList<Vector3Property>();
 	}
 	
 	/**
@@ -74,16 +74,16 @@ public class Vector3PropertyList extends Property implements PropertyChangeListe
 	 * Returns the Vector3Property object at the specified position in the list.
 	 */
 	public Vector3Property get( int position ) {
-        return (Vector3Property)list.get(position);
+        return list.get(position);
 	}
 	
     /**
      * Resets each Vector3Property in the list to its original value.
      */
     public void reset() {
-        Iterator i = list.iterator();
+        Iterator<Vector3Property> i = list.iterator();
         while (i.hasNext()) {
-            ((Vector3Property)i.next()).reset();
+            i.next().reset();
         }
         firePropertyChangeEvent();
     }
@@ -98,9 +98,9 @@ public class Vector3PropertyList extends Property implements PropertyChangeListe
    
     public String toString() {
         StringBuffer ret = new StringBuffer();
-        Iterator i = list.iterator();
+        Iterator<Vector3Property> i = list.iterator();
         while (i.hasNext()) {
-            ret.append(((Vector3Property)i.next()).toString());
+            ret.append(i.next().toString());
         }
         return ret.toString();
 	}
@@ -109,15 +109,15 @@ public class Vector3PropertyList extends Property implements PropertyChangeListe
 	 * Returns an iterator for the list of Vector3Property objects.
      *
      * <p>Don't use this iterator to remove items from the list, since this
-     * won't trigger the necssary PropertyChangeEvents.  If you need to remove
+     * won't trigger the necessary PropertyChangeEvents.  If you need to remove
      * points, write a remove method for this class, and call that.  </p>
 	 */
-	public Iterator iterator() {
+	public Iterator<Vector3Property> iterator() {
 		return list.iterator();
 	}
 	   
 	/**
-	 * Returns the number of Vector3Property objects containted in this list.
+	 * Returns the number of Vector3Property objects contained in this list.
 	 */
 	public int size() {
 		return list.size();
@@ -131,12 +131,12 @@ public class Vector3PropertyList extends Property implements PropertyChangeListe
         firePropertyChangeEvent();
     }
 
-    public Object clone() {
+    public Vector3PropertyList clone() {
         Vector3PropertyList that = (Vector3PropertyList) super.clone();
-        that.list = new ArrayList(list.size());
-        Iterator i = list.iterator();
+        that.list = new ArrayList<Vector3Property>(list.size());
+        Iterator<Vector3Property> i = list.iterator();
         while (i.hasNext()) {
-            that.add((Vector3Property)((Vector3Property)i.next()).clone());
+            that.add(i.next().clone());
         }
         return that;
     }

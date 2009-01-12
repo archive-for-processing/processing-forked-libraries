@@ -55,15 +55,15 @@ public class Scale extends DForm {
         // multiplication factor to each one, but offset from the center, not
         // the position.
         Vector3PropertyList cPs = getControlPoints(to);
-        Iterator i = cPs.iterator();
+        Iterator<Vector3Property> i = cPs.iterator();
         while (i.hasNext()) {
-            Vector3Property cP = (Vector3Property) i.next();
+            Vector3Property cP = i.next();
             // Get the vector from the center of the glyph to the control point.
             Vector3 p = cP.get();
             p.sub(center);
             // Scale the control point by the appropriate factor
             p.scalar(scale);
-            // Return p to the original coordiates
+            // Return p to the original coordinates
             p.add(center);            
             cP.set(p);
         }

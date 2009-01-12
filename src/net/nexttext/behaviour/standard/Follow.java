@@ -24,6 +24,7 @@ import java.util.Map;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.TargetingAction;
+import net.nexttext.property.Property;
 
 /**
  * Causes TextObjects to follow their left siblings.
@@ -51,7 +52,7 @@ public class Follow extends AbstractAction {
         return new ActionResult(false, false, false);
     }
 
-    public Map getRequiredProperties() {
+    public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
 }

@@ -25,9 +25,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.nexttext.TextObject;
+import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectRoot;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 /**
  * This control applies an Action when an object overlaps with another object.
@@ -58,7 +60,7 @@ public class OnCollision extends AbstractAction {
     public ActionResult behave(TextObject to) {
         
         // get the glyph collision set for that object.
-        Set col = to.getBook().getSpatialList().getPotentialCollisions(to);
+        Set<TextObjectGlyph> col = to.getBook().getSpatialList().getPotentialCollisions(to);
 
         if ( col.size() == 0 )
             return new ActionResult(false, false, false);
@@ -67,10 +69,10 @@ public class OnCollision extends AbstractAction {
         int height = to.getHeight();
 
         // It is important to use a set here to prevent duplicates
-        HashSet colliders = new HashSet();
+        HashSet<TextObject> colliders = new HashSet<TextObject>();
                 
         // build the set of object whose height matches to's
-        for ( Iterator i = col.iterator(); i.hasNext(); ) {
+        for ( Iterator<TextObjectGlyph> i = col.iterator(); i.hasNext(); ) {
                     
             TextObject collider = (TextObject)i.next();
                     
@@ -90,8 +92,8 @@ public class OnCollision extends AbstractAction {
 
         ActionResult res = new ActionResult();
 
-        for ( Iterator i = colliders.iterator(); i.hasNext(); ) {
-            TextObject collider = (TextObject)i.next();
+        for ( Iterator<TextObject> i = colliders.iterator(); i.hasNext(); ) {
+            TextObject collider = i.next();
             ActionResult tres = action.behave(new TextObject[] { collider, to });
             res.combine(tres);
         }
@@ -99,7 +101,7 @@ public class OnCollision extends AbstractAction {
         return res.endCombine();
     }
 
-    public Map getRequiredProperties() {
+    public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
 }

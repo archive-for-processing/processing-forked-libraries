@@ -64,9 +64,9 @@ public class Pull extends DForm implements TargetingAction {
         // Traverse the control points of the glyph, determine the distance
         // from it to the target and move it part way there.
         Vector3PropertyList cPs = getControlPoints(to);
-        Iterator i = cPs.iterator();
+        Iterator<Vector3Property> i = cPs.iterator();
         while (i.hasNext()) {
-            Vector3Property cP = (Vector3Property) i.next();
+            Vector3Property cP = i.next();
             Vector3 p = cP.get();
 
             Vector3 offset = new Vector3(targetV);

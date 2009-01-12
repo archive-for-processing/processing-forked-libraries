@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.nexttext.TextObject;
+import net.nexttext.property.Property;
 
 /**
  * Basic Behaviour class.  
@@ -51,8 +52,8 @@ public class Behaviour extends AbstractBehaviour {
      * <p>Objects will be removed from the list if the Action completes.  </p>
      */
     public synchronized void behaveAll() {
-        for (Iterator i = objects.iterator(); i.hasNext(); ) {
-            TextObject to = (TextObject) i.next();
+        for (Iterator<TextObject> i = objects.iterator(); i.hasNext(); ) {
+            TextObject to = i.next();
             Action.ActionResult res = action.behave(to);
             if (res.complete) {
                 i.remove();
@@ -63,7 +64,7 @@ public class Behaviour extends AbstractBehaviour {
     
     public synchronized void addObject( TextObject to ) {
         super.addObject(to);
-        Map properties = action.getRequiredProperties();
+        Map<String, Property> properties = action.getRequiredProperties();
         to.initProperties( properties );        
     }
         

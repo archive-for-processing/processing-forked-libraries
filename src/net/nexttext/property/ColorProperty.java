@@ -100,7 +100,7 @@ public class ColorProperty extends Property {
 
     // New Color objects are created in case someone misuses the ColorProperty
     // by modifying the internal objects.
-    public Object clone() {
+    public ColorProperty clone() {
         ColorProperty that = (ColorProperty) super.clone();
         that.value = new Color(value.getRed(),
                                value.getGreen(),

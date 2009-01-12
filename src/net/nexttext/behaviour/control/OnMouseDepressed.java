@@ -24,7 +24,7 @@ import net.nexttext.TextObject;
 import net.nexttext.behaviour.Action;
 import net.nexttext.behaviour.standard.DoNothing;
 import net.nexttext.input.Mouse;
-import net.nexttext.processing.*;
+import net.nexttext.input.MouseDefault;
 
 /**
  * A Condition which is true when a mouse button is down and false when a mouse
@@ -43,7 +43,7 @@ public class OnMouseDepressed extends Condition {
      * @param trueAction the Action to perform when the mouse button 1 is pressed
      */
     public OnMouseDepressed(Action trueAction) {
-        this(ProcessingMouse.BUTTON1, trueAction, new DoNothing());
+        this(MouseDefault.LEFT, trueAction, new DoNothing());
     }
     
     /**
@@ -54,7 +54,7 @@ public class OnMouseDepressed extends Condition {
      * @param falseAction the Action to perform when the mouse button 1 is released
      */
     public OnMouseDepressed(Action trueAction, Action falseAction) {
-        this(ProcessingMouse.BUTTON1, trueAction, falseAction);
+        this(MouseDefault.LEFT, trueAction, falseAction);
     }
     
     /**

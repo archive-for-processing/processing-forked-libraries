@@ -30,6 +30,7 @@ import java.util.Map;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 /**
  * The Multiplexer applies a series of Actions in parallel.
@@ -37,20 +38,20 @@ import net.nexttext.behaviour.Action;
 /* $Id$ */
 public class Multiplexer extends AbstractAction {
 
-    protected List actions;
-    protected HashMap doneWithObject;  // HashMap<Action, HashSet<TextObject>>
+    protected List<Action> actions;
+    protected HashMap<Action, HashSet<TextObject>> doneWithObject;
     
     /**
      * @param actions a List containing Action objects.
      */
-    public Multiplexer( List actions ) {
+    public Multiplexer( List<Action> actions ) {
         this.actions = actions;
-        doneWithObject = new HashMap();
+        doneWithObject = new HashMap<Action, HashSet<TextObject>>();
 
         Action action;
-        for (ListIterator i = actions.listIterator(); i.hasNext(); ) {
-        	action = (Action)i.next();
-        	doneWithObject.put(action, new HashSet());
+        for (ListIterator<Action> i = actions.listIterator(); i.hasNext(); ) {
+        	action = i.next();
+        	doneWithObject.put(action, new HashSet<TextObject>());
         }
     }
     
@@ -58,8 +59,8 @@ public class Multiplexer extends AbstractAction {
      * Create a new Multiplexer with no actions.
      */
     public Multiplexer() {
-        actions = new ArrayList();
-        doneWithObject = new HashMap();
+        actions = new ArrayList<Action>();
+        doneWithObject = new HashMap<Action, HashSet<TextObject>>();
     }
 
     /**
@@ -67,7 +68,7 @@ public class Multiplexer extends AbstractAction {
      */
     public void add(Action action) {
         actions.add(action);
-        doneWithObject.put(action, new HashSet());
+        doneWithObject.put(action, new HashSet<TextObject>());
     }
 
     /**
@@ -80,18 +81,18 @@ public class Multiplexer extends AbstractAction {
 
         ActionResult res = new ActionResult();
                 
-        for (Iterator i = actions.iterator(); i.hasNext(); ) {
-            Action current = (Action)i.next();
+        for (Iterator<Action> i = actions.iterator(); i.hasNext(); ) {
+            Action current = i.next();
             ActionResult tres = null;
             //If textObjects do not have entries in this hashSet
             //then this behaviour has not finished with them            
-            if(((HashSet)doneWithObject.get(current)).contains(to))
+            if ( doneWithObject.get(current).contains(to) )
                 tres = new ActionResult(true,true,false);                     
             else 
                 tres = current.behave(to);
                             
-            if(tres.complete){
-            	((HashSet)doneWithObject.get(current)).add(to);                
+            if (tres.complete){
+            	doneWithObject.get(current).add(to);                
             }
             res.combine(tres);
             
@@ -100,9 +101,9 @@ public class Multiplexer extends AbstractAction {
         // The multiplexer can return complete even if all its actions did not,
         // so those ones need to be informed that it is complete.
         if(res.complete){
-            for (Iterator i = actions.iterator(); i.hasNext(); ) {
-                Action current = (Action)i.next();
-                ((HashSet)doneWithObject.get(current)).remove(to);
+            for (Iterator<Action> i = actions.iterator(); i.hasNext(); ) {
+                Action current = i.next();
+                doneWithObject.get(current).remove(to);
             }
             complete(to);
         }
@@ -114,8 +115,8 @@ public class Multiplexer extends AbstractAction {
      */
     public void complete(TextObject to) {
         super.complete(to);
-        for (Iterator i = actions.iterator(); i.hasNext(); ) {
-            ((Action)i.next()).complete(to);
+        for (Iterator<Action> i = actions.iterator(); i.hasNext(); ) {
+            i.next().complete(to);
         }
     }
 
@@ -123,10 +124,10 @@ public class Multiplexer extends AbstractAction {
      * The required properties are the union of all properties in the action
      * chain.
      */
-    public Map getRequiredProperties() {
-        HashMap rP = new HashMap();
-        for ( Iterator i = actions.iterator(); i.hasNext(); ) {
-            rP.putAll( ((Action)i.next()).getRequiredProperties());
+    public Map<String, Property> getRequiredProperties() {
+        HashMap<String, Property> rP = new HashMap<String, Property>();
+        for ( Iterator<Action> i = actions.iterator(); i.hasNext(); ) {
+            rP.putAll( i.next().getRequiredProperties() );
         }
         return rP;
     }

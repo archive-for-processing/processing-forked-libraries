@@ -25,6 +25,7 @@ import java.util.Map;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 /**
  * A Condition splits the data flow in two according to the result of the
@@ -76,8 +77,8 @@ public abstract class Condition extends AbstractAction  {
         falseAction.complete(to);
     }
 
-    public Map getRequiredProperties() {
-        Map props = new HashMap();
+    public Map<String, Property> getRequiredProperties() {
+        Map<String, Property> props = new HashMap<String, Property>();
         props.putAll( trueAction.getRequiredProperties() );
         props.putAll( falseAction.getRequiredProperties() );
         return props;

@@ -26,9 +26,9 @@ import java.util.LinkedList;
  
 /**
  * The SpatialList class is used to keep track of the TextObjects in a spatially
- * organised fashion in order to facililate proximity and collision queries.
+ * organised fashion in order to facilitate proximity and collision queries.
  *
- * <p>At the moment, the list will only contain Glyph objects and no groups.  Group
+ * <p>At the moment, the list will only contain glyph objects and no groups.  Group
  * behaviour based on proximity will have to be deduced from the collisions 
  * between the different glyphs.</p>
  *
@@ -60,13 +60,13 @@ public class SpatialList {
 
     // Each object's bounding box is projected on the X and Y axis and the
     // endpoints of the resulting interval are stored in these sorted lists.
-    LinkedList xAxis = new LinkedList();
-    LinkedList yAxis = new LinkedList();
+    LinkedList<Edge> xAxis = new LinkedList<Edge>();
+    LinkedList<Edge> yAxis = new LinkedList<Edge>();
 
     /**
      * An edge of a TextObject.
      */
-    class Edge implements Comparable {
+    class Edge implements Comparable<Edge> {
 
         int position;
         TextObjectGlyph to;
@@ -88,15 +88,15 @@ public class SpatialList {
             throw new RuntimeException("Invalid Position: " + position);
         }
 
-        public int compareTo(Object o) {
-            return Double.compare(getValue(), ((Edge) o).getValue());
+        public int compareTo(Edge e) {
+            return Double.compare(getValue(), e.getValue());
         }
     }
 
 	// Each object has an entry (the key is the object itself) in these data 
 	// structure leading to a HashSet of objects it collides with on each axis.
-	HashMap xCollisions = new HashMap();
-	HashMap yCollisions = new HashMap();
+	HashMap<TextObject, HashSet<TextObjectGlyph>> xCollisions = new HashMap<TextObject, HashSet<TextObjectGlyph>>();
+	HashMap<TextObject, HashSet<TextObjectGlyph>> yCollisions = new HashMap<TextObject, HashSet<TextObjectGlyph>>();
 	
 	// These two values are used to maintain an average number of collision
 	// tests for each frame.  They are mainly provide statistical information
@@ -156,13 +156,13 @@ public class SpatialList {
      * Determine the index in the provided list where an Edge with the given
      * value should be placed.
 	 */
-    private int binarySearch(LinkedList list, double value) {
+    private int binarySearch(LinkedList<Edge> list, double value) {
 		int lower = 0, middle, upper = list.size() - 1;
 		
 		while ( upper >= lower )
 		{
 			middle = ( upper + lower ) / 2;
-            int result = Double.compare(value, ((Edge)list.get(middle)).getValue());
+            int result = Double.compare(value, list.get(middle).getValue());
 			if ( result > 0 )
 				lower = middle + 1;
 			else if ( result < 0 )
@@ -179,7 +179,7 @@ public class SpatialList {
 	public void add( TextObjectGlyph to ) {
 		
 	    if (to.toString().equals(" ")) {
-	        // dont add spaces..
+	        // don't add spaces..
 	        return;
 	    }
 		
@@ -215,8 +215,8 @@ public class SpatialList {
 		}
 		
 		// add an entry in each hash table for that object
-		xCollisions.put( to, new HashSet() );
-		yCollisions.put( to, new HashSet() );
+		xCollisions.put( to, new HashSet<TextObjectGlyph>() );
+		yCollisions.put( to, new HashSet<TextObjectGlyph>() );
 		
 		// re-sort the lists.
 		sort( xAxis, 0 );
@@ -228,26 +228,27 @@ public class SpatialList {
 	 */
 	public void remove( TextObjectGlyph to ) {
 
-        Iterator ei = xAxis.iterator();
-        while (ei.hasNext()) { if (((Edge)ei.next()).to == to) ei.remove(); }
+        Iterator<Edge> ei = xAxis.iterator();
+        while (ei.hasNext()) { if (ei.next().to == to) ei.remove(); }
         ei = yAxis.iterator();
-        while (ei.hasNext()) { if (((Edge)ei.next()).to == to) ei.remove(); }
+        while (ei.hasNext()) { if (ei.next().to == to) ei.remove(); }
 		
 		// see with which other objects this object used to collide
-		HashSet xcol = (HashSet)xCollisions.get(to);
-		HashSet ycol = (HashSet)yCollisions.get(to);
+		HashSet<TextObjectGlyph> xcol = xCollisions.get(to);
+		HashSet<TextObjectGlyph> ycol = yCollisions.get(to);
 		
 		// remove all references to this object from any colliding objects
 		if ( xcol != null ) {
-			for ( Iterator i = xcol.iterator(); i.hasNext(); ) {
-				HashSet temp = ((HashSet)xCollisions.get( i.next() ));
+			for ( Iterator<TextObjectGlyph> i = xcol.iterator(); i.hasNext(); ) {
+				HashSet<TextObjectGlyph> temp = xCollisions.get( i.next() );
 				temp.remove(to);
 			}
 		}
 		
 		if ( ycol != null ) {
-			for ( Iterator i = ycol.iterator(); i.hasNext(); ) {
-				((HashSet)yCollisions.get( i.next() )).remove(to);
+			for ( Iterator<TextObjectGlyph> i = ycol.iterator(); i.hasNext(); ) {
+			    HashSet<TextObjectGlyph> temp = yCollisions.get( i.next() );
+                temp.remove(to);
 			}
 		}
 		
@@ -317,7 +318,7 @@ public class SpatialList {
 	 * Redirects to the proper implementation of getPotentialCollisions based
 	 * on type (TextObjectGlyph or TextObjectGroup)
 	 */
-	public HashSet getPotentialCollisions( TextObject to ) {
+	public HashSet<TextObjectGlyph> getPotentialCollisions( TextObject to ) {
 		
 		if ( to instanceof TextObjectGlyph ) {
 			return getPotentialCollisions( (TextObjectGlyph)to );
@@ -337,15 +338,15 @@ public class SpatialList {
 	 *
 	 * @param to  A TextObjectGlyph to test for collisions
 	 */
-	public HashSet getPotentialCollisions( TextObjectGlyph to ) {
+	public HashSet<TextObjectGlyph> getPotentialCollisions( TextObjectGlyph to ) {
 		
 		// create a new set to store potential collisions
-		HashSet collisions = new HashSet();
+		HashSet<TextObjectGlyph> collisions = new HashSet<TextObjectGlyph>();
 		
-		HashSet xCol = (HashSet)xCollisions.get(to);
-		HashSet yCol = (HashSet)yCollisions.get(to);
+		HashSet<TextObjectGlyph> xCol = xCollisions.get(to);
+		HashSet<TextObjectGlyph> yCol = yCollisions.get(to);
 		
-		// if the HashSets are non-existant, it means we queried an object which
+		// if the HashSets are non-existent, it means we queried an object which
 		// was not part of the spatial list
 		if (xCol == null || yCol == null) {
             String msg = "Collisions query for object not in SpatialList: " + to;
@@ -359,9 +360,9 @@ public class SpatialList {
 		
 		// for every element in xCol, see if that element is yCol.  it is, then
 		// the boxes are overlapping
-		Iterator i = xCol.iterator();
+		Iterator<TextObjectGlyph> i = xCol.iterator();
 		while (i.hasNext()) {	
-			TextObjectGlyph someTo = (TextObjectGlyph)i.next();
+			TextObjectGlyph someTo = i.next();
 			if (yCol.contains(someTo)) {
 				collisions.add(someTo);	
 			}	
@@ -376,9 +377,9 @@ public class SpatialList {
 	 * overlapping with any of the given group's glyphs.  Returns an empty set if 
 	 * no objects are colliding with the group.
 	 */
-	public HashSet getPotentialCollisions( TextObjectGroup tog ) {
+	public HashSet<TextObjectGlyph> getPotentialCollisions( TextObjectGroup tog ) {
 		
-		HashSet collisions = new HashSet();
+		HashSet<TextObjectGlyph> collisions = new HashSet<TextObjectGlyph>();
 		
 		TextObjectIterator toi = new TextObjectIterator( tog ) ;
 		
@@ -417,14 +418,14 @@ public class SpatialList {
 	 * @param axis 0-X axis, 1-Y axis
 	 */
 	
-    private void sort(LinkedList list, int axis) {
+    private void sort(LinkedList<Edge> list, int axis) {
 	
 		int n = list.size();
 		int j = 0;
 		for (int i=1; i < n; i++) {
 			// check from the first element to the end of the sorted section
 			j = i-1;
-            Edge a = (Edge)list.get(i);
+            Edge a = list.get(i);
 		 	// bump down the list until we find the correct place to 
 			// insert Edge a
 			while( j >= 0 && ( a.compareTo(list.get(j)) < 0 ) ) {	
@@ -440,7 +441,7 @@ public class SpatialList {
 	 * swaps two elements i and j in the interval list.  updates their overlap 
 	 * status to reflect the new changes
 	 */
-    private void swap(LinkedList list, int i, int j, int axis) {
+    private void swap(LinkedList<Edge> list, int i, int j, int axis) {
 	
 	 	// swap elements at i and j
 		list.set( i, (list.set(j, list.get(i))) );
@@ -448,8 +449,8 @@ public class SpatialList {
 		// based on the two edges, find out if we should add (or remove) an 
 		// overlap for these two objects
 		
-        TextObjectGlyph glyphA = ((Edge)list.get(i)).to;
-        TextObjectGlyph glyphB = ((Edge)list.get(j)).to;
+        TextObjectGlyph glyphA = list.get(i).to;
+        TextObjectGlyph glyphB = list.get(j).to;
 	 	
 	 	// BUGFIX:
 	 	// This check was added to prevent detecting an overlap between edges
@@ -490,22 +491,22 @@ public class SpatialList {
 		if ( intervalOverlap( s1, e1, s2, e2 ) ) {
 			
 			if ( axis == 0 ) {			  	
-				((HashSet)xCollisions.get( glyphA )).add( glyphB );	
-				((HashSet)xCollisions.get( glyphB )).add( glyphA );	
+				xCollisions.get( glyphA ).add( glyphB );	
+				xCollisions.get( glyphB ).add( glyphA );	
 			}
 			else {
-				((HashSet)yCollisions.get( glyphA )).add( glyphB );	
-				((HashSet)yCollisions.get( glyphB )).add( glyphA );	
+				yCollisions.get( glyphA ).add( glyphB );	
+				yCollisions.get( glyphB ).add( glyphA );	
 			}
 		}
 		else {
 			if ( axis == 0 ) {
-				((HashSet)xCollisions.get( glyphA )).remove( glyphB );	
-				((HashSet)xCollisions.get( glyphB )).remove( glyphA );
+				xCollisions.get( glyphA ).remove( glyphB );	
+				xCollisions.get( glyphB ).remove( glyphA );
 			}
 			else {
-				((HashSet)yCollisions.get( glyphA )).remove( glyphB );	
-				((HashSet)yCollisions.get( glyphB )).remove( glyphA );
+				yCollisions.get( glyphA ).remove( glyphB );	
+				yCollisions.get( glyphB ).remove( glyphA );
 			}
 		}
 	}

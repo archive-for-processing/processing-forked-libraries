@@ -27,6 +27,7 @@ import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 /**
  * An action which logs the TextObjects it processes.
@@ -51,7 +52,7 @@ public class DebugLog extends AbstractAction {
         this.action = action;
     }
 
-    // Creates a string represenation of the TextObject.
+    // Creates a string representation of the TextObject.
     StringBuffer asString(TextObject to) {
         StringBuffer msg = new StringBuffer();
         if (to instanceof TextObjectGroup) {
@@ -84,11 +85,11 @@ public class DebugLog extends AbstractAction {
         return res;
     }
 
-    public Map getRequiredProperties() {
+    public Map<String, Property> getRequiredProperties() {
         if (action != null)
             return action.getRequiredProperties();
         else
-            return new HashMap(0);
+            return new HashMap<String, Property>(0);
     }
 
     public void complete(TextObject to) {

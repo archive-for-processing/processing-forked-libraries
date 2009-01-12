@@ -19,15 +19,13 @@
 
 package net.nexttext.input;
 
-import java.awt.Component;
-
 import java.util.HashMap;
 
 /**
  * A manager for the input sources.
  *
  * <p>The input manager keeps input sources accessible by name.  The application
- *    adds input source objects to the manager and behaviors can fetch these
+ *    adds input source objects to the manager and behaviours can fetch these
  *    objects to access their data.  All sources are stored in a
  *    {@link HashMap}.</p>
  *
@@ -36,16 +34,17 @@ import java.util.HashMap;
 public class InputManager {
 
     // The hash sources are kept in.
-    HashMap sources = new HashMap();
+    HashMap<String, InputSource> sources = new HashMap<String, InputSource>();
     
-    /** Class constructor. 
-     * Creates the default input sources (mouse and keyboard).
+    /** 
+     * Builds an InputManager.
 	 *
-	 * @param component	the component the listeners are attached to
+	 * @param mouse the default Mouse InputSource
+	 * @param keyboard the default Keyboard InputSource
 	 */
-    public InputManager(Component component){ 
-	    add("Mouse", new MouseDefault(component));          	
-        add("Keyboard", new KeyboardDefault(component));          		 	
+    public InputManager(Mouse mouse, Keyboard keyboard) { 
+	    add("Mouse", mouse);          	
+        add("Keyboard", keyboard);          		 	
 	 }
     
     /**
@@ -78,7 +77,7 @@ public class InputManager {
      * @see				InputSource
      */
     public InputSource get(String name) {
-    	return (InputSource)sources.get(name);
+    	return sources.get(name);
     }
 
 }

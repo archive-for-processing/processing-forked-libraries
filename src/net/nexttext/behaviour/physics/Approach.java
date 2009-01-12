@@ -36,7 +36,7 @@ public class Approach extends PhysicsAction implements TargetingAction {
     protected Locatable target;
     
     /**   
-	 * @param speed controls the magnitude of the accleration applied in the direction
+	 * @param speed controls the magnitude of the acceleration applied in the direction
 	 * of the target
 	 * @param hitRange this value is used as a radius around the target to 
 	 * determine if Approach has reached its location.  A hitRange of 1 means 

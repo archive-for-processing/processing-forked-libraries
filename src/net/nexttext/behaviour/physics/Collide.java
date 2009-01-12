@@ -69,7 +69,7 @@ public class Collide extends PhysicsAction {
         Vector3 mtd = getVectorToSeparateAFromB(A, B);
     	  
         if ( mtd.isZero() ) {
-            // objects do not interesect, so do nothing.
+            // objects do not intersect, so do nothing.
 	 	    return new ActionResult(false, false, false);
         }
         
@@ -78,8 +78,8 @@ public class Collide extends PhysicsAction {
         // see if B has a velocity property
         Vector3Property velPropB = getVelocity(toB);
         
-        // if it doesnt, then B is not affected by a Physics action.  In this
-        // case, treat it as an unmmovable object.
+        // if it doesn't, then B is not affected by a Physics action.  In this
+        // case, treat it as an unmovable object.
         if ( velPropB == null ) {
             // move A the full distance
             translate( getPosition(toA), mtd );
@@ -152,7 +152,7 @@ public class Collide extends PhysicsAction {
     	}
         catch ( Vector3ArithmeticException v3ae ) {
             // This means mtd was zero, so just ignore it.
-            // Technically this shouldnt happen, we already returned if mtd == 0
+            // Technically this shouldn't happen, we already returned if mtd == 0
             return;
         }
     }    
@@ -162,7 +162,7 @@ public class Collide extends PhysicsAction {
      *
      * <p>Even though odds are we'll be dealing mostly with boxes, this method 
      * supports arbitrary convex polygons. In order to do so, we need to test
-     * with the axis perpenticular to every edge of each polygon. </p>
+     * with the axis perpendicular to every edge of each polygon. </p>
      *
      * <p>Note that it returns a zero vector if A and B do not intersect. </p>
      */
@@ -216,7 +216,7 @@ public class Collide extends PhysicsAction {
                 continue;
             }
      		
-     		// see if this axis separates the polygons.  if it doesnt, this
+     		// see if this axis separates the polygons.  if it doesn't, this
      		// method will return a vector representing the intersection
      		// projected on that specific axis
      		Vector3 pushVector = AxisSeparatesPolygons( axis, A, B );

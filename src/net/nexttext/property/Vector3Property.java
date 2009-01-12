@@ -198,7 +198,7 @@ public class Vector3Property extends Property {
 
     // New Vector3 objects are created in case someone misuses the
     // Vector3Property by modifying the internal objects.
-    public Object clone() {
+    public Vector3Property clone() {
         Vector3Property that = (Vector3Property) super.clone();
         that.original = new Vector3(original);
         that.value = new Vector3(value);

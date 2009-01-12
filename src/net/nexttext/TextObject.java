@@ -75,20 +75,20 @@ public abstract class TextObject implements Locatable {
      * Boring constructor with boring default property values.
      */
     protected TextObject() {
-        this(new HashMap(0));
+        this(new HashMap<String, Property>(0));
     }
 
     /**
      * Constructor with initial position.
      */
     protected TextObject(Vector3 pos) {
-        this(posToMap(new HashMap(0), pos));
+        this(posToMap(new HashMap<String, Property>(0), pos));
     }
 
     /**
      * Constructor with initial position and extra properties.
      */
-    protected TextObject(Map props, Vector3 pos) {
+    protected TextObject(Map<String, Property> props, Vector3 pos) {
         this(posToMap(props, pos));
     }
 
@@ -98,8 +98,8 @@ public abstract class TextObject implements Locatable {
      * on the first line.
      */
 
-    private static Map posToMap(Map map, Vector3 pos) {
-        Map nMap = new HashMap(map);
+    private static Map<String, Property> posToMap(Map<String, Property> map, Vector3 pos) {
+        Map<String, Property> nMap = new HashMap<String, Property>(map);
         nMap.put("Position", new Vector3Property( pos ) );
         return nMap;
     }
@@ -111,7 +111,7 @@ public abstract class TextObject implements Locatable {
      * better than modifying the properties after construction because it also
      * sets the Original values of those properties.  </p>
      */
-    protected TextObject(Map propertyMap) {
+    protected TextObject(Map<String, Property> propertyMap) {
         properties.init(propertyMap);
         properties.init("BirthDateTime", new DateTimeProperty());
         properties.init("Position", new Vector3Property( new Vector3(0,0,0)));
@@ -476,7 +476,7 @@ public abstract class TextObject implements Locatable {
     /**
      * Initialize a bunch of properties.
      */
-    public void initProperties( Map propertyMap ) {
+    public void initProperties( Map<String, Property> propertyMap ) {
         properties.init(propertyMap);
     }
     
@@ -497,7 +497,7 @@ public abstract class TextObject implements Locatable {
     /**
      * Get the names of all properties.
      */
-    public Set getPropertyNames() { 
+    public Set<String> getPropertyNames() { 
         return properties.getNames();
     }
     

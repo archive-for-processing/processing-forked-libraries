@@ -19,103 +19,152 @@
 
 package net.nexttext.input;
 
-import java.awt.Component;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import processing.core.PApplet;
 
 /**
- * An interface for the mouse.
- *
- * <p>The mouse interface listen to every mouse event and stores them in a 
- * list as {@link MouseEvent} objects.  It also keeps the current status of 
- * the mouse buttons and the current x and y position.</p>
+ * The MouseDefault is a Mouse InputSource for Processing which is 
+ * automatically updated as the sketch is running.
  */
 /* $Id$ */
-public class MouseDefault extends Mouse implements MouseListener,
-                                                   MouseMotionListener {
-
-   	// The current x position of the mouse
-	int x = 0;
+public class MouseDefault extends Mouse {
 	
-	// The current y position of the mouse
-	int y = 0;
+	private int mX;
+	private int mY;
+	private boolean[] buttonPressStatus;
 	
-	// The status of the buttons
-	boolean button1 = false;
-	boolean button2 = false;
-	boolean button3 = false;
-
-	/**
-	 * Class constructor
-	 *
-	 * @param	component	the component the mouse is added to
-	 */
-	public MouseDefault(Component component) {
-		component.addMouseListener(this);
-		component.addMouseMotionListener(this);
+    /**
+     * Builds a MouseDefault.
+     * 
+     * @param p the parent PApplet the MouseDefault is added to
+     */
+	public MouseDefault(PApplet p) {
+		p.registerMouseEvent(this);
+		
+		buttonPressStatus = new boolean[3];
 	}
 	
 	/**
-	 * Get if the specified button is pressed or not
-	 *
-	 * @param	button	the button to return the status
-	 * @return			true if the specified button is pressed
-	 */
-	public boolean isPressed(int button) {
-		if (button == MouseEvent.BUTTON1) { return button1; }
-		else if (button == MouseEvent.BUTTON2) { return button2; }
-		else if (button == MouseEvent.BUTTON3) { return button3; }
-		else { return false; }
+     * Get the current x position of the mouse.
+     */
+    public int getX() {
+    	return mX;
+    }
+    
+    /**
+     * Get the current y position of the mouse.
+     */
+    public int getY() {
+    	return mY;
+    }
+    
+    /**
+     * Gets whether the specified mouse button is pressed.
+     */
+    public boolean isPressed(int button) {
+        if (button == LEFT)
+            return buttonPressStatus[0];
+        else if (button == CENTER) 
+            return buttonPressStatus[1];
+        else if (button == RIGHT)
+            return buttonPressStatus[2];
+        else 
+            return false;
+    }
+    
+    /**
+     * Sets whether the specified mouse button is pressed.
+     */
+    private void setPressed(int button, boolean state) {
+        if (button == LEFT)
+            buttonPressStatus[0] = state;
+        else if (button == CENTER)
+            buttonPressStatus[1] = state;
+        else 
+            buttonPressStatus[2] = state;
+    }
+
+    /**
+     * Handles a MouseEvent.
+     * <p>Registered to be called automatically by the PApplet.</p>
+     * 
+     * @param event
+     */
+	public void mouseEvent(MouseEvent event) {
+		mX = event.getX();
+		mY = event.getY();
+		addEvent(new MouseInputEvent(event));
+		
+		int modifiers = event.getModifiers();
+		int eventButton;
+        if ((modifiers & InputEvent.BUTTON1_MASK) != 0) {
+            eventButton = LEFT;
+        } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0) {
+            eventButton = CENTER;
+        } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0) {
+            eventButton = RIGHT;
+        } else {
+            return;
+        }
+
+		switch (event.getID()) {
+			case MouseEvent.MOUSE_PRESSED:
+			    setPressed(eventButton, true);
+				break;
+			case MouseEvent.MOUSE_RELEASED:
+			    setPressed(eventButton, false);
+			    break;
+			case MouseEvent.MOUSE_CLICKED:
+				break;
+			case MouseEvent.MOUSE_DRAGGED:
+				break;
+			case MouseEvent.MOUSE_MOVED:
+				break;
+		}
 	}
 	
 	/**
-	 * Get the current x position of the mouse
-	 */
-	public int getX() {	return x; }
-	
-	/**
-	 * Get the current y position of the mouse
-	 */
-	public int getY() {	return y; }
+     * Handles a MouseEvent.
+     * <p>Registered to be called automatically by the PApplet.</p>
+     * 
+     * @param event the incoming MouseEvent
+     */
+	/*
+    public void mouseEvent(MouseEvent event) {
+        int eventButton = 0;
+        int modifiers = event.getModifiers();
+        if ((modifiers & InputEvent.BUTTON1_MASK) != 0) {
+            eventButton = PConstants.LEFT;
+        } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0) {
+            eventButton = PConstants.CENTER;
+        } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0) {
+            eventButton = PConstants.RIGHT;
+        }
 
-	// Mouse listener
-	public void mouseClicked(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-	}
-
-	public void mouseEntered(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-	}
-
-	public void mouseExited(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-	}
-
-	public void mousePressed(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-		if (event.getButton() == MouseEvent.BUTTON1) { button1 = true; }
-		else if (event.getButton() == MouseEvent.BUTTON2) {	button2 = true;	}
-		else if (event.getButton() == MouseEvent.BUTTON3) {	button3 = true;	}
-	}
-
-	public void mouseReleased(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-		if (event.getButton() == MouseEvent.BUTTON1) { button1 = false; }
-		else if (event.getButton() == MouseEvent.BUTTON2) {	button2 = false; }
-		else if (event.getButton() == MouseEvent.BUTTON3) {	button3 = false; }
-	}
-	
-	// Mouse motion listener
-	public void mouseMoved(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-		x = event.getX();
-		y = event.getY();
-	}
-	public void mouseDragged(MouseEvent event) {
-		addEvent(new MouseInputEvent(event));
-		x = event.getX();
-		y = event.getY();
-	}
-
+        if (eventButton != buttonToCheck) {
+            return;
+        }
+        
+        switch (event.getID()) {
+            case MouseEvent.MOUSE_PRESSED:
+                start(event.getPoint());
+                break;
+            case MouseEvent.MOUSE_RELEASED:
+                stop(event.getPoint());
+                break;
+            case MouseEvent.MOUSE_CLICKED:
+                break;
+            case MouseEvent.MOUSE_DRAGGED:
+                try {
+                    update(event.getPoint());
+                } catch (NullPointerException e) {
+                    // XXX only happens on Windows, I think it's related to this NOBUTTON shit
+                    System.out.println("StartPoint is missing...");
+                }
+                break;
+            case MouseEvent.MOUSE_MOVED:
+                break;
+        }
+    }*/
 }

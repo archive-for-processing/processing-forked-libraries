@@ -129,7 +129,7 @@ public abstract class AbstractAction implements Action {
      * data on textObjects should not persist beyond the life of the textObject
      * and should not prevent a textObject from being garbage collected. </p>
      */
-    protected Map textObjectData = new WeakHashMap();
+    protected Map<TextObject, Object> textObjectData = new WeakHashMap<TextObject, Object>();
 
     ////////////////////////////////////////////////////////////////////////////
     // Action interface
@@ -200,8 +200,8 @@ public abstract class AbstractAction implements Action {
      * 
      * <p>This method is required by the {@link Action} interface. </p>
      */
-    public Map getRequiredProperties() {
-        return new HashMap(0);
+    public Map<String, Property> getRequiredProperties() {
+        return new HashMap<String, Property>(0);
     }
     
     ///////////////////////////////////////////

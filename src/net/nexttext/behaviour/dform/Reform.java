@@ -97,7 +97,7 @@ public class Reform extends DForm {
         // Traverse the control points of the glyph, determine the distance
         // from its current location to the origin and move it part way there.
         Vector3PropertyList cPs = getControlPoints(to);
-        Iterator i = cPs.iterator();
+        Iterator<Vector3Property> i = cPs.iterator();
         
         boolean done = true;
         
@@ -106,7 +106,7 @@ public class Reform extends DForm {
             return new ActionResult(false, false, true);
         
         while (i.hasNext()) {
-            Vector3Property cP = (Vector3Property) i.next();
+            Vector3Property cP = i.next();
             Vector3 cV = cP.get();
             Vector3 oV = cP.getOriginal();
 

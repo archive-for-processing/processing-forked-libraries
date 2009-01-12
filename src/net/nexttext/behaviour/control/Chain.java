@@ -28,6 +28,7 @@ import java.util.Map;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 /**
  * A series of Actions, each of which is executed when the previous one is
@@ -45,14 +46,14 @@ import net.nexttext.behaviour.Action;
 /* $Id$ */
 public class Chain extends AbstractAction {
     
-    protected List actions;
+    protected List<Action> actions;
 
     /**
      * Creates a new Chain with the given actions.
      * 
      * @param actions a List containing Action objects.
      */
-    public Chain( List actions ) {
+    public Chain( List<Action> actions ) {
         this.actions = actions;
     }
 
@@ -60,7 +61,7 @@ public class Chain extends AbstractAction {
      * Create a new Chain with no actions.
      */
     public Chain() {
-        actions = new ArrayList();
+        actions = new ArrayList<Action>();
     }
 
     /**
@@ -101,7 +102,7 @@ public class Chain extends AbstractAction {
         }
 
         // Perform the desired action
-        Action currentAction = (Action) actions.get(currentActionIndex);
+        Action currentAction = actions.get(currentActionIndex);
         ActionResult res = currentAction.behave(to);
 
         // Increment the current action if necessary
@@ -127,7 +128,7 @@ public class Chain extends AbstractAction {
     	super.complete(to);
         Integer indexObj = (Integer) textObjectData.remove(to);
         if (indexObj != null) {
-            Action currentAction = (Action) actions.get(indexObj.intValue());
+            Action currentAction = actions.get(indexObj.intValue());
             currentAction.complete(to);
         }
     }
@@ -136,10 +137,10 @@ public class Chain extends AbstractAction {
      * The required properties are the union of all properties in the action
      * chain.
      */
-    public Map getRequiredProperties() {
-        HashMap rP = new HashMap();
-        for ( Iterator i = actions.iterator(); i.hasNext(); ) {
-            rP.putAll( ((Action)i.next()).getRequiredProperties());
+    public Map<String, Property> getRequiredProperties() {
+        HashMap<String, Property> rP = new HashMap<String, Property>();
+        for ( Iterator<Action> i = actions.iterator(); i.hasNext(); ) {
+            rP.putAll( i.next().getRequiredProperties() );
         }
         return rP;
     }

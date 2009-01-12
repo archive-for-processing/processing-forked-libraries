@@ -25,6 +25,7 @@ import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
 import net.nexttext.property.NumberProperty;
+import net.nexttext.property.Property;
 
 /**
  * A Timer executes a given action for an absolute period of time given in 
@@ -91,7 +92,7 @@ public class Timer extends AbstractAction {
         return tres;
     }
 
-    public Map getRequiredProperties() {
+    public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
 

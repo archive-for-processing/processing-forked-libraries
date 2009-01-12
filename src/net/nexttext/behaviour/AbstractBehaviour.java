@@ -70,7 +70,7 @@ public abstract class AbstractBehaviour  {
 	 // nice because it provides a consistent order.  In general performance is
 	 // not a major issue, because most accesses are iteration over the list.
 	 
-	 protected Set objects = new LinkedHashSet();
+	 protected Set<TextObject> objects = new LinkedHashSet<TextObject>();
 	 
 	 /**
 	  * Behave on every TextObject in the list.

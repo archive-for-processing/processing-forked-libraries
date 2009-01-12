@@ -19,27 +19,39 @@
 
 package net.nexttext.renderer;
 
-import java.awt.Component;
-import java.awt.Graphics2D;
-
-import net.nexttext.TextPage;
+import net.nexttext.*;
+import processing.core.*;
 
 /**
- * An interface that represents classes capable of rendering a TextPage
- * to a component.
- *
+ * An interface that represents classes capable of rendering a TextPage in a PApplet.
  */
 /* $Id$ */
-public interface TextPageRenderer {
-
-    /**
-     * In implementing this method do not call getGraphics on 
-     * the component passed in as it will cause flickering.
-     * 
-     * <p>The component is only passed so that information such as bounding 
-     * boxes can be determined if necessary. It is expected that many 
-     * classes implementing this interface will have no use for the component</p>      
-     */
-    public void render(TextPage textPage, Graphics2D g, Component c);
+public abstract class TextPageRenderer {
+    protected PApplet p;
     
+    /**
+     * Builds a TextPageRenderer.
+     * 
+     * @param p the parent PApplet
+     */
+    public TextPageRenderer(PApplet p) {
+        this.p = p;    
+    }
+    
+    /**
+     * The rendering loop. Takes as input a TextPage and traverses its root
+     * node, rendering all the TextObjects along the way.
+     * 
+     * @param textPage the TextPage to render
+     */
+    public abstract void renderPage(TextPage textPage);
+    
+    /**
+     * Returns the PApplet used for drawing.
+     *
+     * @return PApplet the drawing surface
+     */
+    public PApplet getPApplet() { 
+        return p;
+    } 
 }

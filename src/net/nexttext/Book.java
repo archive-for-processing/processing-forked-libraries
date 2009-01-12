@@ -31,15 +31,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import processing.core.PApplet;
-
-import net.nexttext.behaviour.AbstractBehaviour;
-import net.nexttext.input.InputManager;
-import net.nexttext.processing.FontManager;
-import net.nexttext.processing.ProcessingMouse;
-import net.nexttext.processing.renderer.Processing2DRenderer;
+import net.nexttext.behaviour.*;
+import net.nexttext.input.*;
+import net.nexttext.renderer.*;
 import net.nexttext.property.ColorProperty;
 import net.nexttext.property.StrokeProperty;
+
+import processing.core.*;
 
 /**
  * The container for the NextText for Processing data and window.
@@ -55,9 +53,10 @@ import net.nexttext.property.StrokeProperty;
 public class Book {
 
 	public static TextObjectBuilder toBuilder;
-    public static ProcessingMouse mouse;
+    public static MouseDefault mouse;
+    public static KeyboardDefault keyboard;
     
-    private PApplet pApplet;   
+    private PApplet p;   
 
     /**
      * The current frame count.
@@ -70,43 +69,68 @@ public class Book {
     /** The frame number, incremented each frame by the Simulator. */
     public void incrementFrameCount() { frameCount++; }
 	
-    protected LinkedHashMap pages;
-    protected Processing2DRenderer renderer;
-    protected List behaviourList;
+    protected LinkedHashMap<String, TextPage> pages;
+    protected TextPageRenderer defaultRenderer;
+    protected List<AbstractBehaviour> behaviourList;
     protected TextObjectRoot textRoot;	// the root of the TextObject hierarchy
     protected InputManager inputs;
     protected SpatialList spatialList;
+    
+    /**
+     * Instantiates the Book with a default renderer.
+     * 
+     * @param p the parent PApplet
+     */
+    public Book(PApplet p) {
+        this (p, PConstants.JAVA2D);
+    }
     
     
     /**
      * Instantiates the Book.
      * 
-     * @param pApplet the parent PApplet
+     * @param p the parent PApplet
+     * @param rendererType the type of renderer to use, can be JAVA2D or OPENGL
      */
-    public Book(PApplet pApplet) {
-    	// initialize the core objects 
-        renderer = new Processing2DRenderer(pApplet); 
-    	pages = new LinkedHashMap();
-    	behaviourList = new LinkedList();
+    public Book(PApplet p, String rendererType) {
+        this.p = p;
+        
+        if (rendererType == PConstants.JAVA2D) {
+            try {
+                defaultRenderer = new Java2DTextPageRenderer(p); 
+            } catch (ClassCastException e) {
+                PGraphics.showException("The NextText and PApplet renderers are incompatible! Use the default renderer if you don't know what you are doing!");
+            }
+        } else {
+            try {
+                defaultRenderer = new PGraphicsTextPageRenderer(p); 
+            } catch (NoClassDefFoundError e) {
+                PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
+            }
+        }
+        
+        pages = new LinkedHashMap<String, TextPage>();
+    	behaviourList = new LinkedList<AbstractBehaviour>();
     	textRoot = new TextObjectRoot(this);
-        inputs = new InputManager(renderer.getCanvas());
         spatialList = new SpatialList();
         
-        this.pApplet = pApplet;
         
         // create a default text page
-        TextPage defaultTextPage = new TextPage(this);
+        TextPage defaultTextPage = new TextPage(this, defaultRenderer);
         addPage("Default Text Page", defaultTextPage);
         
         // initialize the TextObjectBuilder
         toBuilder = new TextObjectBuilder(this, defaultTextPage);
-        // initialize the ProcessingMouse
-        mouse = new ProcessingMouse(pApplet);
+        
+        // initialize the inputs
+        mouse = new MouseDefault(p);
+        keyboard = new KeyboardDefault(p);
+        inputs = new InputManager(mouse, keyboard);
     }
     
 	///////////////////////////////////////////////////////////////////////////
 	
-	private Set objectsToRemove = new HashSet();
+	private Set<TextObject> objectsToRemove = new HashSet<TextObject>();
 
     /**
      * Remove a text object and any children from the tree.
@@ -137,8 +161,8 @@ public class Book {
 	    
 	    if ( objectsToRemove.size() > 0 ) {
 	        
-	        for ( Iterator i = objectsToRemove.iterator(); i.hasNext(); ) {
-                TextObject next = (TextObject) i.next();
+	        for ( Iterator<TextObject> i = objectsToRemove.iterator(); i.hasNext(); ) {
+                TextObject next = i.next();
                 if (next instanceof TextObjectGlyph) {
                     removeObjectInner(next);
                 } else if (next instanceof TextObjectGroup) {
@@ -163,9 +187,9 @@ public class Book {
 		getSpatialList().remove( to );
 		// traverse the behaviour list.  try to remove the object from each
 		// active behaviour
-    	Iterator i = getBehaviourList().iterator();
+    	Iterator<AbstractBehaviour> i = behaviourList.iterator();
     	while (i.hasNext()) {
-    	    AbstractBehaviour b = (AbstractBehaviour)i.next();
+    	    AbstractBehaviour b = i.next();
     	    b.removeObject(to);    	        	    					
     	}
 		// detach the object from the tree
@@ -181,9 +205,9 @@ public class Book {
      */
     public synchronized void step() {
         // apply the behaviours
-        Iterator i = behaviourList.iterator();
+        Iterator<AbstractBehaviour> i = behaviourList.iterator();
         while (i.hasNext()) {
-            AbstractBehaviour b = (AbstractBehaviour)i.next();
+            AbstractBehaviour b = i.next();
             b.behaveAll(); 
         }
 
@@ -201,7 +225,13 @@ public class Book {
      * Renders a frame.
      */
     public void draw() {
-        renderer.renderPages(getPages());
+        // render all the pages
+        Collection<TextPage> pages = getPages();
+        Iterator<TextPage> i = pages.iterator();
+        while (i.hasNext()) {
+            TextPage page = i.next();
+            page.render();
+        }
     }
     
     /**
@@ -210,7 +240,7 @@ public class Book {
      * @param pageName the name of the Page to render
      */
     public void drawPage(String pageName) {
-    	renderer.renderPage(getPage(pageName));
+        getPage(pageName).render();
     }
     
     /**
@@ -227,36 +257,30 @@ public class Book {
 	
     
     /**
-     * Loads the font with the given filename from the 'data' folder of the sketch.
-     * 
-     * @param filename
-     * 
-     * @return the loaded font
+     * Sets the font of the TextObjectBuilder based on the PApplet's active font.
      */
-    public Font loadFont(String filename) {
-    	return FontManager.loadFont(pApplet, filename);
+    private void setFont() {
+        PFont pf = p.g.textFont;
+        if (pf == null) {
+            PGraphics.showException("Use textFont() before Book.addText()");
+        }
+        
+        Font f = loadFontFromPFont(pf);
+        
+        toBuilder.setTextAlign(p.g.textAlign);
+        toBuilder.setFont(pf, f);
     }
     
-    /**
-     * Sets the font of the TextObjectBuilder.
-     * 
-     * @param font font to derive
-     * @param size font size
-     */
-    public void textFont(Font font, float size) {
-        toBuilder.setFont(FontManager.deriveFont(font, size));
-    }
-    
-    /**
-     * Sets the font of the TextObjectBuilder.
-     * 
-     * @param font font to derive
-     * @param size font size
-     * @param italic whether the font is italic
-     * @param bold whether the font is bold
-     */
-    public void textFont(Font font, float size, boolean italic, boolean bold) {
-        toBuilder.setFont(FontManager.deriveFont(font, size, italic, bold));
+    public static Font loadFontFromPFont(PFont pf) {
+     // try setting the Font from the PFont
+        Font f = pf.getFont();
+        if (f == null) {
+            f = pf.findFont();
+            if (f == null) {
+                PGraphics.showException("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
+            }
+        }
+        return f;
     }
     
     ///////////////////////////////////////////////////////////////////////////
@@ -273,6 +297,7 @@ public class Book {
      * @return TextObjectGroup the built TextObjectGroup
      */
     public TextObjectGroup addText(String text, int x, int y) {
+        setFont();
     	TextObjectGroup newTog = toBuilder.build(text, x, y);
     	setStrokeAndFill(newTog); 
 
@@ -293,7 +318,7 @@ public class Book {
      */
     public TextObjectGroup addText(String text, int x, int y, String pageName) {
     	TextObjectGroup tempTog = toBuilder.getParent();
-    	toBuilder.setParent(((TextPage)getPage(pageName)).getTextRoot());
+    	toBuilder.setParent(getPage(pageName).getTextRoot());
     	TextObjectGroup newTog = addText(text, x, y);
     	toBuilder.setParent(tempTog);
     	return newTog;
@@ -311,7 +336,8 @@ public class Book {
      * @return TextObjectGroup the built TextObjectGroup
      */
     public TextObjectGroup addText(String text, int x, int y, int lineLength) {
-    	TextObjectGroup newTog = toBuilder.buildSentence(text, x, y, lineLength);
+        setFont();
+        TextObjectGroup newTog = toBuilder.buildSentence(text, x, y, lineLength);
     	setStrokeAndFill(newTog);
 
         return newTog;
@@ -356,10 +382,10 @@ public class Book {
     private void setStroke(TextObject to) {
     	ColorProperty colProp = to.getStrokeColor();
     	
-    	if (pApplet.g.stroke) {
+    	if (p.g.stroke) {
     		// set the stroke cap
     		int cap;
-	    	switch (pApplet.g.strokeCap) {
+	    	switch (p.g.strokeCap) {
 	    	case PApplet.SQUARE:
 	    		cap = BasicStroke.CAP_BUTT;
 	    		break;
@@ -373,7 +399,7 @@ public class Book {
 	    	
 	    	// set the stroke join
 	    	int join;
-	    	switch (pApplet.g.strokeJoin) {
+	    	switch (p.g.strokeJoin) {
 	    	case PApplet.BEVEL:
 	    		join = BasicStroke.JOIN_BEVEL;
 	    		break;
@@ -387,12 +413,12 @@ public class Book {
     	
 	    	// set the stroke property
 	    	StrokeProperty strokeProp = to.getStroke();
-	    	strokeProp.setOriginal(new BasicStroke(pApplet.g.strokeWeight, cap, join));
-	    	strokeProp.set(new BasicStroke(pApplet.g.strokeWeight, cap, join));
+	    	strokeProp.setOriginal(new BasicStroke(p.g.strokeWeight, cap, join));
+	    	strokeProp.set(new BasicStroke(p.g.strokeWeight, cap, join));
     		
 	    	// set the stroke color property
-	    	colProp.setOriginal(new Color(pApplet.g.strokeColor, true));
-	    	colProp.set(new Color(pApplet.g.strokeColor, true));
+	    	colProp.setOriginal(new Color(p.g.strokeColor, true));
+	    	colProp.set(new Color(p.g.strokeColor, true));
             
     	} else {
     		// set the stroke color property to transparent
@@ -409,10 +435,10 @@ public class Book {
     private void setFill(TextObject to) {
     	ColorProperty colProp = to.getColor();
     	
-    	if (pApplet.g.fill) {
+    	if (p.g.fill) {
             // set the fill color property
-    		colProp.setOriginal(new Color(pApplet.g.fillColor, true));
-    		colProp.set(new Color(pApplet.g.fillColor, true));
+    		colProp.setOriginal(new Color(p.g.fillColor, true));
+    		colProp.set(new Color(p.g.fillColor, true));
         } else {
         	// set the fill color property to transparent
         	colProp.setOriginal(new Color(0, 0, 0, 0));
@@ -496,11 +522,11 @@ public class Book {
 	// Get methods
 	
     /** Returns the page renderer */
-	public PageRenderer getRenderer() { return renderer; }
+	public TextPageRenderer getRenderer() { return defaultRenderer; }
     /** Returns the page set */
-    public Collection getPages() { return pages.values(); }
+    public Collection<TextPage> getPages() { return pages.values(); }
 	/** Returns the BehaviourList */
-	public List getBehaviourList() { return behaviourList; };
+	public List<AbstractBehaviour> getBehaviourList() { return behaviourList; };
 	/** 
      * Get the root of the TextObject hierarchy.  Any changes to this tree
      * must be synchronized on the book. Do not add textObjects as children of 
@@ -518,7 +544,7 @@ public class Book {
      * <p>The page will be named "layerN" where N = 0,1,2,3...</p>
      * 
      */
-    public void addPage(Page p){
+    public void addPage(TextPage p){
         String name = "layer" + pages.size();
         pages.put(name,p);
     }
@@ -526,7 +552,7 @@ public class Book {
     /**
      * Add a named page to the book
      */
-    public void addPage(String name, Page p){
+    public void addPage(String name, TextPage p){
         if (pages.containsKey(name)) {
         	log("WARNING: A Page with the name '"+name+"' already exists and will be deleted!");
         }
@@ -539,14 +565,14 @@ public class Book {
      * @param pageName the name of the TextPage to add
      */
     public void addPage(String pageName) {
-    	addPage(pageName, new TextPage(this));
+    	addPage(pageName, new TextPage(this, defaultRenderer));
     }
     
     /**
      * Get a named page from the book
      */
-    public Page getPage(String name){
-        return (Page)pages.get(name);
+    public TextPage getPage(String name){
+        return (TextPage)pages.get(name);
     }
 	
 	/**
@@ -579,13 +605,10 @@ public class Book {
      * Removes all the TextObjects from all the TextPages in the Book, except for all the TextObjectRoots.
      */
     public void clear() {
-    	Iterator i = pages.values().iterator();
+    	Iterator<TextPage> i = pages.values().iterator();
         while (i.hasNext()) {
-        	Page page = (Page)i.next();
-        	if (page instanceof TextPage) {
-        		TextPage textPage = (TextPage)page;
-        		removeChildren(textPage.getTextRoot());
-        	}
+        	TextPage page = i.next();
+            removeChildren(page.getTextRoot());
         }
     }
     
@@ -595,7 +618,7 @@ public class Book {
      */
     public void clearPage(String pageName) {
     	if (pages.get(pageName) instanceof TextPage) {
-    		TextPage textPage = (TextPage)pages.get(pageName);
+    		TextPage textPage = pages.get(pageName);
     		removeChildren(textPage.getTextRoot());
     	}
     }
@@ -606,8 +629,6 @@ public class Book {
     public void setTrackingOffset(double d) { toBuilder.setTrackingOffset(d); }
     public double getTrackingOffset() { return toBuilder.getTrackingOffset(); }
     
-    public void textAlign(int i) { toBuilder.textAlign(i); }
-
     //////////////////////////////////////////////////////////////////////
     // Rudimentary Logging System
 

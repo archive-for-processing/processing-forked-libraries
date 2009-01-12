@@ -21,7 +21,7 @@ package net.nexttext.behaviour.control;
 
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.Action;
-import net.nexttext.processing.*;
+import net.nexttext.input.MouseDefault;
 
 /**
  * A Condition which is true when a mouse button is pressed i.e. a single true result 
@@ -40,7 +40,7 @@ public class OnMousePressed extends OnMouseDepressed {
      * @param trueAction the Action to perform when the mouse button 1 is pressed
      */
     public OnMousePressed(Action trueAction) {
-        this(ProcessingMouse.BUTTON1, trueAction);
+        this(MouseDefault.LEFT, trueAction);
     }
     
     /**

@@ -25,7 +25,7 @@ import net.nexttext.behaviour.Action;
 import net.nexttext.behaviour.Behaviour;
 import net.nexttext.behaviour.control.OnMouseDepressed;
 import net.nexttext.behaviour.control.Repeat;
-import net.nexttext.processing.ProcessingMouse;
+import net.nexttext.input.MouseDefault;
 
 /**
  * The factory of DForm behaviours.
@@ -36,7 +36,7 @@ public class DFormFactory {
     public static AbstractBehaviour pull() {
     	Action pull = new Pull(Book.mouse, 10, 2);
         Action reform = new Reform();
-        Behaviour b = new Behaviour(new OnMouseDepressed(ProcessingMouse.BUTTON1, pull, reform));
+        Behaviour b = new Behaviour(new OnMouseDepressed(MouseDefault.LEFT, pull, reform));
         b.setDisplayName("Pull");
         
         return b;

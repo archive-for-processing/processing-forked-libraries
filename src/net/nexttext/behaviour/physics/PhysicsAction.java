@@ -27,6 +27,7 @@ import net.nexttext.Vector3;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.property.Vector3Property;
 import net.nexttext.property.NumberProperty;
+import net.nexttext.property.Property;
 
 /**
  * Every Action in this package should be a descendant of this class.
@@ -52,9 +53,9 @@ public abstract class PhysicsAction extends AbstractAction {
      * Returns a Map containing a set of Vector3Properties required by all
      * PhysicActions
      */
-    public Map getRequiredProperties() {
+    public Map<String, Property> getRequiredProperties() {
 
-        Map properties = new HashMap();
+        Map<String, Property> properties = new HashMap<String, Property>();
 
         NumberProperty mass = new NumberProperty(1);
         properties.put("Mass", mass);

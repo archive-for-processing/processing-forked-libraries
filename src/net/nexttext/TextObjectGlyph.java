@@ -19,9 +19,9 @@
 
 package net.nexttext;
 
-import java.awt.Font;
 import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.PathIterator;
@@ -37,18 +37,20 @@ import net.nexttext.property.Vector3Property;
 import net.nexttext.property.Vector3PropertyList;
 import net.nexttext.property.ColorProperty;
 
+import processing.core.PFont;
+
 /**
- * TextObjectGlyph represents an individual glyph and it's vectorial outline in 
+ * TextObjectGlyph represents an individual glyph and its vectorial outline in 
  * a data structure that is understood by the Renderer.
  *
  * <p>A Glyph's outline is represented by a list of control points forming a hull
  * (vertices) around the glyph.  The outline can be drawn using successive quads 
  * where anchors are being interpolated from each set of 3 adjacent control 
- * points. This allows for continous curves even when the control points 
+ * points. This allows for continuous curves even when the control points 
  * are being displaced.  </p>
  *
  * <p>Glyphs are built out of one or more contours.  Contours are represented
- * by a list of hull points forming continous quadratic curves.  The
+ * by a list of hull points forming continuous quadratic curves.  The
  * coordinates for each of these hull points are stored in the Control Points list.
  * Because some glyphs are represented by more than one shape (holes, dot on
  * the i, etc.), each shape is defined as an array of indices into the Control Points
@@ -60,7 +62,7 @@ import net.nexttext.property.ColorProperty;
  * <p>TextObjectGlyph objects also have two "special" properties, glyph and font,
  * which are not accessed using the standard getProperty mechanism.  The reason 
  * for this is that the list of vertices and contours forming a glyph is 
- * dependant on them, and must be rebuilt if these properties are changed.
+ * dependent on them, and must be rebuilt if these properties are changed.
  * Therefore, we provided specific get/set methods to access and modify them. 
  * 
  * <p>The glyph's ColorProperty is inherited by default. </p>
@@ -70,14 +72,15 @@ import net.nexttext.property.ColorProperty;
 /* $Id$ */ 
 public class TextObjectGlyph extends TextObject {
 	
-    // The FontRenderContext is necessary for determing glyph outlines, but is
+    // The FontRenderContext is necessary for determining glyph outlines, but is
     // never modified.
     static FontRenderContext frc = new FontRenderContext(null, false, false);
 
 	/** The character for this object.  This is a special property that is 
 	 * handled through its own get/set methods */
-	protected String 	glyph;
-	protected Font		font;
+	protected String glyph;
+	protected PFont pfont;
+	protected Font font;
 	
 	/** A vector containing int[] arrays with indices to the Control Points property
 	 list.  These contours define the shape of the glyph */
@@ -114,36 +117,37 @@ public class TextObjectGlyph extends TextObject {
 	 * is inherited from the parent.
 	 *
 	 * @param glyph		A one character-long string 
-	 * @param font      A java.awt.Font object 
+	 * @param pfont     A processing.core.PFont object 
 	 */
-	public TextObjectGlyph( String glyph, Font font ) {
- 		this( glyph, font, new Vector3(0,0,0));
+	public TextObjectGlyph(String glyph, PFont pfont) {
+ 		this(glyph, pfont, new Vector3(0,0,0));
 	}
 	
 	/**
 	 * Constructor with a specific position.
 	 *
 	 * @param glyph		A one character-long string 
-	 * @param font      A java.awt.Font object 
+	 * @param pfont     A processing.core.PFont object 
 	 * @param position  A Vector3 representing the glyph's relative position
 	 */
-    public TextObjectGlyph(String glyph, Font font, Vector3 position) {
-        this(glyph, font, new HashMap(0), position);
+    public TextObjectGlyph(String glyph, PFont pfont, Vector3 position) {
+        this(glyph, pfont, new HashMap<String, Property>(0), position);
     }
 
 	/**
 	 * Constructor with extra properties and a specific position.
 	 *
 	 * @param glyph		A one character-long string 
-	 * @param font      A java.awt.Font object 
+	 * @param pfont     A processing.core.PFont object 
 	 * @param pos       A Vector3 representing the glyph's relative position
 	 * @param props     Initial properties for the glyph.
 	 */
-	public TextObjectGlyph(String glyph, Font font, Map props, Vector3 pos) {
+	public TextObjectGlyph(String glyph, PFont pfont, Map<String, Property> props, Vector3 pos) {
         super(props, pos);
 
 	 	this.glyph 	= glyph;
-		this.font 	= font; 
+		this.pfont 	= pfont;
+		font = Book.loadFontFromPFont(pfont);
 
         properties.init("Control Points", new Vector3PropertyList());
         
@@ -193,7 +197,7 @@ public class TextObjectGlyph extends TextObject {
 	public void setGlyph( String glyph ) {
 		
 		// XXXBUG: should we even allow setGlyph?... Issues with character spacing are
-		// coming to mind.   Maybe notifiy the parent so it can layout other
+		// coming to mind.   Maybe notify the parent so it can layout other
 		// characters accordingly.
 		this.glyph = glyph;
 
@@ -205,18 +209,19 @@ public class TextObjectGlyph extends TextObject {
 	 * properties of the newly specified Font object.  This operation is rather
 	 * costly, so it should be used accordingly.
 	 */
-	public void setFont( Font font ) {
+	public void setFont(PFont pfont) {
         // Ideally setFont would attempt to preserve deformations.  However
         // that's a lot of work, so we have deferred it.
-		this.font = font;
+		this.pfont = pfont;
+		font = Book.loadFontFromPFont(pfont);
         glyphChanged();
 	}
 	
 	/**
 	 * Returns this TextObjectGlyph's font attribute.
 	 */
-	public Font getFont() {
-		return this.font;
+	public PFont getFont() {
+		return this.pfont;
 	}
 	
 	/**
@@ -289,7 +294,7 @@ public class TextObjectGlyph extends TextObject {
 		// a temporary list to store vertex indices for each contour (once 
 		// the contour is closed, this Vector will be converted to an array
 		// and stored into the Contour list.
-		Vector tmpContour = new Vector();
+		Vector<Integer> tmpContour = new Vector<Integer>();
 				
 		// used to receive the list of points from PathIterator.currentSegment()
 		double 	points[] = new double[6];  
@@ -309,10 +314,10 @@ public class TextObjectGlyph extends TextObject {
 		int		anchorInsertionPoint = 0;
 		
 		// get the Shape for this glyph
-		GlyphVector gv = this.font.createGlyphVector( frc, this.glyph );
+		GlyphVector gv = font.createGlyphVector( frc, this.glyph );
 		Shape outline = gv.getOutline();
 		
-		// store the glyph's logical buonds information
+		// store the glyph's logical bounds information
 		logicalBounds = gv.getLogicalBounds();
 		
 	 	// no flattening done at the moment, just iterate through all the 
@@ -329,14 +334,14 @@ public class TextObjectGlyph extends TextObject {
 				case PathIterator.SEG_MOVETO:
 					
 					// start a new tmpContour vector
-					tmpContour = new Vector();
+					tmpContour = new Vector<Integer>();
 				 	// get the starting point for this contour	
 					Vector3 startingPoint = new Vector3( points[0], points[1] );
 					// store the point in the list of vertices
 					vertices.add( new Vector3Property( startingPoint) );
 					// store this point in the current tmpContour and increment
 					// the vertices index
-					tmpContour.add( new Integer(vertexIndex) );
+					tmpContour.add( vertexIndex );
 					vertexIndex++;
 					// update temporary variables used for backtracking
 					lastAnchor = startingPoint;
@@ -360,8 +365,8 @@ public class TextObjectGlyph extends TextObject {
 					// times)
 					if ( previousType != PathIterator.SEG_LINETO ) {
 						vertices.add( new Vector3Property(lastAnchor) );
-						tmpContour.add( new Integer(vertexIndex) );
-						tmpContour.add( new Integer(vertexIndex) );
+						tmpContour.add( vertexIndex );
+						tmpContour.add( vertexIndex );
 						vertexIndex++;	
 					}
 				 
@@ -371,14 +376,14 @@ public class TextObjectGlyph extends TextObject {
 					Vector3 midPoint = new Vector3( (lastAnchor.x + endPoint.x)/2, 
 								 			  		(lastAnchor.y + endPoint.y)/2  );
 					vertices.add( new Vector3Property( midPoint) );
-					tmpContour.add( new Integer(vertexIndex) );
+					tmpContour.add( vertexIndex );
 					vertexIndex++;
 					
 					// finally, we must add the endPoint twice to the contour
 					// to preserve sharp corners
 					vertices.add( new Vector3Property( endPoint) );
-					tmpContour.add( new Integer(vertexIndex) );
-					tmpContour.add( new Integer(vertexIndex) );
+					tmpContour.add( vertexIndex );
+					tmpContour.add( vertexIndex );
 					vertexIndex++;
 				 	
 				 	// update variables used for backtracking
@@ -416,13 +421,14 @@ public class TextObjectGlyph extends TextObject {
 						dx = mid.x - lastAnchor.x;
 						dy = mid.y - lastAnchor.y;
 						dist = Math.sqrt((dx*dx) + (dy*dy));
-				 	 	if ( (this.font.getSize()/dist) < 21 ) {
+						// TODO make sure this getSize() returns the correct size when the PFont size and the actual size don't match
+				 	 	if ( (font.getSize()/dist) < 21 ) {
 					  		// if this is the case, then the lastAnchor has to be
 					 		// added as a control point.  However it has to be
 					 		// inserted in the correct order in the list.
 					  		vertices.add( new Vector3Property( lastAnchor) );
-					   		tmpContour.add( anchorInsertionPoint, new Integer( vertexIndex ) );
-					 		tmpContour.add( anchorInsertionPoint, new Integer( vertexIndex ) );
+					   		tmpContour.add( anchorInsertionPoint, vertexIndex );
+					 		tmpContour.add( anchorInsertionPoint, vertexIndex );
 					 		vertexIndex++;
 					 	} 
 					}
@@ -436,7 +442,7 @@ public class TextObjectGlyph extends TextObject {
 					// point for the quad.  The actual anchor points will be 
 					// interpolated at runtime to preserve curve continuity.
 					vertices.add( new Vector3Property( controlPoint) );
-					tmpContour.add( new Integer(vertexIndex) );
+					tmpContour.add( vertexIndex );
 					vertexIndex++;
 						
 					// update temporary variables used for backtracking					
@@ -450,10 +456,10 @@ public class TextObjectGlyph extends TextObject {
 					// A SEG_CLOSE signifies the end of a contour, therefore
 					// convert tmpContour into a new array of correct size
 					int contour[] = new int[tmpContour.size()];
-					Iterator it = tmpContour.iterator();
+					Iterator<Integer> it = tmpContour.iterator();
 					int i = 0;
 					while( it.hasNext() ) {
-						contour[i] = ((Integer)it.next()).intValue();
+						contour[i] = it.next();
 						i++;	
 					}
 					
@@ -500,7 +506,7 @@ public class TextObjectGlyph extends TextObject {
         // Spaces are calculated differently because they don't have control
         // points in the same way as other glyphs.
         if ( getGlyph().equals(" ") ) {
-            Rectangle2D sb = this.font.getStringBounds(" ", frc);
+            Rectangle2D sb = Book.loadFontFromPFont(pfont).getStringBounds(" ", frc);
             minX = sb.getMinX();
             minY = sb.getMinY();
             maxX = sb.getMaxX();
@@ -509,8 +515,8 @@ public class TextObjectGlyph extends TextObject {
         } else {
             Vector3PropertyList vertices = getControlPoints();
 
-            for ( Iterator i = vertices.iterator(); i.hasNext(); ) {
-                Vector3Property vertex = (Vector3Property)i.next();
+            for ( Iterator<Vector3Property> i = vertices.iterator(); i.hasNext(); ) {
+                Vector3Property vertex = i.next();
                 minX = Math.min(vertex.getX(), minX);
                 minY = Math.min(vertex.getY(), minY);
                 maxX = Math.max(vertex.getX(), maxX);

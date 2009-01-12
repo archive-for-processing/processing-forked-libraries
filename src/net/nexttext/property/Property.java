@@ -36,7 +36,7 @@ import java.util.Vector;
 /* $Id$ */
 public abstract class Property implements Cloneable {
     
-    private Collection listeners = new Vector();
+    private Collection<PropertyChangeListener> listeners = new Vector<PropertyChangeListener>();
     private String name = "";
     
     public void setName(String name) {
@@ -55,8 +55,8 @@ public abstract class Property implements Cloneable {
     }
    
     protected void firePropertyChangeEvent() {         
-        for ( Iterator i = listeners.iterator(); i.hasNext(); ) {
-                ((PropertyChangeListener)i.next()).propertyChanged(this);
+        for ( Iterator<PropertyChangeListener> i = listeners.iterator(); i.hasNext(); ) {
+                i.next().propertyChanged(this);
         }
     }
 
@@ -68,10 +68,10 @@ public abstract class Property implements Cloneable {
      *
      * <p>PropertyChangeListeners are not copied to the new Property.  </p>
      */
-    public Object clone() {
+    public Property clone() {
         try {             
-            Property that = (Property) super.clone();
-            that.listeners = new Vector();
+            Property that = (Property)super.clone();
+            that.listeners = new Vector<PropertyChangeListener>();
             return that;
         } catch (CloneNotSupportedException cnse) {
             throw new RuntimeException(cnse);

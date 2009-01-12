@@ -64,7 +64,7 @@ public class DateTimeProperty extends Property {
 
     // New Date objects are created in case someone misuses the
     // DateTimeProperty by modifying the internal objects.
-    public Object clone() {
+    public DateTimeProperty clone() {
         DateTimeProperty that = (DateTimeProperty) super.clone();
         that.original = new Date(original.getTime());
         that.value = new Date(value.getTime());

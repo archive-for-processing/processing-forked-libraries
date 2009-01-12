@@ -40,7 +40,7 @@ public class TextObjectIterator {
     // then finding the next node to traverse and pushing it, and any
     // appropriate ancestors on top of the stack.
 
-	Stack ancestors = new Stack();
+	Stack<TextObject> ancestors = new Stack<TextObject>();
 
 	/** Construct an iterator over the group and its descendants. */
 	TextObjectIterator( TextObjectGroup group ) {
@@ -71,7 +71,7 @@ public class TextObjectIterator {
 		TextObject current = (TextObject) ancestors.pop();
 
         // Put the next object on the stack.  If we're returning the object
-        // orignally provided (the stack is empty), then there's nothing left
+        // originally provided (the stack is empty), then there's nothing left
         // to traverse, so don't push anything onto the stack.  If there's no
         // right sibling, then the next object is the parent, which is already
         // on the stack.

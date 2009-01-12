@@ -25,6 +25,7 @@ import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
 import net.nexttext.property.NumberProperty;
+import net.nexttext.property.Property;
 
 /**
  * Repeats an action for a fixed number of times, then stops that action.  
@@ -90,7 +91,7 @@ public class Repeat extends AbstractAction {
         return new ActionResult(false, false, tres.event);
     }
 
-    public Map getRequiredProperties() {
+    public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
 }

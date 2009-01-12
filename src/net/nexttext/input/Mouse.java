@@ -20,8 +20,7 @@
 package net.nexttext.input;
 
 import net.nexttext.*;
-
-import java.awt.event.MouseEvent;
+import processing.core.PConstants;
 
 /**
  * An input source for mouse information.
@@ -29,9 +28,9 @@ import java.awt.event.MouseEvent;
 /* $Id$ */
 public abstract class Mouse extends InputSource implements Locatable {
 
-    static public int BUTTON1 = MouseEvent.BUTTON1;
-    static public int BUTTON2 = MouseEvent.BUTTON2;
-    static public int BUTTON3 = MouseEvent.BUTTON3;
+    static public int LEFT = PConstants.LEFT;
+    static public int CENTER = PConstants.CENTER;
+    static public int RIGHT = PConstants.RIGHT;
 
     /**
      * Get if the specified button is pressed or not

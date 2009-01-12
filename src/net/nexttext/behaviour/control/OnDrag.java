@@ -26,7 +26,7 @@ import net.nexttext.Vector3;
 import net.nexttext.behaviour.Action;
 import net.nexttext.behaviour.standard.DoNothing;
 import net.nexttext.behaviour.control.Condition;
-import net.nexttext.processing.*;
+import net.nexttext.input.*;
 
 /**
  * A Condition which is true when the TextObject is being dragged by the mouse.
@@ -41,7 +41,7 @@ import net.nexttext.processing.*;
 /* $Id$ */
 public class OnDrag extends Condition implements Locatable {
   
-    private ProcessingMouse mouse;
+    private MouseDefault mouse;
     private int buttonToCheck;
     private boolean dragging;
     private Vector3 dragOffset;
@@ -55,7 +55,7 @@ public class OnDrag extends Condition implements Locatable {
      * @param trueAction the Action to perform when the mouse button 1 is pressed
      */
     public OnDrag(Action trueAction) {
-        this(ProcessingMouse.BUTTON1, trueAction, new DoNothing());
+        this(MouseDefault.LEFT, trueAction, new DoNothing());
     }
     
     /**
@@ -66,7 +66,7 @@ public class OnDrag extends Condition implements Locatable {
      * @param falseAction the Action to perform when the mouse button 1 is released
      */
     public OnDrag(Action trueAction, Action falseAction) {
-        this(ProcessingMouse.BUTTON1, trueAction, falseAction);
+        this(MouseDefault.LEFT, trueAction, falseAction);
     }
     
     /**

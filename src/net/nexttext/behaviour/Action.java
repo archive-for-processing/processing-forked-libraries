@@ -22,6 +22,7 @@ package net.nexttext.behaviour;
 import java.util.Map;
 
 import net.nexttext.TextObject;
+import net.nexttext.property.Property;
 
 /**
  * Actions are building blocks used to create behaviours.
@@ -150,5 +151,5 @@ public interface Action {
      * base class, such as {@link AbstractAction} or {@link net.nexttext.behaviour.physics.PhysicsAction}.
      * </p>
      */    
-    public Map getRequiredProperties();
+    public Map<String, Property> getRequiredProperties();
 }

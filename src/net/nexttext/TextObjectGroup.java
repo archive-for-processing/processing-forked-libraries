@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.nexttext.property.ColorProperty;
+import net.nexttext.property.Property;
 
 /**
  * TextObjectGroup is a TextObject which is made up of other TextObjects.
@@ -50,14 +51,14 @@ public class TextObjectGroup extends TextObject {
 	 * Creates a new TextObjectGroup at the specified position.
 	 */
 	public TextObjectGroup( Vector3 pos ) {
-        this(new HashMap(0), pos);
+        this(new HashMap<String, Property>(0), pos);
 	}
 
 	/**
 	 * Creates a new TextObjectGroup at the specified position, and with extra
 	 * properties.
 	 */
-	public TextObjectGroup(Map props, Vector3 pos) {
+	public TextObjectGroup(Map<String, Property> props, Vector3 pos) {
         super(props, pos);
 	}
 
@@ -137,7 +138,7 @@ public class TextObjectGroup extends TextObject {
      * When a TextObjectGroup colour flag is modified, its children flags
      * need to be updated according to the new value, and the change needs to be
      * propagated based on the inheritance of ColorProperty.
-     * @param newColProp the color property that was changed
+     * @param newColProp the colour property that was changed
      */
     protected void colourFlagChanged(ColorProperty newColProp) {
         
