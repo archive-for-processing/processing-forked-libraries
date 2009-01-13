@@ -339,6 +339,11 @@ public class PGraphicsTextPageRenderer extends TextPageRenderer {
      * @param gp the outline of the glyph
      */
     protected void fillPath(GeneralPath gp) {
+        // save the current smooth property
+        boolean smooth = p.g.smooth;
+        // turn off smoothing so that we don't get gaps in between the triangles
+        p.noSmooth();
+        
         // six element array received from the Java2D path iterator
         float textPoints[] = new float[6];
 
@@ -412,6 +417,9 @@ public class PGraphicsTextPageRenderer extends TextPageRenderer {
         }
         
         glu.gluTessEndPolygon(tobj);
+        
+        // restore saved smooth property
+        if (smooth) p.smooth();
     }
 
     /**
