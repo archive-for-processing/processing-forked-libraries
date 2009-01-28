@@ -182,8 +182,6 @@ public class Java2DTextPageRenderer extends TextPageRenderer {
      * 
      * @param glyph
      *            The TextObjectGlyph
-     * @param g2
-     *            The drawing context
      */
     protected void renderGlyph(TextObjectGlyph glyph) {
 
