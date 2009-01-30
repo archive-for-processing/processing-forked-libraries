@@ -274,8 +274,9 @@ public class Book {
         if (pf == null) {
             PGraphics.showException("Use textFont() before Book.addText()");
         }
-        
-        Font f = loadFontFromPFont(pf);
+
+        Font f = loadFontFromPFont(pf).deriveFont(p.g.textSize);
+        pf.setFont(f);
         
         toBuilder.setTextAlign(p.g.textAlign);
         toBuilder.setFont(pf, f);

@@ -199,7 +199,7 @@ public class PGraphicsTextPageRenderer extends TextPageRenderer {
         p.pushStyle();
 
         // set text properties
-        p.textFont(glyph.getFont());
+        p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
         p.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible
