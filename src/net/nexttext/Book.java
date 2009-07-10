@@ -96,28 +96,66 @@ public class Book {
         
         // initialize the renderer
         if (rendererType == PConstants.JAVA2D) {
+        	//NextText's JAVA2D renderer is only compatible with the
+        	//PApplet.JAVA2D renderer, because it draws directly to
+        	//the PApplet's PGraphicsJava2D objects.
             try {
                 defaultRenderer = new Java2DTextPageRenderer(p); 
             } catch (ClassCastException e) {
                 PGraphics.showException("The NextText and PApplet renderers are incompatible! Use the default renderer if you don't know what you are doing!");
             }
+        } else if (rendererType == PConstants.P2D) {
+        		//P2D renderer is compatible with all other opens because it
+        		//draws to a buffer using Java2D and then draws the whole image
+        		//to the PApplet
+                defaultRenderer = new P2DTextPageRenderer(p); 
         } else if (rendererType == PConstants.OPENGL) {
+        	//NextText's OpenGL renderer is compatible with all PApplet renderer
+        	//but if PApplet's OpenGL is NOT used, then NextText uses OpenGL only
+        	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
+        	//2D.
             try {
-                defaultRenderer = new PGraphicsTextPageRenderer(p); 
+                defaultRenderer = new OpenGLTextPageRenderer(p); 
             } catch (NoClassDefFoundError e) {
                 PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
             }
+        } else if (rendererType == PConstants.P3D) {
+        	//NextText's P3D renderer is compatible with all PApplet renderer
+        	//but if PApplet's P3D is NOT used, then NextText uses P3D only
+        	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
+        	//2D.        	
+            defaultRenderer = new P3DTextPageRenderer(p); 
         } else {
-            // try both, starting with the prettier one
-            try {
-                defaultRenderer = new Java2DTextPageRenderer(p); 
-            } catch (ClassCastException e) {
+        	//check if the applet is using the JAVA2D renderer
+        	if (p.g.getClass().getName().compareTo("processing.core.PGraphicsJava2D") == 0) {
                 try {
-                    defaultRenderer = new PGraphicsTextPageRenderer(p); 
+                    defaultRenderer = new Java2DTextPageRenderer(p); 
+                } catch (ClassCastException e) {
+                    PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
+                }        		
+        	}
+        	//check if the applet is using the P2D renderer
+        	else if (p.g.getClass().getName().compareTo("processing.core.PGraphics2D") == 0) {
+                try {
+                    defaultRenderer = new P2DTextPageRenderer(p); 
+                } catch (ClassCastException e) {
+                    PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
+                }        		
+        	}
+        	else if (p.g.getClass().getName().compareTo("processing.opengl.PGraphicsOpenGL") == 0) {
+        		try {
+                    defaultRenderer = new OpenGLTextPageRenderer(p); 
                 } catch (NoClassDefFoundError err) {
-                    PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
+                    PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
                 }
-            }
+        	} else if (p.g.getClass().getName().compareTo("processing.core.PGraphics3D") == 0) {
+                defaultRenderer = new P3DTextPageRenderer(p);                 	        	
+        	} else {
+        		//if the renderer is not recognize, then fallback on P2D which uses JAVA2D internally
+        		//to draw to a buffer, so it should work with most renderers.
+                PGraphics.showException("NextText couldn't recognize the PApplet renderer: " + p.g.getClass().getName() + ".");
+                defaultRenderer = new P2DTextPageRenderer(p); 
+        	}
         }
         
         pages = new LinkedHashMap<String, TextPage>();

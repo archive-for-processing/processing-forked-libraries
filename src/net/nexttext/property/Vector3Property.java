@@ -21,7 +21,6 @@ package net.nexttext.property;
 
 import net.nexttext.property.Property;
 import net.nexttext.Vector3;
-import net.nexttext.Vector3ArithmeticException;
 
 /**
  * A vector3 property of a TextObject or a Behaviour.
@@ -175,7 +174,7 @@ public class Vector3Property extends Property {
    	/**
    	 * Wrapper around vector normalization of Vector3 class
    	 */
-   	public void normalize() throws Vector3ArithmeticException {   		
+   	public void normalize() {   		
    		value.normalize();	
    		firePropertyChangeEvent();
    	}

@@ -22,7 +22,6 @@ package net.nexttext.behaviour.standard;
 import net.nexttext.Locatable;
 import net.nexttext.TextObject;
 import net.nexttext.Vector3;
-import net.nexttext.Vector3ArithmeticException;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.property.NumberProperty;
@@ -70,12 +69,7 @@ public class MoveTo extends AbstractAction implements TargetingAction {
 
 	 	// Scale the vector down to the speed if needed.
         if (newDir.length() > speed) {
-            try {
-                newDir.normalize();
-            } catch (Vector3ArithmeticException v3ae) {
-                // some silly person set a negative speed, and the object had
-                // already arrived at it's location, just ignore the problem.
-            }
+            newDir.normalize();
             newDir.scalar(speed);
             result.complete = false;
         }

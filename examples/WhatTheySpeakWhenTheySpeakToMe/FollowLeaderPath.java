@@ -97,12 +97,8 @@ public class FollowLeaderPath extends IWillFollowAction {
 
                 // move towards new position by a max of 20 
                 if (move.length() > 20.0) {
-                    try {
-                        move.normalize();
-                        move.scalar(20.0);
-                    } catch (Vector3ArithmeticException e) {
-                        System.out.println("vector 3 exception");
-                    }
+                    move.normalize();
+                    move.scalar(20.0);
                 }
 
                 // translate position

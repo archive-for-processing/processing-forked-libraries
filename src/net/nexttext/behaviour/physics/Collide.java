@@ -209,13 +209,12 @@ public class Collide extends PhysicsAction {
     		int vY = A.ypoints[i%numEdgesA] - A.ypoints[ (i+1)%numEdgesA ];
     		// find the axis perpendicular to this edge
     		Vector3 axis = new Vector3( -vY, vX, 0 );
-            try {
-                axis.normalize();
-            } catch (Vector3ArithmeticException v3ae) {
-                // Ignore zero-length edges
-                continue;
-            }
-     		
+    		
+    		//ignore zero-length edge
+    		if (axis.length() == 0) continue;
+    		
+    		axis.normalize();
+
      		// see if this axis separates the polygons.  if it doesn't, this
      		// method will return a vector representing the intersection
      		// projected on that specific axis

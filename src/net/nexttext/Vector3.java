@@ -28,7 +28,14 @@ package net.nexttext;
  */
 /* $Id$ */
 public class Vector3 implements Locatable {
-	
+
+	public final static Vector3 ZERO = new Vector3(0, 0, 0);
+
+	public final static Vector3 UNIT_X = new Vector3(1, 0, 0);
+	public final static Vector3 UNIT_Y = new Vector3(0, 1, 0);
+    public final static Vector3 UNIT_Z = new Vector3(0, 0, 1);
+    public final static Vector3 UNIT_XYZ = new Vector3(1, 1, 1);
+
 	/**
 	 * The vector's coordinates are defined as public data members
 	 */
@@ -105,31 +112,34 @@ public class Vector3 implements Locatable {
 	/**
      * Modify this Vector by adding the given one to it.
  	 */
-	public void add( Vector3 v1 ) {
+	public Vector3 add( Vector3 v1 ) {
 		this.x += v1.x;
 		this.y += v1.y;
 		this.z += v1.z;
 		checkValue();
+		return this;
 	}
 	
 	/**
      * Modify by subtracting the given one from it.
  	 */
-	public void sub( Vector3 v1 ) {
+	public Vector3 sub( Vector3 v1 ) {
 		this.x -= v1.x;
 		this.y -= v1.y;
 		this.z -= v1.z;
 		checkValue();
+		return this;
 	}
 
 	/**
      * Modify this Vector to be the cross product of it and the given one.
  	 */
-	 public void cross( Vector3 v1 ) {
+	 public Vector3 cross( Vector3 v1 ) {
 	 	this.x = (this.y * v1.z) - (v1.y * this.z);
 	 	this.y = (this.z * v1.x) - (v1.z * this.x);
 	 	this.z = (this.x * v1.y) - (v1.x * this.y);
 	 	checkValue();
+	 	return this;
 	 }
 
 	/**
@@ -138,21 +148,23 @@ public class Vector3 implements Locatable {
      * <p>Multiply this Vector with a diagonal matrix represented by the other
      * Vector.  this.x becomes (this.x * that.x), etc. </p>
  	 */
-	 public void matrix( Vector3 v1 ) {
+	 public Vector3 matrix( Vector3 v1 ) {
          this.x = this.x * v1.x;
          this.y = this.y * v1.y;
          this.z = this.z * v1.z;
          checkValue();
+         return this;
 	 }
 
 	/**
      * Modify this Vector by multiplying it with the given scalar.
  	 */
-	 public void scalar( double s ) {
+	 public Vector3 scalar( double s ) {
          this.x = this.x * s;
          this.y = this.y * s;
          this.z = this.z * s;
          checkValue();
+         return this;
 	 }
 
 	 /**
@@ -173,19 +185,28 @@ public class Vector3 implements Locatable {
 	  * Modify this Vector by changing its length to 1, but preserving its
 	  * direction.
 	  */
-    public void normalize() throws Vector3ArithmeticException {
+    public Vector3 normalize() {
         double t = Math.sqrt(x*x + y*y + z*z);
-        if (t == 0) {
-            throw new Vector3ArithmeticException("Can't normalize zero vector");
+        if (t != 0) {
+            x = x/t;
+            y = y/t;
+            z = z/t;
         }
-        x = x/t;
-        y = y/t;
-        z = z/t;
         checkValue();
+        return this;
     }
-
+    
     /**
-     * Modify this Vector by rotating it by the specified angle in radians.
+     * Modify this Vector by rotating it by the specified angle in radians around
+     * the Z axis.
+     * @param angle
+     * @return rotated vector
+     */
+    public Vector3 rotate( double angle ) { return rotateZ(angle); }
+    
+    /**
+     * Modify this Vector by rotating it by the specified angle in radians around
+     * the Z axis.
      * 
      * <p>A positive angle will rotate the vector in a clockwise direction from 
      * the viewer's perspective. </p>
@@ -197,8 +218,7 @@ public class Vector3 implements Locatable {
      * <p>The reason why we have this disrepancy is because we need to mirror's 
      * Java 2D rotation convention. </p>
      */
-    public void rotate( double angle ) {
-        
+    public Vector3 rotateZ( double angle ) {
         // because the screen coordinate are mirrored along the X axis (ie: a 
         // negative Y means going out of the screen), we must first negate angle
         // to get clockwise rotation.  
@@ -210,19 +230,20 @@ public class Vector3 implements Locatable {
         x = newX;
         y = newY;
         checkValue();
+        return this;
     }
 
     /**
      * Return the angle between this vector and the x axis.
      */
-    public double theta() throws Vector3ArithmeticException {
+    public double theta() throws Vector3ArithmeticException { 
         if (isZero()) {
             throw new Vector3ArithmeticException("Can't theta the zero vector");
         }
-        double theta = Math.acos(x / Math.sqrt(x*x + y*y + z*z));
+        double theta = Math.acos(x / length());
         return ( y > 0 ) ? theta : -theta;
     }
-
+    
     /**
      * Return the absolute angle between this Vector and the provided one.
      */
@@ -232,7 +253,7 @@ public class Vector3 implements Locatable {
         while (diffTheta < 0) { diffTheta += Math.PI * 2; }
         return (diffTheta <= Math.PI) ? diffTheta : Math.PI * 2 - diffTheta;
     }
-
+    
     /**
      * Indicate if this is a zero-length vector.
      */
@@ -248,4 +269,23 @@ public class Vector3 implements Locatable {
         return new Vector3(x,y,z);
     }
 
+    /**
+     * are these two vectors the same? they are is they both have the same x,y,
+     * and z values.
+     *
+     * @param o
+     *            the object to compare for equality
+     * @return true if they are equal
+     */
+    public boolean equals(Object o) {
+        if (!(o instanceof Vector3)) { return false; }
+
+        if (this == o) { return true; }
+
+        Vector3 comp = (Vector3) o;
+        if (Double.compare(x,comp.x) != 0) return false;
+        if (Double.compare(y,comp.y) != 0) return false;
+        if (Double.compare(z,comp.z) != 0) return false;
+        return true;
+    }
 }

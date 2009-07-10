@@ -24,6 +24,7 @@ import java.awt.Shape;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -105,6 +106,11 @@ public class TextObjectGlyph extends TextObject {
     public boolean isDeformed() { return deformed; }
     public void setDeformed(boolean df) { deformed = df; }
 
+    /**
+     * The outline of the glyph represented as a GeneralPath object.
+     */
+    protected GeneralPath outline = null;
+    
     /**
      * This object can be used by Renderers to cache information about
      * TextObjectGlyphs.  If the glyph is deformed this cache object will be
@@ -237,6 +243,59 @@ public class TextObjectGlyph extends TextObject {
     public Vector3PropertyList getControlPoints() {
         return (Vector3PropertyList) getProperty("Control Points");
     }
+    
+    /**
+     * Get the outline of the glyph.
+     */
+    public GeneralPath getOutline() {
+    	if (outline == null) {
+            // we need to rebuild the outline
+            // get the list of vertices for this glyph
+            Vector3PropertyList vertices = getControlPoints();
+            // create a new GeneralPath to hold the vector outline
+            GeneralPath gp = new GeneralPath();
+            // get an iterator for the list of contours
+            Iterator it = contours.iterator();
+
+            // process each contour
+            while (it.hasNext()) {
+
+                // get the list of vertices for this contour
+                int contour[] = (int[]) it.next();
+
+                Vector3Property firstPoint = vertices.get(contour[0]);
+                // move the pen to the beginning of the contour
+                gp.moveTo((float) firstPoint.getX(), (float) firstPoint
+                        .getY());
+
+                // generate all the quads forming the line
+                for (int i = 1; i < contour.length; i++) {
+
+                    Vector3Property current = vertices.get(contour[i]);
+                    Vector3Property next;
+
+                    // Since it's a closed contour, the last vertex's next
+                    // is the first vertex.
+                    if (i == contour.length - 1)
+                        next = vertices.get(contour[0]);
+                    else
+                        next = vertices.get(contour[i + 1]);
+
+                    float anchorx = (float) (current.getX() + next.getX()) / 2;
+                    float anchory = (float) (current.getY() + next.getY()) / 2;
+
+                    gp.quadTo((float) current.getX(), (float) current
+                            .getY(), anchorx, anchory);
+                }
+                // close the path
+                gp.closePath();
+            } // end while 
+
+            // cache it
+            outline = gp;
+    	}
+    	return outline;
+    }
 	
 	////////////////////////////////////////////////////////////////////////////
 	// protected methods
@@ -258,6 +317,7 @@ public class TextObjectGlyph extends TextObject {
      */
     protected void glyphChanged() {
         buildControlPoints();
+        outline = null;
         rendererCache = null;
         invalidateLocalBoundingPolygon();
     }
@@ -268,6 +328,7 @@ public class TextObjectGlyph extends TextObject {
      */
     protected void glyphDeformed() {
         deformed = true;
+        outline = null;
         rendererCache = null;
         invalidateLocalBoundingPolygon();
     }
