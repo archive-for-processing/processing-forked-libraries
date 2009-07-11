@@ -176,56 +176,8 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
             // Render glyph using vertex list
 
             // Use the cached path if possible.
-//            GeneralPath gp = (GeneralPath) glyph.rendererCache;
             GeneralPath gp = glyph.getOutline();
 
-/*            if (gp == null) {
-                // we need to rebuild the cache
-                // get the list of vertices for this glyph
-                Vector3PropertyList vertices = (Vector3PropertyList) glyph
-                        .getProperty("Control Points");
-                // create a new GeneralPath to hold the vector outline
-                gp = new GeneralPath();
-                // get an iterator for the list of contours
-                Iterator it = glyph.contours.iterator();
-
-                // process each contour
-                while (it.hasNext()) {
-
-                    // get the list of vertices for this contour
-                    int contour[] = (int[]) it.next();
-
-                    Vector3Property firstPoint = vertices.get(contour[0]);
-                    // move the pen to the begining of the contour
-                    gp.moveTo((float) firstPoint.getX(), (float) firstPoint
-                            .getY());
-
-                    // generate all the quads forming the line
-                    for (int i = 1; i < contour.length; i++) {
-
-                        Vector3Property current = vertices.get(contour[i]);
-                        Vector3Property next;
-
-                        // Since it's a closed contour, the last vertex's next
-                        // is the first vertex.
-                        if (i == contour.length - 1)
-                            next = vertices.get(contour[0]);
-                        else
-                            next = vertices.get(contour[i + 1]);
-
-                        float anchorx = (float) (current.getX() + next.getX()) / 2;
-                        float anchory = (float) (current.getY() + next.getY()) / 2;
-
-                        gp.quadTo((float) current.getX(), (float) current
-                                .getY(), anchorx, anchory);
-                    }
-                    // close the path
-                    gp.closePath();
-                    // cache it
-                    glyph.rendererCache = gp;
-                } // end while
-            }
-*/
             // draw the outline of the shape
             if (glyph.isStroked()) {
                 g2.setColor(glyph.getStrokeColorAbsolute());
