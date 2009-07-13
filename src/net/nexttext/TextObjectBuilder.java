@@ -353,8 +353,21 @@ public class TextObjectBuilder {
     			if (numChars == 0 && tokenStr.equals(" ")) continue;
     			numChars += tokenStr.length();
     			if (numChars > lineLength) {
-    				tokenStr = "\n" + tokenStr;
+    				//if the token that gets us over the edge is a space
+    				//then remove it so that lines are all aligned
+    				if (tokenStr.equals(" "))
+    					tokenStr = "";
+    				
+    				//keep track of character count
     				numChars = tokenStr.length();
+    				
+    				//remove trailing spaces before adding the newline
+    				//this makes sure right-aligned text is flush
+    				while(returnText.charAt(returnText.length()-1) == ' ')
+    					returnText = returnText.deleteCharAt(returnText.length()-1);
+    				
+    				//append the newline
+    				tokenStr = "\n" + tokenStr;
     			}
     		}
     		
