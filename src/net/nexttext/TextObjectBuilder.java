@@ -346,8 +346,8 @@ public class TextObjectBuilder {
     		
     		// Fold long words across multiple lines.
     		if (tokenStr.length() > lineLength) {
-    			tokenStr = splitLongWord(tokenStr, lineLength);
-    			numChars = 0;
+    			tokenStr = splitLongWord(tokenStr, lineLength-numChars, lineLength);
+    			numChars = (tokenStr.length()-1) - tokenStr.lastIndexOf('\n');
     		}
     		else {
     			if (numChars == 0 && tokenStr.equals(" ")) continue;
@@ -390,21 +390,22 @@ public class TextObjectBuilder {
     // greater than maxLength.  The `-' character is used to show that a word
     // continues on the next line.  If possible, the breaks will be done at
     // non-letter characters.
-    private String splitLongWord(String longWord, int maxLength) {
+    private String splitLongWord(String longWord, int lineLength, int maxLength) {
 		// the word is too long, split it
-		StringBuffer temp = new StringBuffer("\n");
+		//StringBuffer temp = new StringBuffer("\n");
+    	StringBuffer temp = new StringBuffer();
 		Matcher matcher;
 		
-		while (longWord.length() > maxLength) {
+		while (longWord.length() > lineLength) {
 			// find if there is non-word character with maxLength
-			matcher = pattern.matcher(longWord.substring(0, maxLength - 1));
-			int splitAt = (matcher.find())? matcher.end() : maxLength - 1;
+			matcher = pattern.matcher(longWord.substring(0, lineLength - 1));
+			int splitAt = (matcher.find())? matcher.end() : lineLength - 1;
 			
 			temp.append(longWord.substring(0, splitAt) + "-\n");
 			longWord = longWord.substring(splitAt);
-			
+			lineLength = maxLength;
 		}
-		return temp.append(longWord + "\n").toString();
+		return temp.append(longWord).toString();
     }
     
     /**
