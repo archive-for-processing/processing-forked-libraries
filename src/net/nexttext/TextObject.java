@@ -119,7 +119,6 @@ public abstract class TextObject implements Locatable {
         properties.init("Color", new ColorProperty() );
         properties.init("Stroke", new StrokeProperty());
         properties.init("StrokeColor", new ColorProperty());
-        
         PropertyChangeListener pcl = new PropertyChangeListener() {
                 public void propertyChanged(Property propertyThatChanged) {
                     if (propertyThatChanged == properties.get("Position") ||
@@ -138,7 +137,6 @@ public abstract class TextObject implements Locatable {
         
         filled = ((ColorProperty)properties.get("Color")).get().getAlpha() > 0;
         stroked = ((ColorProperty)properties.get("StrokeColor")).get().getAlpha() > 0;;
-        
     }
 
     /** Get the left Sibling, or null if there isn't one. */
@@ -538,6 +536,7 @@ public abstract class TextObject implements Locatable {
     public NumberProperty getRotation() { 
         return (NumberProperty)(properties.get("Rotation"));
     }
+
     
     //////////////////////////////////////////////////////////////////////
     // Colour Property manipulation

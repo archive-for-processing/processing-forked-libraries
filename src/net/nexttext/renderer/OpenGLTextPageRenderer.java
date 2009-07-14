@@ -22,7 +22,6 @@ package net.nexttext.renderer;
 import java.awt.BasicStroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
-import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -30,9 +29,6 @@ import javax.media.opengl.glu.GLUtessellator;
 import javax.media.opengl.glu.GLUtessellatorCallbackAdapter;
 
 import net.nexttext.TextObjectGlyph;
-import net.nexttext.property.Vector3Property;
-import net.nexttext.property.Vector3PropertyList;
-import net.nexttext.renderer.P3DTextPageRenderer.RendererType;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphicsJava2D;
@@ -64,7 +60,7 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
         glu.gluTessCallback(tobj, GLU.GLU_TESS_END, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_VERTEX, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_COMBINE, tessCallback); 
-        glu.gluTessCallback(tobj, GLU.GLU_TESS_ERROR, tessCallback);
+        glu.gluTessCallback(tobj, GLU.GLU_TESS_ERROR, tessCallback); 
         
         bezierDetail = 4.0;
     }
@@ -74,7 +70,7 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
      * 
      * @param glyph The TextObjectGlyph to render
      */
-    protected void renderGlyph(TextObjectGlyph glyph) {
+    protected void renderGlyph(TextObjectGlyph glyph) {    	
         // save the current properties
         p.pushStyle();
 

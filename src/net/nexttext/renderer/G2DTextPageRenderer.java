@@ -2,7 +2,6 @@ package net.nexttext.renderer;
 
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
-import java.util.Iterator;
 import java.util.Stack;
 
 import processing.core.PApplet;
@@ -12,8 +11,6 @@ import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.TextPage;
 import net.nexttext.Vector3;
-import net.nexttext.property.Vector3Property;
-import net.nexttext.property.Vector3PropertyList;
 
 /**
  * 

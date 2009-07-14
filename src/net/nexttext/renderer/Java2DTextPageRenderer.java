@@ -19,23 +19,11 @@
 
 package net.nexttext.renderer;
 
-import java.awt.Component;
-import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
-import java.util.Iterator;
-import java.util.Stack;
 
 import processing.core.*;
 
-import net.nexttext.Book;
-import net.nexttext.TextObject;
-import net.nexttext.TextObjectGlyph;
-import net.nexttext.TextObjectGroup;
 import net.nexttext.TextPage;
-import net.nexttext.Vector3;
-import net.nexttext.property.Vector3Property;
-import net.nexttext.property.Vector3PropertyList;
 
 /**
  * 

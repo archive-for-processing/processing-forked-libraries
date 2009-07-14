@@ -151,8 +151,8 @@ public class Book {
         	} else if (p.g.getClass().getName().compareTo("processing.core.PGraphics3D") == 0) {
                 defaultRenderer = new P3DTextPageRenderer(p);                 	        	
         	} else {
-        		//if the renderer is not recognize, then fallback on P2D which uses JAVA2D internally
-        		//to draw to a buffer, so it should work with most renderers.
+        		//if the renderer is not recognize, then fall back on P2D which uses JAVA2D internally
+        		//to draw to a buffer, so it should work with any renderer.
                 PGraphics.showException("NextText couldn't recognize the PApplet renderer: " + p.g.getClass().getName() + ".");
                 defaultRenderer = new P2DTextPageRenderer(p); 
         	}
@@ -591,34 +591,40 @@ public class Book {
      * Add a page to the book without specifying a name.
      * 
      * <p>The page will be named "layerN" where N = 0,1,2,3...</p>
+     * @return the new page
      * 
      */
-    public void addPage(TextPage p){
+    public TextPage addPage(TextPage p){
         String name = "layer" + pages.size();
         pages.put(name,p);
+        return pages.get(name);
     }
 
     /**
      * Add a named page to the book
+     * @return the new page
      */
-    public void addPage(String name, TextPage p){
+    public TextPage addPage(String name, TextPage p){
         if (pages.containsKey(name)) {
         	log("WARNING: A Page with the name '"+name+"' already exists and will be deleted!");
         }
         pages.put(name,p);
+        return pages.get(name);
     }
     
     /**
      * Create and add a named TextPage to the Book
      * 
      * @param pageName the name of the TextPage to add
+     * @return the new page
      */
-    public void addPage(String pageName) {
-    	addPage(pageName, new TextPage(this, defaultRenderer));
+    public TextPage addPage(String pageName) {
+    	return addPage(pageName, new TextPage(this, defaultRenderer));
     }
     
     /**
      * Get a named page from the book
+     * @return the page
      */
     public TextPage getPage(String name){
         return (TextPage)pages.get(name);

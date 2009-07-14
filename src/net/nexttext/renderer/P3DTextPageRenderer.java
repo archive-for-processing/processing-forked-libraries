@@ -30,6 +30,7 @@ import java.nio.IntBuffer;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PGraphics2D;
 import processing.core.PGraphicsJava2D;
 import net.nexttext.FastMath;
@@ -55,6 +56,7 @@ import net.nexttext.renderer.util.TriangulationVertex;
  */
 public class P3DTextPageRenderer extends TextPageRenderer {
 
+	//detail level for curve approximation
 	protected double bezierDetail;
 	
     /**
@@ -124,11 +126,11 @@ public class P3DTextPageRenderer extends TextPageRenderer {
     protected void traverse(TextObject root) {
         TextObject current = root;
         do {
-            // Draw any glyphs
+        	// Draw any glyphs
             if (current instanceof TextObjectGlyph) {
-                enterCoords(current);
-                renderGlyph((TextObjectGlyph) current);
-                exitCoords();
+        		enterCoords(current);
+        		renderGlyph((TextObjectGlyph) current);
+        		exitCoords();
             }
 
             // Descend to process any children
@@ -141,7 +143,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
                     continue;
                 }
             }
-
+        
             // Processing of this node is complete, so move on to siblings.
             // Since a node may not have siblings, a search is made up the tree
             // for the first appropriate sibling. The search ends if a sibling
@@ -233,7 +235,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
      * @param glyph The TextObjectGlyph to render
      */
     protected void renderGlyph(TextObjectGlyph glyph) {
-        // save the current properties
+    	// save the current properties
         p.pushStyle();
 
         // set text properties
