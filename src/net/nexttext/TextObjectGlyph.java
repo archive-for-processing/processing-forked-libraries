@@ -24,6 +24,7 @@ import java.awt.Shape;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
@@ -38,6 +39,7 @@ import net.nexttext.property.Vector3Property;
 import net.nexttext.property.Vector3PropertyList;
 import net.nexttext.property.ColorProperty;
 
+import processing.core.PApplet;
 import processing.core.PFont;
 
 /**
@@ -248,7 +250,7 @@ public class TextObjectGlyph extends TextObject {
      * Get the outline of the glyph.
      */
     public GeneralPath getOutline() {
-    	if (outline == null) {
+    	if (outline == null) {   		
             // we need to rebuild the outline
             // get the list of vertices for this glyph
             Vector3PropertyList vertices = getControlPoints();
@@ -267,28 +269,19 @@ public class TextObjectGlyph extends TextObject {
                 // move the pen to the beginning of the contour
                 gp.moveTo((float) firstPoint.getX(), (float) firstPoint
                         .getY());
-
+                
                 // generate all the quads forming the line
-                for (int i = 1; i < contour.length; i++) {
+                for (int i = 1; i < contour.length-1; i+=2) {
 
-                    Vector3Property current = vertices.get(contour[i]);
-                    Vector3Property next;
+                	Vector3Property controlPoint = vertices.get(contour[i]);
+                	Vector3Property anchorPoint = vertices.get(contour[i + 1]);
 
-                    // Since it's a closed contour, the last vertex's next
-                    // is the first vertex.
-                    if (i == contour.length - 1)
-                        next = vertices.get(contour[0]);
-                    else
-                        next = vertices.get(contour[i + 1]);
-
-                    float anchorx = (float) (current.getX() + next.getX()) / 2;
-                    float anchory = (float) (current.getY() + next.getY()) / 2;
-
-                    gp.quadTo((float) current.getX(), (float) current
-                            .getY(), anchorx, anchory);
+                    gp.quadTo((float) controlPoint.getX(), (float) controlPoint.getY(),
+                    		  (float) anchorPoint.getX(), (float) anchorPoint.getY());                   
                 }
                 // close the path
                 gp.closePath();
+
             } // end while 
 
             // cache it
@@ -297,6 +290,16 @@ public class TextObjectGlyph extends TextObject {
     	return outline;
     }
 	
+    /**
+     * Get the absolute outline of the glyph.
+     */
+    public GeneralPath getOutlineAbsolute() {
+        GeneralPath outline = new GeneralPath(getOutline());
+        Vector3 posAbs = getPositionAbsolute();
+    	outline.transform(AffineTransform.getTranslateInstance(posAbs.x, posAbs.y));
+    	return outline;
+    }
+    
 	////////////////////////////////////////////////////////////////////////////
 	// protected methods
 
@@ -338,7 +341,6 @@ public class TextObjectGlyph extends TextObject {
 	 * the glyph.
 	 */
 	protected void buildControlPoints() {
-	
 		// create a Vector3PropertyList object to store the vertices
         Vector3PropertyList vertices = getControlPoints();
 		
@@ -369,10 +371,6 @@ public class TextObjectGlyph extends TextObject {
 		// see the architecture document.
 		Vector3	lastAnchor = new Vector3();
 		Vector3 lastControlPoint = new Vector3();
-		// in some cases the algorithm needs to backtrack and insert an point in
-		// the contour lists a few positions behind.  This variable is used to
-		// remember such a position in the array.
-		int		anchorInsertionPoint = 0;
 		
 		// get the Shape for this glyph
 		GlyphVector gv = font.createGlyphVector( frc, this.glyph );
@@ -393,7 +391,7 @@ public class TextObjectGlyph extends TextObject {
 			switch( segmentType ) {
 			
 				case PathIterator.SEG_MOVETO:
-					
+
 					// start a new tmpContour vector
 					tmpContour = new Vector<Integer>();
 				 	// get the starting point for this contour	
@@ -408,29 +406,12 @@ public class TextObjectGlyph extends TextObject {
 					lastAnchor = startingPoint;
 					lastControlPoint = startingPoint;
 					previousType = segmentType;
-					anchorInsertionPoint = 0;
 					break;
 					
 				case PathIterator.SEG_LINETO:
 				
-					// lines are get converted to quads.
-				 
-					// since a line begins at lastAnchor, add this value as
-					// a control point for the contour.  Note that we add
-					// the value twice, but that it refers to the same vertex.
-					// The reason behind this is to create sharp edges when
-					// required.
-					
-					// also, only add the first anchor if the previous segment
-					// was NOT a line (to avoid adding this control point four
-					// times)
-					if ( previousType != PathIterator.SEG_LINETO ) {
-						vertices.add( new Vector3Property(lastAnchor) );
-						tmpContour.add( vertexIndex );
-						tmpContour.add( vertexIndex );
-						vertexIndex++;	
-					}
-				 
+					// lines get converted to quads.
+				 	 
 					// then, we must find the middle of the line and use it as 
 					// control point in order to allow smooth deformations
 					Vector3 endPoint = new Vector3( points[0], points[1] );
@@ -444,7 +425,6 @@ public class TextObjectGlyph extends TextObject {
 					// to preserve sharp corners
 					vertices.add( new Vector3Property( endPoint) );
 					tmpContour.add( vertexIndex );
-					tmpContour.add( vertexIndex );
 					vertexIndex++;
 				 	
 				 	// update variables used for backtracking
@@ -454,58 +434,20 @@ public class TextObjectGlyph extends TextObject {
 					break;
 					
 				case PathIterator.SEG_QUADTO:
-					
+
 					Vector3 controlPoint = new Vector3( points[0], points[1] );
 					Vector3 anchorPoint = new Vector3( points[2], points[3] );
 					
-					// first, we must handle the case where two quads form 
-					// sharp corners.   if this is the case, then the anchor
-					// for that quad must added to the list of contours (twice),
-					// just like for lines.
-					//
-					// in order to figure out sharp corners, we look at the line
-					// formed by the last two control points and the last anchor 
-					// point.  If the distance between them is big enough, then
-					// there should be a sharp edge.
-					//
-					// to find out if the anchor point is "far enough", I've 
-					// empirically determined that the distance/font size ratio
-					// should be smaller than 21 in order to consider a quad
-					// anchor as part of a sharp edge
-					
-					if ( previousType != PathIterator.SEG_LINETO ) {
-						Vector3 mid = new Vector3( (controlPoint.x + 
-													lastControlPoint.x)/2, 
-											   	   (controlPoint.y + 
-											   	    lastControlPoint.y)/2 );
-						double dx, dy, dist;
-						dx = mid.x - lastAnchor.x;
-						dy = mid.y - lastAnchor.y;
-						dist = Math.sqrt((dx*dx) + (dy*dy));
-						// TODO make sure this getSize() returns the correct size when the PFont size and the actual size don't match
-				 	 	if ( (font.getSize()/dist) < 21 ) {
-					  		// if this is the case, then the lastAnchor has to be
-					 		// added as a control point.  However it has to be
-					 		// inserted in the correct order in the list.
-					  		vertices.add( new Vector3Property( lastAnchor) );
-					   		tmpContour.add( anchorInsertionPoint, vertexIndex );
-					 		tmpContour.add( anchorInsertionPoint, vertexIndex );
-					 		vertexIndex++;
-					 	} 
-					}
-					
-					// because the calculations above can only be determined
-					// by looking at the lastAnchor point, remember where those
-					// should be inserted in the array.
-					anchorInsertionPoint = tmpContour.size()+1;
-					
-					// Otherwise, we are only interested in storing the control 
-					// point for the quad.  The actual anchor points will be 
-					// interpolated at runtime to preserve curve continuity.
+					// Store control point.
 					vertices.add( new Vector3Property( controlPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
-						
+
+					// Store anchor point.
+					vertices.add( new Vector3Property( anchorPoint) );
+					tmpContour.add( vertexIndex );
+					vertexIndex++;
+				
 					// update temporary variables used for backtracking					
 					lastAnchor = anchorPoint;
 					lastControlPoint = controlPoint;
@@ -513,7 +455,7 @@ public class TextObjectGlyph extends TextObject {
 					break;	
 				 
 				case PathIterator.SEG_CLOSE:
-					
+
 					// A SEG_CLOSE signifies the end of a contour, therefore
 					// convert tmpContour into a new array of correct size
 					int contour[] = new int[tmpContour.size()];

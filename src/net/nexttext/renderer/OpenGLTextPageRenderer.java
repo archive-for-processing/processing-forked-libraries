@@ -187,7 +187,7 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
 
                 case PathIterator.SEG_QUADTO:   // 2 points
                 	
-                	for (int i = 1; i < bezierDetail; i++) {
+                	for (int i = 1; i <= bezierDetail; i++) {
                 		float t = (float)(i/bezierDetail);
 	                    vertex = new double[] {
 	                            p.g.bezierPoint(
@@ -258,28 +258,12 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
                 	
                 case PathIterator.SEG_QUADTO:
 
-                	for (int i = 1; i < bezierDetail; i++) {
-                		float t = (float)i/(float)bezierDetail;
-	                    vertex = new double[] {
-	                            p.g.bezierPoint(
-	                                    lastX, 
-	                                    lastX + ((textPoints[0]-lastX)*2/3), 
-	                                    textPoints[2] + ((textPoints[0]-textPoints[2])*2/3), 
-	                                    textPoints[2], 
-	                                    t
-	                            ),
-	                            p.g.bezierPoint(
-	                                    lastY, 
-	                                    lastY + ((textPoints[1]-lastY)*2/3),
-	                                    textPoints[3] + ((textPoints[1]-textPoints[3])*2/3), 
-	                                    textPoints[3], 
-	                                    t
-	                            ), 
-	                            0
-	                    };
-	                    p.vertex((float)vertex[0], (float)vertex[1]);
-                	}
-
+                	p.bezierVertex(lastX + ((textPoints[0]-lastX)*2/3),
+                				   lastY + ((textPoints[1]-lastY)*2/3),
+                				   textPoints[2] + ((textPoints[0]-textPoints[2])*2/3),
+                				   textPoints[3] + ((textPoints[1]-textPoints[3])*2/3),
+                				   textPoints[2], textPoints[3]);
+                	
                     lastX = textPoints[2];
                     lastY = textPoints[3];
                     break;

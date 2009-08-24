@@ -288,6 +288,12 @@ public class TextObjectBuilder {
      * lineLength characters appear on a single line.  </p>
      */
     public TextObjectGroup buildSentence( String text, Vector3 pos, int lineLength ) {
+    	//Make sure the lineLength is greater than 1 (space for the dash)
+    	if (lineLength <= 1) {
+    		PApplet.println("Warning: Line length must be greater than 1.");
+    		lineLength = 2;
+    	}
+    	
     	// Pre-process the text
         text = preprocessMessage(text, lineLength);
         
