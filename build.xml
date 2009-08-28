@@ -87,7 +87,7 @@
         </copy>
  
         <zip destfile="nexttext.zip">
-            <fileset dir="nexttext"/>
+            <fileset dir="." includes="nexttext/"/>
         </zip>
         
         <delete dir="nexttext"/>
