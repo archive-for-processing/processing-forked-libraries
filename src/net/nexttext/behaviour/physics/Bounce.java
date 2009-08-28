@@ -31,7 +31,7 @@ import net.nexttext.property.Vector3Property;
  * and reflects their velocity.
  */
 /* $Id$ */
-public class Collide extends PhysicsAction {
+public class Bounce extends PhysicsAction {
     
     private double elasticity;
     private double absorbEnergy;
@@ -40,7 +40,7 @@ public class Collide extends PhysicsAction {
      * @param elasticity The elasticity of collision
      * @param absorbEnergy Objects absorb energy from each other if non zero
      */
-    public Collide( double elasticity, double absorbEnergy ) {        
+    public Bounce( double elasticity, double absorbEnergy ) {        
         this.elasticity = elasticity;
         this.absorbEnergy = absorbEnergy;
     }
