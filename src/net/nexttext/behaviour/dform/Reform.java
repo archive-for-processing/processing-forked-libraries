@@ -141,7 +141,7 @@ public class Reform extends DForm {
         return new ActionResult(false, false, false);
     }
 
-    public double getExponentialSpeed() {
+    public float getExponentialSpeed() {
         return exponentialSpeed;
     }
 
@@ -153,7 +153,7 @@ public class Reform extends DForm {
         this.exponentialSpeed = exponentialSpeed;
     }
 
-    public double getLinearSpeed() {
+    public float getLinearSpeed() {
         return linearSpeed;
     }
 

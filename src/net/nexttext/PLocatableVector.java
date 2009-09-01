@@ -1,16 +1,49 @@
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package net.nexttext;
 
 import processing.core.PVector;
 
-public class PLocatableVector extends PVector implements Locatable {
+/**
+ * The PLocatableVector encapsulates a PVector to use as a Locatable object.  
+ * 
+ * <p>The PVector class is part of the Processing core library so we are
+ * unable to have it implement the Locatable interface which is used by
+ * the behaviours. As a workaround, the PLocatableVector class is used,
+ * mainly internally to accept PVectors as argument.</p>
+ * 
+ * <p>Instead of extending from the PVector class, we store a PVector as
+ * variable. This allows to pass a PVector as argument to the constructor
+ * and store a pointer to it. This way modifying the PVector outside of
+ * the PLocatableVector object will change the value returned by the
+ * PLocatableVector object.</p>
+ */
+public class PLocatableVector implements Locatable {
 
+	PVector vector;
+	
 	/**
 	 * Default constructor -- x, y and z gets assigned the value 0 by default.
 	 */
 	public PLocatableVector() {
-		this.x = 0;
-		this.y = 0;
-		this.z = 0;
+		this(0, 0, 0);
 	}
 
 	/**
@@ -18,9 +51,7 @@ public class PLocatableVector extends PVector implements Locatable {
 	 */
 	public PLocatableVector( float x, float y )
 	{
-		this.x = x;
-		this.y = y;
-		this.z = 0;
+		this(x, y, 0);
 	}
 
 	/**
@@ -28,16 +59,12 @@ public class PLocatableVector extends PVector implements Locatable {
 	 */
 	public PLocatableVector( float x, float y, float z )
 	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.vector = new PVector(x, y, z);
 	}
 	
-	/** Construcs and initialize using a PVector. */
+	/** Constructs and store pointer to the PVector. */
 	public PLocatableVector( PVector vector ) {
-		this.x = vector.x;
-		this.y = vector.y;
-		this.z = vector.z;
+		this.vector = vector;
 	}
 	
     /**
@@ -45,7 +72,7 @@ public class PLocatableVector extends PVector implements Locatable {
      * "location constant".
      */
 	public PVector getLocation() {
-		return new PVector(x, y, z);
+		return vector.get();
 	}
 
 }

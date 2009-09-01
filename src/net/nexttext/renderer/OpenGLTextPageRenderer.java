@@ -62,7 +62,7 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
         glu.gluTessCallback(tobj, GLU.GLU_TESS_COMBINE, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_ERROR, tessCallback); 
         
-        bezierDetail = 4.0;
+        bezierDetail = 4.0f;
     }
 
     /**

@@ -71,7 +71,7 @@ public class Scale extends DForm {
         return new ActionResult(true, true, false);       
     }
 
-    public double getScale() {
+    public float getScale() {
         return scale;
     }
 

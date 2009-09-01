@@ -131,10 +131,12 @@ public class PVectorProperty extends Property {
    	/**
    	 * Wrapper around vector matrix product of Vector3 class
    	 */
-   	/*public void matrix( PVector v1 ) {   	 
-   		value.matrix(v1);	
+   	public void matrix( PVector v1 ) {   	 
+        value.x = value.x * v1.x;
+        value.y = value.y * v1.y;
+        value.z = value.z * v1.z;
    		firePropertyChangeEvent();
-   	}*/
+   	}
 
    	/**
    	 * Wrapper around vector scalar product of Vector3 class
@@ -147,7 +149,7 @@ public class PVectorProperty extends Property {
    	/**
    	 * Wrapper around vector dot product of Vector3 class
    	 */
-   	public double dot( PVector v1 ) {
+   	public float dot( PVector v1 ) {
    		return value.dot(v1);	   		 
    	}
    	
@@ -162,10 +164,19 @@ public class PVectorProperty extends Property {
    	/**
    	 * Wrapper around vector rotation of Vector3 class
    	 */
-   	/*public void rotate(float angle) {   		 
-   	    value.rot(angle);
-   	    firePropertyChangeEvent();
-   	}*/
+   	public void rotate(float angle) {   		 
+        // because the screen coordinate are mirrored along the X axis (ie: a 
+        // negative Y means going out of the screen), we must first negate angle
+        // to get clockwise rotation.  
+        // the result will be a rotation that is looks clockwise on screen.
+        angle = -angle;
+        
+        // rotate around the Z axis
+        value.x = value.x * (float)Math.cos(angle) + value.y * (float)Math.sin(angle);
+        value.y = - value.x * (float)Math.sin(angle) + value.y * (float)Math.cos(angle);
+   	    
+        firePropertyChangeEvent();
+   	}
 
 	/**
 	 * Wrapper around toString() function of Vector3 class.

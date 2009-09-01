@@ -54,7 +54,7 @@ import net.nexttext.renderer.util.TriangulationVertex;
 public class P3DTextPageRenderer extends TextPageRenderer {
 
 	//detail level for curve approximation
-	protected double bezierDetail;
+	protected float bezierDetail;
 	
     /**
      * Renderer type enumeration.
@@ -68,7 +68,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
 	
     public P3DTextPageRenderer(PApplet p) {
         super(p);
-        bezierDetail = 1.0;
+        bezierDetail = 1.0f;
         
         if ((p.g instanceof PGraphics2D) || (p.g instanceof PGraphicsJava2D)) {
         	renderer_type = RendererType.TWO_D;

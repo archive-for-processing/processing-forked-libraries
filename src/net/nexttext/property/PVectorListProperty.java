@@ -3,6 +3,8 @@ package net.nexttext.property;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import processing.core.PVector;
+
 /**
  * A property for list of PVectors.
  *
@@ -11,11 +13,6 @@ import java.util.Iterator;
  * property classes.  To make it consistent it would need these changes: </p>
  *
  * <ul>
- * <li>Change name to Vector3ListProperty. </li>
- *
- * <li>Change <code>add(Vector3Property)</code> to
- * <code>add(Vector3)</code>. </li>
- *
  * <li>Replace <code>Vector3Property get()</code> with <code>Vector3
  * get()</code> and <code>Vector3 getOriginal()</code>.
  *
@@ -34,12 +31,27 @@ public class PVectorListProperty extends Property implements PropertyChangeListe
 	}
 	
 	/**
+	 * Add a PVector object to the list.
+	 * <p>This will automatically convert the PVector to a PVectorProperty.</p>
+	 */
+	public void add( PVector v1 ) {
+		add(list.size(), new PVectorProperty(v1));
+	}
+	
+	/**
 	 * Adds a PVectorProperty object to the list.
 	 */
 	public void add( PVectorProperty v1 ) {
         add(list.size(), v1);
 	}
 	
+	/**
+	 * Adds a PVectorProperty object at the specified position in the list.
+	 */
+	public void add( int position, PVector v1 ) {
+        add(position, new PVectorProperty(v1));
+	}
+
 	/**
 	 * Adds a PVectorProperty object at the specified position in the list.
 	 */
@@ -50,10 +62,10 @@ public class PVectorListProperty extends Property implements PropertyChangeListe
 	}
 	
 	/**
-	 * Returns the PVectorProperty object at the specified position in the list.
+	 * Returns the PVector object at the specified position in the list.
 	 */
-	public PVectorProperty get( int position ) {
-        return list.get(position);
+	public PVector get( int position ) {
+        return list.get(position).get();
 	}
 	
     /**

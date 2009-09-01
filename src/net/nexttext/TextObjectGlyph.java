@@ -88,7 +88,7 @@ public class TextObjectGlyph extends TextObject {
 	
 	/** A vector containing int[] arrays with indices to the Control Points property
 	 list.  These contours define the shape of the glyph */
-	public Vector 		contours;   	
+	public Vector contours;   	
    	 
    	/** 
    	 * This rectangle stores the glyph's "logical bounds", including proper
@@ -266,19 +266,18 @@ public class TextObjectGlyph extends TextObject {
                 // get the list of vertices for this contour
                 int contour[] = (int[]) it.next();
 
-                PVectorProperty firstPoint = vertices.get(contour[0]);
+                PVector firstPoint = vertices.get(contour[0]);
                 // move the pen to the beginning of the contour
-                gp.moveTo((float) firstPoint.getX(), (float) firstPoint
-                        .getY());
+                gp.moveTo((float) firstPoint.x, (float) firstPoint.y);
                 
                 // generate all the quads forming the line
                 for (int i = 1; i < contour.length-1; i+=2) {
 
-                	PVectorProperty controlPoint = vertices.get(contour[i]);
-                	PVectorProperty anchorPoint = vertices.get(contour[i + 1]);
+                	PVector controlPoint = vertices.get(contour[i]);
+                	PVector anchorPoint = vertices.get(contour[i + 1]);
 
-                    gp.quadTo((float) controlPoint.getX(), (float) controlPoint.getY(),
-                    		  (float) anchorPoint.getX(), (float) anchorPoint.getY());                   
+                    gp.quadTo((float) controlPoint.x, (float) controlPoint.y,
+                    		  (float) anchorPoint.x, (float) anchorPoint.y);                   
                 }
                 // close the path
                 gp.closePath();
@@ -361,7 +360,7 @@ public class TextObjectGlyph extends TextObject {
 		Vector<Integer> tmpContour = new Vector<Integer>();
 				
 		// used to receive the list of points from PathIterator.currentSegment()
-		double 	points[] = new double[6];  
+		float 	points[] = new float[6];  
 		// used to receive the segment type from PathIterator.currentSegment()
 		// segmentType can be SEG_MOVETO, SEG_LINETO, SEG_QUADTO, SEG_CLOSE
 		int 	segmentType	= 0; 
@@ -502,19 +501,19 @@ public class TextObjectGlyph extends TextObject {
         // Find the smallest box enclosing all the object's Control Points by 
         // computing the min/max
         
-        double minX = Double.POSITIVE_INFINITY;
-		double minY = Double.POSITIVE_INFINITY;
-		double maxX = Double.NEGATIVE_INFINITY;
-		double maxY = Double.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
 
         // Spaces are calculated differently because they don't have control
         // points in the same way as other glyphs.
         if ( getGlyph().equals(" ") ) {
             Rectangle2D sb = Book.loadFontFromPFont(pfont).getStringBounds(" ", frc);
-            minX = sb.getMinX();
-            minY = sb.getMinY();
-            maxX = sb.getMaxX();
-            maxY = sb.getMaxY();
+            minX = (float)sb.getMinX();
+            minY = (float)sb.getMinY();
+            maxX = (float)sb.getMaxX();
+            maxY = (float)sb.getMaxY();
 
         } else {
         	PVectorListProperty vertices = getControlPoints();

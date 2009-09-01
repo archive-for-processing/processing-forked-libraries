@@ -116,8 +116,8 @@ public class CoordinateSystem {
     public Polygon transform(Polygon inPoly) {
         Polygon outPoly = new Polygon();
         for (int i = 0; i < inPoly.npoints; i++) {
-            double x = axes.transformX(inPoly.xpoints[i], inPoly.ypoints[i], 0);
-            double y = axes.transformY(inPoly.xpoints[i], inPoly.ypoints[i], 0);
+            float x = axes.transformX(inPoly.xpoints[i], inPoly.ypoints[i], 0);
+            float y = axes.transformY(inPoly.xpoints[i], inPoly.ypoints[i], 0);
             outPoly.addPoint((int)(x + origin.x), (int)(y + origin.y));
         }
         return outPoly;
@@ -209,15 +209,15 @@ public class CoordinateSystem {
         // Vector3 objects.  They are used in the calculation of bounding
         // polygons, which is done quite often.  A separate method is used for
         // each axis because methods can only have a single return value.
-        double transformX(double x, double y, double z) {
+        float transformX(float x, float y, float z) {
             return (x * xAxis.x + y * yAxis.x + z * zAxis.x);
         }
 
-        double transformY(double x, double y, double z) {
+        float transformY(float x, float y, float z) {
             return (x * xAxis.y + y * yAxis.y + z * zAxis.y);
         }
 
-        double transformZ(double x, double y, double z) {
+        float transformZ(float x, float y, float z) {
             return (x * xAxis.z + y * yAxis.z + z * zAxis.z);
         }
 

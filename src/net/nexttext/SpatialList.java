@@ -76,20 +76,20 @@ public class SpatialList {
             this.position = position;
         }
 
-        double getValue() {
+        float getValue() {
             if (position == LEFT)
-                return to.getBounds().getMinX();
+                return (float)to.getBounds().getMinX();
             if (position == RIGHT)
-                return to.getBounds().getMaxX();
+                return (float)to.getBounds().getMaxX();
             if (position == TOP)
-                return to.getBounds().getMinY();
+                return (float)to.getBounds().getMinY();
             if (position == BOTTOM)
-                return to.getBounds().getMaxY();
+                return (float)to.getBounds().getMaxY();
             throw new RuntimeException("Invalid Position: " + position);
         }
 
         public int compareTo(Edge e) {
-            return Double.compare(getValue(), e.getValue());
+            return Float.compare(getValue(), e.getValue());
         }
     }
 
@@ -138,15 +138,15 @@ public class SpatialList {
 		if (xAxis.size() != 0)
 		{
 			// binary search for the position
-            position[LEFT] = binarySearch(xAxis, to.getBounds().getMinX());
-            position[RIGHT] = binarySearch(xAxis, to.getBounds().getMaxX());
+            position[LEFT] = binarySearch(xAxis, (float)to.getBounds().getMinX());
+            position[RIGHT] = binarySearch(xAxis, (float)to.getBounds().getMaxX());
 		}
 		
 		// not an empty list for yAxis
 		if (yAxis.size() != 0)
 		{
-            position[TOP] = binarySearch(yAxis, to.getBounds().getMinY());
-            position[BOTTOM] = binarySearch(yAxis, to.getBounds().getMaxY());
+            position[TOP] = binarySearch(yAxis, (float)to.getBounds().getMinY());
+            position[BOTTOM] = binarySearch(yAxis, (float)to.getBounds().getMaxY());
 		}
 		
 		return position;
@@ -156,13 +156,13 @@ public class SpatialList {
      * Determine the index in the provided list where an Edge with the given
      * value should be placed.
 	 */
-    private int binarySearch(LinkedList<Edge> list, double value) {
+    private int binarySearch(LinkedList<Edge> list, float value) {
 		int lower = 0, middle, upper = list.size() - 1;
 		
 		while ( upper >= lower )
 		{
 			middle = ( upper + lower ) / 2;
-            int result = Double.compare(value, list.get(middle).getValue());
+            int result = Float.compare(value, list.get(middle).getValue());
 			if ( result > 0 )
 				lower = middle + 1;
 			else if ( result < 0 )
@@ -463,8 +463,8 @@ public class SpatialList {
 	 		return;
 	 	}
 	 	
-	 	double s1, e1;   // start-endpoints
-	 	double s2, e2;	 
+	 	float s1, e1;   // start-endpoints
+	 	float s2, e2;	 
 	 	
 	 	// 
 	 	// Ugly code follows:
@@ -476,16 +476,16 @@ public class SpatialList {
 	 	// insertion into different HashMaps (xCollisions/yCollisions).
 	 
 	 	if (axis == 0) {
-            s1 = glyphA.getBounds().getMinX();
-            e1 = glyphA.getBounds().getMaxX();
-            s2 = glyphB.getBounds().getMinX();
-            e2 = glyphB.getBounds().getMaxX();
+            s1 = (float)glyphA.getBounds().getMinX();
+            e1 = (float)glyphA.getBounds().getMaxX();
+            s2 = (float)glyphB.getBounds().getMinX();
+            e2 = (float)glyphB.getBounds().getMaxX();
 	 	}
 	 	else {
-            s1 = glyphA.getBounds().getMinY();
-            e1 = glyphA.getBounds().getMaxY();
-            s2 = glyphB.getBounds().getMinY();
-            e2 = glyphB.getBounds().getMaxY();
+            s1 = (float)glyphA.getBounds().getMinY();
+            e1 = (float)glyphA.getBounds().getMaxY();
+            s2 = (float)glyphB.getBounds().getMinY();
+            e2 = (float)glyphB.getBounds().getMaxY();
 	 	}
 	 	
 		if ( intervalOverlap( s1, e1, s2, e2 ) ) {
@@ -514,7 +514,7 @@ public class SpatialList {
 	/**
 	 * Determine if intervals [s1, e1] and [s2, e2] overlap or not
 	 */
-	private boolean intervalOverlap( double s1, double e1, double s2, double e2 ) {
+	private boolean intervalOverlap( float s1, float e1, float s2, float e2 ) {
 		if ((e2 > s1) && (e1 > s2))	return true;
 		return false;
 	}

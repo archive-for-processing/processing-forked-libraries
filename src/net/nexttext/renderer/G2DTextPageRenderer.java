@@ -136,9 +136,9 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
         g2.translate(pos.x, pos.y);
         ct.push(pos);
 
-        double rotation = node.getRotation().get();
+        float rotation = node.getRotation().get();
         g2.rotate(rotation);
-        ct.push(new Double(rotation));
+        ct.push(new Float(rotation));
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
      * </p>
      */
     protected void exitCoords(Stack ct) {
-        double rotation = ((Double) ct.pop()).doubleValue();
+        float rotation = ((Float) ct.pop()).floatValue();
         g2.rotate(-rotation);
 
         PVector pos = (PVector) ct.pop();

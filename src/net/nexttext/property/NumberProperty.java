@@ -57,8 +57,8 @@ public class NumberProperty extends Property {
     }
 
     public String toString() {
-        return "(" + Double.toString(original) +
-            ", " + Double.toString(value);
+        return "(" + Float.toString(original) +
+            ", " + Float.toString(value);
     }
 
     // Accessors in case it's easier to treat a number property as a long.
@@ -79,7 +79,7 @@ public class NumberProperty extends Property {
     }
 
     public void add(long value) {
-        value += (double) value;
+        value += (float) value;
         firePropertyChangeEvent();
     }
 }

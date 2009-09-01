@@ -33,14 +33,14 @@ import net.nexttext.property.PVectorProperty;
 /* $Id$ */
 public class Bounce extends PhysicsAction {
     
-    private double elasticity;
-    private double absorbEnergy;
+    private float elasticity;
+    private float absorbEnergy;
     
     /**
      * @param elasticity The elasticity of collision
      * @param absorbEnergy Objects absorb energy from each other if non zero
      */
-    public Bounce( double elasticity, double absorbEnergy ) {        
+    public Bounce( float elasticity, float absorbEnergy ) {        
         this.elasticity = elasticity;
         this.absorbEnergy = absorbEnergy;
     }

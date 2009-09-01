@@ -520,7 +520,7 @@ public class TextObjectBuilder {
         	TextObjectGroup firstInLine = (TextObjectGroup)newGroup.getLeftMostChild();
         	while (firstInLine != null) {
         		// start a new line and calculate a new bounding box
-        		double currY = firstInLine.getPositionAbsolute().y;
+        		float currY = firstInLine.getPositionAbsolute().y;
         		Rectangle bb = firstInLine.getBounds();
         		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
         		if (sibling == null) {
