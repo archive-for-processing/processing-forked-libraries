@@ -18,12 +18,12 @@ import net.nexttext.property.*;
 
 // constants
 static final float FONT_SIZE = 36.0f;
-static final double PATH_POINTDISTANCE = 20.0;
+static final float PATH_POINTDISTANCE = 20.0;
 static final Color IDLE_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.1f);
 static final Color SELECTED_COLOR = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 static final Color STROKE_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 static final float COLOR_SPEED = 10.0f;
-static final double ROTATE_SPEED = Math.PI/40;
+static final float ROTATE_SPEED = (float)Math.PI/40;
 
 // variables
 Book book;
@@ -85,22 +85,22 @@ public void buildBook() {
   String lines[] = loadStrings("iwf.txt");
   for (int i=0; i < lines.length; i++) {
     if (lines[i].length() != 0) {
-      buildLine(lines[i], new Vector3(0, 0, 0));
+      buildLine(lines[i], new PVector(0, 0, 0));
     }  
   }
 }
 
-public void buildLine(String text, Vector3 pos) {
+public void buildLine(String text, PVector pos) {
   // create a new passage
   TextObjectGroup newGroup = new TextObjectGroup(pos);
 
   // create a new word and set its temporary position to 0,0,0
-  Vector3 wOffset = new Vector3(0, 0, 0);
+  PVector wOffset = new PVector(0, 0, 0);
   TextObjectGroup wordGroup = new TextObjectGroup(wOffset);
 
   // each glyph is offset by gOffset from the word location.
   // start at 0,0,0
-  Vector3 gOffset = new Vector3(0, 0, 0);
+  PVector gOffset = new PVector(0, 0, 0);
 
   for (int i=0; i < text.length(); i++) {
     // get the glyph at position i
@@ -109,18 +109,18 @@ public void buildLine(String text, Vector3 pos) {
     // if glyph is a space (end of word)
     if (glyphString.compareTo(" ") == 0) {
       // get a random position for the word in the window
-      wOffset =  new Vector3(random(1)*width, random(1)*height, 0);
+      wOffset =  new PVector(random(1)*width, random(1)*height, 0);
 
       // set the word position
-      Vector3Property wordPos = (Vector3Property)wordGroup.getProperty("Position");
+      PVectorProperty wordPos = (PVectorProperty)wordGroup.getProperty("Position");
       wordPos.add(wOffset);
 
       // attach the word to the passage
       newGroup.attachChild(wordGroup);
 
       // create a new word and rest the glyph offset
-      wordGroup = new TextObjectGroup(new Vector3(0,0,0));
-      gOffset = new Vector3(0,0,0);
+      wordGroup = new TextObjectGroup(new PVector(0,0,0));
+      gOffset = new PVector(0,0,0);
 
     // if the glyph is not a space
     } else {
@@ -144,8 +144,8 @@ public void buildLine(String text, Vector3 pos) {
       glyph.init("Follower", followProperty);
 
       // translate the glyph offset the its width and spacing
-      gOffset.add(new Vector3(glyph.getLogicalBounds().getWidth(), 0, 0));
-      gOffset.add(new Vector3(2, 0));
+      gOffset.add(new PVector((float)glyph.getLogicalBounds().getWidth(), 0, 0));
+      gOffset.add(new PVector(2, 0));
 
       // attach the glyph to the word
       wordGroup.attachChild(glyph);   
@@ -156,10 +156,10 @@ public void buildLine(String text, Vector3 pos) {
   }
 
   // get a random position for the word in the window
-  wOffset =  new Vector3(random(1)*width, random(1)*height, 0);
+  wOffset =  new PVector(random(1)*width, random(1)*height, 0);
 
   // set the word position
-  Vector3Property wordPos = (Vector3Property)wordGroup.getProperty("Position");
+  PVectorProperty wordPos = (PVectorProperty)wordGroup.getProperty("Position");
   wordPos.add(wOffset);
 
   // attach the last word to the passage

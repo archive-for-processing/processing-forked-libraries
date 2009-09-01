@@ -42,7 +42,7 @@ public class Throw extends PhysicsAction {
       }
       
       // zero out any movement
-      getVelocity(to).set(new Vector3(0, 0, 0));
+      getVelocity(to).set(new PVector(0, 0, 0));
       getAngularVelocity(to).set(0);
          
     } else {

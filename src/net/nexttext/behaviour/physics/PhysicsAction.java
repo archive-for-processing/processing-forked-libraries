@@ -22,11 +22,12 @@ package net.nexttext.behaviour.physics;
 import java.util.HashMap;
 import java.util.Map;
 
+import processing.core.PVector;
+
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.AbstractAction;
-import net.nexttext.property.Vector3Property;
 import net.nexttext.property.NumberProperty;
+import net.nexttext.property.PVectorProperty;
 import net.nexttext.property.Property;
 
 /**
@@ -59,9 +60,9 @@ public abstract class PhysicsAction extends AbstractAction {
 
         NumberProperty mass = new NumberProperty(1);
         properties.put("Mass", mass);
-        Vector3Property velocity = new Vector3Property(0,0,0);
+        PVectorProperty velocity = new PVectorProperty(0,0,0);
         properties.put("Velocity", velocity);
-        Vector3Property force = new Vector3Property(0,0,0);
+        PVectorProperty force = new PVectorProperty(0,0,0);
         properties.put("Force", force);
         NumberProperty angularVelocity = new NumberProperty(0);
         properties.put("AngularVelocity", angularVelocity);
@@ -75,8 +76,8 @@ public abstract class PhysicsAction extends AbstractAction {
         return (NumberProperty) to.getProperty("Mass");
     }
 
-    public Vector3Property getVelocity(TextObject to) {
-        return (Vector3Property) to.getProperty("Velocity");
+    public PVectorProperty getVelocity(TextObject to) {
+        return (PVectorProperty) to.getProperty("Velocity");
     }
 
     public NumberProperty getAngularVelocity(TextObject to) {
@@ -88,8 +89,8 @@ public abstract class PhysicsAction extends AbstractAction {
      *
      * <p>The mass of the object will affect the resulting acceleration.  </p>
      */
-    public void applyForce(TextObject to, Vector3 force) {
-        Vector3Property totalForce = (Vector3Property) to.getProperty("Force");
+    public void applyForce(TextObject to, PVector force) {
+    	PVectorProperty totalForce = (PVectorProperty) to.getProperty("Force");
         totalForce.add(force);
     }
 
@@ -98,13 +99,13 @@ public abstract class PhysicsAction extends AbstractAction {
      *
      * <p>This acceleration is independent of the mass of the object.  </p>
      */
-    public void applyAcceleration(TextObject to, Vector3 acceleration) {
-        Vector3Property totalForce = (Vector3Property) to.getProperty("Force");
+    public void applyAcceleration(TextObject to, PVector acceleration) {
+    	PVectorProperty totalForce = (PVectorProperty) to.getProperty("Force");
 
-        Vector3 newForce = new Vector3(acceleration);
-        newForce.scalar(getMass(to).get());
+    	PVector newForce = new PVector(acceleration.x, acceleration.y, acceleration.z);
+        newForce.mult(getMass(to).get());
 
-        Vector3 newTotalForce = totalForce.get();
+        PVector newTotalForce = totalForce.get();
         newTotalForce.add(newForce);
 
         totalForce.set(newTotalForce);
@@ -116,7 +117,7 @@ public abstract class PhysicsAction extends AbstractAction {
      * <p>The mass of the object will affect the resulting angular
      * acceleration.  </p>
      */
-    public void applyAngularForce(TextObject to, double angularForce) {
+    public void applyAngularForce(TextObject to, float angularForce) {
         NumberProperty totalAngularForce =
             (NumberProperty) to.getProperty("AngularForce");
         totalAngularForce.set(totalAngularForce.get() + angularForce);
@@ -127,11 +128,11 @@ public abstract class PhysicsAction extends AbstractAction {
      *
      * <p>This acceleration is independent of the mass of the object.  </p>
      */
-    public void applyAngularAcceleration(TextObject to, double angAcc) {
+    public void applyAngularAcceleration(TextObject to, float angAcc) {
         NumberProperty totalAngForce =
             (NumberProperty) to.getProperty("AngularForce");
 
-        double newAngForce = angAcc * getMass(to).get();
+        float newAngForce = angAcc * getMass(to).get();
 
         totalAngForce.set(totalAngForce.get() + newAngForce);
     }

@@ -98,9 +98,9 @@ public abstract class AbstractAction implements Action {
     /**
      * Returns a TextObject's Position property.  
      */
-    protected Vector3Property getPosition(TextObject to) {
+    protected PVectorProperty getPosition(TextObject to) {
         // we assume Position exists on to since it's a core property
-        return (Vector3Property)to.getProperty("Position");
+        return (PVectorProperty)to.getProperty("Position");
     }
     
     /**

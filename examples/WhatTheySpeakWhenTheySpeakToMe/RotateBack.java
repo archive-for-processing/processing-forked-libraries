@@ -12,7 +12,7 @@ public class RotateBack extends IWillFollowAction {
      * Creates a new instance of RotateBack
      */
     public RotateBack() {
-        properties().init("speed", new NumberProperty(Math.PI / 40));
+        properties().init("speed", new NumberProperty((float)Math.PI / 40));
     }
 
     
@@ -22,7 +22,7 @@ public class RotateBack extends IWillFollowAction {
      * 
      * @param speed rotation speed
      */
-    public RotateBack(double speed) {
+    public RotateBack(float speed) {
         properties().init("speed", new NumberProperty(speed));
     }
 
@@ -33,7 +33,7 @@ public class RotateBack extends IWillFollowAction {
      * @param to the TextObject to act upon
      */
     public ActionResult behave(TextObject to) {
-        double speed = (double)((NumberProperty)properties().get("speed")).get();
+        float speed = ((NumberProperty)properties().get("speed")).get();
 
         // get the rotation
         NumberProperty rotation = to.getRotation();

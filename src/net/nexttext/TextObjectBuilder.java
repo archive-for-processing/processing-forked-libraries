@@ -106,9 +106,9 @@ public class TextObjectBuilder {
     PFont pfont;
     Font font;
     //Font font = new Font("courier", 0, 18);
-    private Vector3 spaceOffset; // Width of a space character
-    private Vector3 trackingOffset; // Space between two characters
-    private Vector3 lineHeight;  // Height of a line
+    private PVector spaceOffset; // Width of a space character
+    private PVector trackingOffset; // Space between two characters
+    private PVector lineHeight;  // Height of a line
     public void setFont(PFont pf) { 
         Font f = Book.loadFontFromPFont(pf);
         setFont(pf, f);
@@ -118,18 +118,18 @@ public class TextObjectBuilder {
         font = f;
         FontRenderContext frc = new FontRenderContext(null, false, false);
 		GlyphVector sp = f.createGlyphVector( frc, " " );		
-		spaceOffset = new Vector3( (int)sp.getLogicalBounds().getWidth(), 0,0);        
-		trackingOffset = new Vector3(0, 0, 0);
-		lineHeight = new Vector3( 0,(int)sp.getLogicalBounds().getHeight(),0);
+		spaceOffset = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
+		trackingOffset = new PVector(0, 0, 0);
+		lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
     }
     public PFont getFont() { return pfont; }
 
 
-    Vector3 pos = new Vector3(0,0,0);
-    public void setPosition(Vector3 pos) { this.pos = pos; }
-    public Vector3 getPosition() { return pos; }
+    PVector pos = new PVector(0,0,0);
+    public void setPosition(PVector pos) { this.pos = pos; }
+    public PVector getPosition() { return pos; }
 
-
+    
     boolean addToSpatialList = false;
     /** If created objects should be added to the spatial list. */
     public void setAddToSpatialList(boolean addToSpatialList) {
@@ -221,7 +221,7 @@ public class TextObjectBuilder {
      * @return the built TextObjectGroup
      */
     public TextObjectGroup build(String text, int x, int y) {
-    	return build(text, new Vector3(x, y));
+    	return build(text, new PVector(x, y));
     }
 
     /**
@@ -240,7 +240,7 @@ public class TextObjectBuilder {
     /**
      * Build a tree of TextObjects at the specified location.
      */
-    public TextObjectGroup build(String text, Vector3 pos) {
+    public TextObjectGroup build(String text, PVector pos) {
         
         TextObjectGroup newGroup = createGroup( text, pos );
         applyBuilderOptions(newGroup, false);
@@ -278,7 +278,7 @@ public class TextObjectBuilder {
      * @return the built TextObjectGroup
      */
     public TextObjectGroup buildSentence(String text, int x, int y, int lineLength) {
-    	return buildSentence(text, new Vector3(x, y), lineLength);
+    	return buildSentence(text, new PVector(x, y), lineLength);
     }
     
     /**
@@ -287,7 +287,7 @@ public class TextObjectBuilder {
      * <p>The returned TextObject tree will be laid out so that no more than
      * lineLength characters appear on a single line.  </p>
      */
-    public TextObjectGroup buildSentence( String text, Vector3 pos, int lineLength ) {
+    public TextObjectGroup buildSentence( String text, PVector pos, int lineLength ) {
     	//Make sure the lineLength is greater than 1 (space for the dash)
     	if (lineLength <= 1) {
     		PApplet.println("Warning: Line length must be greater than 1.");
@@ -300,7 +300,7 @@ public class TextObjectBuilder {
         StringTokenizer st = new StringTokenizer(text," \n",true);
         
         TextObjectGroup newGroup = new TextObjectGroup(pos);
-        Vector3 gOffset = new Vector3(0,0,0);
+        PVector gOffset = new PVector(0,0,0);
         
         while ( st.hasMoreTokens() ) {
         	// Get each token
@@ -315,7 +315,7 @@ public class TextObjectBuilder {
             
             // display other words
             TextObjectGroup token = createGroup( tokenStr, gOffset );
-            gOffset.add( new Vector3(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
+            gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
             
             newGroup.attachChild( token );
         }
@@ -418,12 +418,12 @@ public class TextObjectBuilder {
      * This methods returns a TextObject group created using the given string,
      * positioned using the given Vector3.
      */
-    private TextObjectGroup createGroup( String text, Vector3 pos ) {
+    private TextObjectGroup createGroup( String text, PVector pos ) {
         
         TextObjectGroup newGroup = new TextObjectGroup(groupProperties, pos);
 
         // Each glyph is offset by gOffset from the word location.
-        Vector3 gOffset = new Vector3(0,0,0);
+        PVector gOffset = new PVector(0,0,0);
         for (int i = 0; i < text.length(); i++) {
             
             String glyph = text.substring(i,i+1);
@@ -503,11 +503,11 @@ public class TextObjectBuilder {
     private void alignGroup(TextObjectGroup newGroup, boolean isSentence) {
     	if (!isSentence) {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
-        	Vector3 offset = newGroup.getPositionAbsolute();
+        	PVector offset = newGroup.getPositionAbsolute();
         	if (align == PConstants.CENTER) {
-        		offset.sub(new Vector3(bb.getCenterX(), bb.getCenterY()));
+        		offset.sub(new PVector((float)bb.getCenterX(), (float)bb.getCenterY()));
         	} else if (align == PConstants.RIGHT) {
-        		offset.sub(new Vector3(bb.getX()+bb.getWidth(), bb.getY()+bb.getHeight()));
+        		offset.sub(new PVector((float)(bb.getX()+bb.getWidth()), (float)(bb.getY()+bb.getHeight())));
         	}
         	TextObject child = newGroup.getLeftMostChild();
         	while (child != null) {
@@ -555,11 +555,12 @@ public class TextObjectBuilder {
     }
     
     private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds) {
-    	Vector3 offset = first.getPositionAbsolute();
+    	PVector offset = first.getPositionAbsolute();
     	if (align == PConstants.CENTER) {
-    		offset.sub(new Vector3(lineBounds.getCenterX(), lineBounds.getCenterY()));
+    		offset.sub(new PVector((float)lineBounds.getCenterX(), (float)lineBounds.getCenterY()));
     	} else if (align == PConstants.RIGHT) {
-    		offset.sub(new Vector3(lineBounds.getX()+lineBounds.getWidth(), lineBounds.getY()+lineBounds.getHeight()));
+    		offset.sub(new PVector((float)(lineBounds.getX()+lineBounds.getWidth()),
+    							   (float)(lineBounds.getY()+lineBounds.getHeight())));
     	}
     	TextObjectGroup currChild = first;
     	while (currChild != limit) {
@@ -572,8 +573,8 @@ public class TextObjectBuilder {
     	}
     }
     
-    public void setLineHeight(double d) { lineHeight.y = d; }
-    public double getLineHeight() { return lineHeight.y; }
-    public void setTrackingOffset(double d) { trackingOffset.x = d; }
-    public double getTrackingOffset() { return trackingOffset.x; }
+    public void setLineHeight(float d) { lineHeight.y = d; }
+    public float getLineHeight() { return lineHeight.y; }
+    public void setTrackingOffset(float d) { trackingOffset.x = d; }
+    public float getTrackingOffset() { return trackingOffset.x; }
 }

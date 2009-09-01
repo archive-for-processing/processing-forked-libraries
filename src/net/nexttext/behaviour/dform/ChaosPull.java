@@ -21,12 +21,14 @@ package net.nexttext.behaviour.dform;
 
 import java.util.Iterator;
 
+import processing.core.PVector;
+
 import net.nexttext.Locatable;
+import net.nexttext.PLocatableVector;
 import net.nexttext.TextObjectGlyph;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.TargetingAction;
-import net.nexttext.property.Vector3Property;
-import net.nexttext.property.Vector3PropertyList;
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
 
 /** 
  * ChaosPull is similar to {@link Pull} except that the control points get into a chaotic state when
@@ -39,11 +41,7 @@ public class ChaosPull extends DForm implements TargetingAction{
 
     Locatable target;
     int chaosStrength;
-    
-    public void setTarget( Locatable target ) {
-        this.target = target;
-    }
-    
+      
     public ChaosPull( Locatable target ) {
         this(target, 1200);
     }
@@ -53,30 +51,50 @@ public class ChaosPull extends DForm implements TargetingAction{
         this.chaosStrength = chaosStrength;
     }
     
+    public ChaosPull ( float x, float y ) {
+    	this(x, y, 0);
+    }
+    
+    public ChaosPull ( float x, float y, float z ) {
+    	this(new PLocatableVector(x, y, z));
+    }
+
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+    
+    public void setTarget( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    public void setTarget( Locatable target ) {
+        this.target = target;
+    }
+    
     /* (non-Javadoc)
      * @see net.nexttext.behaviour.dform.DForm#behave(net.nexttext.TextObjectGlyph)
      */
     public ActionResult behave(TextObjectGlyph to) {    
         
         // Get the position of the target relative to the TextObject.
-        Vector3 toAbsPos = to.getPositionAbsolute();
-        Vector3 targetV = target.getLocation();
+    	PVector toAbsPos = to.getPositionAbsolute();
+    	PVector targetV = target.getLocation();
         targetV.sub(toAbsPos);
 
         // Traverse the control points of the glyph, determine the distance
         // from it to the target and move it part way there.
-        Vector3PropertyList cPs = getControlPoints(to);
-        Iterator<Vector3Property> i = cPs.iterator();
+        PVectorListProperty cPs = getControlPoints(to);
+        Iterator<PVectorProperty> i = cPs.iterator();
         while (i.hasNext()) {
             
-            Vector3Property cP = i.next();
-            Vector3 p = cP.get();
+        	PVectorProperty cP = i.next();
+        	PVector p = cP.get();
             
-            Vector3 offset = new Vector3(targetV);
+        	PVector offset = new PVector(targetV.x, targetV.y, targetV.z);
             offset.sub(p);
             
-            double pullForce = chaosStrength/(offset.length()+25);
-            offset.scalar( pullForce / offset.length() );
+            float pullForce = chaosStrength/(offset.mag()+25);
+            offset.mult( pullForce / offset.mag() );
             
             p.add(offset);
             cP.set(p);  

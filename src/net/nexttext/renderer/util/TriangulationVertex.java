@@ -55,9 +55,10 @@ package net.nexttext.renderer.util;
 
 import java.util.logging.Logger;
 
+import processing.core.PVector;
+
 import net.nexttext.FastMath;
 import net.nexttext.GeometricException;
-import net.nexttext.Vector3;
 
 /**
  * Used to do a triangulation of a complex polygon.
@@ -96,7 +97,7 @@ public class TriangulationVertex extends PlanarVertex
 	 * @param i index
 	 * @param p point
 	 */
-	TriangulationVertex(int i, Vector3 p)
+	TriangulationVertex(int i, PVector p)
 	{
 		super(i, p);
 	}
@@ -144,9 +145,9 @@ public class TriangulationVertex extends PlanarVertex
 		if(prev_vert.yLessThan(this) && next_vert.yLessThan(this))
 		{
 			// Are we at the top but are we start/split
-			Vector3 v1 = prev_vert.point;
-			Vector3 v2 = point;
-			Vector3 v  = next_vert.point;
+			PVector v1 = prev_vert.point;
+			PVector v2 = point;
+			PVector v  = next_vert.point;
 			double turnang = (v2.x - v1.x) * (v.y - v1.y) - (v.x - v1.x) * (v2.y - v1.y);
 			if(turnang > 0)
 			{
@@ -160,9 +161,9 @@ public class TriangulationVertex extends PlanarVertex
 		else if(yLessThan(prev_vert) && yLessThan(next_vert))
 		{
 			// We are at the bottom, but are we end/merge ?
-			Vector3 v1 = prev_vert.point;
-			Vector3 v2 = point;
-			Vector3 v  = next_vert.point;
+			PVector v1 = prev_vert.point;
+			PVector v2 = point;
+			PVector v  = next_vert.point;
 			double turnang = (v2.x - v1.x) * (v.y - v1.y) - (v.x - v1.x) * (v2.y - v1.y);
 			if(turnang > 0)
 			{

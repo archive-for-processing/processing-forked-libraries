@@ -19,9 +19,9 @@
 
 package net.nexttext.behaviour.physics;
 
+import processing.core.PVector;
 import net.nexttext.Locatable;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.property.BooleanProperty;
 import net.nexttext.property.NumberProperty;
@@ -42,7 +42,7 @@ public class Approach extends PhysicsAction implements TargetingAction {
 	 * determine if Approach has reached its location.  A hitRange of 1 means 
 	 * that Approach will not return done unless the object is right on target.  
      */
-    public Approach( Locatable target, double speed, int hitRange ) {
+    public Approach( Locatable target, float speed, int hitRange ) {
         this.target = target;   
         if ( hitRange < 1 ) hitRange = 1;
         properties().init("Speed", new NumberProperty(speed));
@@ -57,7 +57,7 @@ public class Approach extends PhysicsAction implements TargetingAction {
      * but will start moving again if the object to be followed moves out of the hitRange.
      *  
      */
-    public Approach( Locatable target, double speed, int hitRange, boolean canComplete ) {
+    public Approach( Locatable target, float speed, int hitRange, boolean canComplete ) {
         this(target, speed, hitRange);
         ((BooleanProperty)properties().get("CanComplete")).set(canComplete);        
     }
@@ -71,16 +71,16 @@ public class Approach extends PhysicsAction implements TargetingAction {
     public ActionResult behave(TextObject to) {
          
         // get the vector from the abs position to the target               
-        Vector3 pos = to.getPositionAbsolute();
-        Vector3 dir = target.getLocation();
+    	PVector pos = to.getPositionAbsolute();
+    	PVector dir = target.getLocation();
 	 	dir.sub(pos);	 	
 	 	
 	 	// get the distance from the target as a scalar value
-	 	double dist = dir.length();
+	 	float dist = dir.mag();
                 
         if ( dist > ((NumberProperty)properties().get("HitRange")).get() ) {
             // apply an acceleration in the direction of the target                  
-            dir.scalar( (1 / dist) * ((NumberProperty)properties().get("Speed")).get() );
+            dir.mult( (1 / dist) * ((NumberProperty)properties().get("Speed")).get() );
             
             applyAcceleration(to, dir);
             

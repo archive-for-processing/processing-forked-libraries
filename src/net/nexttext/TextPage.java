@@ -19,7 +19,8 @@
 
 package net.nexttext;
 
-import net.nexttext.property.Vector3Property;
+import processing.core.PVector;
+import net.nexttext.property.PVectorProperty;
 import net.nexttext.renderer.TextPageRenderer;
 
 /**
@@ -48,8 +49,8 @@ public class TextPage {
     protected TextPageRenderer textPageRenderer;
     
     public TextPage(Book book, TextPageRenderer t){
-        properties.init("Position", new Vector3Property( new Vector3(0,0,0)));
-        properties.init("Rotation", new Vector3Property( new Vector3(0,0,0)));
+        properties.init("Position", new PVectorProperty( new PVector(0,0,0)));
+        properties.init("Rotation", new PVectorProperty( new PVector(0,0,0)));
 
         this.textRoot = new TextObjectGroup();
         book.getTextRoot().attachChild(textRoot);
@@ -67,14 +68,14 @@ public class TextPage {
     /**
      * A getter for the standard "Position" property.  
      */
-    public Vector3Property getPosition() {
-    	return (Vector3Property)(properties.get("Position"));    	
+    public PVectorProperty getPosition() {
+    	return (PVectorProperty)(properties.get("Position"));    	
     }
 
     /**
      * A getter for the standard "Rotation" property.  
      */
-    public Vector3Property getRotation() {
-    	return (Vector3Property)(properties.get("Rotation"));    	
+    public PVectorProperty getRotation() {
+    	return (PVectorProperty)(properties.get("Rotation"));    	
     }
 }

@@ -56,7 +56,7 @@ package net.nexttext.renderer.util;
 
 import java.util.logging.Logger;
 
-import net.nexttext.Vector3;
+import processing.core.PVector;
 
 /**
  * PlanarVertex. 
@@ -67,7 +67,7 @@ public class PlanarVertex
             .getName());
     
 	int index;
-	Vector3 point;
+	PVector point;
 	private PlanarEdge arb_outgoing;
 	
 	/**
@@ -75,7 +75,7 @@ public class PlanarVertex
 	 * @param i index
 	 * @param p	point
 	 */
-	PlanarVertex(int i, Vector3 p)
+	PlanarVertex(int i, PVector p)
 	{
 		this.index = i;
 		this.point = p;
@@ -223,7 +223,7 @@ public class PlanarVertex
 	 * Get point.
 	 * @return point
 	 */
-	public Vector3 getPoint()
+	public PVector getPoint()
 	{
 		return point;
 	}

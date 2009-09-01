@@ -19,10 +19,10 @@
 
 package net.nexttext.behaviour.physics;
 
+import processing.core.PVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * This action gives the object a one-time velocity push in a given
@@ -34,29 +34,29 @@ public class Push extends PhysicsAction {
      * Default constructor. Force is equal to 3.
      */
     public Push() {
-        init(new Vector3(1.0, 0.0, 0.0), 3);
+        init(new PVector(1.0f, 0.0f, 0.0f), 3);
     }
     
-    public Push(Vector3 direction, float force) {
+    public Push(PVector direction, float force) {
     	init(direction, force);
     }
     
-    public void init(Vector3 direction, float force) {
-        properties().init("Direction", new Vector3Property( direction ) );
+    public void init(PVector direction, float force) {
+        properties().init("Direction", new PVectorProperty( direction ) );
         properties().init("Force", new NumberProperty( force ) );
     }
 
     public ActionResult behave( TextObject to ) {
         
         // get a push vector in a random direction
-    	Vector3 push = ((Vector3Property)properties.get("Direction")).get();
-        double force = ((NumberProperty)properties().get("Force")).get();
+    	PVector push = ((PVectorProperty)properties.get("Direction")).get();
+        float force = ((NumberProperty)properties().get("Force")).get();
         push.normalize();
-        push.scalar(force);
+        push.mult(force);
         
         // add the push vector to the velocity
-        Vector3Property velProp = getVelocity(to);
-        Vector3 vel = velProp.get();
+        PVectorProperty velProp = getVelocity(to);
+        PVector vel = velProp.get();
         vel.add(push);
         velProp.set(vel);
                

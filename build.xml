@@ -9,13 +9,13 @@
 	</description>
 		
 	<path id="processing.classpath">
-	    <pathelement location="C:\Program Files\processing\lib\core.jar"/>
+	    <pathelement location="C:\Program Files (x86)\processing\lib\core.jar"/>
 	</path>
 	<path id="opengl.classpath">
-	    <pathelement location="C:\Program Files\processing\libraries\opengl\library\opengl.jar"/>
+	    <pathelement location="C:\Program Files (x86)\processing\libraries\opengl\library\opengl.jar"/>
 	</path>
 	<path id="jogl.classpath">
-	    <pathelement location="C:\Program Files\processing\libraries\opengl\library\jogl.jar"/>
+	    <pathelement location="C:\Program Files (x86)\processing\libraries\opengl\library\jogl.jar"/>
 	</path>
 	
     <target name="jvm-get">

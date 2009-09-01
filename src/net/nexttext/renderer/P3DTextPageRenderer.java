@@ -30,16 +30,13 @@ import java.nio.IntBuffer;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PGraphics2D;
 import processing.core.PGraphicsJava2D;
-import net.nexttext.FastMath;
+import processing.core.PVector;
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.TextPage;
-import net.nexttext.Vector3;
-import net.nexttext.Vector3ArithmeticException;
 import net.nexttext.renderer.util.ClosedPolygon;
 import net.nexttext.renderer.util.Glyph3D;
 import net.nexttext.renderer.util.TriangulationVertex;
@@ -176,8 +173,8 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         p.pushMatrix();
 
         // properties
-        Vector3 pos = page.getPosition().get();
-        Vector3 rot = page.getRotation().get();
+        PVector pos = page.getPosition().get();
+        PVector rot = page.getRotation().get();
         
         if (renderer_type == RendererType.THREE_D) {
 			p.translate((float)pos.x, (float)pos.y, (float)pos.z);
@@ -209,7 +206,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         p.pushMatrix();
 
         // translation
-        Vector3 pos = node.getPosition().get();
+        PVector pos = node.getPosition().get();
         
         if (renderer_type == RendererType.THREE_D)
         	p.translate((float)pos.x, (float)pos.y, 0); //todo: use Z coord
@@ -346,10 +343,10 @@ public class P3DTextPageRenderer extends TextPageRenderer {
             switch (seg) {
                 case PathIterator.SEG_MOVETO:
                     closedPolygon = new ClosedPolygon();
-					closedPolygon.addPoint(new Vector3(coords[0], -coords[1], 0));
+					closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
                     break;
                 case PathIterator.SEG_LINETO:
-					closedPolygon.addPoint(new Vector3(coords[0], -coords[1], 0));
+					closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
 
                     break;
                 case PathIterator.SEG_CLOSE:
@@ -382,7 +379,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
 	        // Add all the vertices (either one or two layers)
 	        int vcount = 0; // Used to pad indexes.
 	        for (TriangulationVertex v : fontGlyph.getVertices()) {
-	        	triList.verts[vcount + v.getIndex()] = new Vector3(v.getPoint());
+	        	triList.verts[vcount + v.getIndex()] = v.getPoint().get();
 	        	triList.verts[vcount + v.getIndex()].z += 0.5f;
 	        }
 	        fontGlyph.getSurface().rewind();
@@ -400,7 +397,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         
         //draw the triangles
         p.beginShape(PApplet.TRIANGLES);
-        Vector3 vert;
+        PVector vert;
         triList.triangles.rewind();
         while(triList.triangles.remaining() > 0) {
         	vert = triList.verts[triList.triangles.get()];
@@ -449,11 +446,11 @@ public class P3DTextPageRenderer extends TextPageRenderer {
     }    
     
     protected class TriangleList {
-        public Vector3 verts[] = null;
+        public PVector verts[] = null;
         IntBuffer triangles = null;
         
         public TriangleList(int numVertex, int numTriangles) {
-        	 verts = new Vector3[numVertex];
+        	 verts = new PVector[numVertex];
         	 triangles = createIntBuffer(numTriangles * 3);
         }
     }

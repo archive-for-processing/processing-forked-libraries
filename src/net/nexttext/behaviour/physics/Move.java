@@ -19,10 +19,10 @@
 
 package net.nexttext.behaviour.physics;
 
+import processing.core.PVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * This is the basic Move; actions from the physics package will have no effect
@@ -62,11 +62,11 @@ public class Move extends PhysicsAction {
     public ActionResult behave(TextObject to) {
 
         // Determine the acceleration to apply to the object.
-        Vector3 acceleration = ((Vector3Property) to.getProperty("Force")).get();
-        acceleration.scalar( 1 / getMass(to).get());
+    	PVector acceleration = ((PVectorProperty) to.getProperty("Force")).get();
+        acceleration.mult( 1 / getMass(to).get());
 
         // Update velocity based on the acceleration
-        Vector3Property velocity = getVelocity(to);
+        PVectorProperty velocity = getVelocity(to);
         velocity.add(acceleration);
 
         // Apply the drag to the velocity
@@ -76,11 +76,11 @@ public class Move extends PhysicsAction {
         getPosition(to).add(velocity.get());
 
         // Reset the force to zero for the next frame.
-        ((Vector3Property) to.getProperty("Force")).set(new Vector3());
+        ((PVectorProperty) to.getProperty("Force")).set(new PVector());
 
 
         // Determine angular acceleration
-        double angAcc = (((NumberProperty) to.getProperty("AngularForce")).get()
+        float angAcc = (((NumberProperty) to.getProperty("AngularForce")).get()
                          / getMass(to).get());
 
         // Update angular velocity based on the accelaration
@@ -88,7 +88,7 @@ public class Move extends PhysicsAction {
         angVel.add(angAcc);
 
         // Apply drag to angular velocity
-        double angDrag = ((NumberProperty) properties.get("AngularDrag")).get();
+        float angDrag = ((NumberProperty) properties.get("AngularDrag")).get();
         angVel.set(angVel.get() * (1 - angDrag));
 
         // Update rotation based on angular velocity

@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import processing.core.PVector;
+
 /**
  * An object in the core text data.
  *
@@ -81,14 +83,14 @@ public abstract class TextObject implements Locatable {
     /**
      * Constructor with initial position.
      */
-    protected TextObject(Vector3 pos) {
+    protected TextObject(PVector pos) {
         this(posToMap(new HashMap<String, Property>(0), pos));
     }
 
     /**
      * Constructor with initial position and extra properties.
      */
-    protected TextObject(Map<String, Property> props, Vector3 pos) {
+    protected TextObject(Map<String, Property> props, PVector pos) {
         this(posToMap(props, pos));
     }
 
@@ -98,9 +100,9 @@ public abstract class TextObject implements Locatable {
      * on the first line.
      */
 
-    private static Map<String, Property> posToMap(Map<String, Property> map, Vector3 pos) {
+    private static Map<String, Property> posToMap(Map<String, Property> map, PVector pos) {
         Map<String, Property> nMap = new HashMap<String, Property>(map);
-        nMap.put("Position", new Vector3Property( pos ) );
+        nMap.put("Position", new PVectorProperty( pos ) );
         return nMap;
     }
 
@@ -114,7 +116,7 @@ public abstract class TextObject implements Locatable {
     protected TextObject(Map<String, Property> propertyMap) {
         properties.init(propertyMap);
         properties.init("BirthDateTime", new DateTimeProperty());
-        properties.init("Position", new Vector3Property( new Vector3(0,0,0)));
+        properties.init("Position", new PVectorProperty( new PVector(0,0,0)));
         properties.init("Rotation", new NumberProperty( 0 ));
         properties.init("Color", new ColorProperty() );
         properties.init("Stroke", new StrokeProperty());
@@ -347,11 +349,11 @@ public abstract class TextObject implements Locatable {
      *
      * @return Vector3 the center point of the globalBoundingPolygon
      */
-    public Vector3 getCenter() {
+    public PVector getCenter() {
         int centerX = (int)(getBounds().getX()+getBounds().getWidth()/2);
         int centerY = (int)(getBounds().getY()+getBounds().getHeight()/2);
         
-        return new Vector3(centerX, centerY, 0);
+        return new PVector(centerX, centerY, 0);
     }
 
     /**
@@ -505,8 +507,8 @@ public abstract class TextObject implements Locatable {
     /**
      * A getter for the standard "Position" property.  
      */
-    public Vector3Property getPosition() {
-    	return (Vector3Property)(properties.get("Position"));    	
+    public PVectorProperty getPosition() {
+    	return (PVectorProperty)(properties.get("Position"));    	
     }
     
     /**
@@ -586,7 +588,7 @@ public abstract class TextObject implements Locatable {
      * <p>The absolute position is expressed in terms of screen coordinates.</p>     
      */
     
-    public Vector3 getPositionAbsolute() {              
+    public PVector getPositionAbsolute() {              
         return getAbsoluteCoordinateSystem().getOrigin();
     }
     
@@ -667,7 +669,7 @@ public abstract class TextObject implements Locatable {
     /**
      * Returns the object's location in absolute coordinates.   
      */
-    public Vector3 getLocation() {
+    public PVector getLocation() {
         return getPositionAbsolute();
     }
 }

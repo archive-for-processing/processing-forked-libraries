@@ -21,10 +21,10 @@ package net.nexttext.behaviour.physics;
 
 import java.awt.Polygon;
 
+import processing.core.PVector;
+
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
-import net.nexttext.Vector3ArithmeticException;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * This action performs collision response on two objects by moving them apart
@@ -66,9 +66,9 @@ public class Bounce extends PhysicsAction {
         	
     	
     	// get the minimum translation vector between A and B.  
-        Vector3 mtd = getVectorToSeparateAFromB(A, B);
+    	PVector mtd = getVectorToSeparateAFromB(A, B);
     	  
-        if ( mtd.isZero() ) {
+        if ( mtd.mag() == 0 ) {
             // objects do not intersect, so do nothing.
 	 	    return new ActionResult(false, false, false);
         }
@@ -76,7 +76,7 @@ public class Bounce extends PhysicsAction {
         // ** COLLISION RESPONSE **
        
         // see if B has a velocity property
-        Vector3Property velPropB = getVelocity(toB);
+        PVectorProperty velPropB = getVelocity(toB);
         
         // if it doesn't, then B is not affected by a Physics action.  In this
         // case, treat it as an unmovable object.
@@ -84,14 +84,14 @@ public class Bounce extends PhysicsAction {
             // move A the full distance
             translate( getPosition(toA), mtd );
             // reflect the velocity of A using the inversed mtd
-            mtd.scalar(-1);
+            mtd.mult(-1);
             reflectVelocity( getVelocity(toA), mtd );
         }
         // otherwise, have each object move half the distance and reflect 
         // their velocities.
         else {
             // have each object move half the distance
-            mtd.scalar(0.5);  
+            mtd.mult(0.5f);  
             translate( getPosition(toA), mtd );
             
             // to reflect velocity, we need the inverse mtd, so reflect
@@ -99,7 +99,7 @@ public class Bounce extends PhysicsAction {
             reflectVelocity( velPropB, mtd );
             
             // inverse the mtd for toB          
-            mtd.scalar(-1);
+            mtd.mult(-1);
             translate( getPosition(toB), mtd );
             
             // now that mtd has been inversed, we can reflect A's velocity.
@@ -114,8 +114,8 @@ public class Bounce extends PhysicsAction {
     /**
      * Moves translates a Position property by the given distance
      */
-    protected void translate( Vector3Property posProp, Vector3 distance ) {       
-        Vector3 pos = posProp.get();
+    protected void translate( PVectorProperty posProp, PVector distance ) {       
+    	PVector pos = posProp.get();
         pos.add( distance );
         posProp.set( pos );
     }
@@ -124,36 +124,28 @@ public class Bounce extends PhysicsAction {
      * Reflects a Velocity property using the Minimum Translation Distance to
      * calculate the plane of collision.
      */
-    protected void reflectVelocity( Vector3Property velProp, Vector3 mtd ) {
-           	
-        try {
-            // the unit normal to the plane of collision corresponds to the 
-            // normalized minimum translation distance.
-            Vector3 N = new Vector3( mtd.x*-1, mtd.y*-1 );
-            N.normalize();
-        
-	        // get the velocity vector	        
-	        Vector3 V = velProp.get();
-	    	
-	        // Only reflect the velocity if the object is travelling
-	        // into the collision.
-	        if ((N.theta(V)) > (Math.PI / 2)) {
-	            
-	            // reflected velocity formula:
-	            // V - ( (1 + elasticity) * N.V )N
-	            double dot = N.dot(V);
-	            dot *= 1 + elasticity;
-	            N.scalar(dot);
-	            V.sub(N);
-	            
-	            // finally, update velocity
-	            velProp.set(V);
-	        }
-    	}
-        catch ( Vector3ArithmeticException v3ae ) {
-            // This means mtd was zero, so just ignore it.
-            // Technically this shouldn't happen, we already returned if mtd == 0
-            return;
+    protected void reflectVelocity( PVectorProperty velProp, PVector mtd ) {
+        // the unit normal to the plane of collision corresponds to the 
+        // normalized minimum translation distance.
+    	PVector N = new PVector( mtd.x*-1, mtd.y*-1 );
+        N.normalize();
+    
+        // get the velocity vector	        
+        PVector V = velProp.get();
+    	
+        // Only reflect the velocity if the object is travelling
+        // into the collision.
+        if ((PVector.angleBetween(N, V)) > (Math.PI / 2)) {
+            
+            // reflected velocity formula:
+            // V - ( (1 + elasticity) * N.V )N
+            float dot = N.dot(V);
+            dot *= 1 + elasticity;
+            N.mult(dot);
+            V.sub(N);
+            
+            // finally, update velocity
+            velProp.set(V);
         }
     }    
     
@@ -166,13 +158,13 @@ public class Bounce extends PhysicsAction {
      *
      * <p>Note that it returns a zero vector if A and B do not intersect. </p>
      */
-    protected Vector3 getVectorToSeparateAFromB( Polygon A, Polygon B ) {
+    protected PVector getVectorToSeparateAFromB( Polygon A, Polygon B ) {
     	
-		Vector3 fromA = getVectorToSeparateAFromBInner( A, B );
-		Vector3 fromB = getVectorToSeparateAFromBInner( B, A );
+    	PVector fromA = getVectorToSeparateAFromBInner( A, B );
+    	PVector fromB = getVectorToSeparateAFromBInner( B, A );
 		
 		// change vector fromB to push A
-		fromB.scalar(-1);
+		fromB.mult(-1);
 		
 		// XXXBug:
 		// There seems to be a bug in the getVectorToSeperateAFromBInner 
@@ -183,23 +175,23 @@ public class Bounce extends PhysicsAction {
 		// response is often excessive and doesn't look right, due to the
 		// fact that vector returned may not be the smallest push
 		// vector.
-		if ( fromA.length() == 0 && fromB.length() != 0 ) {
+		if ( fromA.mag() == 0 && fromB.mag() != 0 ) {
 		    return fromB;
 		}		
-		if ( fromB.length() == 0 && fromA.length() != 0 ) {
+		if ( fromB.mag() == 0 && fromA.mag() != 0 ) {
 		    return fromA;
 		}
 		   
-	    return fromA.length() < fromB.length() ? fromA : fromB ;
+	    return fromA.mag() < fromB.mag() ? fromA : fromB ;
     }
     
     /**
      * Returns the smallest vector which pushes A away from B and is perpendicular to
      * one of A's edges.
      */
-    protected Vector3 getVectorToSeparateAFromBInner( Polygon A, Polygon B ) {
+    protected PVector getVectorToSeparateAFromBInner( Polygon A, Polygon B ) {
 
-	    Vector3 smallestVector = null;
+    	PVector smallestVector = null;
 	    	    
 	    int numEdgesA = A.npoints;
     	for ( int i=0; i <= numEdgesA ; i++) {
@@ -208,25 +200,25 @@ public class Bounce extends PhysicsAction {
     		int vX = A.xpoints[i%numEdgesA] - A.xpoints[ (i+1)%numEdgesA ];
     		int vY = A.ypoints[i%numEdgesA] - A.ypoints[ (i+1)%numEdgesA ];
     		// find the axis perpendicular to this edge
-    		Vector3 axis = new Vector3( -vY, vX, 0 );
+    		PVector axis = new PVector( -vY, vX, 0 );
     		
     		//ignore zero-length edge
-    		if (axis.length() == 0) continue;
+    		if (axis.mag() == 0) continue;
     		
     		axis.normalize();
 
      		// see if this axis separates the polygons.  if it doesn't, this
      		// method will return a vector representing the intersection
      		// projected on that specific axis
-     		Vector3 pushVector = AxisSeparatesPolygons( axis, A, B );
+    		PVector pushVector = AxisSeparatesPolygons( axis, A, B );
      		
      		if ( (smallestVector == null) || 
-     			 (pushVector.length() < smallestVector.length()) ) {
+     			 (pushVector.mag() < smallestVector.mag()) ) {
 	     		smallestVector = pushVector;
      		}     		     		
     	}
  		
-    	if ( smallestVector == null ) smallestVector = new Vector3();    	
+    	if ( smallestVector == null ) smallestVector = new PVector();    	
     	return smallestVector;	    
     }
    
@@ -235,7 +227,7 @@ public class Bounce extends PhysicsAction {
      * Return a vector to move Polygon A away from Polygon B on the given axis,
      * or the zero vector if they don't intersect.
      */
-    protected Vector3 AxisSeparatesPolygons( Vector3 axis, Polygon A, Polygon B ) {
+    protected PVector AxisSeparatesPolygons( PVector axis, Polygon A, Polygon B ) {
     	
     	// project each polygon onto the axis
     	Interval intervalA = calculateInterval( axis, A );
@@ -243,17 +235,17 @@ public class Bounce extends PhysicsAction {
       	
         if (   (intervalA.min > intervalB.max)
             || (intervalB.min > intervalA.max)) {
-            return new Vector3();
+            return new PVector();
         }
 
         // The vector to return is parallel to the axis unit vector,
-        Vector3 ret = new Vector3(axis);
+        PVector ret = new PVector(axis.x, axis.y, axis.z);
 
         // and scaled by the overlap, with the correct sign.
         if (intervalA.max > intervalB.max) {
-            ret.scalar(intervalB.max - intervalA.min);
+            ret.mult(intervalB.max - intervalA.min);
         } else {
-            ret.scalar(intervalB.min - intervalA.max);
+            ret.mult(intervalB.min - intervalA.max);
         }
         return ret;
     }
@@ -262,22 +254,22 @@ public class Bounce extends PhysicsAction {
      * Projects a Polygon P onto axis N and returns the min/max interval of the
      * projection. 
      */
-    protected Interval calculateInterval( Vector3 axis, Polygon P ) {
+    protected Interval calculateInterval( PVector axis, Polygon P ) {
     	
     	// for each vertex
     	int numEdges = P.npoints;
     	
-     	Interval interval = new Interval(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+     	Interval interval = new Interval(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY);
     
     	for ( int i=0; i < numEdges ; i++) {
     		
     		// project the vertex into the axis
-    		double vX = P.xpoints[i];
-    		double vY = P.ypoints[i];
+    		float vX = P.xpoints[i];
+    		float vY = P.ypoints[i];
 
-    		Vector3 vertex = new Vector3( vX, vY, 0 );
+    		PVector vertex = new PVector( vX, vY, 0 );
       		
-      		double dot = axis.dot( vertex );
+      		float dot = axis.dot( vertex );
       		 
     	 	if ( dot < interval.min ) interval.min = dot;
     		else if ( dot > interval.max ) interval.max = dot;
@@ -290,10 +282,10 @@ public class Bounce extends PhysicsAction {
     
     protected class Interval {
 	 	
-	    double min;
-	    double max;
+	    float min;
+	    float max;
 	    
-	    Interval(double min, double max) {
+	    Interval(float min, float max) {
 		 	this.min = min;
 		 	this.max = max;   
 	    }	    

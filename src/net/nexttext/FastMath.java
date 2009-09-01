@@ -56,6 +56,8 @@ package net.nexttext;
 
 import java.util.Random;
 
+import processing.core.PVector;
+
 /**
  * <code>FastMath</code> provides 'fast' math approximations and float equivalents of Math
  * functions.  These are all used as static values and functions.
@@ -601,10 +603,10 @@ final public class FastMath {
      * Converts a point from Spherical coordinates to Cartesian (using positive
      * Y as up) and stores the results in the store var.
      */
-    public static Vector3 sphericalToCartesian(Vector3 sphereCoords,
-            Vector3 store) {
+    public static PVector sphericalToCartesian(PVector sphereCoords,
+    		PVector store) {
         store.y = sphereCoords.x * FastMath.sin(sphereCoords.z);
-        double a = sphereCoords.x * FastMath.cos(sphereCoords.z);
+        float a = sphereCoords.x * FastMath.cos(sphereCoords.z);
         store.x = a * FastMath.cos(sphereCoords.y);
         store.z = a * FastMath.sin(sphereCoords.y);
 
@@ -616,8 +618,8 @@ final public class FastMath {
      * Spherical and stores the results in the store var. (Radius, Azimuth,
      * Polar)
      */
-    public static Vector3 cartesianToSpherical(Vector3 cartCoords,
-            Vector3 store) {
+    public static PVector cartesianToSpherical(PVector cartCoords,
+    		PVector store) {
         if (cartCoords.x == 0)
             cartCoords.x = FastMath.FLT_EPSILON;
         store.x = FastMath
@@ -635,10 +637,10 @@ final public class FastMath {
      * Converts a point from Spherical coordinates to Cartesian (using positive
      * Z as up) and stores the results in the store var.
      */
-    public static Vector3 sphericalToCartesianZ(Vector3 sphereCoords,
-            Vector3 store) {
+    public static PVector sphericalToCartesianZ(PVector sphereCoords,
+    		PVector store) {
         store.z = sphereCoords.x * FastMath.sin(sphereCoords.z);
-        double a = sphereCoords.x * FastMath.cos(sphereCoords.z);
+        float a = sphereCoords.x * FastMath.cos(sphereCoords.z);
         store.x = a * FastMath.cos(sphereCoords.y);
         store.y = a * FastMath.sin(sphereCoords.y);
 
@@ -650,8 +652,8 @@ final public class FastMath {
      * Spherical and stores the results in the store var. (Radius, Azimuth,
      * Polar)
      */
-    public static Vector3 cartesianZToSpherical(Vector3 cartCoords,
-            Vector3 store) {
+    public static PVector cartesianZToSpherical(PVector cartCoords,
+    		PVector store) {
         if (cartCoords.x == 0)
             cartCoords.x = FastMath.FLT_EPSILON;
         store.x = FastMath

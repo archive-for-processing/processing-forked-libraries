@@ -26,6 +26,8 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
+import processing.core.PVector;
+
 import net.nexttext.property.ColorProperty;
 import net.nexttext.property.Property;
 
@@ -44,13 +46,13 @@ public class TextObjectGroup extends TextObject {
 	 * Default Constructor.  Creates a new TextObjectGroup at Position (0,0,0)
 	 */
 	public TextObjectGroup() {
-        this(new Vector3());
+        this(new PVector());
 	}
 	
 	/**
 	 * Creates a new TextObjectGroup at the specified position.
 	 */
-	public TextObjectGroup( Vector3 pos ) {
+	public TextObjectGroup( PVector pos ) {
         this(new HashMap<String, Property>(0), pos);
 	}
 
@@ -58,7 +60,7 @@ public class TextObjectGroup extends TextObject {
 	 * Creates a new TextObjectGroup at the specified position, and with extra
 	 * properties.
 	 */
-	public TextObjectGroup(Map<String, Property> props, Vector3 pos) {
+	public TextObjectGroup(Map<String, Property> props, PVector pos) {
         super(props, pos);
 	}
 

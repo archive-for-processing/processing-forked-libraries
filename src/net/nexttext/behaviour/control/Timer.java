@@ -44,7 +44,7 @@ public class Timer extends AbstractAction {
      * 
      * @param duration In seconds  
      */
-    public Timer( Action action, double duration ) {
+    public Timer( Action action, float duration ) {
         this.action = action;
         this.timeLeft = 1000*(long)duration;
         properties().init("Duration", new NumberProperty(1000*duration));

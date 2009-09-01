@@ -34,7 +34,7 @@ package net.nexttext.renderer.util;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import net.nexttext.Vector3;
+import processing.core.PVector;
 
 /**
  * This class represents as its name indicates a planar subdivision.
@@ -65,10 +65,10 @@ public abstract class DoublyConnectedEdgeList<Vertex extends PlanarVertex, Edge 
 	// These are the edges of the glyph
 	ArrayList<Edge> edges       = new ArrayList<Edge>();
 
-	public abstract Vertex createVertex(int index, Vector3 p);
+	public abstract Vertex createVertex(int index, PVector p);
 	public abstract Edge   createEdge(Vertex origin, boolean real);
 
-	public Vertex addVertex(Vector3 p)
+	public Vertex addVertex(PVector p)
 	{
 		Vertex point = createVertex(vertices.size(), p);
 		vertices.add(point);

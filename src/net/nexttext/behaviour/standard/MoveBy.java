@@ -19,12 +19,13 @@
 
 package net.nexttext.behaviour.standard;
 
+import processing.core.PVector;
 import net.nexttext.Locatable;
+import net.nexttext.PLocatableVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.TargetingAction;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * Move an object by the given vector amount.
@@ -38,17 +39,21 @@ public class MoveBy extends AbstractAction implements TargetingAction {
 
     protected Locatable offset;
 
-    public MoveBy(double x, double y) {
-    	this(new Vector3(x, y));
+    public MoveBy(float x, float y) {
+    	this(new PVector(x, y));
     }
     
     public MoveBy(Locatable offset) {
-        this.offset = offset;
+    	this.offset = offset;
     }
 
+    public MoveBy(PVector offset) {
+    	this.offset = new PLocatableVector(offset);
+    }
+    
     public ActionResult behave(TextObject to) {
-        Vector3Property posProp = getPosition(to);
-        posProp.add(offset.getLocation());
+    	PVectorProperty posProp = getPosition(to);
+       	posProp.add(offset.getLocation());
         return new ActionResult(false, false, false);
     }
 
@@ -57,5 +62,12 @@ public class MoveBy extends AbstractAction implements TargetingAction {
      */
     public void setTarget(Locatable offset) {
         this.offset = offset;
+   }
+
+    /**
+     * Sets an offset to move by.
+     */
+    public void setTarget(PVector offset) {
+        this.offset = new PLocatableVector(offset);
     }
 }

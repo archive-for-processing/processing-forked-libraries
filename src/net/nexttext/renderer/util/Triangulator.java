@@ -67,10 +67,10 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import net.nexttext.FastMath;
 import net.nexttext.GeometricException;
-import net.nexttext.Vector3;
 import net.nexttext.renderer.util.Triangulator.YMonotonePolygon.Triangle;
 
 /**
@@ -85,6 +85,8 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 	private Vector<YMonotonePolygon> monotone_polygons = new Vector<YMonotonePolygon>();
 	int polyids = 0;
 	
+	public final static PVector UNIT_X = new PVector(1, 0, 0);
+
 	/**
 	 * Get X coord of an edge at a given Y coord.
 	 * @param edge
@@ -412,7 +414,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 	}
 
 	@Override
-	public TriangulationVertex createVertex(int index, Vector3 p)
+	public TriangulationVertex createVertex(int index, PVector p)
 	{
 		return new TriangulationVertex(index, p);
 	}
@@ -622,7 +624,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 			return arr;
 		}
 
-		private boolean isLeftOf(Vector3 A, Vector3 B, Vector3 P)
+		private boolean isLeftOf(PVector A, PVector B, PVector P)
 		{
 			//return 0> (v2.x - v1.x) * (v.y - v1.y) - (v.x - v1.x) * (v2.y - v1.y);
 			return 0 > (B.x-A.x) * (P.y-A.y) - (P.x-A.x) * (B.y-A.y);
@@ -658,10 +660,14 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				logger.info("Other end(1):"+x1_v);
 				PlanarVertex x2_v = edge2.getOtherEnd(currentvertex);
 				logger.info("Other end(2):"+x2_v);
-				Vector3 x1_v_v = new Vector3(x1_v.getPoint()).sub(currentvertex.getPoint()).normalize();
-				Vector3 x2_v_v = new Vector3(x2_v.getPoint()).sub(currentvertex.getPoint()).normalize();
-				x1 = x1_v_v.dot(Vector3.UNIT_X); // edge0.getOtherEnd(currentvertex).point.x;
-				x2 = x2_v_v.dot(Vector3.UNIT_X); // edge1.getOtherEnd(currentvertex).point.x;
+				PVector x1_v_v = x1_v.getPoint().get();
+				x1_v_v.sub(currentvertex.getPoint());
+				x1_v_v.normalize();
+				PVector x2_v_v = x2_v.getPoint().get();
+				x2_v_v.sub(currentvertex.getPoint());
+				x2_v_v.normalize();
+				x1 = x1_v_v.dot(UNIT_X); // edge0.getOtherEnd(currentvertex).point.x;
+				x2 = x2_v_v.dot(UNIT_X); // edge1.getOtherEnd(currentvertex).point.x;
 				if(Math.abs(x1 - x2) < FastMath.FLT_EPSILON)
 				{
 					// Even worse they are also on the same level here...

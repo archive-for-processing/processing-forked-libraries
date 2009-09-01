@@ -59,7 +59,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import net.nexttext.Vector3;
+import processing.core.PVector;
 
 /**
  * A 3D representation of a glyph object.
@@ -74,7 +74,7 @@ public class Glyph3D {
      */
     Triangulator subdivision = new Triangulator();
     Vector<PlanarEdge> outline;
-    Vector3 outline_normals[];
+    PVector outline_normals[];
 
     /** These are the indices for the triangulation of the surface of the glyph. */
     IntBuffer surface;
@@ -99,7 +99,7 @@ public class Glyph3D {
          * alright."); }
          */
         int first_vert_id = subdivision.getVertices().size();
-        for (Vector3 p : poly.getPoints()) {
+        for (PVector p : poly.getPoints()) {
             PlanarVertex vert = subdivision.addVertex(p);
             if (vert.getIndex() > first_vert_id) {
                 subdivision.addEdge(vert.getIndex(), vert.getIndex() - 1);
@@ -122,13 +122,13 @@ public class Glyph3D {
             }
         }
         // Calculate outline normals
-        outline_normals = new Vector3[outline.size()];
+        outline_normals = new PVector[outline.size()];
         for (PlanarEdge e : outline) {
             TriangulationVertex vert = (TriangulationVertex) e.getDestination();
             // Normal 1
-            Vector3 normal1 = new Vector3(vert.getOutGoingEdge()
-                    .getDestination().getPoint())
-                    .sub(vert.getPoint()).normalize();
+            PVector normal1 = vert.getOutGoingEdge().getDestination().getPoint().get();
+            normal1.sub(vert.getPoint());
+            normal1.normalize();
             // Vector3 normal1 = new
             // Vector3(vert.getOutGoingEdge().getDestination().getPoint()).subtractLocal(vert.getPoint());
             normal1.z = -normal1.x;
@@ -136,16 +136,17 @@ public class Glyph3D {
             normal1.y = normal1.z;
             normal1.z = 0;
             // Normal 2
-            Vector3 normal2 = new Vector3(vert.getPoint()).sub(
-                    vert.getInGoingEdge().getOrigin().getPoint())
-                    .normalize();
+            PVector normal2 = vert.getPoint().get();
+            normal2.sub(vert.getInGoingEdge().getOrigin().getPoint());
+            normal2.normalize();
             // Vector3 normal2 = new
             // Vector3(vert.getPoint()).subtractLocal(vert.getInGoingEdge().getOrigin().getPoint());
             normal2.z = -normal2.x;
             normal2.x = normal2.y;
             normal2.y = normal2.z;
             normal2.z = 0;
-            normal1.add(normal2).normalize();
+            normal1.add(normal2);
+            normal1.normalize();
 
             outline_normals[vert.getIndex()] = normal1;
         }
@@ -162,7 +163,7 @@ public class Glyph3D {
         return outline;
     }
 
-    public Vector3[] getOutlineNormals() {
+    public PVector[] getOutlineNormals() {
         return outline_normals;
     }
 

@@ -5,12 +5,12 @@ import java.awt.geom.GeneralPath;
 import java.util.Stack;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 import net.nexttext.Book;
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.TextPage;
-import net.nexttext.Vector3;
 
 /**
  * 
@@ -99,8 +99,8 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
      * Transform the Graphics2D into the coordinates of the given TextPage.
      */
     protected void enterCoords(TextPage page) {
-    	Vector3 pos = page.getPosition().get();
-    	Vector3 rot = page.getRotation().get();
+    	PVector pos = page.getPosition().get();
+    	PVector rot = page.getRotation().get();
 
     	g2.translate(pos.x, pos.y);
         g2.translate(p.width/2.0f, p.height/2.0f);
@@ -112,8 +112,8 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
      * Transform the Graphics2D back into the coordinates given TextPage.
      */
     protected void exitCoords(TextPage page) {
-    	Vector3 pos = page.getPosition().get();
-    	Vector3 rot = page.getRotation().get();
+    	PVector pos = page.getPosition().get();
+    	PVector rot = page.getRotation().get();
 
         g2.translate(p.width/2.0f, p.height/2.0f);
 		g2.rotate(-rot.z);
@@ -132,7 +132,7 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
      * </p>
      */
     protected void enterCoords(Stack ct, TextObject node) {
-        Vector3 pos = node.getPosition().get();
+    	PVector pos = node.getPosition().get();
         g2.translate(pos.x, pos.y);
         ct.push(pos);
 
@@ -152,7 +152,7 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
         double rotation = ((Double) ct.pop()).doubleValue();
         g2.rotate(-rotation);
 
-        Vector3 pos = (Vector3) ct.pop();
+        PVector pos = (PVector) ct.pop();
         g2.translate(-pos.x, -pos.y);
     }
 

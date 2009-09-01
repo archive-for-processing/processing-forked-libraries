@@ -37,7 +37,7 @@ void setup() {
   book.addGlyphBehaviour(stayInWindowBehaviour);
 
   // create the chaos pull Action
-  AbstractAction chaosPull = new ChaosPull(new Vector3(width/2, height/2));
+  AbstractAction chaosPull = new ChaosPull(width/2, height/2);
 
   // create the reform Action
   AbstractAction reform = new Reform();
@@ -72,13 +72,3 @@ void draw() {
   background(0);
   book.stepAndDraw();
 }
-
-
-
-
-
-
-
-
-
-

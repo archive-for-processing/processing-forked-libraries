@@ -44,7 +44,7 @@ public class Colorize extends AbstractAction {
      * @param color The target color
      * @param speed The speed factor at which the colorization is applied
      */
-    public Colorize ( Color color, double speed ) {        
+    public Colorize ( Color color, float speed ) {        
         this(color, speed, true, false);
     }
     
@@ -57,7 +57,7 @@ public class Colorize extends AbstractAction {
      * @param fill Indicates if the action has to be processed on the fill
      * @param stroke Indicates if the action has to be processed on the stroke
      */
-    public Colorize ( Color color, double speed, boolean fill, boolean stroke ) {        
+    public Colorize ( Color color, float speed, boolean fill, boolean stroke ) {        
         applyToFill = fill;
         applyToStroke = stroke;
         if (fill) {
@@ -79,7 +79,7 @@ public class Colorize extends AbstractAction {
      * @param colorStroke The target color of the stroke
      * @param speedStroke The colorization speed for the stroke
      */
-    public Colorize ( Color colorFill, double speedFill, Color colorStroke, double speedStroke ) {
+    public Colorize ( Color colorFill, float speedFill, Color colorStroke, float speedStroke ) {
         applyToFill = true;
         applyToStroke = true;
         properties().init("ColorFill", new ColorProperty(colorFill) );

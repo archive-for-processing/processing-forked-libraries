@@ -21,6 +21,7 @@ package net.nexttext.input;
 
 import net.nexttext.*;
 import processing.core.PConstants;
+import processing.core.PVector;
 
 /**
  * An input source for mouse information.
@@ -50,10 +51,10 @@ public abstract class Mouse extends InputSource implements Locatable {
      */
     public abstract int getY();
 
-    public Vector3 getPosition() { return new Vector3(getX(),getY()); }
+    public PVector getPosition() { return new PVector(getX(),getY()); }
 
     /**
      * Locatable interface.
      */
-    public Vector3 getLocation() { return getPosition(); }
+    public PVector getLocation() { return getPosition(); }
 }

@@ -33,14 +33,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
 import net.nexttext.property.Property;
 import net.nexttext.property.PropertyChangeListener;
-import net.nexttext.property.Vector3Property;
-import net.nexttext.property.Vector3PropertyList;
 import net.nexttext.property.ColorProperty;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PVector;
 
 /**
  * TextObjectGlyph represents an individual glyph and its vectorial outline in 
@@ -128,7 +129,7 @@ public class TextObjectGlyph extends TextObject {
 	 * @param pfont     A processing.core.PFont object 
 	 */
 	public TextObjectGlyph(String glyph, PFont pfont) {
- 		this(glyph, pfont, new Vector3(0,0,0));
+ 		this(glyph, pfont, new PVector(0,0,0));
 	}
 	
 	/**
@@ -136,9 +137,9 @@ public class TextObjectGlyph extends TextObject {
 	 *
 	 * @param glyph		A one character-long string 
 	 * @param pfont     A processing.core.PFont object 
-	 * @param position  A Vector3 representing the glyph's relative position
+	 * @param position  A PVector representing the glyph's relative position
 	 */
-    public TextObjectGlyph(String glyph, PFont pfont, Vector3 position) {
+    public TextObjectGlyph(String glyph, PFont pfont, PVector position) {
         this(glyph, pfont, new HashMap<String, Property>(0), position);
     }
 
@@ -147,17 +148,17 @@ public class TextObjectGlyph extends TextObject {
 	 *
 	 * @param glyph		A one character-long string 
 	 * @param pfont     A processing.core.PFont object 
-	 * @param pos       A Vector3 representing the glyph's relative position
+	 * @param pos       A PVector representing the glyph's relative position
 	 * @param props     Initial properties for the glyph.
 	 */
-	public TextObjectGlyph(String glyph, PFont pfont, Map<String, Property> props, Vector3 pos) {
+	public TextObjectGlyph(String glyph, PFont pfont, Map<String, Property> props, PVector pos) {
         super(props, pos);
 
 	 	this.glyph 	= glyph;
 		this.pfont 	= pfont;
 		font = Book.loadFontFromPFont(pfont);
 
-        properties.init("Control Points", new Vector3PropertyList());
+        properties.init("Control Points", new PVectorListProperty());
         
         glyphChanged();
 
@@ -242,8 +243,8 @@ public class TextObjectGlyph extends TextObject {
     /**
      * Convenience accessor for the control points.
      */
-    public Vector3PropertyList getControlPoints() {
-        return (Vector3PropertyList) getProperty("Control Points");
+    public PVectorListProperty getControlPoints() {
+        return (PVectorListProperty) getProperty("Control Points");
     }
     
     /**
@@ -253,7 +254,7 @@ public class TextObjectGlyph extends TextObject {
     	if (outline == null) {   		
             // we need to rebuild the outline
             // get the list of vertices for this glyph
-            Vector3PropertyList vertices = getControlPoints();
+    		PVectorListProperty vertices = getControlPoints();
             // create a new GeneralPath to hold the vector outline
             GeneralPath gp = new GeneralPath();
             // get an iterator for the list of contours
@@ -265,7 +266,7 @@ public class TextObjectGlyph extends TextObject {
                 // get the list of vertices for this contour
                 int contour[] = (int[]) it.next();
 
-                Vector3Property firstPoint = vertices.get(contour[0]);
+                PVectorProperty firstPoint = vertices.get(contour[0]);
                 // move the pen to the beginning of the contour
                 gp.moveTo((float) firstPoint.getX(), (float) firstPoint
                         .getY());
@@ -273,8 +274,8 @@ public class TextObjectGlyph extends TextObject {
                 // generate all the quads forming the line
                 for (int i = 1; i < contour.length-1; i+=2) {
 
-                	Vector3Property controlPoint = vertices.get(contour[i]);
-                	Vector3Property anchorPoint = vertices.get(contour[i + 1]);
+                	PVectorProperty controlPoint = vertices.get(contour[i]);
+                	PVectorProperty anchorPoint = vertices.get(contour[i + 1]);
 
                     gp.quadTo((float) controlPoint.getX(), (float) controlPoint.getY(),
                     		  (float) anchorPoint.getX(), (float) anchorPoint.getY());                   
@@ -295,7 +296,7 @@ public class TextObjectGlyph extends TextObject {
      */
     public GeneralPath getOutlineAbsolute() {
         GeneralPath outline = new GeneralPath(getOutline());
-        Vector3 posAbs = getPositionAbsolute();
+        PVector posAbs = getPositionAbsolute();
     	outline.transform(AffineTransform.getTranslateInstance(posAbs.x, posAbs.y));
     	return outline;
     }
@@ -342,7 +343,7 @@ public class TextObjectGlyph extends TextObject {
 	 */
 	protected void buildControlPoints() {
 		// create a Vector3PropertyList object to store the vertices
-        Vector3PropertyList vertices = getControlPoints();
+		PVectorListProperty vertices = getControlPoints();
 		
 		// clear previously stored vertices
 		vertices.clear();
@@ -369,8 +370,8 @@ public class TextObjectGlyph extends TextObject {
 		// used to remember the previously calculated Anchor and ControlPoint.
 		// for a more detailed description of what an anchor and controlpoint are,
 		// see the architecture document.
-		Vector3	lastAnchor = new Vector3();
-		Vector3 lastControlPoint = new Vector3();
+		PVector	lastAnchor = new PVector();
+		PVector lastControlPoint = new PVector();
 		
 		// get the Shape for this glyph
 		GlyphVector gv = font.createGlyphVector( frc, this.glyph );
@@ -395,9 +396,9 @@ public class TextObjectGlyph extends TextObject {
 					// start a new tmpContour vector
 					tmpContour = new Vector<Integer>();
 				 	// get the starting point for this contour	
-					Vector3 startingPoint = new Vector3( points[0], points[1] );
+					PVector startingPoint = new PVector( (float)points[0], (float)points[1] );
 					// store the point in the list of vertices
-					vertices.add( new Vector3Property( startingPoint) );
+					vertices.add( new PVectorProperty( startingPoint) );
 					// store this point in the current tmpContour and increment
 					// the vertices index
 					tmpContour.add( vertexIndex );
@@ -414,16 +415,16 @@ public class TextObjectGlyph extends TextObject {
 				 	 
 					// then, we must find the middle of the line and use it as 
 					// control point in order to allow smooth deformations
-					Vector3 endPoint = new Vector3( points[0], points[1] );
-					Vector3 midPoint = new Vector3( (lastAnchor.x + endPoint.x)/2, 
+					PVector endPoint = new PVector( (float)points[0], (float)points[1] );
+					PVector midPoint = new PVector( (lastAnchor.x + endPoint.x)/2, 
 								 			  		(lastAnchor.y + endPoint.y)/2  );
-					vertices.add( new Vector3Property( midPoint) );
+					vertices.add( new PVectorProperty( midPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
 					
 					// finally, we must add the endPoint twice to the contour
 					// to preserve sharp corners
-					vertices.add( new Vector3Property( endPoint) );
+					vertices.add( new PVectorProperty( endPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
 				 	
@@ -435,16 +436,16 @@ public class TextObjectGlyph extends TextObject {
 					
 				case PathIterator.SEG_QUADTO:
 
-					Vector3 controlPoint = new Vector3( points[0], points[1] );
-					Vector3 anchorPoint = new Vector3( points[2], points[3] );
+					PVector controlPoint = new PVector( (float)points[0], (float)points[1] );
+					PVector anchorPoint = new PVector( (float)points[2], (float)points[3] );
 					
 					// Store control point.
-					vertices.add( new Vector3Property( controlPoint) );
+					vertices.add( new PVectorProperty( controlPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
 
 					// Store anchor point.
-					vertices.add( new Vector3Property( anchorPoint) );
+					vertices.add( new PVectorProperty( anchorPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
 				
@@ -516,10 +517,10 @@ public class TextObjectGlyph extends TextObject {
             maxY = sb.getMaxY();
 
         } else {
-            Vector3PropertyList vertices = getControlPoints();
+        	PVectorListProperty vertices = getControlPoints();
 
-            for ( Iterator<Vector3Property> i = vertices.iterator(); i.hasNext(); ) {
-                Vector3Property vertex = i.next();
+            for ( Iterator<PVectorProperty> i = vertices.iterator(); i.hasNext(); ) {
+            	PVectorProperty vertex = i.next();
                 minX = Math.min(vertex.getX(), minX);
                 minY = Math.min(vertex.getY(), minY);
                 maxX = Math.max(vertex.getX(), maxX);

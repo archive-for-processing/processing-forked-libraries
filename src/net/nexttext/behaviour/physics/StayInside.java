@@ -22,10 +22,11 @@ package net.nexttext.behaviour.physics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
+import processing.core.PVector;
+
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * StayInside tries to keep an object inside a Shape.  Most likely, you 
@@ -41,7 +42,7 @@ public class StayInside extends PhysicsAction {
      * @param shape an area to remain inside of.
      * @param jiggle is number of pixels to jiggle object to keep it inside. 
      */
-    public StayInside(Shape shape, double jiggle) {
+    public StayInside(Shape shape, float jiggle) {
         this.shape = shape;
         properties().init("Jiggle", new NumberProperty(jiggle));
     }
@@ -68,8 +69,8 @@ public class StayInside extends PhysicsAction {
         
         if ( shape.intersects( toBB )) {
 
-            Vector3Property posProp = getPosition(to);
-            Vector3Property velProp = getVelocity(to);
+        	PVectorProperty posProp = getPosition(to);
+        	PVectorProperty velProp = getVelocity(to);
 
             // Record which sides intersect
             boolean xLeft   = shape.intersects(toBB.getMinX(), toBB.getMinY(),
@@ -99,15 +100,15 @@ public class StayInside extends PhysicsAction {
     }
 
     //  Jiggle a word within the target.
-    private void jiggle(boolean xAxis, int dir, Vector3Property pos, Vector3Property vel) {
-        double jiggle = ((NumberProperty)properties().get("Jiggle")).get();
+    private void jiggle(boolean xAxis, int dir, PVectorProperty pos, PVectorProperty vel) {
+        float jiggle = ((NumberProperty)properties().get("Jiggle")).get();
         // Move it back within the object
-        pos.add( xAxis ? new Vector3(dir * jiggle, 0) : new Vector3(0, dir * jiggle) );
+        pos.add( xAxis ? new PVector(dir * jiggle, 0) : new PVector(0, dir * jiggle) );
         // Scale back the velocity by max(half,jiggle) if it's moving out
         if (dir * (xAxis? vel.get().x : vel.get().y) < 0) {
-            double velMove = -1 * (xAxis? vel.get().x : vel.get().y) / 2;
+            float velMove = -1 * (xAxis? vel.get().x : vel.get().y) / 2;
             if (Math.abs(velMove) > jiggle) { velMove = dir * jiggle; }
-            vel.add(new Vector3( xAxis? velMove : 0, xAxis? 0: velMove , 0));
+            vel.add(new PVector( xAxis? velMove : 0, xAxis? 0: velMove , 0));
         }
     }
 

@@ -57,7 +57,7 @@ package net.nexttext.renderer.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.nexttext.Vector3;
+import processing.core.PVector;
 
 /**
  * ClosedPolygon
@@ -68,17 +68,17 @@ import net.nexttext.Vector3;
 public class ClosedPolygon
 {
 	/** List of points forming the polygon. */
-	private List<Vector3> points = new ArrayList<Vector3>();
+	private List<PVector> points = new ArrayList<PVector>();
 
 	/**
 	 * Add a point to the polygon.
 	 * @param point
 	 */
-	public void addPoint(Vector3 point)
+	public void addPoint(PVector point)
 	{
 		if(points.size() > 0)
 		{
-			Vector3 lastpoint = points.get(points.size() - 1);
+			PVector lastpoint = points.get(points.size() - 1);
 			if(lastpoint.equals(point))
 			{
 				//logger.info("Skipping duplicate point.");
@@ -88,11 +88,16 @@ public class ClosedPolygon
 		if(points.size() > 1)
 		{
 			// Check they are not on a straight line
-			Vector3 p_1 = points.get(points.size()-2);
-			Vector3 p_2 = points.get(points.size()-1);
+			PVector p_1 = points.get(points.size()-2);
+			PVector p_2 = points.get(points.size()-1);
 			
-			Vector3 v1 = new Vector3(p_2).sub(p_1).normalize();
-			Vector3 v2 = new Vector3(point).sub(p_2).normalize();
+			PVector v1 = new PVector(p_2.x, p_2.y, p_2.z);
+			v1.sub(p_1);
+			v1.normalize();
+			
+			PVector v2 = new PVector(point.x, point.y, point.z);
+			v2.sub(p_2);
+			v2.normalize();
 			
 			if(v1.equals(v2))
 			{
@@ -123,7 +128,7 @@ public class ClosedPolygon
 	 * Get the list of points.
 	 * @return the list of points
 	 */
-	public List<Vector3> getPoints()
+	public List<PVector> getPoints()
 	{
 		return points;
 	}
@@ -143,9 +148,9 @@ public class ClosedPolygon
 		}
 		// Now we just need to see if the turn is right/left
 		{
-			Vector3 v1 = points.get((rightMostPoint - 1 + size) % size);
-			Vector3 v2 = points.get(rightMostPoint);
-			Vector3 v = points.get((rightMostPoint + 1) % size);
+			PVector v1 = points.get((rightMostPoint - 1 + size) % size);
+			PVector v2 = points.get(rightMostPoint);
+			PVector v = points.get((rightMostPoint + 1) % size);
 			double turnang = (v2.x - v1.x) * (v.y - v1.y) - (v.x - v1.x) * (v2.y - v1.y);
 			
 			//logger.info("turnang:"+turnang);

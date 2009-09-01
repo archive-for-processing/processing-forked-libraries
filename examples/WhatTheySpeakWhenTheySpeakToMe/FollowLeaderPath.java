@@ -1,5 +1,6 @@
 import net.nexttext.*;
 import net.nexttext.property.*;
+import processing.core.PVector;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class FollowLeaderPath extends IWillFollowAction {
 
     // mouse path input source
     SnakeMousePath isrcMousePath;
-    double pathPointDistance;
+    float pathPointDistance;
 
     
     /** 
@@ -36,7 +37,7 @@ public class FollowLeaderPath extends IWillFollowAction {
      * @param isrcMousePath the SnakeMousePath input source 
      * @param pathPointDistance the minimum distance between two consecutive points on the path
      */
-    public FollowLeaderPath(SnakeMousePath isrcMousePath, double pathPointDistance) {
+    public FollowLeaderPath(SnakeMousePath isrcMousePath, float pathPointDistance) {
         this.isrcMousePath = isrcMousePath;
         this.pathPointDistance = pathPointDistance;
     }
@@ -63,7 +64,7 @@ public class FollowLeaderPath extends IWillFollowAction {
             int pathIndex = path.size() - 1;
 
             int pathPixelDistance = 0;  // distance in pixels from the end of the path where this object belongs
-            Vector3 pathPosition;  // current path position, derived from pathIndex
+            PVector pathPosition;  // current path position, derived from pathIndex
 
             // start at the object itself as it is the leader
             TextObject rightSibling = to;
@@ -75,30 +76,30 @@ public class FollowLeaderPath extends IWillFollowAction {
                 
                 // calculate the vector to the previous path point
                 Point prevPathPoint = (Point)path.get(prevPathIndex);
-                Vector3 prevPathVector3 = new Vector3(prevPathPoint.x, prevPathPoint.y);
+                PVector prevPathVector3 = new PVector(prevPathPoint.x, prevPathPoint.y);
                 
                 // calculate the vector to the next path point
                 Point nextPathPoint = (Point)path.get(prevPathIndex - 1);
-                Vector3 nextPathVector3 = new Vector3(nextPathPoint.x, nextPathPoint.y);
+                PVector nextPathVector3 = new PVector(nextPathPoint.x, nextPathPoint.y);
 
                 // calculate the vector from the previous path point to the object's desired location on the path
-                pathPosition = new Vector3(nextPathVector3);
+                pathPosition = nextPathVector3.get();
                 pathPosition.sub(prevPathVector3);
-                pathPosition.scalar((pathPixelDistance % pathPointDistance) / pathPointDistance);
+                pathPosition.mult((pathPixelDistance % pathPointDistance) / pathPointDistance);
                 pathPosition.add(prevPathVector3);
                 
                 // move the glyph towards the new position on the path
-                Vector3Property position = (Vector3Property)rightSibling.getProperty("Position");		
-                Vector3 positionAbs = rightSibling.getPositionAbsolute();
+                PVectorProperty position = (PVectorProperty)rightSibling.getProperty("Position");		
+                PVector positionAbs = rightSibling.getPositionAbsolute();
                  
                 // calculate the offset from the current position
-                Vector3 move = new Vector3(pathPosition.x - positionAbs.x,
+                PVector move = new PVector(pathPosition.x - positionAbs.x,
                                            pathPosition.y - positionAbs.y);
 
                 // move towards new position by a max of 20 
-                if (move.length() > 20.0) {
+                if (move.mag() > 20.0) {
                     move.normalize();
-                    move.scalar(20.0);
+                    move.mult(20.0f);
                 }
 
                 // translate position
@@ -108,12 +109,12 @@ public class FollowLeaderPath extends IWillFollowAction {
                 // on the path located before and after the position of the glyph
                 NumberProperty rotation = (NumberProperty)rightSibling.getProperty("Rotation");
                 if (pathIndex > 0) {
-                    double rotate = 0;
+                    float rotate = 0;
                     if (pathIndex < path.size()-1) {
-                        rotate = Math.atan2(nextPathPoint.y-prevPathPoint.y,
+                        rotate = (float)Math.atan2(nextPathPoint.y-prevPathPoint.y,
                                             nextPathPoint.x-prevPathPoint.x);
                     } else if (pathIndex == path.size()-1) {
-                        rotate = Math.atan2(prevPathPoint.y-nextPathPoint.y,
+                        rotate = (float)Math.atan2(prevPathPoint.y-nextPathPoint.y,
                                             prevPathPoint.x-nextPathPoint.x);
                     }
 

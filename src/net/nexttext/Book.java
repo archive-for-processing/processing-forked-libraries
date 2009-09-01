@@ -679,10 +679,10 @@ public class Book {
     }
     
     // font property setters and getters
-    public void setLineHeight(double d) { toBuilder.setLineHeight(d); }
-    public double getLineHeight() { return toBuilder.getLineHeight(); }
-    public void setTrackingOffset(double d) { toBuilder.setTrackingOffset(d); }
-    public double getTrackingOffset() { return toBuilder.getTrackingOffset(); }
+    public void setLineHeight(float d) { toBuilder.setLineHeight(d); }
+    public float getLineHeight() { return toBuilder.getLineHeight(); }
+    public void setTrackingOffset(float d) { toBuilder.setTrackingOffset(d); }
+    public float getTrackingOffset() { return toBuilder.getTrackingOffset(); }
     
     //////////////////////////////////////////////////////////////////////
     // Rudimentary Logging System
