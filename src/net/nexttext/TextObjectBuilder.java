@@ -505,9 +505,9 @@ public class TextObjectBuilder {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
         	PVector offset = newGroup.getPositionAbsolute();
         	if (align == PConstants.CENTER) {
-        		offset.sub(new PVector((float)bb.getCenterX(), (float)bb.getCenterY()));
+        		offset.sub(new PVector((float)bb.getCenterX(), offset.y));
         	} else if (align == PConstants.RIGHT) {
-        		offset.sub(new PVector((float)(bb.getX()+bb.getWidth()), (float)(bb.getY()+bb.getHeight())));
+        		offset.sub(new PVector((float)(bb.getX()+bb.getWidth()), offset.y));
         	}
         	TextObject child = newGroup.getLeftMostChild();
         	while (child != null) {
