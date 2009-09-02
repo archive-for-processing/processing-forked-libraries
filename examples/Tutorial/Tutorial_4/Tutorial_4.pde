@@ -33,8 +33,11 @@ void setup() {
   strokeWeight(5);
 
   // create the follow mouse Behaviour
-  AbstractAction follow = new Repeat(new MoveTo(Book.mouse, 1), 0);
-  Behaviour followBehaviour = follow.makeBehaviour();
+  MoveTo moveTo = new MoveTo(Book.mouse, 1); // move to the mouse position at a (slow) speed of 1
+  Repeat follow = new Repeat(moveTo); // repeat the moveTo action indefinitely
+  Behaviour followBehaviour = follow.makeBehaviour(); // make the behaviour from those combined actions
+
+  // add the behaviour to the book to affect future glyphs
   book.addGlyphBehaviour(followBehaviour);
 
   // build the text
@@ -45,7 +48,6 @@ void draw() {
   background(0);
   book.stepAndDraw();
 }
-
 
 
 

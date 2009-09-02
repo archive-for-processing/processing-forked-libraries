@@ -32,17 +32,21 @@ void setup() {
   strokeWeight(5);
 
   // create and add the stay in window Behaviour
-  AbstractAction stayInWindow = new StayInWindow(this);
+  StayInWindow stayInWindow = new StayInWindow(this);
   Behaviour stayInWindowBehaviour = stayInWindow.makeBehaviour();
   book.addGlyphBehaviour(stayInWindowBehaviour);
 
   // create the follow mouse Behaviour
-  AbstractAction follow;
+  MoveTo moveTo;
+  Repeat follow;
   Behaviour followBehaviour;
   for (int i=0; i < word.length(); i++) {
     // instantiate and add the Behaviour
-    follow = new Repeat(new MoveTo(Book.mouse, i+1), 0);
-    followBehaviour = follow.makeBehaviour();
+    moveTo = new MoveTo(Book.mouse, i+1); // move to the mouse position (each letter faster than the previous)
+    follow = new Repeat(moveTo); // repeat the moveTo action indefinitely
+    followBehaviour = follow.makeBehaviour(); // make the behaviour from those combined actions
+
+    // add the behaviour to the book to affect future glyphs
     book.addGlyphBehaviour(followBehaviour);
 
     // build the text
@@ -57,7 +61,6 @@ void draw() {
   background(0);
   book.stepAndDraw();
 }
-
 
 
 

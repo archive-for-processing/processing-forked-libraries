@@ -37,13 +37,35 @@ public class MoveTo extends AbstractAction implements TargetingAction {
     protected Locatable target;
 
     /**
-     * 
+     * Move a TextObject to a specified position.
+     * @param x x target position
+     * @param y y target position
+     */
+    public MoveTo(int x, int y) {
+    	this(x, y, Long.MAX_VALUE);
+    }
+    
+    /**
+     * Move a TextObject to a specified position at a certain speed.
+     * @param x x target position
+     * @param y x target position
+     * @param speed moving speed
      */
     public MoveTo(int x, int y, long speed) {
     	this(new PVector(x, y), speed);
     }
     
     /**
+     * Move a TextObject to a target.
+     * @param target locatable target
+     */
+    public MoveTo( Locatable target ) {
+        this(target, Long.MAX_VALUE);
+    }    
+    
+    /**
+     * Move a TextObject to a target at a certain speed.
+     * @param target locatable target
 	 * @param speed The speed of the approach represented as the number of
 	 * pixels to move in each frame.  Use a very large number for instant
 	 * travel.
@@ -54,6 +76,16 @@ public class MoveTo extends AbstractAction implements TargetingAction {
     }
 
     /**
+     * Move a TextObject to a target.
+     * @param target locatable target
+     */
+    public MoveTo( PVector target ) {
+        this(target, Long.MAX_VALUE);
+    } 
+    
+    /**
+     * Move a TextObject to a specified position.
+     * @param target position to move to
 	 * @param speed The speed of the approach represented as the number of
 	 * pixels to move in each frame.  Use a very large number for instant
 	 * travel.

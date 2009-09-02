@@ -17,11 +17,14 @@ import net.nexttext.renderer.*;
 
 // attributes
 Book book;
+PFont cheboygan;
+
+// renderers
 TextPageRenderer boundingBoxRenderer;
 TextPageRenderer velocityRenderer;
 TextPageRenderer internalsRenderer;
-PFont cheboygan;
 
+// rendering flags
 boolean renderGlyphs = true;
 boolean renderBoundingBoxes = false;
 boolean renderVelocity = false;
@@ -35,7 +38,7 @@ void setup() {
   // create the book
   book = new Book(this);
   
-  // add a page we can later reference
+  // add a page, which is returned, and save it for later reference
   book.addPage("The Great Page");
   
   // create the extra renderers
@@ -47,8 +50,8 @@ void setup() {
   Move move = new Move(0.01f, 0.01f);
   StayInWindow stayInWindow = new StayInWindow(this);
 
-  MoveTo moveOverMouse = new MoveTo(Book.mouse, 100);
-  Repeat followMouse = new Repeat(moveOverMouse, 0);
+  MoveTo moveOverMouse = new MoveTo(Book.mouse);
+  Repeat followMouse = new Repeat(moveOverMouse);
   MouseInertia mouseInertia = new MouseInertia(this, 0.5f, 0.01f);
   Throw throwAround = new Throw(followMouse, mouseInertia);
   moveOverMouse.setTarget(throwAround.getOnDrag());
