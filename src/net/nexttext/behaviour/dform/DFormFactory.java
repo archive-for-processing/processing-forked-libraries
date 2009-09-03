@@ -24,6 +24,7 @@ import net.nexttext.behaviour.AbstractBehaviour;
 import net.nexttext.behaviour.Action;
 import net.nexttext.behaviour.Behaviour;
 import net.nexttext.behaviour.control.OnMouseDepressed;
+import net.nexttext.behaviour.control.OnMousePressed;
 import net.nexttext.behaviour.control.Repeat;
 import net.nexttext.input.MouseDefault;
 
@@ -33,21 +34,64 @@ import net.nexttext.input.MouseDefault;
 /* $Id$ */
 public class DFormFactory {
     
-    public static AbstractBehaviour pull() {
+	/**
+	 * Creates a ChaosPull behaviour that deforms when the left button is pressed and reform when not.
+	 * @return behaviour
+	 */
+    public static Behaviour chaosPull() {
+    	Action chaos = new ChaosPull(Book.mouse);
+        Action reform = new Reform();
+        Behaviour bhvr = new Behaviour(new OnMouseDepressed(MouseDefault.LEFT, chaos, reform));
+        bhvr.setDisplayName("ChaosPull");  
+        return bhvr;
+    }
+    
+    /**
+     * Creates a Pull behaviour that deforms when the left button is pressed and reform when not.
+	 * @return behaviour
+     */
+    public static Behaviour pull() {
     	Action pull = new Pull(Book.mouse, 10, 2);
         Action reform = new Reform();
-        Behaviour b = new Behaviour(new OnMouseDepressed(MouseDefault.LEFT, pull, reform));
-        b.setDisplayName("Pull");
-        
-        return b;
+        Behaviour bhvr = new Behaviour(new OnMouseDepressed(MouseDefault.LEFT, pull, reform));
+        bhvr.setDisplayName("Pull");  
+        return bhvr;
     }
-     
-    public static AbstractBehaviour throb() {         
+
+    /**
+     * Creates a Reform behaviour.
+	 * @return behaviour
+     */
+    public static Behaviour reform() {
+        Action reform = new Reform();
+        Behaviour bhvr = new Behaviour(reform);
+        bhvr.setDisplayName("Reform");
+    	return bhvr;
+    }
+    
+    /**
+     * Creates a Scale behaviour that scales when the left button is pressed and reforms when not.
+     * @param mag scale factor
+	 * @return behaviour
+     */
+    public static Behaviour scale(float mag) {
+    	Action scale = new Scale(mag);
+        Action reform = new Reform();
+        Behaviour bhvr = new Behaviour(new OnMouseDepressed(MouseDefault.LEFT, scale, reform));
+        bhvr.setDisplayName("Scale");
+    	return bhvr;
+    }
+
+    /**
+     * 
+	 * @return behaviour
+     */
+    public static Behaviour throb() {         
         Behaviour throb = new Behaviour(new Repeat(new Throb(2, 100), 0));
         throb.setDisplayName("Throb");
         return throb;
     }
-    
+
     public String toString() {
         return "DForm";
     }

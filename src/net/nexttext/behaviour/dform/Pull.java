@@ -21,6 +21,7 @@ package net.nexttext.behaviour.dform;
 
 import net.nexttext.CoordinateSystem;
 import net.nexttext.Locatable;
+import net.nexttext.PLocatableVector;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.property.NumberProperty;
@@ -39,11 +40,9 @@ public class Pull extends DForm implements TargetingAction {
     
     Locatable target;
 
-    public void setTarget( Locatable target ) {
-        this.target = target;
-    }
-
     /**
+     * Constructor creates a Pull at a target with a certain speed and reach.
+     * @param target attraction point
      * @param speed is the speed with which the points are pulled.
      * @param reach will pull farther points faster with a higher value.
      */
@@ -53,6 +52,56 @@ public class Pull extends DForm implements TargetingAction {
         properties().init("Reach", new NumberProperty(reach));
     }
 
+    /**
+     * Constructor creates a Pull at a target with a default speed of 10 and reach of 2.
+     * @param target attraction point
+     */
+    public Pull(Locatable target) {
+    	this(target, 10, 2);
+    }
+    
+    /**
+     * Constructor creates a Pull at x,y.
+     * @param x
+     * @param y
+     * @param speed
+     * @param reach
+     */
+    public Pull ( float x, float y, float speed, float reach ) {
+    	this(x, y, 0, speed, reach);
+    }
+   
+    /**
+     * Constructor creates a Pull at x,y with a default speed and reach.
+     * @param x
+     * @param y
+     */
+    public Pull ( float x, float y ) {
+    	this(x, y, 0, 10, 2);
+    }
+    
+    /**
+     * Constructor creates a Pull at x,y,z with a default speed and reach.
+     * @param x
+     * @param y
+     * @param z
+     */
+    public Pull ( float x, float y, float z ) {
+    	this(x, y, z, 10, 2);
+    }
+
+    /**
+     * Constructor creates a Pull at x,y,z.
+     * @param x
+     * @param y
+     * @param z
+     * @param speed
+     * @param reach
+     */
+    public Pull ( float x, float y, float z, float speed, float reach ) {
+    	this(new PLocatableVector(x, y, z), speed, reach);
+    }
+    
     public ActionResult behave(TextObjectGlyph to) {
         float speed = ((NumberProperty)properties().get("Speed")).get();
         float reach = ((NumberProperty)properties().get("Reach")).get();
@@ -80,4 +129,20 @@ public class Pull extends DForm implements TargetingAction {
         }
         return new ActionResult(false, false, false);
     }
+    
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+    
+    public void setTarget( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    public void setTarget( PVector target ) {
+    	setTarget(new PLocatableVector(target));
+    }
+    
+    public void setTarget( Locatable target ) {
+        this.target = target;
+    }    
 }

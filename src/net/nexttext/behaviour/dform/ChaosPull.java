@@ -42,35 +42,64 @@ public class ChaosPull extends DForm implements TargetingAction{
     Locatable target;
     int chaosStrength;
       
-    public ChaosPull( Locatable target ) {
-        this(target, 1200);
-    }
-    
+    /**
+     * Constructor.
+     * @param target location of the attraction point that pulls the vertices
+     * @param chaosStrength strength of the attraction
+     */
     public ChaosPull( Locatable target, int chaosStrength ) {
         this.target = target;        
         this.chaosStrength = chaosStrength;
     }
     
-    public ChaosPull ( float x, float y ) {
-    	this(x, y, 0);
+    /**
+     * Constructor creates a ChaosPull at the target with a default strength of 1200.
+     * @param target
+     */
+    public ChaosPull( Locatable target ) {
+        this(target, 1200);
     }
     
+    /**
+     * Constructor creates a ChaosPull at x,y.
+     * @param x
+     * @param y
+     * @param chaosStrength
+     */
+    public ChaosPull ( float x, float y, int chaosStrength ) {
+    	this(x, y, 0, chaosStrength);
+    }
+   
+    /**
+     * Constructor creates a ChaosPull at x,y with a default strength of 1200.
+     * @param x
+     * @param y
+     */
+    public ChaosPull ( float x, float y ) {
+    	this(x, y, 0, 1200);
+    }
+    
+    /**
+     * Constructor creates a ChaosPull at x,y,z with a default strength of 1200.
+     * @param x
+     * @param y
+     * @param z
+     */
     public ChaosPull ( float x, float y, float z ) {
-    	this(new PLocatableVector(x, y, z));
+    	this(x, y, z, 1200);
     }
 
-    public void setTarget( float x, float y ) {
-    	setTarget(x, y, 0);
+    /**
+     * Constructor creates a ChaosPull at x,y,z.
+     * @param x
+     * @param y
+     * @param z
+     * @param chaosStrength
+     */
+    public ChaosPull ( float x, float y, float z, int chaosStrength ) {
+    	this(new PLocatableVector(x, y, z), chaosStrength);
     }
-    
-    public void setTarget( float x, float y, float z ) {
-    	setTarget(new PLocatableVector(x, y, z));
-    }
-    
-    public void setTarget( Locatable target ) {
-        this.target = target;
-    }
-    
+       
     /* (non-Javadoc)
      * @see net.nexttext.behaviour.dform.DForm#behave(net.nexttext.TextObjectGlyph)
      */
@@ -116,5 +145,21 @@ public class ChaosPull extends DForm implements TargetingAction{
     public void setChaosStrength(int chaosStrength) {
         this.chaosStrength = chaosStrength;
     }
+    
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+    
+    public void setTarget( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    public void setTarget( PVector target ) {
+    	setTarget(new PLocatableVector(target));
+    }
+    
+    public void setTarget( Locatable target ) {
+        this.target = target;
+    }    
 }
 

@@ -37,6 +37,7 @@ import processing.core.PVector;
 public class Scale extends DForm {
     
     private float scale;
+    
     /**
      * @param scale is amount the object's size will increase, as a multiplier. 
      */

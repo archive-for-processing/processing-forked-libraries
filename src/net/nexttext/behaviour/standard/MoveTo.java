@@ -133,7 +133,21 @@ public class MoveTo extends AbstractAction implements TargetingAction {
     /**
      * Sets a target to approach.
      */
-    public void setTarget(PVector target) {
-       	this.target = new PLocatableVector(target);
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+    
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( PVector target ) {
+    	setTarget(new PLocatableVector(target));
     }
 }

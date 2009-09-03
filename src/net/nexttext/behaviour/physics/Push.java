@@ -37,6 +37,14 @@ public class Push extends PhysicsAction {
         init(new PVector(1.0f, 0.0f, 0.0f), 3);
     }
     
+    public Push(float x, float y, float force) {
+    	this(new PVector(x, y, 0), force);
+    }
+    
+    public Push(float x, float y, float z, float force) {
+    	this(new PVector(x, y, z), force);
+    }
+    
     public Push(PVector direction, float force) {
     	init(direction, force);
     }

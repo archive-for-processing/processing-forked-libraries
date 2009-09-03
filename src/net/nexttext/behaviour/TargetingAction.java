@@ -19,7 +19,9 @@
 
 package net.nexttext.behaviour;
 
+import processing.core.PVector;
 import net.nexttext.Locatable;
+import net.nexttext.PLocatableVector;
 
 /**
  * A TargetingAction is an Action that uses a target.
@@ -34,5 +36,20 @@ public interface TargetingAction extends Action {
     /**
      * Set a new target for this action.
      */
-    public void setTarget( Locatable target );    
+    public void setTarget( Locatable target );
+    
+    /**
+     * Set a new target for this action.
+     */
+    public void setTarget( float x, float y );
+    
+    /**
+     * Set a new target for this action.
+     */
+    public void setTarget( float x, float y, float z );
+    
+    /**
+     * Set a new target for this action.
+     */
+    public void setTarget( PVector target );
 }

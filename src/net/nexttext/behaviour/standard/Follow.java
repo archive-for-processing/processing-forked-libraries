@@ -3,6 +3,7 @@ package net.nexttext.behaviour.standard;
 import processing.core.PVector;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.Locatable;
+import net.nexttext.PLocatableVector;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.behaviour.Action.ActionResult;
@@ -25,6 +26,14 @@ public class Follow extends AbstractAction implements TargetingAction {
 	}
 	
 	/**
+	 * Follow the motion of a vector point.
+	 * @param vector point to follow
+	 */
+	public Follow(PVector vector) {
+		this(new PLocatableVector(vector));
+	}
+	
+	/**
 	 * Set the followed object.
 	 * @param target the followed object 
 	 */
@@ -34,6 +43,27 @@ public class Follow extends AbstractAction implements TargetingAction {
 		this.lastFrame = -1;
 	}
 
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+    
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( PVector target ) {
+    	setTarget(new PLocatableVector(target));
+    }
+    
 	/**
 	 * Apply the action to a TextObject.
 	 * @param to the affected text object

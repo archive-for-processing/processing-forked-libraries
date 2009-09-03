@@ -50,20 +50,6 @@ public class Reform extends DForm {
     float exponentialSpeed = 2000;
 
     /**
-     * Linear style of reformation doesn't deform glyph shape.
-     */
-    public void setStyleLinear() {
-        style = STYLE_LINEAR;
-    }
-
-    /**
-     * Exponential style reformation preserves deformations longer.
-     */
-    public void setStyleExponential() {
-        style = STYLE_EXPONENTIAL;
-    }
-
-    /**
      * Constructs a default Reform of linear style with a default speed of 0.05.
      */
     public Reform() {
@@ -163,5 +149,19 @@ public class Reform extends DForm {
      */
     public void setLinearSpeed(float linearSpeed) {
         this.linearSpeed = linearSpeed;
+    }
+
+    /**
+     * Linear style of reformation doesn't deform glyph shape.
+     */
+    public void setStyleLinear() {
+        style = STYLE_LINEAR;
+    }
+
+    /**
+     * Exponential style reformation preserves deformations longer.
+     */
+    public void setStyleExponential() {
+        style = STYLE_EXPONENTIAL;
     }
 }
