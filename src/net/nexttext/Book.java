@@ -316,7 +316,8 @@ public class Book {
         Font f = loadFontFromPFont(pf).deriveFont(p.g.textSize);
         pf.setFont(f);
         
-        toBuilder.setTextAlign(p.g.textAlign);
+        toBuilder.setTextAlign(p.g.textAlign); // LEFT/CENTER/RIGHT
+        toBuilder.setTextAlignY(p.g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
         toBuilder.setFont(pf, f);
     }
     
@@ -388,7 +389,6 @@ public class Book {
         setFont();
         TextObjectGroup newTog = toBuilder.buildSentence(text, x, y, lineLength);
     	setStrokeAndFill(newTog);
-
         return newTog;
     }
     

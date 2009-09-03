@@ -22,10 +22,12 @@ package net.nexttext;
 import net.nexttext.behaviour.AbstractBehaviour;
 import net.nexttext.property.Property;
 
+import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.LineMetrics;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -116,7 +118,11 @@ public class TextObjectBuilder {
     public void setFont(PFont pf, Font f) { 
         pfont = pf;
         font = f;
+        //this could use the proper FRC from the PApplet's Graphics, but would
+        //it really make a difference?
         FontRenderContext frc = new FontRenderContext(null, false, false);
+        
+        //get measurement from the space character
 		GlyphVector sp = f.createGlyphVector( frc, " " );		
 		spaceOffset = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
 		trackingOffset = new PVector(0, 0, 0);
@@ -143,6 +149,11 @@ public class TextObjectBuilder {
         this.align = align;
     }
 
+    int alignY = PConstants.BASELINE;
+    /** Set the vertical alignment type of the group around the position. */
+    public void setTextAlignY(int alignY) {
+        this.alignY = alignY;
+    } 
 
     /** Parent to attach new groups to, may be null. */
     TextObjectGroup parent = null;
@@ -445,9 +456,7 @@ public class TextObjectBuilder {
      */
     private void applyBuilderOptions(TextObjectGroup newGroup, boolean isSentence) {
         
-        if (align != PConstants.LEFT) {
-        	alignGroup(newGroup, isSentence);
-        }
+       	alignGroup(newGroup, isSentence);
 
         synchronized (book) {
             if (parent != null) {
@@ -501,20 +510,61 @@ public class TextObjectBuilder {
      * @param isSentence whether the passed group was built using buildSentence() or not
      */
     private void alignGroup(TextObjectGroup newGroup, boolean isSentence) {
+        //this could use the proper FRC from the PApplet's Graphics, but would
+        //it really make a difference?
+        FontRenderContext frc = new FontRenderContext(null, false, false);
+
+        //string representing the whole group
+        String groupStr = newGroup.getString();
+        
+        //get the line metrics of the font for this line of text
+    	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
+    	
     	if (!isSentence) {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
         	PVector offset = newGroup.getPositionAbsolute();
+        	
+        	//adjust for horizontal align
         	if (align == PConstants.CENTER) {
-        		offset.sub(new PVector((float)bb.getCenterX(), offset.y));
+        		offset.sub(new PVector((float)bb.getCenterX(), 0));
         	} else if (align == PConstants.RIGHT) {
-        		offset.sub(new PVector((float)(bb.getX()+bb.getWidth()), offset.y));
+        		offset.sub(new PVector((float)(bb.getX()+bb.getWidth()), 0));
+        	} else if (align == PConstants.LEFT) {
+        		offset.sub(new PVector(offset.x, 0));
         	}
+
+        	//adjust for vertical align
+        	if (alignY == PConstants.CENTER) {
+        		offset.sub(new PVector(0, offset.y-metrics.getAscent()/2));
+        	} else if (alignY == PConstants.TOP) { 
+        		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+        	} else if (alignY == PConstants.BOTTOM) {
+        		offset.sub(new PVector(0, offset.y+metrics.getDescent()));
+        	} else if (alignY == PConstants.BASELINE) {
+        		offset.sub(new PVector(0, offset.y));
+        	}
+        	
         	TextObject child = newGroup.getLeftMostChild();
         	while (child != null) {
         		child.getPosition().add(offset);
         		child = child.getRightSibling();
         	}
         } else {
+            // If multiple lines, sum the height of the additional lines
+            float multiLineHeight = 0;
+            TextObjectGroup child = (TextObjectGroup)newGroup.getLeftMostChild();
+            PVector lastPos = null;
+            while(child != null) {
+            	if (lastPos == null)
+            		lastPos = child.getPositionAbsolute();
+            	else if (lastPos.y != child.getPositionAbsolute().y) {
+              	  multiLineHeight += metrics.getAscent() + metrics.getDescent() + metrics.getLeading();
+              	  lastPos.set(child.getPositionAbsolute());
+            	}
+
+            	child = (TextObjectGroup)child.getRightSibling();
+            }
+        	
         	// When the group is a sentence, we need to check the y-pos of 
         	// each child group as they may be positioned on different lines.
         	TextObjectGroup firstInLine = (TextObjectGroup)newGroup.getLeftMostChild();
@@ -525,7 +575,7 @@ public class TextObjectBuilder {
         		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
         		if (sibling == null) {
         			// only one group in this sentence, center it
-        			alignLine(firstInLine, sibling, bb);
+        			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
                 	// set first group to null to exit the loop
                 	firstInLine = null;
         		}
@@ -537,14 +587,14 @@ public class TextObjectBuilder {
             			sibling = (TextObjectGroup)sibling.getRightSibling();
             			if (sibling == null) {
             				// we reached the end of the group, center the line
-            	    		alignLine(firstInLine, sibling, bb);
+            	    		alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
                         	// set first group and sibling to null to exit the loop
                         	firstInLine = sibling = null;
             			}
             		// the sibling is on a new line
             		} else {
             			// center the previous line
-            			alignLine(firstInLine, sibling, bb);
+            			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
                     	// set the sibling as the new start group of the line
                     	firstInLine = sibling;
                     	sibling = null;
@@ -554,14 +604,31 @@ public class TextObjectBuilder {
         }
     }
     
-    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds) {
+    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds, LineMetrics metrics, float multiLineHeight) {
     	PVector offset = first.getPositionAbsolute();
+    	
+    	//horizontal align
     	if (align == PConstants.CENTER) {
-    		offset.sub(new PVector((float)lineBounds.getCenterX(), (float)lineBounds.getCenterY()));
+    		offset.sub(new PVector((float)lineBounds.getCenterX(), 0));
     	} else if (align == PConstants.RIGHT) {
-    		offset.sub(new PVector((float)(lineBounds.getX()+lineBounds.getWidth()),
-    							   (float)(lineBounds.getY()+lineBounds.getHeight())));
+    		offset.sub(new PVector((float)(lineBounds.getX()+lineBounds.getWidth()), 0));
+    	} else if (align == PConstants.LEFT) {
+    		offset.sub(new PVector(offset.x, 0));
     	}
+    	
+    	//vertical align
+    	if (alignY == PConstants.CENTER) {
+    		PApplet.println("Left-Center: " + metrics.getAscent() + " " + multiLineHeight + " " + metrics.getLeading());
+    		offset.sub(new PVector(0, offset.y-(metrics.getAscent()-multiLineHeight)/2));
+    	} else if (alignY == PConstants.TOP) { 
+    		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+    	} else if (alignY == PConstants.BOTTOM) {
+    		PApplet.println("Center-Bottom: " + metrics.getDescent() + " " + multiLineHeight + " " + metrics.getLeading());
+    		offset.sub(new PVector(0, offset.y+metrics.getDescent()+multiLineHeight));
+    	} else if (alignY == PConstants.BASELINE) {
+    		offset.sub(new PVector(0, offset.y));
+    	}    	
+    	
     	TextObjectGroup currChild = first;
     	while (currChild != limit) {
     		TextObject grandChild = currChild.getLeftMostChild();
