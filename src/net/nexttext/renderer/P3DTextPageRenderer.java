@@ -347,7 +347,6 @@ public class P3DTextPageRenderer extends TextPageRenderer {
                     break;
                 case PathIterator.SEG_LINETO:
 					closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
-
                     break;
                 case PathIterator.SEG_CLOSE:
                     closedPolygon.close();

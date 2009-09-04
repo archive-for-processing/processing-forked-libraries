@@ -34,6 +34,7 @@ package net.nexttext.renderer.util;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
@@ -79,7 +80,7 @@ public abstract class DoublyConnectedEdgeList<Vertex extends PlanarVertex, Edge 
 	{
 		Vertex src = vertices.get(src_i);
 		Vertex dst = vertices.get(dst_i);
-		
+			
 		// Test that the edge does not already exist
 		Edge src_e = (Edge) src.getEdge(dst);
 		boolean new_src_e = false;

@@ -59,6 +59,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
@@ -105,7 +106,8 @@ public class Glyph3D {
                 subdivision.addEdge(vert.getIndex(), vert.getIndex() - 1);
             }
         }
-        // Add the last one
+        
+    	// Add the last one
         subdivision.addEdge(first_vert_id, first_vert_id
                 + poly.getPoints().size() - 1);
     }

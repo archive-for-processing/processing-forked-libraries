@@ -79,7 +79,8 @@ public class ClosedPolygon
 		if(points.size() > 0)
 		{
 			PVector lastpoint = points.get(points.size() - 1);
-			if(lastpoint.equals(point))
+			//if(lastpoint.equals(point))
+			if((lastpoint.x == point.x) && (lastpoint.y == point.y))
 			{
 				//logger.info("Skipping duplicate point.");
 				return;
@@ -116,7 +117,10 @@ public class ClosedPolygon
 	{
 		if(points.size() > 3)
 		{
-			if(points.get(0).equals(points.get(points.size() - 1)))
+			PVector first = points.get(0);
+			PVector last = points.get(points.size()-1);
+			//if(points.get(0).equals(points.get(points.size() - 1)))
+			if ((first.x == last.x) && (first.y == last.y))
 			{
 				//logger.info("Removing last, duplicate point.");
 				points.remove(points.size() - 1);
