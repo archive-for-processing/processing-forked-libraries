@@ -311,7 +311,7 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
                     "isn't length 3");
                 }
 
-                if (renderer_type == RendererType.THREE_D) {
+                if ((d[2] != 0) && (renderer_type == RendererType.THREE_D)) {
                     p.vertex((float) d[0], (float) d[1], (float) d[2]);
 
                 } else {

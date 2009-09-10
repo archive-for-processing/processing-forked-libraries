@@ -267,13 +267,36 @@ public class TextObjectBuilder {
      * grandchildren.  Spaces between words are included as TextObjectGroups
      * containing a single TextObjectGlyph child.</p>
      *
+     * @param text the String to create the TextObjectGroup from
+     * 
      * @return a group containing a sub-group for each identified tokens.
      * Spaces are represented as groups containing one Space character.
      */
     public TextObjectGroup buildSentence( String text ) {
         return buildSentence( text, pos, Integer.MAX_VALUE );
     }
-        
+
+    /**
+     * Build a tree of TextObjects from the given sentence, at the specified
+     * location.
+     *
+     * <p>The string is parsed as a sentence, where whitespace characters are
+     * treated as word delimiters.  The returned TextObjectGroup has a child
+     * TextObjectGroup for each word in the string, and TextObjectGlyph
+     * grandchildren. Spaces between words are included as TextObjectGroups
+     * containing a single TextObjectGlyph child.</p>
+     *
+     * @param text the String to create the TextObjectGroup from
+     * @param x the x-coordinate of the created TextObjectGroup
+     * @param y the y-coordinate of the created TextObjectGroup
+     *
+     * @return a group containing a sub-group for each identified tokens.
+     * Spaces are represented as groups containing one Space character.
+     */
+    public TextObjectGroup buildSentence( String text, int x, int y ) {
+        return buildSentence( text, new PVector(x, y), Integer.MAX_VALUE );
+    }
+    
     /**
      * Builds a tree of TextObjects from the given sentence, at the
      * specified location.

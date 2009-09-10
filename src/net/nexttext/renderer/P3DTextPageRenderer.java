@@ -176,7 +176,11 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         PVector pos = page.getPosition().get();
         PVector rot = page.getRotation().get();
         
-        if (renderer_type == RendererType.THREE_D) {
+        //only use 3D function if the renderer is 3D and the position
+        //and rotation are actually using 3D. This allows to use 2D recorders
+        //with 3D renderers.
+        if (((pos.z != 0) || (rot.x != 0) || (rot.y != 0))
+        	&& (renderer_type == RendererType.THREE_D)) {
 			p.translate((float)pos.x, (float)pos.y, (float)pos.z);
         	p.translate(p.width/2.0f, p.height/2.0f, 0);
         	p.rotateX((float)rot.x);
@@ -208,9 +212,10 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         // translation
         PVector pos = node.getPosition().get();
         
-        if (renderer_type == RendererType.THREE_D)
-        	p.translate((float)pos.x, (float)pos.y, 0); //todo: use Z coord
-        else
+        //3D TextObject's positioning is not supported yet. 
+        //if ((pos.z != 0) && (renderer_type == RendererType.THREE_D))
+        //	p.translate((float)pos.x, (float)pos.y, 0); //todo: use Z coord
+        //else
         	p.translate((float)pos.x, (float)pos.y);
         // rotation
         float rotation = (float)node.getRotation().get();	//todo: rotate in 3D
@@ -379,7 +384,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
 	        int vcount = 0; // Used to pad indexes.
 	        for (TriangulationVertex v : fontGlyph.getVertices()) {
 	        	triList.verts[vcount + v.getIndex()] = v.getPoint().get();
-	        	triList.verts[vcount + v.getIndex()].z += 0.5f;
+	        	//triList.verts[vcount + v.getIndex()].z += 0f;
 	        }
 	        fontGlyph.getSurface().rewind();
 	        while (fontGlyph.getSurface().remaining() > 0) {
@@ -401,8 +406,9 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         while(triList.triangles.remaining() > 0) {
         	vert = triList.verts[triList.triangles.get()];
         	
-        	if (renderer_type == RendererType.THREE_D)
+        	if ((vert.z != 0) && (renderer_type == RendererType.THREE_D)) {
         		p.vertex((float)vert.x, (float)-vert.y, (float)vert.z);
+        	}
         	else
         		p.vertex((float)vert.x, (float)-vert.y);
         }

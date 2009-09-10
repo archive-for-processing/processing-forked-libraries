@@ -347,11 +347,7 @@ public class Book {
      * @return TextObjectGroup the built TextObjectGroup
      */
     public TextObjectGroup addText(String text, int x, int y) {
-        setFont();
-    	TextObjectGroup newTog = toBuilder.build(text, x, y);
-    	setStrokeAndFill(newTog); 
-
-        return newTog;
+    	return addText(text, x, y, Integer.MAX_VALUE);
     }
     
     /**
@@ -520,6 +516,23 @@ public class Book {
         toBuilder.addGlyphBehaviour(b);
         addBehaviour(b);
     }
+
+    /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGlyphs.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeGlyphBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGlyphBehaviour(AbstractAction action) { 
+        Behaviour b = action.makeBehaviour();
+    	toBuilder.addGlyphBehaviour(b);
+        addBehaviour(b);
+        return b;
+    }
     
     /**
      * Removes the given Behaviour from the list of Behaviours applied to new TextObjectGlyphs.
@@ -548,6 +561,23 @@ public class Book {
     public void addGroupBehaviour(AbstractBehaviour b) { 
         toBuilder.addGroupBehaviour(b);
         addBehaviour(b);
+    }
+
+    /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGroups.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeGlyphBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGroupBehaviour(AbstractAction action) { 
+        Behaviour b = action.makeBehaviour();
+    	toBuilder.addGroupBehaviour(b);
+        addBehaviour(b);
+        return b;
     }
     
     /**
