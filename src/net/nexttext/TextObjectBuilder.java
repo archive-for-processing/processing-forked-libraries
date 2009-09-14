@@ -324,7 +324,6 @@ public class TextObjectBuilder {
     public TextObjectGroup buildSentence( String text, PVector pos, int lineLength ) {
     	//Make sure the lineLength is greater than 1 (space for the dash)
     	if (lineLength <= 1) {
-    		PApplet.println("Warning: Line length must be greater than 1.");
     		lineLength = 2;
     	}
     	
@@ -641,12 +640,10 @@ public class TextObjectBuilder {
     	
     	//vertical align
     	if (alignY == PConstants.CENTER) {
-    		PApplet.println("Left-Center: " + metrics.getAscent() + " " + multiLineHeight + " " + metrics.getLeading());
     		offset.sub(new PVector(0, offset.y-(metrics.getAscent()-multiLineHeight)/2));
     	} else if (alignY == PConstants.TOP) { 
     		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
     	} else if (alignY == PConstants.BOTTOM) {
-    		PApplet.println("Center-Bottom: " + metrics.getDescent() + " " + multiLineHeight + " " + metrics.getLeading());
     		offset.sub(new PVector(0, offset.y+metrics.getDescent()+multiLineHeight));
     	} else if (alignY == PConstants.BASELINE) {
     		offset.sub(new PVector(0, offset.y));
