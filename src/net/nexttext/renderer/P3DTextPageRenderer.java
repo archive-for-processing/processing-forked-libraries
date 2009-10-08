@@ -27,12 +27,15 @@ import java.awt.geom.PathIterator;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics2D;
 import processing.core.PGraphicsJava2D;
 import processing.core.PVector;
+import net.nexttext.GeometricException;
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGroup;
@@ -73,6 +76,9 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         if ((p.g instanceof PGraphics2D) || (p.g instanceof PGraphicsJava2D)) {
         	renderer_type = RendererType.TWO_D;
         }
+        
+    	System.err.println("Warning: NextText is unstable when used with the P3D renderer. " +
+    			"Problem will occur if you use DForm behaviours with filled glyphs. Use at your own risk.");        
     }
 
     /**
@@ -343,33 +349,47 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         Glyph3D fontGlyph = new Glyph3D();
         float[] coords = new float[6];
 
-        while (!pi.isDone()) {
-            int seg = pi.currentSegment(coords);
-            switch (seg) {
-                case PathIterator.SEG_MOVETO:
-                    closedPolygon = new ClosedPolygon();
-					closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
-                    break;
-                case PathIterator.SEG_LINETO:
-					closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
-                    break;
-                case PathIterator.SEG_CLOSE:
-                    closedPolygon.close();
-                    fontGlyph.addPolygon(closedPolygon);
-                    closedPolygon = null;
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "unknown segment type " + seg);
-            }
-            pi.next();
-        }
+        try {
+        	while (!pi.isDone()) {
+	            int seg = pi.currentSegment(coords);
+	            switch (seg) {
+	                case PathIterator.SEG_MOVETO:
+	                    closedPolygon = new ClosedPolygon();
+						closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
+	                    break;
+	                case PathIterator.SEG_LINETO:
+						closedPolygon.addPoint(new PVector(coords[0], -coords[1], 0));
+	                    break;
+	                case PathIterator.SEG_CLOSE:
+	                    closedPolygon.close();
+	                    fontGlyph.addPolygon(closedPolygon);
+	                    closedPolygon = null;
+	                    break;
+	                default:
+	                    throw new IllegalArgumentException(
+	                            "unknown segment type " + seg);
+	            }
+	            pi.next();
+	        }
+	
+	        if (fontGlyph.isEmpty())
+	        	return;
 
-        if (fontGlyph.isEmpty())
+        	// Time to triangulate the surface of the glyph
+        	fontGlyph.triangulate();
+        } catch (GeometricException ge) {
+        	System.err.println("Warning: NextText's renderer could not triangulate and fill glyph '" + 
+        			glyph.getGlyph() + "'.");
         	return;
-
-        // Time to triangulate the surface of the glyph
-        fontGlyph.triangulate();
+        } catch (NoSuchElementException nsee) {
+        	System.err.println("Warning: NextText's renderer could not triangulate and fill glyph '" + 
+        			glyph.getGlyph() + "'.");
+        	return;       
+        } catch (RuntimeException re) {
+        	System.err.println("Warning: NextText's renderer could not triangulate and fill glyph '" + 
+        			glyph.getGlyph() + "'.");
+        	return;       
+        }
         
         // Calculate how many vertices we need
         int vertex_count = fontGlyph.getVertices().size();
