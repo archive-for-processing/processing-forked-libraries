@@ -69,8 +69,8 @@ import net.nexttext.GeometricException;
  */
 public class TriangulationVertex extends PlanarVertex
 {
-    private static final Logger logger = Logger
-            .getLogger(TriangulationVertex.class.getName());
+//    private static final Logger logger = Logger
+//            .getLogger(TriangulationVertex.class.getName());
     
 	// Easy access pointers
 	//TriangulationVertex prev_vert,next_vert;
@@ -120,7 +120,7 @@ public class TriangulationVertex extends PlanarVertex
 	{
 		if(vert_type == VertexType.UNSET)
 		{
-			logger.info("VertexType not set!");
+//			logger.info("VertexType not set!");
 		}
 		return vert_type;
 	}
@@ -186,8 +186,8 @@ public class TriangulationVertex extends PlanarVertex
 		}
 		else
 		{
-			logger.info("PNIX: we are none of the above types !!!!");
-			logger.info("GetType: (prev:"+prev_vert+",this:"+this+",next:"+next_vert);
+//			logger.info("PNIX: we are none of the above types !!!!");
+//			logger.info("GetType: (prev:"+prev_vert+",this:"+this+",next:"+next_vert);
 		}
 	}
 
@@ -225,8 +225,8 @@ public class TriangulationVertex extends PlanarVertex
 					if(tmp2.isRealEdge() != tmp2.getPrev().isRealEdge())
 					{
 						//logger.info("VERT: "+tmp2.getOrigin());
-						logger.info("Edge1:"+tmp2);
-						logger.info("Edge2:"+tmp2.getPrev());
+//						logger.info("Edge1:"+tmp2);
+//						logger.info("Edge2:"+tmp2.getPrev());
 						//logger.info("Tour: "+debugString+" -> "+tmp2.getPrev());
 						throw new GeometricException("Bound two edges, one real one unreal, that is not possible in a closed polygon");
 					}
@@ -239,7 +239,7 @@ public class TriangulationVertex extends PlanarVertex
 				edgecount++;
 				if(anglesum > anglimit)
 				{
-					logger.info("HERE ARE MY EDGES");
+//					logger.info("HERE ARE MY EDGES");
 					printEdges();
 					throw new GeometricException("The sum of angles between edges exceeded 2 PI ("+anglesum+" > "+anglimit+") on this vert: "+this);
 				}
@@ -270,9 +270,9 @@ public class TriangulationVertex extends PlanarVertex
 				{
 					if(tmp2.isRealEdge() != tmp2.getNext().isRealEdge())
 					{
-						logger.info("VERT: "+tmp2.getOrigin());
-						logger.info("Edge1:"+tmp2);
-						logger.info("Edge2:"+tmp2.getNext());
+//						logger.info("VERT: "+tmp2.getOrigin());
+//						logger.info("Edge1:"+tmp2);
+//						logger.info("Edge2:"+tmp2.getNext());
 						throw new GeometricException("Bound two edges, one real one unreal, that is not possible in a closed polygon");
 					}
 					tmp2 = tmp2.getNext();

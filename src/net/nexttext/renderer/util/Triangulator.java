@@ -78,8 +78,8 @@ import net.nexttext.renderer.util.Triangulator.YMonotonePolygon.Triangle;
  */
 public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, TriangulationEdge>
 {
-    private static final Logger logger = Logger.getLogger(Triangulator.class
-            .getName());
+//    private static final Logger logger = Logger.getLogger(Triangulator.class
+//            .getName());
     
 	private IntBuffer complete_triangulation;
 	private Vector<YMonotonePolygon> monotone_polygons = new Vector<YMonotonePolygon>();
@@ -101,7 +101,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 		{
 			if(edge.getOrigin().point.y == d)
 				return edge.getOrigin().point.x;
-			logger.warning("Degenerate case, dy == 0, no idea what will happen now....");
+//			logger.warning("Degenerate case, dy == 0, no idea what will happen now....");
 			return edge.getOrigin().point.x;
 		}
 		double t = (d - edge.getOrigin().point.y) / dy;
@@ -187,7 +187,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				boolean result = super.add(edge);
 				if(!result)
 				{
-					logger.severe("The insertion of edge "+edge+" had already been done....");
+//					logger.severe("The insertion of edge "+edge+" had already been done....");
 				}
 				return result;
 			}
@@ -196,7 +196,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 			{
 				for(TriangulationEdge e : this)
 				{
-					logger.info("EDGE: "+e+":"+getXAtY(e, sweep_comparer.currentvertex.point.y));
+//					logger.info("EDGE: "+e+":"+getXAtY(e, sweep_comparer.currentvertex.point.y));
 				}
 			}
 
@@ -205,7 +205,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				boolean result = super.remove(edge);
 				if(!result)
 				{
-					logger.severe("The removal of edge "+edge+" did not succeed");
+//					logger.severe("The removal of edge "+edge+" did not succeed");
 				}
 				return result;
 			}
@@ -216,7 +216,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				//logger.info("hset.size():"+hset.size());
 				if(hset.size() == 0)
 				{
-					logger.warning("We could find no left of "+edge+": "+getXAtY(edge, sweep_comparer.currentvertex.point.y));
+//					logger.warning("We could find no left of "+edge+": "+getXAtY(edge, sweep_comparer.currentvertex.point.y));
 					//logger.info("Vertex: prev:"+((TriangulationVertex)edge.getOrigin()).prev_vert+","+edge.getOrigin()+",next:"+((TriangulationVertex)edge.getOrigin()).next_vert+")");
 					// Print out the whole thing
 					printElements();
@@ -326,7 +326,7 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				}
 				break;
 			case UNSET:
-				logger.info("PANIX: the type of a vertex was: "+v_i.getType());
+//				logger.info("PANIX: the type of a vertex was: "+v_i.getType());
 				break;
 			}
 			//logger.info("After:");
@@ -617,8 +617,8 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 			
 			if(arr.size() != poly_edges.size())
 			{
-				logger.warning("The number of vertices does not match the number of edges: "
-                                + arr.size() + " != " + poly_edges.size());
+//				logger.warning("The number of vertices does not match the number of edges: "
+//                                + arr.size() + " != " + poly_edges.size());
 				throw new RuntimeException("The number of vertices does not match the number of edges: "+arr.size()+" != "+poly_edges.size());
 			}
 			return arr;
@@ -652,14 +652,14 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				// they share a vertex, and it is the currentvertex, 
 				// then we use the dot-product of the lines (normalized) and the X-axis, since that will tell us who is most
 				// to the right.
-				logger.info("--------------------");
-				logger.info("Edge1: "+edge1);
-				logger.info("Edge2: "+edge2);
-				logger.info("Edges share: "+currentvertex+", use other ends.");
+//				logger.info("--------------------");
+//				logger.info("Edge1: "+edge1);
+//				logger.info("Edge2: "+edge2);
+//				logger.info("Edges share: "+currentvertex+", use other ends.");
 				PlanarVertex x1_v = edge1.getOtherEnd(currentvertex);
-				logger.info("Other end(1):"+x1_v);
+//				logger.info("Other end(1):"+x1_v);
 				PlanarVertex x2_v = edge2.getOtherEnd(currentvertex);
-				logger.info("Other end(2):"+x2_v);
+//				logger.info("Other end(2):"+x2_v);
 				PVector x1_v_v = x1_v.getPoint().get();
 				x1_v_v.sub(currentvertex.getPoint());
 				x1_v_v.normalize();
@@ -671,13 +671,13 @@ public class Triangulator extends DoublyConnectedEdgeList<TriangulationVertex, T
 				if(Math.abs(x1 - x2) < FastMath.FLT_EPSILON)
 				{
 					// Even worse they are also on the same level here...
-					logger.info("Still the same, using Y-coordinates");
+//					logger.info("Still the same, using Y-coordinates");
 					x1 = x1_v.getPoint().y;
 					x2 = x2_v.getPoint().y;
 				}
 			}
-			if(x1 == x2)
-				logger.warning("Equal vertices: "+x1+" == "+x2);
+//			if(x1 == x2)
+//				logger.warning("Equal vertices: "+x1+" == "+x2);
 			return  (x1 < x2) ? -1 : 1;
 		}
 	}

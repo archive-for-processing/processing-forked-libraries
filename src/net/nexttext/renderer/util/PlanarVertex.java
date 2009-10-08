@@ -63,8 +63,8 @@ import processing.core.PVector;
  */
 public class PlanarVertex
 {
-    private static final Logger logger = Logger.getLogger(PlanarVertex.class
-            .getName());
+//    private static final Logger logger = Logger.getLogger(PlanarVertex.class
+//            .getName());
     
 	int index;
 	PVector point;
@@ -155,7 +155,7 @@ public class PlanarVertex
 				}
 				else
 				{
-					logger.warning("Error: (nangle == angle && "+result+" != "+next+")");
+//					logger.warning("Error: (nangle == angle && "+result+" != "+next+")");
 				}
 			}
 			else if(nangle < angle)
@@ -235,13 +235,13 @@ public class PlanarVertex
 	{
 		if(arb_outgoing == null)
 		{
-			logger.info("I HAVE NOT EDGES !");
+//			logger.info("I HAVE NOT EDGES !");
 			return;
 		}
 		PlanarEdge next = arb_outgoing; 
 		do
 		{
-			logger.info("Edge:"+next);
+//			logger.info("Edge:"+next);
 			next = next.getTwin().getNext();
 		}
 		while(next != arb_outgoing); // Only one round
