@@ -120,10 +120,16 @@ public class Book {
                 PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
             }
         } else if (rendererType == PConstants.P3D) {
+        	//The current tesselation code from jME doesn't deal well with complex
+        	//path with overlapping edges. This happens when DForm behaviors are
+        	//applied to glyphs.
+        	System.err.println("Warning: NextText is unstable when used with the P3D renderer. " +
+			"Problem will occur if you use DForm behaviours with filled glyphs. Use at your own risk.");        
+
         	//NextText's P3D renderer is compatible with all PApplet renderer
         	//but if PApplet's P3D is NOT used, then NextText uses P3D only
         	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
-        	//2D.        	
+        	//2D.       	
             defaultRenderer = new P3DTextPageRenderer(p); 
         } else {
         	//check if the applet is using the JAVA2D renderer

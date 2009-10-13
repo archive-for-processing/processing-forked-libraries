@@ -76,9 +76,6 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         if ((p.g instanceof PGraphics2D) || (p.g instanceof PGraphicsJava2D)) {
         	renderer_type = RendererType.TWO_D;
         }
-        
-    	System.err.println("Warning: NextText is unstable when used with the P3D renderer. " +
-    			"Problem will occur if you use DForm behaviours with filled glyphs. Use at your own risk.");        
     }
 
     /**
