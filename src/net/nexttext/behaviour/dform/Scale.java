@@ -20,13 +20,14 @@
 package net.nexttext.behaviour.dform;
 
 import net.nexttext.TextObjectGlyph;
-import net.nexttext.Vector3;
-import net.nexttext.property.Vector3PropertyList;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
 
 import java.awt.Rectangle;
 
 import java.util.Iterator;
+
+import processing.core.PVector;
 
 /**
  * A DForm which scales the size of a TextObject.
@@ -35,34 +36,35 @@ import java.util.Iterator;
 /* $Id$ */
 public class Scale extends DForm {
     
-    private double scale;
+    private float scale;
+    
     /**
      * @param scale is amount the object's size will increase, as a multiplier. 
      */
-    public Scale(double scale) {
+    public Scale(float scale) {
         this.scale = scale;        
     }
 
     public ActionResult behave(TextObjectGlyph to) {
         // Determine the center of to, in the same coordinates as the control
         // points will be.
-        Vector3 toAbsPos = to.getPositionAbsolute();
+    	PVector toAbsPos = to.getPositionAbsolute();
         Rectangle bb = to.getBoundingPolygon().getBounds();
-        Vector3 center = new Vector3(bb.getCenterX(), bb.getCenterY());
+        PVector center = new PVector((float)bb.getCenterX(), (float)bb.getCenterY());
         center.sub(toAbsPos);
 
         // Traverse the control points of the glyph, applying the
         // multiplication factor to each one, but offset from the center, not
         // the position.
-        Vector3PropertyList cPs = getControlPoints(to);
-        Iterator<Vector3Property> i = cPs.iterator();
+        PVectorListProperty cPs = getControlPoints(to);
+        Iterator<PVectorProperty> i = cPs.iterator();
         while (i.hasNext()) {
-            Vector3Property cP = i.next();
+        	PVectorProperty cP = i.next();
             // Get the vector from the center of the glyph to the control point.
-            Vector3 p = cP.get();
+        	PVector p = cP.get();
             p.sub(center);
             // Scale the control point by the appropriate factor
-            p.scalar(scale);
+            p.mult(scale);
             // Return p to the original coordinates
             p.add(center);            
             cP.set(p);
@@ -70,11 +72,11 @@ public class Scale extends DForm {
         return new ActionResult(true, true, false);       
     }
 
-    public double getScale() {
+    public float getScale() {
         return scale;
     }
 
-    public void setScale(double scale) {
+    public void setScale(float scale) {
         this.scale = scale;
     }
 }

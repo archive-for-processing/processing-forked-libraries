@@ -19,6 +19,8 @@
 
 package net.nexttext;
 
+import processing.core.PVector;
+import net.nexttext.property.PVectorProperty;
 import net.nexttext.renderer.TextPageRenderer;
 
 /**
@@ -31,13 +33,25 @@ import net.nexttext.renderer.TextPageRenderer;
  */
 /* $Id$ */
 public class TextPage {
-
+    
+	/**
+     * The properties of this TextPage.
+     *
+     * <p>Properties are added to the set using the initProperties() method,
+     * and accessed using getProperty().  A property is initialized with a
+     * value, which is preserved and called its original value.  </p>
+     */
+    protected PropertySet properties = new PropertySet();
+    
 	//The root of the text hierarchy that this page
 	//is responsible for rendering.
     protected TextObjectGroup textRoot;
     protected TextPageRenderer textPageRenderer;
     
     public TextPage(Book book, TextPageRenderer t){
+        properties.init("Position", new PVectorProperty( new PVector(0,0,0)));
+        properties.init("Rotation", new PVectorProperty( new PVector(0,0,0)));
+
         this.textRoot = new TextObjectGroup();
         book.getTextRoot().attachChild(textRoot);
         this.textPageRenderer = t;
@@ -50,4 +64,18 @@ public class TextPage {
     public void render() {        
         textPageRenderer.renderPage(this);
     } 
+    
+    /**
+     * A getter for the standard "Position" property.  
+     */
+    public PVectorProperty getPosition() {
+    	return (PVectorProperty)(properties.get("Position"));    	
+    }
+
+    /**
+     * A getter for the standard "Rotation" property.  
+     */
+    public PVectorProperty getRotation() {
+    	return (PVectorProperty)(properties.get("Rotation"));    	
+    }
 }

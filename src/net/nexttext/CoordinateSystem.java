@@ -21,6 +21,8 @@ package net.nexttext;
 
 import java.awt.Polygon;
 
+import processing.core.PVector;
+
 /**
  * A CoordinateSystem describe a set of three Axes positioned at some arbitrary 
  * origin in space.
@@ -36,7 +38,7 @@ import java.awt.Polygon;
 /* $Id$ */
 public class CoordinateSystem {
    
-    private Vector3 origin;
+    private PVector origin;
     private Axes axes;
     
     /**
@@ -44,14 +46,14 @@ public class CoordinateSystem {
      * axes is a unit vector.
      */
     public CoordinateSystem() {       
-        this.origin = new Vector3();
+        this.origin = new PVector();
         this.axes = new Axes();
     }
     
     /**
      * Creates a CoordinateSystem with the specified origin and rotation
      */
-    public CoordinateSystem( Vector3 origin, double rotation ) {
+    public CoordinateSystem( PVector origin, float rotation ) {
 
         this.origin = origin;        
         this.axes = new Axes();
@@ -64,7 +66,7 @@ public class CoordinateSystem {
      * 
      * XXXBUG This description is not explicit enough.  
      */
-    public CoordinateSystem( Vector3 origin, double rotation, CoordinateSystem parentSystem ) {
+    public CoordinateSystem( PVector origin, float rotation, CoordinateSystem parentSystem ) {
         
         this.origin = origin;
         
@@ -81,8 +83,8 @@ public class CoordinateSystem {
     /**
      * Returns a copy of the origin vector.
      */
-    public Vector3 getOrigin() {
-        return new Vector3(origin);
+    public PVector getOrigin() {
+        return new PVector(origin.x, origin.y, origin.z);
     }
     
     /**     
@@ -96,9 +98,9 @@ public class CoordinateSystem {
      * @param inV the input vector; the vector will remain unchanged.
      * @return the equivalent vector relative to the parent system.  
      */
-    public Vector3 transform( Vector3 inV ) {
+    public PVector transform( PVector inV ) {
         
-        Vector3 outV = axes.transform( inV );        
+    	PVector outV = axes.transform( inV );        
         outV.add( origin );
         return outV;        
     }
@@ -114,8 +116,8 @@ public class CoordinateSystem {
     public Polygon transform(Polygon inPoly) {
         Polygon outPoly = new Polygon();
         for (int i = 0; i < inPoly.npoints; i++) {
-            double x = axes.transformX(inPoly.xpoints[i], inPoly.ypoints[i], 0);
-            double y = axes.transformY(inPoly.xpoints[i], inPoly.ypoints[i], 0);
+            float x = axes.transformX(inPoly.xpoints[i], inPoly.ypoints[i], 0);
+            float y = axes.transformY(inPoly.xpoints[i], inPoly.ypoints[i], 0);
             outPoly.addPoint((int)(x + origin.x), (int)(y + origin.y));
         }
         return outPoly;
@@ -128,9 +130,9 @@ public class CoordinateSystem {
      * @param inV the input vector; the vector will remain unchanged.
      * @return the transformed vector
      */
-    public Vector3 transformInto( Vector3 inV ) {
+    public PVector transformInto( PVector inV ) {
         
-        Vector3 outV = new Vector3( inV );
+    	PVector outV = new PVector( inV.x, inV.y, inV.z );
         outV.sub( this.origin );       
         outV = axes.transformInto( outV ); 
         return outV;
@@ -148,23 +150,23 @@ public class CoordinateSystem {
      */
     class Axes {
         
-        Vector3 xAxis;
-        Vector3 yAxis;
-        Vector3 zAxis;
+    	PVector xAxis;
+    	PVector yAxis;
+    	PVector zAxis;
         
         /**
          * Creates default Axes using right-handed coordinates.
          */
         public Axes() {            
             // xAxis is pointing left
-            this.xAxis = new Vector3(1.0f , 0.0f, 0.0f);
+            this.xAxis = new PVector(1.0f , 0.0f, 0.0f);
             // yAxis is pointing downwards            
-            this.yAxis = new Vector3(0.0f , 1.0f, 0.0f);
+            this.yAxis = new PVector(0.0f , 1.0f, 0.0f);
             // positive Z values go "inside" the screen             
-            this.zAxis = new Vector3(0.0f , 0.0f, 1.0f);
+            this.zAxis = new PVector(0.0f , 0.0f, 1.0f);
         }
         
-        public Axes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis ) {            
+        public Axes( PVector xAxis, PVector yAxis, PVector zAxis ) {            
             this.xAxis = xAxis;
             this.yAxis = yAxis;
             this.zAxis = zAxis;
@@ -175,16 +177,29 @@ public class CoordinateSystem {
          * 
          * <p>Rotates both xAxis and yAxis by the same amount</p>.
          */
-        public void rotate( double radians ) {
-            xAxis.rotate( radians );
-            yAxis.rotate( radians );
+        public void rotate( float radians ) {
+        	// because the screen coordinate are mirrored along the X axis (ie: a 
+            // negative Y means going out of the screen), we must first negate angle
+            // to get clockwise rotation.  
+            // the result will be a rotation that is looks clockwise on screen.
+            radians = -radians;
+            
+            // rotate the x axis
+            xAxis.set(xAxis.x * (float)Math.cos(radians) + xAxis.y * (float)Math.sin(radians),
+            		  - xAxis.x * (float)Math.sin(radians) + xAxis.y * (float)Math.cos(radians),
+            		  0);
+            
+            // rotate the y axis
+            yAxis.set(yAxis.x * (float)Math.cos(radians) + yAxis.y * (float)Math.sin(radians),
+          		  - yAxis.x * (float)Math.sin(radians) + yAxis.y * (float)Math.cos(radians),
+          		  0);
         }
         
         /**
          * Outbound vector transformation.
          */
-        public Vector3 transform( Vector3 inV ) {
-            return new Vector3( (inV.x*xAxis.x + inV.y*yAxis.x + inV.z*zAxis.x),
+        public PVector transform( PVector inV ) {
+            return new PVector( (inV.x*xAxis.x + inV.y*yAxis.x + inV.z*zAxis.x),
     							(inV.x*xAxis.y + inV.y*yAxis.y + inV.z*zAxis.y),
     							(inV.x*xAxis.z + inV.y*yAxis.z + inV.z*zAxis.z) );        
         }
@@ -194,23 +209,23 @@ public class CoordinateSystem {
         // Vector3 objects.  They are used in the calculation of bounding
         // polygons, which is done quite often.  A separate method is used for
         // each axis because methods can only have a single return value.
-        double transformX(double x, double y, double z) {
+        float transformX(float x, float y, float z) {
             return (x * xAxis.x + y * yAxis.x + z * zAxis.x);
         }
 
-        double transformY(double x, double y, double z) {
+        float transformY(float x, float y, float z) {
             return (x * xAxis.y + y * yAxis.y + z * zAxis.y);
         }
 
-        double transformZ(double x, double y, double z) {
+        float transformZ(float x, float y, float z) {
             return (x * xAxis.z + y * yAxis.z + z * zAxis.z);
         }
 
         /**
          * Inbound vector transformation.
          */
-        public Vector3 transformInto( Vector3 inV ) {
-            return new Vector3( inV.dot(xAxis), 
+        public PVector transformInto( PVector inV ) {
+            return new PVector( inV.dot(xAxis), 
                     			inV.dot(yAxis), 
                     			inV.dot(zAxis) );        
         }
@@ -219,9 +234,9 @@ public class CoordinateSystem {
          * Axes to Axes outbound transform.
          */
         public Axes transform( Axes axes ) {            
-            Vector3 xA = axes.transform( xAxis );
-            Vector3 yA = axes.transform( yAxis );
-            Vector3 zA = axes.transform( zAxis );
+        	PVector xA = axes.transform( xAxis );
+        	PVector yA = axes.transform( yAxis );
+        	PVector zA = axes.transform( zAxis );
             return new Axes(xA, yA, zA);
         }
         
@@ -229,9 +244,9 @@ public class CoordinateSystem {
          * Axes to Axes inbound transform.
          */        
         public Axes transformInto( Axes axes ) {           
-            Vector3 xA = axes.transformInto( xAxis );
-            Vector3 yA = axes.transformInto( yAxis );
-            Vector3 zA = axes.transformInto( zAxis );
+        	PVector xA = axes.transformInto( xAxis );
+        	PVector yA = axes.transformInto( yAxis );
+        	PVector zA = axes.transformInto( zAxis );
             return new Axes(xA, yA, zA);
         }
         

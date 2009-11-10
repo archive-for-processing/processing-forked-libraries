@@ -96,28 +96,72 @@ public class Book {
         
         // initialize the renderer
         if (rendererType == PConstants.JAVA2D) {
+        	//NextText's JAVA2D renderer is only compatible with the
+        	//PApplet.JAVA2D renderer, because it draws directly to
+        	//the PApplet's PGraphicsJava2D objects.
             try {
                 defaultRenderer = new Java2DTextPageRenderer(p); 
             } catch (ClassCastException e) {
                 PGraphics.showException("The NextText and PApplet renderers are incompatible! Use the default renderer if you don't know what you are doing!");
             }
+        } else if (rendererType == PConstants.P2D) {
+        		//P2D renderer is compatible with all other opens because it
+        		//draws to a buffer using Java2D and then draws the whole image
+        		//to the PApplet
+                defaultRenderer = new P2DTextPageRenderer(p); 
         } else if (rendererType == PConstants.OPENGL) {
+        	//NextText's OpenGL renderer is compatible with all PApplet renderer
+        	//but if PApplet's OpenGL is NOT used, then NextText uses OpenGL only
+        	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
+        	//2D.
             try {
-                defaultRenderer = new PGraphicsTextPageRenderer(p); 
+                defaultRenderer = new OpenGLTextPageRenderer(p); 
             } catch (NoClassDefFoundError e) {
                 PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
             }
+        } else if (rendererType == PConstants.P3D) {
+        	//The current tesselation code from jME doesn't deal well with complex
+        	//path with overlapping edges. This happens when DForm behaviors are
+        	//applied to glyphs.
+        	System.err.println("Warning: NextText is unstable when used with the P3D renderer. " +
+			"Problem will occur if you use DForm behaviours with filled glyphs. Use at your own risk.");        
+
+        	//NextText's P3D renderer is compatible with all PApplet renderer
+        	//but if PApplet's P3D is NOT used, then NextText uses P3D only
+        	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
+        	//2D.       	
+            defaultRenderer = new P3DTextPageRenderer(p); 
         } else {
-            // try both, starting with the prettier one
-            try {
-                defaultRenderer = new Java2DTextPageRenderer(p); 
-            } catch (ClassCastException e) {
+        	//check if the applet is using the JAVA2D renderer
+        	if (p.g.getClass().getName().compareTo("processing.core.PGraphicsJava2D") == 0) {
                 try {
-                    defaultRenderer = new PGraphicsTextPageRenderer(p); 
+                    defaultRenderer = new Java2DTextPageRenderer(p); 
+                } catch (ClassCastException e) {
+                    PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
+                }        		
+        	}
+        	//check if the applet is using the P2D renderer
+        	else if (p.g.getClass().getName().compareTo("processing.core.PGraphics2D") == 0) {
+                try {
+                    defaultRenderer = new P2DTextPageRenderer(p); 
+                } catch (ClassCastException e) {
+                    PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
+                }        		
+        	}
+        	else if (p.g.getClass().getName().compareTo("processing.opengl.PGraphicsOpenGL") == 0) {
+        		try {
+                    defaultRenderer = new OpenGLTextPageRenderer(p); 
                 } catch (NoClassDefFoundError err) {
-                    PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
+                    PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
                 }
-            }
+        	} else if (p.g.getClass().getName().compareTo("processing.core.PGraphics3D") == 0) {
+                defaultRenderer = new P3DTextPageRenderer(p);                 	        	
+        	} else {
+        		//if the renderer is not recognize, then fall back on P2D which uses JAVA2D internally
+        		//to draw to a buffer, so it should work with any renderer.
+                PGraphics.showException("NextText couldn't recognize the PApplet renderer: " + p.g.getClass().getName() + ".");
+                defaultRenderer = new P2DTextPageRenderer(p); 
+        	}
         }
         
         pages = new LinkedHashMap<String, TextPage>();
@@ -278,7 +322,8 @@ public class Book {
         Font f = loadFontFromPFont(pf).deriveFont(p.g.textSize);
         pf.setFont(f);
         
-        toBuilder.setTextAlign(p.g.textAlign);
+        toBuilder.setTextAlign(p.g.textAlign); // LEFT/CENTER/RIGHT
+        toBuilder.setTextAlignY(p.g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
         toBuilder.setFont(pf, f);
     }
     
@@ -308,11 +353,7 @@ public class Book {
      * @return TextObjectGroup the built TextObjectGroup
      */
     public TextObjectGroup addText(String text, int x, int y) {
-        setFont();
-    	TextObjectGroup newTog = toBuilder.build(text, x, y);
-    	setStrokeAndFill(newTog); 
-
-        return newTog;
+    	return addText(text, x, y, Integer.MAX_VALUE);
     }
     
     /**
@@ -350,7 +391,6 @@ public class Book {
         setFont();
         TextObjectGroup newTog = toBuilder.buildSentence(text, x, y, lineLength);
     	setStrokeAndFill(newTog);
-
         return newTog;
     }
     
@@ -482,6 +522,23 @@ public class Book {
         toBuilder.addGlyphBehaviour(b);
         addBehaviour(b);
     }
+
+    /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGlyphs.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeGlyphBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGlyphBehaviour(AbstractAction action) { 
+        Behaviour b = action.makeBehaviour();
+    	toBuilder.addGlyphBehaviour(b);
+        addBehaviour(b);
+        return b;
+    }
     
     /**
      * Removes the given Behaviour from the list of Behaviours applied to new TextObjectGlyphs.
@@ -510,6 +567,23 @@ public class Book {
     public void addGroupBehaviour(AbstractBehaviour b) { 
         toBuilder.addGroupBehaviour(b);
         addBehaviour(b);
+    }
+
+    /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGroups.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeGlyphBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGroupBehaviour(AbstractAction action) { 
+        Behaviour b = action.makeBehaviour();
+    	toBuilder.addGroupBehaviour(b);
+        addBehaviour(b);
+        return b;
     }
     
     /**
@@ -553,34 +627,40 @@ public class Book {
      * Add a page to the book without specifying a name.
      * 
      * <p>The page will be named "layerN" where N = 0,1,2,3...</p>
+     * @return the new page
      * 
      */
-    public void addPage(TextPage p){
+    public TextPage addPage(TextPage p){
         String name = "layer" + pages.size();
         pages.put(name,p);
+        return pages.get(name);
     }
 
     /**
      * Add a named page to the book
+     * @return the new page
      */
-    public void addPage(String name, TextPage p){
+    public TextPage addPage(String name, TextPage p){
         if (pages.containsKey(name)) {
         	log("WARNING: A Page with the name '"+name+"' already exists and will be deleted!");
         }
         pages.put(name,p);
+        return pages.get(name);
     }
     
     /**
      * Create and add a named TextPage to the Book
      * 
      * @param pageName the name of the TextPage to add
+     * @return the new page
      */
-    public void addPage(String pageName) {
-    	addPage(pageName, new TextPage(this, defaultRenderer));
+    public TextPage addPage(String pageName) {
+    	return addPage(pageName, new TextPage(this, defaultRenderer));
     }
     
     /**
      * Get a named page from the book
+     * @return the page
      */
     public TextPage getPage(String name){
         return (TextPage)pages.get(name);
@@ -635,10 +715,10 @@ public class Book {
     }
     
     // font property setters and getters
-    public void setLineHeight(double d) { toBuilder.setLineHeight(d); }
-    public double getLineHeight() { return toBuilder.getLineHeight(); }
-    public void setTrackingOffset(double d) { toBuilder.setTrackingOffset(d); }
-    public double getTrackingOffset() { return toBuilder.getTrackingOffset(); }
+    public void setLineHeight(float d) { toBuilder.setLineHeight(d); }
+    public float getLineHeight() { return toBuilder.getLineHeight(); }
+    public void setTrackingOffset(float d) { toBuilder.setTrackingOffset(d); }
+    public float getTrackingOffset() { return toBuilder.getTrackingOffset(); }
     
     //////////////////////////////////////////////////////////////////////
     // Rudimentary Logging System

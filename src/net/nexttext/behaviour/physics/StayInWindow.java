@@ -22,11 +22,11 @@ package net.nexttext.behaviour.physics;
 import java.awt.Rectangle;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.Action;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * Keep objects inside a window.
@@ -98,21 +98,21 @@ public class StayInWindow extends PhysicsAction implements Action {
     	// see if the object is inside the window using the object's
         // bounding box.
         Rectangle bb = to.getBoundingPolygon().getBounds();
-        Vector3 offset = bringBackObject( bb );
+        PVector offset = bringBackObject( bb );
 
-        if ( offset.isZero() ) {
+        if ( offset.mag() == 0 ) {
             // if there is no offset then the object is inside, so do nothing
             return new ActionResult(false, false, false);
         }
         else {
             // translate the object so its inside
-            Vector3Property posProp = getPosition(to);
-            Vector3 pos = posProp.get();
+        	PVectorProperty posProp = getPosition(to);
+        	PVector pos = posProp.get();
             pos.add( offset );
             posProp.set( pos );
             
-            Vector3Property velProp = getVelocity(to);
-            Vector3 vel = velProp.get();
+            PVectorProperty velProp = getVelocity(to);
+            PVector vel = velProp.get();
             
             // either bounce or stop 
             if ( bounce ) {
@@ -133,9 +133,9 @@ public class StayInWindow extends PhysicsAction implements Action {
      * 
      * @return the amount to translate to remain inside the window
      */
-    private Vector3 bringBackObject( Rectangle bb ) {
+    private PVector bringBackObject( Rectangle bb ) {
         
-        Vector3 offset = new Vector3();
+    	PVector offset = new PVector();
         
         // XXXBUG: to be safe, we could modify Vector3 to add a add() method
         // which takes 3 doubles as opposed to a Vector3.
@@ -154,7 +154,7 @@ public class StayInWindow extends PhysicsAction implements Action {
      * 
      * @return the modified velocity
      */
-    private Vector3 bounce( Vector3 objectVel, Vector3 bringBack ) {
+    private PVector bounce( PVector objectVel, PVector bringBack ) {
         
         if ( bringBack.x != 0 ) objectVel.x *= -1; 
         if ( bringBack.y != 0 ) objectVel.y *= -1;
@@ -168,7 +168,7 @@ public class StayInWindow extends PhysicsAction implements Action {
      * 
      * @return the modified velocity
      */
-    private Vector3 stick( Vector3 objectVel, Vector3 bringBack ) {
+    private PVector stick( PVector objectVel, PVector bringBack ) {
         
         if ( bringBack.x != 0 ) objectVel.x = 0; 
         if ( bringBack.y != 0 ) objectVel.y = 0;

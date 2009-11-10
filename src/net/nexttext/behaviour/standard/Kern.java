@@ -19,10 +19,10 @@
 
 package net.nexttext.behaviour.standard;
 
+import processing.core.PVector;
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGroup;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.AbstractAction;
 
 /**
@@ -38,9 +38,9 @@ import net.nexttext.behaviour.AbstractAction;
 /* $Id$ */
 public class Kern extends AbstractAction {
     
-    public double kern;
+    public float kern;
     
-    public Kern(double kern){
+    public Kern(float kern){
         this.kern = kern;
     }
     
@@ -52,8 +52,8 @@ public class Kern extends AbstractAction {
         TextObject left = tog.getLeftMostChild();
         TextObject right = left.getRightSibling();
         while(right != null){
-            Vector3 leftBottomLeftCorner = new Vector3(left.getBounds().getMinX(),left.getBounds().getMaxY());
-            Vector3 rightBottomLeftCorner = new Vector3(right.getBounds().getMinX(),right.getBounds().getMaxY());
+        	PVector leftBottomLeftCorner = new PVector((float)left.getBounds().getMinX(),(float)left.getBounds().getMaxY());
+        	PVector rightBottomLeftCorner = new PVector((float)right.getBounds().getMinX(),(float)right.getBounds().getMaxY());
             //Find the distance between the two glyphs 
             rightBottomLeftCorner.sub(leftBottomLeftCorner);
             //Move the right sibling onto the same position as its left neighbour
@@ -65,8 +65,8 @@ public class Kern extends AbstractAction {
              * followed by an add(). I (Yannick) think i tried it and it didnt work but i 
              * am not sure.
              */
-            double width = left.getBounds().getWidth() + kern;
-            right.getPosition().add(new Vector3(width,0));
+            float width = (float)left.getBounds().getWidth() + kern;
+            right.getPosition().add(new PVector(width,0));
             //Move onto the next pair
             left = right;            
             right = right.getRightSibling();            

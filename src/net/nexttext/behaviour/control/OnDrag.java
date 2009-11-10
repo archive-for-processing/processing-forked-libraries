@@ -19,10 +19,10 @@
 
 package net.nexttext.behaviour.control;
 
+import processing.core.PVector;
 import net.nexttext.Book;
 import net.nexttext.Locatable;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.behaviour.Action;
 import net.nexttext.behaviour.standard.DoNothing;
 import net.nexttext.behaviour.control.Condition;
@@ -44,7 +44,7 @@ public class OnDrag extends Condition implements Locatable {
     private MouseDefault mouse;
     private int buttonToCheck;
     private boolean dragging;
-    private Vector3 dragOffset;
+    private PVector dragOffset;
     private TextObject lastDragged;
     private TextObject currDragged;
 
@@ -93,7 +93,7 @@ public class OnDrag extends Condition implements Locatable {
         this.mouse = Book.mouse;
         this.buttonToCheck = buttonToCheck;
         dragging = false;
-        dragOffset = new Vector3();
+        dragOffset = new PVector();
     }
 
     /** 
@@ -109,7 +109,7 @@ public class OnDrag extends Condition implements Locatable {
     			if (!dragging) {
     				// lock the mouse to the TextObject
     				dragging = true;
-    				dragOffset = new Vector3(mouse.getX(), mouse.getY());
+    				dragOffset = new PVector(mouse.getX(), mouse.getY());
     				dragOffset.sub(to.getPositionAbsolute());
     				currDragged = to;
     			}
@@ -118,7 +118,7 @@ public class OnDrag extends Condition implements Locatable {
             dragging = false;
             lastDragged = currDragged;
             currDragged = null;
-        	dragOffset = new Vector3();
+        	dragOffset = new PVector();
         }
     	
         return (dragging && (currDragged == to));
@@ -130,9 +130,9 @@ public class OnDrag extends Condition implements Locatable {
      * 
      * @return the target position of the TextObject
      */
-    public Vector3 getLocation() {
+    public PVector getLocation() {
         if (dragging) {
-            Vector3 ret = new Vector3(mouse.getX(), mouse.getY());
+        	PVector ret = new PVector(mouse.getX(), mouse.getY());
             ret.sub(dragOffset);
             return ret;
         } else {

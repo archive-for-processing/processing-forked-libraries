@@ -22,10 +22,12 @@ package net.nexttext;
 import net.nexttext.behaviour.AbstractBehaviour;
 import net.nexttext.property.Property;
 
+import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.LineMetrics;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,9 +108,9 @@ public class TextObjectBuilder {
     PFont pfont;
     Font font;
     //Font font = new Font("courier", 0, 18);
-    private Vector3 spaceOffset; // Width of a space character
-    private Vector3 trackingOffset; // Space between two characters
-    private Vector3 lineHeight;  // Height of a line
+    private PVector spaceOffset; // Width of a space character
+    private PVector trackingOffset; // Space between two characters
+    private PVector lineHeight;  // Height of a line
     public void setFont(PFont pf) { 
         Font f = Book.loadFontFromPFont(pf);
         setFont(pf, f);
@@ -116,20 +118,24 @@ public class TextObjectBuilder {
     public void setFont(PFont pf, Font f) { 
         pfont = pf;
         font = f;
+        //this could use the proper FRC from the PApplet's Graphics, but would
+        //it really make a difference?
         FontRenderContext frc = new FontRenderContext(null, false, false);
+        
+        //get measurement from the space character
 		GlyphVector sp = f.createGlyphVector( frc, " " );		
-		spaceOffset = new Vector3( (int)sp.getLogicalBounds().getWidth(), 0,0);        
-		trackingOffset = new Vector3(0, 0, 0);
-		lineHeight = new Vector3( 0,(int)sp.getLogicalBounds().getHeight(),0);
+		spaceOffset = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
+		trackingOffset = new PVector(0, 0, 0);
+		lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
     }
     public PFont getFont() { return pfont; }
 
 
-    Vector3 pos = new Vector3(0,0,0);
-    public void setPosition(Vector3 pos) { this.pos = pos; }
-    public Vector3 getPosition() { return pos; }
+    PVector pos = new PVector(0,0,0);
+    public void setPosition(PVector pos) { this.pos = pos; }
+    public PVector getPosition() { return pos; }
 
-
+    
     boolean addToSpatialList = false;
     /** If created objects should be added to the spatial list. */
     public void setAddToSpatialList(boolean addToSpatialList) {
@@ -143,6 +149,11 @@ public class TextObjectBuilder {
         this.align = align;
     }
 
+    int alignY = PConstants.BASELINE;
+    /** Set the vertical alignment type of the group around the position. */
+    public void setTextAlignY(int alignY) {
+        this.alignY = alignY;
+    } 
 
     /** Parent to attach new groups to, may be null. */
     TextObjectGroup parent = null;
@@ -221,7 +232,7 @@ public class TextObjectBuilder {
      * @return the built TextObjectGroup
      */
     public TextObjectGroup build(String text, int x, int y) {
-    	return build(text, new Vector3(x, y));
+    	return build(text, new PVector(x, y));
     }
 
     /**
@@ -240,7 +251,7 @@ public class TextObjectBuilder {
     /**
      * Build a tree of TextObjects at the specified location.
      */
-    public TextObjectGroup build(String text, Vector3 pos) {
+    public TextObjectGroup build(String text, PVector pos) {
         
         TextObjectGroup newGroup = createGroup( text, pos );
         applyBuilderOptions(newGroup, false);
@@ -256,13 +267,36 @@ public class TextObjectBuilder {
      * grandchildren.  Spaces between words are included as TextObjectGroups
      * containing a single TextObjectGlyph child.</p>
      *
+     * @param text the String to create the TextObjectGroup from
+     * 
      * @return a group containing a sub-group for each identified tokens.
      * Spaces are represented as groups containing one Space character.
      */
     public TextObjectGroup buildSentence( String text ) {
         return buildSentence( text, pos, Integer.MAX_VALUE );
     }
-        
+
+    /**
+     * Build a tree of TextObjects from the given sentence, at the specified
+     * location.
+     *
+     * <p>The string is parsed as a sentence, where whitespace characters are
+     * treated as word delimiters.  The returned TextObjectGroup has a child
+     * TextObjectGroup for each word in the string, and TextObjectGlyph
+     * grandchildren. Spaces between words are included as TextObjectGroups
+     * containing a single TextObjectGlyph child.</p>
+     *
+     * @param text the String to create the TextObjectGroup from
+     * @param x the x-coordinate of the created TextObjectGroup
+     * @param y the y-coordinate of the created TextObjectGroup
+     *
+     * @return a group containing a sub-group for each identified tokens.
+     * Spaces are represented as groups containing one Space character.
+     */
+    public TextObjectGroup buildSentence( String text, int x, int y ) {
+        return buildSentence( text, new PVector(x, y), Integer.MAX_VALUE );
+    }
+    
     /**
      * Builds a tree of TextObjects from the given sentence, at the
      * specified location.
@@ -278,7 +312,7 @@ public class TextObjectBuilder {
      * @return the built TextObjectGroup
      */
     public TextObjectGroup buildSentence(String text, int x, int y, int lineLength) {
-    	return buildSentence(text, new Vector3(x, y), lineLength);
+    	return buildSentence(text, new PVector(x, y), lineLength);
     }
     
     /**
@@ -287,14 +321,19 @@ public class TextObjectBuilder {
      * <p>The returned TextObject tree will be laid out so that no more than
      * lineLength characters appear on a single line.  </p>
      */
-    public TextObjectGroup buildSentence( String text, Vector3 pos, int lineLength ) {
+    public TextObjectGroup buildSentence( String text, PVector pos, int lineLength ) {
+    	//Make sure the lineLength is greater than 1 (space for the dash)
+    	if (lineLength <= 1) {
+    		lineLength = 2;
+    	}
+    	
     	// Pre-process the text
         text = preprocessMessage(text, lineLength);
         
         StringTokenizer st = new StringTokenizer(text," \n",true);
         
         TextObjectGroup newGroup = new TextObjectGroup(pos);
-        Vector3 gOffset = new Vector3(0,0,0);
+        PVector gOffset = new PVector(0,0,0);
         
         while ( st.hasMoreTokens() ) {
         	// Get each token
@@ -309,7 +348,7 @@ public class TextObjectBuilder {
             
             // display other words
             TextObjectGroup token = createGroup( tokenStr, gOffset );
-            gOffset.add( new Vector3(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
+            gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
             
             newGroup.attachChild( token );
         }
@@ -346,15 +385,28 @@ public class TextObjectBuilder {
     		
     		// Fold long words across multiple lines.
     		if (tokenStr.length() > lineLength) {
-    			tokenStr = splitLongWord(tokenStr, lineLength);
-    			numChars = 0;
+    			tokenStr = splitLongWord(tokenStr, lineLength-numChars, lineLength);
+    			numChars = (tokenStr.length()-1) - tokenStr.lastIndexOf('\n');
     		}
     		else {
     			if (numChars == 0 && tokenStr.equals(" ")) continue;
     			numChars += tokenStr.length();
     			if (numChars > lineLength) {
-    				tokenStr = "\n" + tokenStr;
+    				//if the token that gets us over the edge is a space
+    				//then remove it so that lines are all aligned
+    				if (tokenStr.equals(" "))
+    					tokenStr = "";
+    				
+    				//keep track of character count
     				numChars = tokenStr.length();
+    				
+    				//remove trailing spaces before adding the newline
+    				//this makes sure right-aligned text is flush
+    				while(returnText.charAt(returnText.length()-1) == ' ')
+    					returnText = returnText.deleteCharAt(returnText.length()-1);
+    				
+    				//append the newline
+    				tokenStr = "\n" + tokenStr;
     			}
     		}
     		
@@ -377,33 +429,34 @@ public class TextObjectBuilder {
     // greater than maxLength.  The `-' character is used to show that a word
     // continues on the next line.  If possible, the breaks will be done at
     // non-letter characters.
-    private String splitLongWord(String longWord, int maxLength) {
+    private String splitLongWord(String longWord, int lineLength, int maxLength) {
 		// the word is too long, split it
-		StringBuffer temp = new StringBuffer("\n");
+		//StringBuffer temp = new StringBuffer("\n");
+    	StringBuffer temp = new StringBuffer();
 		Matcher matcher;
 		
-		while (longWord.length() > maxLength) {
+		while (longWord.length() > lineLength) {
 			// find if there is non-word character with maxLength
-			matcher = pattern.matcher(longWord.substring(0, maxLength - 1));
-			int splitAt = (matcher.find())? matcher.end() : maxLength - 1;
+			matcher = pattern.matcher(longWord.substring(0, lineLength - 1));
+			int splitAt = (matcher.find())? matcher.end() : lineLength - 1;
 			
 			temp.append(longWord.substring(0, splitAt) + "-\n");
 			longWord = longWord.substring(splitAt);
-			
+			lineLength = maxLength;
 		}
-		return temp.append(longWord + "\n").toString();
+		return temp.append(longWord).toString();
     }
     
     /**
      * This methods returns a TextObject group created using the given string,
      * positioned using the given Vector3.
      */
-    private TextObjectGroup createGroup( String text, Vector3 pos ) {
+    private TextObjectGroup createGroup( String text, PVector pos ) {
         
         TextObjectGroup newGroup = new TextObjectGroup(groupProperties, pos);
 
         // Each glyph is offset by gOffset from the word location.
-        Vector3 gOffset = new Vector3(0,0,0);
+        PVector gOffset = new PVector(0,0,0);
         for (int i = 0; i < text.length(); i++) {
             
             String glyph = text.substring(i,i+1);
@@ -425,9 +478,7 @@ public class TextObjectBuilder {
      */
     private void applyBuilderOptions(TextObjectGroup newGroup, boolean isSentence) {
         
-        if (align != PConstants.LEFT) {
-        	alignGroup(newGroup, isSentence);
-        }
+       	alignGroup(newGroup, isSentence);
 
         synchronized (book) {
             if (parent != null) {
@@ -481,31 +532,72 @@ public class TextObjectBuilder {
      * @param isSentence whether the passed group was built using buildSentence() or not
      */
     private void alignGroup(TextObjectGroup newGroup, boolean isSentence) {
+        //this could use the proper FRC from the PApplet's Graphics, but would
+        //it really make a difference?
+        FontRenderContext frc = new FontRenderContext(null, false, false);
+
+        //string representing the whole group
+        String groupStr = newGroup.getString();
+        
+        //get the line metrics of the font for this line of text
+    	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
+    	
     	if (!isSentence) {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
-        	Vector3 offset = newGroup.getPositionAbsolute();
+        	PVector offset = newGroup.getPositionAbsolute();
+        	
+        	//adjust for horizontal align
         	if (align == PConstants.CENTER) {
-        		offset.sub(new Vector3(bb.getCenterX(), bb.getCenterY()));
+        		offset.sub(new PVector((float)bb.getCenterX(), 0));
         	} else if (align == PConstants.RIGHT) {
-        		offset.sub(new Vector3(bb.getX()+bb.getWidth(), bb.getY()+bb.getHeight()));
+        		offset.sub(new PVector((float)(bb.getX()+bb.getWidth()), 0));
+        	} else if (align == PConstants.LEFT) {
+        		offset.sub(new PVector(offset.x, 0));
         	}
+
+        	//adjust for vertical align
+        	if (alignY == PConstants.CENTER) {
+        		offset.sub(new PVector(0, offset.y-metrics.getAscent()/2));
+        	} else if (alignY == PConstants.TOP) { 
+        		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+        	} else if (alignY == PConstants.BOTTOM) {
+        		offset.sub(new PVector(0, offset.y+metrics.getDescent()));
+        	} else if (alignY == PConstants.BASELINE) {
+        		offset.sub(new PVector(0, offset.y));
+        	}
+        	
         	TextObject child = newGroup.getLeftMostChild();
         	while (child != null) {
         		child.getPosition().add(offset);
         		child = child.getRightSibling();
         	}
         } else {
+            // If multiple lines, sum the height of the additional lines
+            float multiLineHeight = 0;
+            TextObjectGroup child = (TextObjectGroup)newGroup.getLeftMostChild();
+            PVector lastPos = null;
+            while(child != null) {
+            	if (lastPos == null)
+            		lastPos = child.getPositionAbsolute();
+            	else if (lastPos.y != child.getPositionAbsolute().y) {
+              	  multiLineHeight += metrics.getAscent() + metrics.getDescent() + metrics.getLeading();
+              	  lastPos.set(child.getPositionAbsolute());
+            	}
+
+            	child = (TextObjectGroup)child.getRightSibling();
+            }
+        	
         	// When the group is a sentence, we need to check the y-pos of 
         	// each child group as they may be positioned on different lines.
         	TextObjectGroup firstInLine = (TextObjectGroup)newGroup.getLeftMostChild();
         	while (firstInLine != null) {
         		// start a new line and calculate a new bounding box
-        		double currY = firstInLine.getPositionAbsolute().y;
+        		float currY = firstInLine.getPositionAbsolute().y;
         		Rectangle bb = firstInLine.getBounds();
         		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
         		if (sibling == null) {
         			// only one group in this sentence, center it
-        			alignLine(firstInLine, sibling, bb);
+        			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
                 	// set first group to null to exit the loop
                 	firstInLine = null;
         		}
@@ -517,14 +609,14 @@ public class TextObjectBuilder {
             			sibling = (TextObjectGroup)sibling.getRightSibling();
             			if (sibling == null) {
             				// we reached the end of the group, center the line
-            	    		alignLine(firstInLine, sibling, bb);
+            	    		alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
                         	// set first group and sibling to null to exit the loop
                         	firstInLine = sibling = null;
             			}
             		// the sibling is on a new line
             		} else {
             			// center the previous line
-            			alignLine(firstInLine, sibling, bb);
+            			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
                     	// set the sibling as the new start group of the line
                     	firstInLine = sibling;
                     	sibling = null;
@@ -534,13 +626,29 @@ public class TextObjectBuilder {
         }
     }
     
-    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds) {
-    	Vector3 offset = first.getPositionAbsolute();
+    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds, LineMetrics metrics, float multiLineHeight) {
+    	PVector offset = first.getPositionAbsolute();
+    	
+    	//horizontal align
     	if (align == PConstants.CENTER) {
-    		offset.sub(new Vector3(lineBounds.getCenterX(), lineBounds.getCenterY()));
+    		offset.sub(new PVector((float)lineBounds.getCenterX(), 0));
     	} else if (align == PConstants.RIGHT) {
-    		offset.sub(new Vector3(lineBounds.getX()+lineBounds.getWidth(), lineBounds.getY()+lineBounds.getHeight()));
+    		offset.sub(new PVector((float)(lineBounds.getX()+lineBounds.getWidth()), 0));
+    	} else if (align == PConstants.LEFT) {
+    		offset.sub(new PVector(offset.x, 0));
     	}
+    	
+    	//vertical align
+    	if (alignY == PConstants.CENTER) {
+    		offset.sub(new PVector(0, offset.y-(metrics.getAscent()-multiLineHeight)/2));
+    	} else if (alignY == PConstants.TOP) { 
+    		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+    	} else if (alignY == PConstants.BOTTOM) {
+    		offset.sub(new PVector(0, offset.y+metrics.getDescent()+multiLineHeight));
+    	} else if (alignY == PConstants.BASELINE) {
+    		offset.sub(new PVector(0, offset.y));
+    	}    	
+    	
     	TextObjectGroup currChild = first;
     	while (currChild != limit) {
     		TextObject grandChild = currChild.getLeftMostChild();
@@ -552,8 +660,8 @@ public class TextObjectBuilder {
     	}
     }
     
-    public void setLineHeight(double d) { lineHeight.y = d; }
-    public double getLineHeight() { return lineHeight.y; }
-    public void setTrackingOffset(double d) { trackingOffset.x = d; }
-    public double getTrackingOffset() { return trackingOffset.x; }
+    public void setLineHeight(float d) { lineHeight.y = d; }
+    public float getLineHeight() { return lineHeight.y; }
+    public void setTrackingOffset(float d) { trackingOffset.x = d; }
+    public float getTrackingOffset() { return trackingOffset.x; }
 }

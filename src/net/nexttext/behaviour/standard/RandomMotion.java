@@ -19,10 +19,10 @@
 
 package net.nexttext.behaviour.standard;
 
+import processing.core.PVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
-import net.nexttext.property.Vector3Property;
 import net.nexttext.property.NumberProperty;
+import net.nexttext.property.PVectorProperty;
 import net.nexttext.behaviour.AbstractAction;
 
 /**
@@ -50,9 +50,9 @@ public class RandomMotion extends AbstractAction {
      * Moves a TextObject randomly.
      */
     public ActionResult behave(TextObject to) {
-        Vector3Property pos = getPosition(to);
-        double rate = ((NumberProperty) properties().get("Speed")).get();
-        pos.add(new Vector3(rate * (Math.random()-0.5), rate * (Math.random()-0.5)));
+    	PVectorProperty pos = getPosition(to);
+        float rate = ((NumberProperty) properties().get("Speed")).get();
+        pos.add(new PVector(rate * (float)(Math.random()-0.5), rate * (float)(Math.random()-0.5)));
         return new ActionResult(false, false, false);
     }
 }

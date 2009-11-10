@@ -26,12 +26,12 @@ public class MouseInertia extends PhysicsAction {
         int dX = p.mouseX-p.pmouseX;
         int dY = p.mouseY-p.pmouseY;
         
-        Vector3 inertia = new Vector3(dX, dY);
-        inertia.scalar(fScale);
+        PVector inertia = new PVector(dX, dY);
+        inertia.mult(fScale);
         
         // an attempt at calculating angular force... it seems to work but
         // if anyone knows of a better way of doing this please let me know
-        double angle = p.min(p.abs(dX), p.abs(dY))/(inertia.length()+.001)/100.0;
+        float angle = p.min(p.abs(dX), p.abs(dY))/(inertia.mag()+.001f)/100.0f;
         int aFactor;
         if (inertia.x*inertia.y < 0) {
           aFactor = -1;
@@ -40,7 +40,7 @@ public class MouseInertia extends PhysicsAction {
         }
 
         applyForce(to, inertia);
-        applyAngularForce(to, inertia.length()*angle*aFactor);
+        applyAngularForce(to, inertia.mag()*angle*aFactor);
 
         dragging.set(false);
       }

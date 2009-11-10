@@ -20,14 +20,15 @@
 package net.nexttext.behaviour.dform;
 
 import net.nexttext.TextObjectGlyph;
-import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3PropertyList;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
 
 import java.awt.Rectangle;
 
 import java.util.Iterator;
+
+import processing.core.PVector;
 
 /**
  * A DForm which throbs the TextObject.
@@ -60,7 +61,7 @@ public class Throb extends DForm {
      * @param scale is amount the object's size will increase, as a multiplier.
      * @param period is the period of the throb, in frames.
      */
-    public Throb(double scale, int period) {
+    public Throb(float scale, int period) {
         properties().init("Scale", new NumberProperty(scale));
         properties().init("Period", new NumberProperty(period));
     }
@@ -75,31 +76,31 @@ public class Throb extends DForm {
         // The amount to multiply each control point by.  The factor to
         // generate the current frame from the origin, divided by the factor to
         // generate the previous frame from the origin.
-        double scale = ((NumberProperty) properties().get("Scale")).get();
+        float scale = ((NumberProperty) properties().get("Scale")).get();
         long period = ((NumberProperty) properties().get("Period")).getLong();
 
-        double factor = tF(fC, scale, period) / tF(fC - 1, scale, period);
+        float factor = tF(fC, scale, period) / tF(fC - 1, scale, period);
 
         // Determine the center of to, in the same coordinates as the control
         // points will be.
-        Vector3 toAbsPos = to.getPositionAbsolute();
+        PVector toAbsPos = to.getPositionAbsolute();
         Rectangle bb = to.getBoundingPolygon().getBounds();
-        Vector3 center = new Vector3(bb.getCenterX(), bb.getCenterY());
+        PVector center = new PVector((float)bb.getCenterX(), (float)bb.getCenterY());
         center.sub(toAbsPos);
 
         // Traverse the control points of the glyph, applying the
         // multiplication factor to each one, but offset from the center, not
         // the position.
-        Vector3PropertyList cPs = getControlPoints(to);
-        Iterator<Vector3Property> i = cPs.iterator();
+        PVectorListProperty cPs = getControlPoints(to);
+        Iterator<PVectorProperty> i = cPs.iterator();
         while (i.hasNext()) {
-            Vector3Property cP = i.next();
+        	PVectorProperty cP = i.next();
             // Get the vector from the center of the glyph to the control point.
-            Vector3 p = cP.get();
+        	PVector p = cP.get();
             p.sub(center);
 
             // Scale the control point by the appropriate factor
-            p.scalar(factor);
+            p.mult(factor);
 
             // Return p to the original coordinates
             p.add(center);
@@ -117,8 +118,8 @@ public class Throb extends DForm {
     /**
      * The amount to multiply a vector by on the specified frame.
      */
-    private double tF(int frame, double scale, long period) {
-        double phase = Math.PI * 2 * frame / period;
-        return ((Math.cos(phase - Math.PI) + 1) * (scale - 1 )) + 1;
+    private float tF(int frame, float scale, long period) {
+        float phase = (float)(Math.PI * 2 * frame / period);
+        return ((float)(Math.cos(phase - Math.PI) + 1) * (scale - 1 )) + 1;
     }
 }

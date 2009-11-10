@@ -19,14 +19,14 @@
 
 package net.nexttext.behaviour.standard;
 
+import processing.core.PVector;
 import net.nexttext.Locatable;
+import net.nexttext.PLocatableVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
-import net.nexttext.Vector3ArithmeticException;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * Move an object to the location.
@@ -37,13 +37,35 @@ public class MoveTo extends AbstractAction implements TargetingAction {
     protected Locatable target;
 
     /**
-     * 
+     * Move a TextObject to a specified position.
+     * @param x x target position
+     * @param y y target position
      */
-    public MoveTo(int x, int y, long speed) {
-    	this(new Vector3(x, y), speed);
+    public MoveTo(int x, int y) {
+    	this(x, y, Long.MAX_VALUE);
     }
     
     /**
+     * Move a TextObject to a specified position at a certain speed.
+     * @param x x target position
+     * @param y x target position
+     * @param speed moving speed
+     */
+    public MoveTo(int x, int y, long speed) {
+    	this(new PVector(x, y), speed);
+    }
+    
+    /**
+     * Move a TextObject to a target.
+     * @param target locatable target
+     */
+    public MoveTo( Locatable target ) {
+        this(target, Long.MAX_VALUE);
+    }    
+    
+    /**
+     * Move a TextObject to a target at a certain speed.
+     * @param target locatable target
 	 * @param speed The speed of the approach represented as the number of
 	 * pixels to move in each frame.  Use a very large number for instant
 	 * travel.
@@ -54,32 +76,49 @@ public class MoveTo extends AbstractAction implements TargetingAction {
     }
 
     /**
+     * Move a TextObject to a target.
+     * @param target locatable target
+     */
+    public MoveTo( PVector target ) {
+        this(target, Long.MAX_VALUE);
+    } 
+    
+    /**
+     * Move a TextObject to a specified position.
+     * @param target position to move to
+	 * @param speed The speed of the approach represented as the number of
+	 * pixels to move in each frame.  Use a very large number for instant
+	 * travel.
+     */
+    public MoveTo( PVector target, long speed ) {
+        this.target = new PLocatableVector(target);
+        properties().init("Speed", new NumberProperty(speed));
+    }
+    
+    /**
      * Add a vector to the position to bring it closer to the target.
      *
      * <p>Result is complete if it has reached its target. </p>
      */
     public ActionResult behave(TextObject to) {
-        double speed = ((NumberProperty)properties().get("Speed")).get();
+        float speed = ((NumberProperty)properties().get("Speed")).get();
 
         // get the vector from the position to the target
-        Vector3 pos = to.getPositionAbsolute();
-        Vector3 newDir = target.getLocation();
+        PVector pos = to.getPositionAbsolute();
+        
+        // check if we are use a Locatable object or a PVector
+        PVector newDir = target.getLocation();
 	 	newDir.sub(pos);
 
         ActionResult result = new ActionResult(true, true, false);
 
 	 	// Scale the vector down to the speed if needed.
-        if (newDir.length() > speed) {
-            try {
-                newDir.normalize();
-            } catch (Vector3ArithmeticException v3ae) {
-                // some silly person set a negative speed, and the object had
-                // already arrived at it's location, just ignore the problem.
-            }
-            newDir.scalar(speed);
+        if (newDir.mag() > speed) {
+            newDir.normalize();
+            newDir.mult(speed);
             result.complete = false;
         }
-        Vector3Property posProp = getPosition(to);
+        PVectorProperty posProp = getPosition(to);
         posProp.add(newDir);
         return result;
     }
@@ -89,5 +128,26 @@ public class MoveTo extends AbstractAction implements TargetingAction {
      */
     public void setTarget(Locatable target) {
        	this.target = target;
+    }
+
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+    
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    /**
+     * Sets a target to approach.
+     */
+    public void setTarget( PVector target ) {
+    	setTarget(new PLocatableVector(target));
     }
 }

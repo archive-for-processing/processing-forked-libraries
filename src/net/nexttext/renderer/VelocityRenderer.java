@@ -75,13 +75,13 @@ public class VelocityRenderer extends TextPageRenderer {
         while (toi.hasNext()) {
             TextObject to = toi.next();
 
-            Vector3Property velProp = (Vector3Property) to
+            PVectorProperty velProp = (PVectorProperty) to
                     .getProperty("Velocity");
 
             if (velProp != null) {
-                Vector3 vel = velProp.get();
-                Vector3 pos = to.getPositionAbsolute();
-                vel.scalar(scale);
+            	PVector vel = velProp.get();
+            	PVector pos = to.getPositionAbsolute();
+                vel.mult(scale);
                 
                 // save the current properties
                 p.pushStyle();

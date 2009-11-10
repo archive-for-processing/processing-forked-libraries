@@ -30,24 +30,24 @@ package net.nexttext.property;
 /* $Id$ */
 public class NumberProperty extends Property {
 
-    double original;
-    double value;
+    float original;
+    float value;
   
-    public NumberProperty(double value) {
+    public NumberProperty(float value) {
         original = value;
         this.value = value;      
     }
 
-    public double getOriginal() { return original; }
+    public float getOriginal() { return original; }
 
-    public double get() { return value; }
+    public float get() { return value; }
 
-    public void set(double value) { 
+    public void set(float value) { 
        this.value = value;
        firePropertyChangeEvent();
     }
 
-    public void add(double value) {
+    public void add(float value) {
         this.value += value;
         firePropertyChangeEvent();
     }
@@ -57,15 +57,15 @@ public class NumberProperty extends Property {
     }
 
     public String toString() {
-        return "(" + Double.toString(original) +
-            ", " + Double.toString(value);
+        return "(" + Float.toString(original) +
+            ", " + Float.toString(value);
     }
 
     // Accessors in case it's easier to treat a number property as a long.
 
     public NumberProperty(long value) {
-        original = (double) value;
-        this.value = (double) value;     
+        original = (float) value;
+        this.value = (float) value;     
     }
 
     public long getOriginalLong() { return (long) original; }
@@ -74,12 +74,12 @@ public class NumberProperty extends Property {
     }
 
     public void set(long value) { 
-        this.value = (double) value;
+        this.value = (float) value;
         firePropertyChangeEvent();
     }
 
     public void add(long value) {
-        value += (double) value;
+        value += (float) value;
         firePropertyChangeEvent();
     }
 }

@@ -42,7 +42,7 @@ public class InputManager {
 	 * @param mouse the default Mouse InputSource
 	 * @param keyboard the default Keyboard InputSource
 	 */
-    public InputManager(Mouse mouse, Keyboard keyboard) { 
+    public InputManager(Mouse mouse, Keyboard keyboard) {
 	    add("Mouse", mouse);          	
         add("Keyboard", keyboard);          		 	
 	 }

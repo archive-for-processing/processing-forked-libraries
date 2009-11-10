@@ -23,8 +23,8 @@ import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGlyphIterator;
 import net.nexttext.TextObjectGroup;
-import net.nexttext.property.Vector3PropertyList;
 import net.nexttext.behaviour.AbstractAction;
+import net.nexttext.property.PVectorListProperty;
 
 /**
  * A super class for DForms.
@@ -40,7 +40,7 @@ public abstract class DForm extends AbstractAction {
     /**
      * The control points used to deform a glyph.
      */
-    public Vector3PropertyList getControlPoints( TextObjectGlyph tog ) {
+    public PVectorListProperty getControlPoints( TextObjectGlyph tog ) {
         return tog.getControlPoints();
     }
 

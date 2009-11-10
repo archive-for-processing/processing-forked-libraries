@@ -1,9 +1,10 @@
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGroup;
-import net.nexttext.Vector3;
 import net.nexttext.Locatable;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
+
+import processing.core.PVector;
 
 import java.awt.Rectangle;
 
@@ -16,14 +17,14 @@ public class Swim extends IWillFollowAction {
 
     static final String REVISION = "$CVSHeader$";
     
-    static final double THRESHOLD = 0.1;
+    static final float THRESHOLD = 0.1f;
     
     Rectangle bounds;
     
     // when setting a new target, this is the max distance away from the 
     // current position that it can be
-    double segmentX;  
-    double segmentY;
+    float segmentX;  
+    float segmentY;
 
     
     /** 
@@ -68,80 +69,80 @@ public class Swim extends IWillFollowAction {
      * @param to the TextObject to act upon
      */
     public ActionResult behave(TextObject to) {
-        double x, y;            
+        float x, y;            
             
         // get the position
-        Vector3Property positionProperty = (Vector3Property)to.getProperty("Position");
-        Vector3 position = positionProperty.get();
+        PVectorProperty positionProperty = (PVectorProperty)to.getProperty("Position");
+        PVector position = positionProperty.get();
         
         // if not yet set, init the target at the TextObject's current position
         if (to.getProperty("Target") == null)
-            to.init("Target", new Vector3Property(position));
+            to.init("Target", new PVectorProperty(position));
         
         
         // get the target position
-        Vector3 target = ((Vector3Property)to.getProperty("Target")).get();
+        PVector target = ((PVectorProperty)to.getProperty("Target")).get();
 
         // calculate the difference from the current position to the target position
-        double targetDiffX = target.x-position.x;
-        double targetDiffY = target.y-position.y;
+        float targetDiffX = target.x-position.x;
+        float targetDiffY = target.y-position.y;
         
         // if the TextObject has reached its target, set a new one
         if ((Math.abs(targetDiffX) < THRESHOLD) && (Math.abs(targetDiffY) < THRESHOLD)) {
             // get the distance from the parent's (word) center
-            double parentDiffX = to.getParent().getCenter().x - to.getCenter().x;
-            double parentDiffY = to.getParent().getCenter().y - to.getCenter().y;
+            float parentDiffX = to.getParent().getCenter().x - to.getCenter().x;
+            float parentDiffY = to.getParent().getCenter().y - to.getCenter().y;
     
             // new targets are always in the direction of the parent's center
             if ((-segmentX <= parentDiffX) && (parentDiffX <= segmentX))
-                x = Math.random()*2*segmentX-segmentX;
+                x = (float)Math.random()*2*segmentX-segmentX;
             else if (-segmentX > parentDiffX)
-                x = Math.random()*segmentX;
+                x = (float)Math.random()*segmentX;
             else
-                x = Math.random()*-segmentX;
+                x = (float)Math.random()*-segmentX;
                         
             if ((-segmentY <= parentDiffY) && (parentDiffY <= segmentY))
-                y = Math.random()*2*segmentY-segmentY;
+                y = (float)Math.random()*2*segmentY-segmentY;
             else if (-segmentY > parentDiffY)
-                y = Math.random()*segmentY;
+                y = (float)Math.random()*segmentY;
             else
-                y = Math.random()*-segmentY;
+                y = (float)Math.random()*-segmentY;
             
             // make sure the next target is inside the window
-            Vector3 nextTarget = new Vector3(x, y);
-            Vector3 nextAbsTarget = to.getLocation();
+            PVector nextTarget = new PVector(x, y);
+            PVector nextAbsTarget = to.getLocation();
             nextAbsTarget.add(nextTarget);
             if (nextAbsTarget.x <= 0)
-                nextTarget.add(new Vector3(segmentX, 0));
+                nextTarget.add(new PVector(segmentX, 0));
             else if (nextAbsTarget.x >= bounds.width)
-                nextTarget.add(new Vector3(-segmentX, 0));
+                nextTarget.add(new PVector(-segmentX, 0));
             
             if (nextAbsTarget.y <= 0)
-                nextTarget.add(new Vector3(0, segmentY));
+                nextTarget.add(new PVector(0, segmentY));
             else if (nextAbsTarget.y >= bounds.height)
-                nextTarget.add(new Vector3(0, -segmentY));
+                nextTarget.add(new PVector(0, -segmentY));
                         
-            setTarget(to, nextTarget);
+            setTarget(to, new PVector(nextTarget.x, nextTarget.y, nextTarget.z));
             
         // if the TextObject has not reached its target, move towards it    
         } else {
             // get the speed
-            float speedX = (float)((NumberProperty)properties().get("speedX")).get();
-            float speedY = (float)((NumberProperty)properties().get("speedY")).get();
+            float speedX = ((NumberProperty)properties().get("speedX")).get();
+            float speedY = ((NumberProperty)properties().get("speedY")).get();
         
             // move the TextObject towards the target by a random amount
             if (targetDiffX < 0)
-                x = Math.random()*Math.max(targetDiffX, -speedX);
+                x = (float)(Math.random()*Math.max(targetDiffX, -speedX));
             else
-                x = Math.random()*Math.min(targetDiffX, speedX);
+                x = (float)(Math.random()*Math.min(targetDiffX, speedX));
             
             if (targetDiffY < 0)
-                y = Math.random()*Math.max(targetDiffY, -speedY);
+                y = (float)(Math.random()*Math.max(targetDiffY, -speedY));
             else
-                y = Math.random()*Math.min(targetDiffY, speedY);
+                y = (float)(Math.random()*Math.min(targetDiffY, speedY));
             
             // translate to the new position
-            positionProperty.add(new Vector3(x, y));
+            positionProperty.add(new PVector(x, y));
         }
         
         return new ActionResult(false, false, false);
@@ -155,8 +156,8 @@ public class Swim extends IWillFollowAction {
      * @param to the TextObject to consider
      * @param target the new target
      */
-    public void setTarget(TextObject to, Locatable target) {
-        Vector3Property targetProperty = (Vector3Property)to.getProperty("Target");
-        targetProperty.set((Vector3)target);
+    public void setTarget(TextObject to, PVector target) {
+        PVectorProperty targetProperty = (PVectorProperty)to.getProperty("Target");
+        targetProperty.set(target);
     }
 }

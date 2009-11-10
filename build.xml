@@ -9,13 +9,13 @@
 	</description>
 		
 	<path id="processing.classpath">
-	    <pathelement location="/Developer/Applications/Java/Processing.app/Contents/Resources/Java/core.jar"/>
+	    <pathelement location="C:\Program Files\processing\lib\core.jar"/>
 	</path>
 	<path id="opengl.classpath">
-	    <pathelement location="/Developer/Applications/Java/Processing.app/Contents/Resources/Java/libraries/opengl/library/opengl.jar"/>
+	    <pathelement location="C:\Program Files\processing\libraries\opengl\library\opengl.jar"/>
 	</path>
 	<path id="jogl.classpath">
-	    <pathelement location="/Developer/Applications/Java/Processing.app/Contents/Resources/Java/libraries/opengl/library/jogl.jar"/>
+	    <pathelement location="C:\Program Files\processing\libraries\opengl\library\jogl.jar"/>
 	</path>
 	
     <target name="jvm-get">
@@ -87,7 +87,7 @@
         </copy>
  
         <zip destfile="nexttext.zip">
-            <fileset dir="nexttext"/>
+            <fileset dir="." includes="nexttext/"/>
         </zip>
         
         <delete dir="nexttext"/>

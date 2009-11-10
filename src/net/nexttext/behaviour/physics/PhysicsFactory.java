@@ -26,7 +26,7 @@ import net.nexttext.behaviour.Behaviour;
 import net.nexttext.behaviour.control.OnCollision;
 import net.nexttext.behaviour.control.OnDrag;
 import net.nexttext.behaviour.standard.DoNothing;
-import net.nexttext.behaviour.standard.Follow;
+import net.nexttext.behaviour.standard.FollowSibling;
 
 /**
  * The factory of Physics behaviours.
@@ -40,7 +40,7 @@ public class PhysicsFactory {
      */
     public static final AbstractBehaviour collide() {        
 	    Behaviour collide;
-	    collide = new Behaviour( new OnCollision( new Collide( 1, 0 )));               
+	    collide = new Behaviour( new OnCollision( new Bounce( 1, 0 )));               
         collide.setDisplayName("Collide");        
         return collide;
     }
@@ -85,7 +85,7 @@ public class PhysicsFactory {
     }
     
     public static AbstractBehaviour follow() {        
-        Behaviour b = new Behaviour( new Follow( new Approach( null, 1, 1 ) ) );
+        Behaviour b = new Behaviour( new FollowSibling( new Approach( null, 1, 1 ) ) );
         b.setDisplayName("Follow");
         return b;
     }

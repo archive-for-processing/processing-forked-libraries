@@ -19,6 +19,8 @@
 
 package net.nexttext;
 
+import processing.core.PVector;
+
 /**
  * An object with a position.
  */
@@ -28,5 +30,5 @@ public interface Locatable {
 	/**
 	 * @return The object's location in absolute coordinates.
 	 */
-	public Vector3 getLocation();
+	public PVector getLocation();
 }

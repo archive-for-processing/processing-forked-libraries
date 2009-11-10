@@ -32,23 +32,26 @@ void setup() {
   strokeWeight(5);
 
   // create and add the stay in window Behaviour
-  AbstractAction stayInWindow = new StayInWindow(this);
+  StayInWindow stayInWindow = new StayInWindow(this);
   Behaviour stayInWindowBehaviour = stayInWindow.makeBehaviour();
   book.addGlyphBehaviour(stayInWindowBehaviour);
 
   // create the chaos pull Action
-  AbstractAction chaosPull = new ChaosPull(new Vector3(width/2, height/2));
+  ChaosPull chaosPull = new ChaosPull(width/2, height/2);
 
   // create the reform Action
-  AbstractAction reform = new Reform();
+  Reform reform = new Reform();
 
-  AbstractAction follow;
+  // create the follow mouse Behaviour
+  MoveTo moveTo;
+  Repeat follow;
   Multiplexer followAndReform;
-  AbstractAction followOrPullBack;
+  OnMouseOverApplet followOrPullBack;
   Behaviour followOrPullBackBehaviour;
   for (int i=0; i < word.length(); i++) {
     // instantiate the follow mouse Action
-    follow = new Repeat(new MoveTo(Book.mouse, i+1), 0);
+    moveTo = new MoveTo(Book.mouse, i+1); // move to the mouse position (each letter faster than the previous)
+    follow = new Repeat(moveTo); // repeat the moveTo action indefinitely
 
     // instantiate and set the follow mouse and reform Multiplexer
     followAndReform = new Multiplexer();
@@ -72,13 +75,3 @@ void draw() {
   background(0);
   book.stepAndDraw();
 }
-
-
-
-
-
-
-
-
-
-

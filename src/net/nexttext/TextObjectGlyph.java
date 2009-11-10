@@ -24,6 +24,8 @@ import java.awt.Shape;
 import java.awt.Font;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -31,13 +33,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
 import net.nexttext.property.Property;
 import net.nexttext.property.PropertyChangeListener;
-import net.nexttext.property.Vector3Property;
-import net.nexttext.property.Vector3PropertyList;
 import net.nexttext.property.ColorProperty;
 
+import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PVector;
 
 /**
  * TextObjectGlyph represents an individual glyph and its vectorial outline in 
@@ -84,7 +88,7 @@ public class TextObjectGlyph extends TextObject {
 	
 	/** A vector containing int[] arrays with indices to the Control Points property
 	 list.  These contours define the shape of the glyph */
-	public Vector 		contours;   	
+	public Vector contours;   	
    	 
    	/** 
    	 * This rectangle stores the glyph's "logical bounds", including proper
@@ -106,6 +110,11 @@ public class TextObjectGlyph extends TextObject {
     public void setDeformed(boolean df) { deformed = df; }
 
     /**
+     * The outline of the glyph represented as a GeneralPath object.
+     */
+    protected GeneralPath outline = null;
+    
+    /**
      * This object can be used by Renderers to cache information about
      * TextObjectGlyphs.  If the glyph is deformed this cache object will be
      * reset to null.
@@ -120,7 +129,7 @@ public class TextObjectGlyph extends TextObject {
 	 * @param pfont     A processing.core.PFont object 
 	 */
 	public TextObjectGlyph(String glyph, PFont pfont) {
- 		this(glyph, pfont, new Vector3(0,0,0));
+ 		this(glyph, pfont, new PVector(0,0,0));
 	}
 	
 	/**
@@ -128,9 +137,9 @@ public class TextObjectGlyph extends TextObject {
 	 *
 	 * @param glyph		A one character-long string 
 	 * @param pfont     A processing.core.PFont object 
-	 * @param position  A Vector3 representing the glyph's relative position
+	 * @param position  A PVector representing the glyph's relative position
 	 */
-    public TextObjectGlyph(String glyph, PFont pfont, Vector3 position) {
+    public TextObjectGlyph(String glyph, PFont pfont, PVector position) {
         this(glyph, pfont, new HashMap<String, Property>(0), position);
     }
 
@@ -139,17 +148,17 @@ public class TextObjectGlyph extends TextObject {
 	 *
 	 * @param glyph		A one character-long string 
 	 * @param pfont     A processing.core.PFont object 
-	 * @param pos       A Vector3 representing the glyph's relative position
+	 * @param pos       A PVector representing the glyph's relative position
 	 * @param props     Initial properties for the glyph.
 	 */
-	public TextObjectGlyph(String glyph, PFont pfont, Map<String, Property> props, Vector3 pos) {
+	public TextObjectGlyph(String glyph, PFont pfont, Map<String, Property> props, PVector pos) {
         super(props, pos);
 
 	 	this.glyph 	= glyph;
 		this.pfont 	= pfont;
 		font = Book.loadFontFromPFont(pfont);
 
-        properties.init("Control Points", new Vector3PropertyList());
+        properties.init("Control Points", new PVectorListProperty());
         
         glyphChanged();
 
@@ -234,10 +243,63 @@ public class TextObjectGlyph extends TextObject {
     /**
      * Convenience accessor for the control points.
      */
-    public Vector3PropertyList getControlPoints() {
-        return (Vector3PropertyList) getProperty("Control Points");
+    public PVectorListProperty getControlPoints() {
+        return (PVectorListProperty) getProperty("Control Points");
+    }
+    
+    /**
+     * Get the outline of the glyph.
+     */
+    public GeneralPath getOutline() {
+    	if (outline == null) {   		
+            // we need to rebuild the outline
+            // get the list of vertices for this glyph
+    		PVectorListProperty vertices = getControlPoints();
+            // create a new GeneralPath to hold the vector outline
+            GeneralPath gp = new GeneralPath();
+            // get an iterator for the list of contours
+            Iterator it = contours.iterator();
+
+            // process each contour
+            while (it.hasNext()) {
+
+                // get the list of vertices for this contour
+                int contour[] = (int[]) it.next();
+
+                PVector firstPoint = vertices.get(contour[0]);
+                // move the pen to the beginning of the contour
+                gp.moveTo((float) firstPoint.x, (float) firstPoint.y);
+                
+                // generate all the quads forming the line
+                for (int i = 1; i < contour.length-1; i+=2) {
+
+                	PVector controlPoint = vertices.get(contour[i]);
+                	PVector anchorPoint = vertices.get(contour[i + 1]);
+
+                    gp.quadTo((float) controlPoint.x, (float) controlPoint.y,
+                    		  (float) anchorPoint.x, (float) anchorPoint.y);                   
+                }
+                // close the path
+                gp.closePath();
+
+            } // end while 
+
+            // cache it
+            outline = gp;
+    	}
+    	return outline;
     }
 	
+    /**
+     * Get the absolute outline of the glyph.
+     */
+    public GeneralPath getOutlineAbsolute() {
+        GeneralPath outline = new GeneralPath(getOutline());
+        PVector posAbs = getPositionAbsolute();
+    	outline.transform(AffineTransform.getTranslateInstance(posAbs.x, posAbs.y));
+    	return outline;
+    }
+    
 	////////////////////////////////////////////////////////////////////////////
 	// protected methods
 
@@ -258,6 +320,7 @@ public class TextObjectGlyph extends TextObject {
      */
     protected void glyphChanged() {
         buildControlPoints();
+        outline = null;
         rendererCache = null;
         invalidateLocalBoundingPolygon();
     }
@@ -268,6 +331,7 @@ public class TextObjectGlyph extends TextObject {
      */
     protected void glyphDeformed() {
         deformed = true;
+        outline = null;
         rendererCache = null;
         invalidateLocalBoundingPolygon();
     }
@@ -277,9 +341,8 @@ public class TextObjectGlyph extends TextObject {
 	 * the glyph.
 	 */
 	protected void buildControlPoints() {
-	
 		// create a Vector3PropertyList object to store the vertices
-        Vector3PropertyList vertices = getControlPoints();
+		PVectorListProperty vertices = getControlPoints();
 		
 		// clear previously stored vertices
 		vertices.clear();
@@ -297,7 +360,7 @@ public class TextObjectGlyph extends TextObject {
 		Vector<Integer> tmpContour = new Vector<Integer>();
 				
 		// used to receive the list of points from PathIterator.currentSegment()
-		double 	points[] = new double[6];  
+		float 	points[] = new float[6];  
 		// used to receive the segment type from PathIterator.currentSegment()
 		// segmentType can be SEG_MOVETO, SEG_LINETO, SEG_QUADTO, SEG_CLOSE
 		int 	segmentType	= 0; 
@@ -306,12 +369,8 @@ public class TextObjectGlyph extends TextObject {
 		// used to remember the previously calculated Anchor and ControlPoint.
 		// for a more detailed description of what an anchor and controlpoint are,
 		// see the architecture document.
-		Vector3	lastAnchor = new Vector3();
-		Vector3 lastControlPoint = new Vector3();
-		// in some cases the algorithm needs to backtrack and insert an point in
-		// the contour lists a few positions behind.  This variable is used to
-		// remember such a position in the array.
-		int		anchorInsertionPoint = 0;
+		PVector	lastAnchor = new PVector();
+		PVector lastControlPoint = new PVector();
 		
 		// get the Shape for this glyph
 		GlyphVector gv = font.createGlyphVector( frc, this.glyph );
@@ -332,13 +391,13 @@ public class TextObjectGlyph extends TextObject {
 			switch( segmentType ) {
 			
 				case PathIterator.SEG_MOVETO:
-					
+
 					// start a new tmpContour vector
 					tmpContour = new Vector<Integer>();
 				 	// get the starting point for this contour	
-					Vector3 startingPoint = new Vector3( points[0], points[1] );
+					PVector startingPoint = new PVector( (float)points[0], (float)points[1] );
 					// store the point in the list of vertices
-					vertices.add( new Vector3Property( startingPoint) );
+					vertices.add( new PVectorProperty( startingPoint) );
 					// store this point in the current tmpContour and increment
 					// the vertices index
 					tmpContour.add( vertexIndex );
@@ -347,42 +406,24 @@ public class TextObjectGlyph extends TextObject {
 					lastAnchor = startingPoint;
 					lastControlPoint = startingPoint;
 					previousType = segmentType;
-					anchorInsertionPoint = 0;
 					break;
 					
 				case PathIterator.SEG_LINETO:
 				
-					// lines are get converted to quads.
-				 
-					// since a line begins at lastAnchor, add this value as
-					// a control point for the contour.  Note that we add
-					// the value twice, but that it refers to the same vertex.
-					// The reason behind this is to create sharp edges when
-					// required.
-					
-					// also, only add the first anchor if the previous segment
-					// was NOT a line (to avoid adding this control point four
-					// times)
-					if ( previousType != PathIterator.SEG_LINETO ) {
-						vertices.add( new Vector3Property(lastAnchor) );
-						tmpContour.add( vertexIndex );
-						tmpContour.add( vertexIndex );
-						vertexIndex++;	
-					}
-				 
+					// lines get converted to quads.
+				 	 
 					// then, we must find the middle of the line and use it as 
 					// control point in order to allow smooth deformations
-					Vector3 endPoint = new Vector3( points[0], points[1] );
-					Vector3 midPoint = new Vector3( (lastAnchor.x + endPoint.x)/2, 
+					PVector endPoint = new PVector( (float)points[0], (float)points[1] );
+					PVector midPoint = new PVector( (lastAnchor.x + endPoint.x)/2, 
 								 			  		(lastAnchor.y + endPoint.y)/2  );
-					vertices.add( new Vector3Property( midPoint) );
+					vertices.add( new PVectorProperty( midPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
 					
 					// finally, we must add the endPoint twice to the contour
 					// to preserve sharp corners
-					vertices.add( new Vector3Property( endPoint) );
-					tmpContour.add( vertexIndex );
+					vertices.add( new PVectorProperty( endPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
 				 	
@@ -393,58 +434,20 @@ public class TextObjectGlyph extends TextObject {
 					break;
 					
 				case PathIterator.SEG_QUADTO:
+
+					PVector controlPoint = new PVector( (float)points[0], (float)points[1] );
+					PVector anchorPoint = new PVector( (float)points[2], (float)points[3] );
 					
-					Vector3 controlPoint = new Vector3( points[0], points[1] );
-					Vector3 anchorPoint = new Vector3( points[2], points[3] );
-					
-					// first, we must handle the case where two quads form 
-					// sharp corners.   if this is the case, then the anchor
-					// for that quad must added to the list of contours (twice),
-					// just like for lines.
-					//
-					// in order to figure out sharp corners, we look at the line
-					// formed by the last two control points and the last anchor 
-					// point.  If the distance between them is big enough, then
-					// there should be a sharp edge.
-					//
-					// to find out if the anchor point is "far enough", I've 
-					// empirically determined that the distance/font size ratio
-					// should be smaller than 21 in order to consider a quad
-					// anchor as part of a sharp edge
-					
-					if ( previousType != PathIterator.SEG_LINETO ) {
-						Vector3 mid = new Vector3( (controlPoint.x + 
-													lastControlPoint.x)/2, 
-											   	   (controlPoint.y + 
-											   	    lastControlPoint.y)/2 );
-						double dx, dy, dist;
-						dx = mid.x - lastAnchor.x;
-						dy = mid.y - lastAnchor.y;
-						dist = Math.sqrt((dx*dx) + (dy*dy));
-						// TODO make sure this getSize() returns the correct size when the PFont size and the actual size don't match
-				 	 	if ( (font.getSize()/dist) < 21 ) {
-					  		// if this is the case, then the lastAnchor has to be
-					 		// added as a control point.  However it has to be
-					 		// inserted in the correct order in the list.
-					  		vertices.add( new Vector3Property( lastAnchor) );
-					   		tmpContour.add( anchorInsertionPoint, vertexIndex );
-					 		tmpContour.add( anchorInsertionPoint, vertexIndex );
-					 		vertexIndex++;
-					 	} 
-					}
-					
-					// because the calculations above can only be determined
-					// by looking at the lastAnchor point, remember where those
-					// should be inserted in the array.
-					anchorInsertionPoint = tmpContour.size()+1;
-					
-					// Otherwise, we are only interested in storing the control 
-					// point for the quad.  The actual anchor points will be 
-					// interpolated at runtime to preserve curve continuity.
-					vertices.add( new Vector3Property( controlPoint) );
+					// Store control point.
+					vertices.add( new PVectorProperty( controlPoint) );
 					tmpContour.add( vertexIndex );
 					vertexIndex++;
-						
+
+					// Store anchor point.
+					vertices.add( new PVectorProperty( anchorPoint) );
+					tmpContour.add( vertexIndex );
+					vertexIndex++;
+				
 					// update temporary variables used for backtracking					
 					lastAnchor = anchorPoint;
 					lastControlPoint = controlPoint;
@@ -452,7 +455,7 @@ public class TextObjectGlyph extends TextObject {
 					break;	
 				 
 				case PathIterator.SEG_CLOSE:
-					
+
 					// A SEG_CLOSE signifies the end of a contour, therefore
 					// convert tmpContour into a new array of correct size
 					int contour[] = new int[tmpContour.size()];
@@ -498,25 +501,25 @@ public class TextObjectGlyph extends TextObject {
         // Find the smallest box enclosing all the object's Control Points by 
         // computing the min/max
         
-        double minX = Double.POSITIVE_INFINITY;
-		double minY = Double.POSITIVE_INFINITY;
-		double maxX = Double.NEGATIVE_INFINITY;
-		double maxY = Double.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
 
         // Spaces are calculated differently because they don't have control
         // points in the same way as other glyphs.
         if ( getGlyph().equals(" ") ) {
             Rectangle2D sb = Book.loadFontFromPFont(pfont).getStringBounds(" ", frc);
-            minX = sb.getMinX();
-            minY = sb.getMinY();
-            maxX = sb.getMaxX();
-            maxY = sb.getMaxY();
+            minX = (float)sb.getMinX();
+            minY = (float)sb.getMinY();
+            maxX = (float)sb.getMaxX();
+            maxY = (float)sb.getMaxY();
 
         } else {
-            Vector3PropertyList vertices = getControlPoints();
+        	PVectorListProperty vertices = getControlPoints();
 
-            for ( Iterator<Vector3Property> i = vertices.iterator(); i.hasNext(); ) {
-                Vector3Property vertex = i.next();
+            for ( Iterator<PVectorProperty> i = vertices.iterator(); i.hasNext(); ) {
+            	PVectorProperty vertex = i.next();
                 minX = Math.min(vertex.getX(), minX);
                 minY = Math.min(vertex.getY(), minY);
                 maxX = Math.max(vertex.getX(), maxX);

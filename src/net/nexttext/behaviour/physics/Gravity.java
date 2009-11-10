@@ -19,8 +19,8 @@
 
 package net.nexttext.behaviour.physics;
 
+import processing.core.PVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
 
 /**
@@ -29,13 +29,13 @@ import net.nexttext.property.NumberProperty;
 /* $Id$ */
 public class Gravity extends PhysicsAction {
 
-    public Gravity ( double strength ) {
+    public Gravity ( float strength ) {
         properties().init( "Strength", new NumberProperty(strength) );
     }
     
     public ActionResult behave( TextObject to) {
         
-        Vector3 acc = new Vector3(0, ((NumberProperty)properties().get("Strength")).get() );
+    	PVector acc = new PVector(0, ((NumberProperty)properties().get("Strength")).get() );
         applyAcceleration(to, acc);
         
         return new ActionResult(false, false, false);

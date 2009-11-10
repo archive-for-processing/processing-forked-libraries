@@ -22,6 +22,8 @@ package net.nexttext;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
+import processing.core.PVector;
+
 /**
  * A locatable which responds with a random location.
  *
@@ -42,15 +44,15 @@ public class RandomLocation implements Locatable  {
         this.shape = shape;
     }
 
-    public Vector3 getLocation() {
+    public PVector getLocation() {
 
-        double x,y;
+        float x,y;
         do {
             Rectangle bounds = shape.getBounds();
-            x = bounds.x + Math.random() * bounds.width;
-            y = bounds.y + Math.random() * bounds.height;
+            x = (float)(bounds.x + Math.random() * bounds.width);
+            y = (float)(bounds.y + Math.random() * bounds.height);
         } while (!shape.contains(x, y));
 
-        return new Vector3(x, y);
+        return new PVector(x, y);
     }
 }

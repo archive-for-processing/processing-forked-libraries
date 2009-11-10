@@ -20,11 +20,12 @@
 package net.nexttext.behaviour.dform;
 
 import net.nexttext.TextObjectGlyph;
-import net.nexttext.Vector3;
-import net.nexttext.property.Vector3PropertyList;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
 
 import java.util.Iterator;
+
+import processing.core.PVector;
 
 /**
  * A DForm which reverts TextObject to its original shape.
@@ -45,22 +46,8 @@ public class Reform extends DForm {
     
     int style = STYLE_LINEAR;
     
-    double linearSpeed = 0.05;
-    double exponentialSpeed = 2000;
-
-    /**
-     * Linear style of reformation doesn't deform glyph shape.
-     */
-    public void setStyleLinear() {
-        style = STYLE_LINEAR;
-    }
-
-    /**
-     * Exponential style reformation preserves deformations longer.
-     */
-    public void setStyleExponential() {
-        style = STYLE_EXPONENTIAL;
-    }
+    float linearSpeed = 0.05f;
+    float exponentialSpeed = 2000;
 
     /**
      * Constructs a default Reform of linear style with a default speed of 0.05.
@@ -80,7 +67,7 @@ public class Reform extends DForm {
      * @param speed the speed value according to the chosen style
      * @param style the type of reformation (linear or exponential)
      */
-    public Reform(double speed, int style) {
+    public Reform(float speed, int style) {
         
         if (style == STYLE_LINEAR) {
             this.style = STYLE_LINEAR;
@@ -96,8 +83,8 @@ public class Reform extends DForm {
     public ActionResult behave(TextObjectGlyph to) {         
         // Traverse the control points of the glyph, determine the distance
         // from its current location to the origin and move it part way there.
-        Vector3PropertyList cPs = getControlPoints(to);
-        Iterator<Vector3Property> i = cPs.iterator();
+    	PVectorListProperty cPs = getControlPoints(to);
+        Iterator<PVectorProperty> i = cPs.iterator();
         
         boolean done = true;
         
@@ -106,28 +93,28 @@ public class Reform extends DForm {
             return new ActionResult(false, false, true);
         
         while (i.hasNext()) {
-            Vector3Property cP = i.next();
-            Vector3 cV = cP.get();
-            Vector3 oV = cP.getOriginal();
+        	PVectorProperty cP = i.next();
+        	PVector cV = cP.get();
+        	PVector oV = cP.getOriginal();
 
-            Vector3 offset = new Vector3(oV);
+        	PVector offset = new PVector(oV.x, oV.y, oV.y);
             offset.sub(cV);
 
             // In order not to produce gratuitous property change events, if
             // the offset is short, nothing is done.
-            if (offset.length() < 0.1) continue;
+            if (offset.mag() < 0.1f) continue;
 
             // The reform algorithm is very slow when the points are close, so
             // once we reach a distance of 0.8 we just snap it back to its
             // original.
 
-            if (offset.length() > 0.8) {
+            if (offset.mag() > 0.8f) {
                 done = false;
 
                 if (style == STYLE_EXPONENTIAL) {                    
-                    offset.scalar(1 - Math.pow(Math.E, - offset.length()/exponentialSpeed));
+                    offset.mult(1 - (float)Math.pow(Math.E, - offset.mag()/exponentialSpeed));
                 } else {
-                    offset.scalar(linearSpeed);
+                    offset.mult(linearSpeed);
                 }
             }            
             cV.add(offset);
@@ -140,7 +127,7 @@ public class Reform extends DForm {
         return new ActionResult(false, false, false);
     }
 
-    public double getExponentialSpeed() {
+    public float getExponentialSpeed() {
         return exponentialSpeed;
     }
 
@@ -148,11 +135,11 @@ public class Reform extends DForm {
      * Sets the speed of the reform when using the exponential style.
      * @param exponentialSpeed an appropriate speed for exponential style
      */
-    public void setExponentialSpeed(double exponentialSpeed) {
+    public void setExponentialSpeed(float exponentialSpeed) {
         this.exponentialSpeed = exponentialSpeed;
     }
 
-    public double getLinearSpeed() {
+    public float getLinearSpeed() {
         return linearSpeed;
     }
 
@@ -160,7 +147,21 @@ public class Reform extends DForm {
      * Sets the speed of the reform when using the linear style.
      * @param linearSpeed an appropriate speed for linear style
      */
-    public void setLinearSpeed(double linearSpeed) {
+    public void setLinearSpeed(float linearSpeed) {
         this.linearSpeed = linearSpeed;
+    }
+
+    /**
+     * Linear style of reformation doesn't deform glyph shape.
+     */
+    public void setStyleLinear() {
+        style = STYLE_LINEAR;
+    }
+
+    /**
+     * Exponential style reformation preserves deformations longer.
+     */
+    public void setStyleExponential() {
+        style = STYLE_EXPONENTIAL;
     }
 }

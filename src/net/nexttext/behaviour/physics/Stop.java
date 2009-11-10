@@ -19,10 +19,10 @@
 
 package net.nexttext.behaviour.physics;
 
+import processing.core.PVector;
 import net.nexttext.TextObject;
-import net.nexttext.Vector3;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.Vector3Property;
+import net.nexttext.property.PVectorProperty;
 
 /**
  * Stop an object from moving by setting its velocity and angular velocity to 0.
@@ -32,8 +32,8 @@ public class Stop extends PhysicsAction {
 
     public ActionResult behave(TextObject to) {
 
-        Vector3Property velocity = getVelocity(to);
-        velocity.set(new Vector3());
+    	PVectorProperty velocity = getVelocity(to);
+        velocity.set(new PVector());
 
         NumberProperty angVel = getAngularVelocity(to);
         angVel.set(0);

@@ -46,10 +46,18 @@ public class Repeat extends AbstractAction {
     Action action;
 
     /**
-     * @param repetitions is the number of times to repeat, use 0 to repeat
-     * forever.
+     * Repeat an action indefinitely.
+     * @param action the action to repeat
      */
-
+    public Repeat ( Action action ) {
+    	this(action, 0);
+    }
+    
+    /**
+     * Repeat an action a certain amount of repetitions.
+     * @param action the action to repeat
+     * @param repetitions the number of times to repeat, use 0 to repeat forever
+     */
     public Repeat( Action action, int repetitions ) {
         this.action = action;
         properties().init("Repetitions", new NumberProperty(repetitions));
