@@ -535,8 +535,7 @@ public class Book {
      */
     public Behaviour addGlyphBehaviour(AbstractAction action) { 
         Behaviour b = action.makeBehaviour();
-    	toBuilder.addGlyphBehaviour(b);
-        addBehaviour(b);
+    	addGlyphBehaviour(b);
         return b;
     }
     
@@ -556,6 +555,51 @@ public class Book {
     public void removeAllGlyphBehaviours() {
         toBuilder.removeAllGlyphBehaviours();
     }
+    
+    /**
+     * Adds the given Behaviour to the list of Behaviours applied to new words.
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * 
+     * @param b the Behaviour to add
+     */
+    public void addWordBehaviour(AbstractBehaviour b) { 
+        toBuilder.addWordBehaviour(b);
+        addBehaviour(b);
+    }
+
+    /**
+     * Adds the given Action to the list of Behaviours applied to new words.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeWordBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addWordBehaviour(AbstractAction action) { 
+        Behaviour b = action.makeBehaviour();
+    	addWordBehaviour(b);
+        return b;
+    }
+    
+    /**
+     * Removes the given Behaviour from the list of Behaviours applied to new words.
+     * <p>The Behaviour will not be added to TextObjects created after this method is called.</p>
+     * 
+     * @param b the Behaviour to remove
+     */
+    public void removeWordBehaviour(AbstractBehaviour b) {
+        toBuilder.removeWordBehaviour(b);
+    }
+    
+    /**
+     * Removes all Behaviours from the list of Behaviours applied to new word.
+     */
+    public void removeAllWordBehaviours() {
+        toBuilder.removeAllWordBehaviours();
+    }   
     
     /**
      * Adds the given Behaviour to the list of Behaviours applied to new TextObjectGroups.
@@ -581,8 +625,7 @@ public class Book {
      */
     public Behaviour addGroupBehaviour(AbstractAction action) { 
         Behaviour b = action.makeBehaviour();
-    	toBuilder.addGroupBehaviour(b);
-        addBehaviour(b);
+    	addGroupBehaviour(b);
         return b;
     }
     

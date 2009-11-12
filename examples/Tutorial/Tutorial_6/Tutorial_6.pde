@@ -1,20 +1,22 @@
-import net.nexttext.*;
+import net.nexttext.behaviour.dform.*;
 import net.nexttext.behaviour.*;
 import net.nexttext.behaviour.control.*;
-import net.nexttext.behaviour.dform.*;
 import net.nexttext.behaviour.physics.*;
+import net.nexttext.renderer.*;
+import net.nexttext.*;
+import net.nexttext.property.*;
 import net.nexttext.behaviour.standard.*;
+import net.nexttext.input.*;
 
 /**
  * A simple NextText sketch.
  *
- * <p>by Elie Zananiri | Obx Labs | January 2009</p>
+ * <p>by Elie Zananiri | Obx Labs | October 2009</p>
  */
-
+ 
 // global attributes
 Book book;
 PFont font;
-String word = "NextText";
 
 void setup() {
   size(700, 240);
@@ -22,48 +24,27 @@ void setup() {
 
   // create the Book
   book = new Book(this);
-
+  
   // load and set the font
-  font = createFont("GeometricBlack.ttf", 48);
+  font = createFont("Arial", 48);
   textFont(font);
   textAlign(CENTER);
   fill(255);
   stroke(96);
   strokeWeight(5);
-
-  // create and add the stay in window Behaviour
-  StayInWindow stayInWindow = new StayInWindow(this);
-  Behaviour stayInWindowBehaviour = stayInWindow.makeBehaviour();
-  book.addGlyphBehaviour(stayInWindowBehaviour);
-
+  
   // create the follow mouse Behaviour
-  MoveTo moveTo;
-  Repeat follow;
-  Behaviour followBehaviour;
-  for (int i=0; i < word.length(); i++) {
-    // instantiate and add the Behaviour
-    moveTo = new MoveTo(Book.mouse, i+1); // move to the mouse position (each letter faster than the previous)
-    follow = new Repeat(moveTo); // repeat the moveTo action indefinitely
-    followBehaviour = follow.makeBehaviour(); // make the behaviour from those combined actions
-
-    // add the behaviour to the book to affect future glyphs
-    book.addGlyphBehaviour(followBehaviour);
-
-    // build the text
-    book.addText(word.substring(i, i+1), width/2, height/2);
-
-    // remove the Behaviour so that it it not applied to the rest of the Book
-    book.removeGlyphBehaviour(followBehaviour);
-  } 
+  MoveTo followMouse = new MoveTo(Book.mouse, 2);
+  Repeat followMouseAlways = new Repeat(followMouse, 0);  // 0 loops forever
+  
+  // add the Behaviour to the Book
+  book.addGroupBehaviour(followMouseAlways);
+  
+  // build the text
+  book.addText("NextText", width/2, height/2);
 }
 
 void draw() {
   background(0);
   book.stepAndDraw();
 }
-
-
-
-
-
-

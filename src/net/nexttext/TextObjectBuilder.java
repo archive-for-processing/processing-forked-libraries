@@ -163,6 +163,7 @@ public class TextObjectBuilder {
     public TextObjectGroup getParent() { return parent; }
 
 
+    /** Glyph behaviours. **/
     Set<AbstractBehaviour> glyphBehaviours = new HashSet<AbstractBehaviour>();
     /** Created glyphs will get this behaviour. */
     public void addGlyphBehaviour(AbstractBehaviour b) { glyphBehaviours.add(b); }
@@ -175,6 +176,18 @@ public class TextObjectBuilder {
         return Collections.unmodifiableSet(glyphBehaviours);
     }
 
+    /** Word behaviours. **/
+    Set<AbstractBehaviour> wordBehaviours = new HashSet<AbstractBehaviour>();
+    /** Created words will get this behaviour. */
+    public void addWordBehaviour(AbstractBehaviour b) { wordBehaviours.add(b); }
+    /** Created words will no longer get this behaviour. */
+    public void removeWordBehaviour(AbstractBehaviour b) { wordBehaviours.remove(b); }
+    /** Created glyphs will no longer get any behaviours. */
+    public void removeAllWordBehaviours() { wordBehaviours.clear(); }
+    /** Behaviours to be added to each glyph. */
+    public Set<AbstractBehaviour> getWordBehaviours() {
+        return Collections.unmodifiableSet(wordBehaviours);
+    }
 
     Set<AbstractBehaviour> groupBehaviours = new HashSet<AbstractBehaviour>();
     /** Created groups will get this behaviour. */
@@ -229,6 +242,8 @@ public class TextObjectBuilder {
      * @param x the x-coordinate of the created TextObjectGroup
      * @param y the y-coordinate of the created TextObjectGroup
      * 
+     * @deprecated
+     * 
      * @return the built TextObjectGroup
      */
     public TextObjectGroup build(String text, int x, int y) {
@@ -242,6 +257,8 @@ public class TextObjectBuilder {
      * all of the available TextObjectBuilder configuration.  By default, it
      * creates and returns a new TextObjectGroup, with a child TextObjectGlyph
      * for each character in the string.</p>
+     * 
+     * @deprecated
      */
 
     public TextObjectGroup build(String text) {
@@ -250,6 +267,7 @@ public class TextObjectBuilder {
 
     /**
      * Build a tree of TextObjects at the specified location.
+     * @deprecated
      */
     public TextObjectGroup build(String text, PVector pos) {
         
@@ -499,19 +517,31 @@ public class TextObjectBuilder {
 
             TextObject child = newGroup.getLeftMostChild();
             while (child != null) {
+            	//if the group is not a sentence (which means it was built with the build(...)
+            	//function and not the buildSentence(...) function then the text three only
+            	//has two layers
             	if (!isSentence) {
             		// we can assume child is a TextObjectGlyph because of the way build() works
             		Iterator<AbstractBehaviour> bI = glyphBehaviours.iterator();
             		while (bI.hasNext()) {
             			bI.next().addObject(child);
             		}
-            	} else {
+            	}
+            	//if it's a sentence, then we have sentence-word-glyph layers.
+            	else {
+            		// we can assume that the group's direct children are words.
+            		// we can assume child is a TextObjectGlyph because of the way build() works
+            		Iterator<AbstractBehaviour> wbI = wordBehaviours.iterator();
+            		while (wbI.hasNext()) {
+            			wbI.next().addObject(child);
+            		}          		
+            		
             		// we can assume grandChild is a TextObjectGlyph because of the way buildSentence() works
             		TextObject grandChild = ((TextObjectGroup)child).getLeftMostChild();
             		while (grandChild != null) {
-            			Iterator<AbstractBehaviour> bI = glyphBehaviours.iterator();
-                		while (bI.hasNext()) {
-                			bI.next().addObject(grandChild);
+            			Iterator<AbstractBehaviour> gbI = glyphBehaviours.iterator();
+                		while (gbI.hasNext()) {
+                			gbI.next().addObject(grandChild);
                 		}
                 		grandChild = grandChild.getRightSibling();
             		}
