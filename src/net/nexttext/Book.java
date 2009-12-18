@@ -757,11 +757,94 @@ public class Book {
     	}
     }
     
-    // font property setters and getters
+    /**
+     * Set the line height of the text.
+     * @param d height of a line in pixel using the current font
+     * @deprecated
+     */
     public void setLineHeight(float d) { toBuilder.setLineHeight(d); }
+    
+    /**
+     * Get the line height of the text.
+     * @return height of a line of text using the current font
+     * @deprecated
+     */
     public float getLineHeight() { return toBuilder.getLineHeight(); }
-    public void setTrackingOffset(float d) { toBuilder.setTrackingOffset(d); }
-    public float getTrackingOffset() { return toBuilder.getTrackingOffset(); }
+    
+    /**
+     * Set the tracking of the text.
+     * @param d tracking in pixel
+     * @deprecated
+     */
+    public void setTrackingOffset(float d) { setTracking(d); }
+    
+    /**
+     * Get the tracking of the text.
+     * @return tracking in pixel of the current font
+     * @deprecated
+     */
+    public float getTrackingOffset() { return getTracking(); }
+    
+    /**
+     * Set the tracking of the text.
+     * @param d tracking in pixel
+     */
+    public void setTracking(float d) { toBuilder.setTracking(d); }
+
+    /**
+     * Get the tracking of the text.
+     * @return tracking in pixel of the current font
+     */
+    public float getTracking() { return toBuilder.getTracking(); }
+    
+    /**
+     * Set the space offset.
+     * @param space space offset in pixel
+     */
+    public void setSpaceOffset(int space) { toBuilder.setSpaceOffset(space); }
+    
+    /**
+     * Get the space offset.
+     * @return space offset in pixel
+     */
+    public int getSpaceOffset() { return toBuilder.getSpaceOffset(); }
+    
+    /**
+     * Set the line spacing of the text.
+     * @param spacing line spacing in pixel
+     */
+    public void setLineSpacing(int spacing) { toBuilder.setLineSpacing(spacing); }
+    
+    /**
+     * Get the line spacing of the text.
+     * @return line spacing in pixel
+     */
+    public int getLineSpacing() { return toBuilder.getLineSpacing(); }
+    
+    /**
+     * Set the paragraph indentation using normal style.
+     * @param indent indent in pixel
+     */
+    public void setIndent(int indent) { toBuilder.setIndent(indent); }
+    
+    /**
+     * Set the paragraph indentation.
+     * @param indent indent in pixel
+     * @param style indent style (INDENT_NORMAL or INDENT_HANGING)
+     */
+    public void setIndent(int indent, int style) { toBuilder.setIndent(indent, style); }
+
+    /**
+     * Get paragraph indentation.
+     * @return indent in pixel
+     */
+    public int getIndent() { return toBuilder.getIndent(); }
+    
+    /**
+     * Get the paragraph indentation style.
+     * @return indent style
+     */
+    public int getIndentStyle() { return toBuilder.getIndentStyle(); }
     
     //////////////////////////////////////////////////////////////////////
     // Rudimentary Logging System

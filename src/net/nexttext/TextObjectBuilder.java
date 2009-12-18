@@ -107,10 +107,18 @@ public class TextObjectBuilder {
 
     PFont pfont;
     Font font;
-    //Font font = new Font("courier", 0, 18);
-    private PVector spaceOffset; // Width of a space character
+
+    private PVector spaceWidth; // Width of a space character
     private PVector trackingOffset; // Space between two characters
     private PVector lineHeight;  // Height of a line
+    
+    private int spaceOffset; // space to add/remove from the width of space characters
+    private int lineSpacing = 0; // Space between lines (px)
+    private int indent = 0; // Paragraph indentation (px)
+    public static final int INDENT_NORMAL = 1;
+    public static final int INDENT_HANGING = 2;
+    private int indentStyle = INDENT_NORMAL; //Style of indentation (NORMAL or HANGING)
+    
     public void setFont(PFont pf) { 
         Font f = Book.loadFontFromPFont(pf);
         setFont(pf, f);
@@ -124,7 +132,7 @@ public class TextObjectBuilder {
         
         //get measurement from the space character
 		GlyphVector sp = f.createGlyphVector( frc, " " );		
-		spaceOffset = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
+		spaceWidth = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
 		trackingOffset = new PVector(0, 0, 0);
 		lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
     }
@@ -690,8 +698,100 @@ public class TextObjectBuilder {
     	}
     }
     
+    /**
+     * Set the line height of the text.
+     * @param d height of a line in pixel using the current font
+     * @deprecated
+     */
     public void setLineHeight(float d) { lineHeight.y = d; }
+    
+    /**
+     * Get the line height of the text.
+     * @return height of a line of text using the current font
+     * @deprecated
+     */
     public float getLineHeight() { return lineHeight.y; }
-    public void setTrackingOffset(float d) { trackingOffset.x = d; }
-    public float getTrackingOffset() { return trackingOffset.x; }
+    
+    /**
+     * Set the tracking of the text.
+     * @param d tracking in pixel
+     * @deprecated
+     */
+    public void setTrackingOffset(float d) { setTracking(d); }
+
+    /**
+     * Get the tracking of the text.
+     * @return tracking in pixel of the current font
+     * @deprecated
+     */
+    public float getTrackingOffset() { return getTracking(); }
+
+    /**
+     * Set the tracking of the text.
+     * @param d tracking in pixel
+     */
+    public void setTracking(float d) { trackingOffset.x = d; }
+
+    /**
+     * Get the tracking of the text.
+     * @return tracking in pixel of the current font
+     */
+    public float getTracking() { return trackingOffset.x; }
+    
+    /**
+     * Set the space offset.
+     * @param space space offset in pixel
+     */
+    public void setSpaceOffset(int space) { spaceOffset = space; }
+    
+    /**
+     * Get the space offset.
+     * @return space offset in pixel
+     */
+    public int getSpaceOffset() { return spaceOffset; }
+    
+    /**
+     * Set the line spacing of the text.
+     * @param spacing line spacing in pixel
+     */
+    public void setLineSpacing(int spacing) { lineSpacing = spacing; }
+    
+    /**
+     * Get the line spacing of the text.
+     * @return line spacing in pixel
+     */
+    public int getLineSpacing() { return lineSpacing; }
+    
+    /**
+     * Set the paragraph indentation using normal style.
+     * @param indent indent in pixel
+     */
+    public void setIndent(int indent) { setIndent(indent, INDENT_NORMAL); }
+    
+    /**
+     * Set the paragraph indentation.
+     * @param indent indent in pixel
+     * @param style indent style (INDENT_NORMAL or INDENT_HANGING)
+     */
+    public void setIndent(int indent, int style) {
+    	//check if style exists
+    	if ((style != INDENT_NORMAL) && (style != INDENT_HANGING)) {
+    		//XXX should output warning here
+    		style = INDENT_NORMAL;
+    	}
+    	this.indent = indent;
+    	this.indentStyle = style;
+    }
+
+    /**
+     * Get paragraph indentation.
+     * @return indent in pixel
+     */
+    public int getIndent() { return indent; }
+    
+    /**
+     * Get the paragraph indentation style.
+     * @return indent style
+     */
+    public int getIndentStyle() { return indentStyle; }
 }
