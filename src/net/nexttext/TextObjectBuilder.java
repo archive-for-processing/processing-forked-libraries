@@ -345,7 +345,7 @@ public class TextObjectBuilder {
      * Build a tree of TextObjects from the given string.
      *
      * <p>The returned TextObject tree will be laid out so that no more than
-     * lineLength characters appear on a single line.  </p>
+     * lineLength characters appear on a single line.</p>
      */
     public TextObjectGroup buildSentence( String text, PVector pos, int lineLength ) {
     	//Make sure the lineLength is greater than 1 (space for the dash)
@@ -361,6 +361,10 @@ public class TextObjectBuilder {
         TextObjectGroup newGroup = new TextObjectGroup(pos);
         PVector gOffset = new PVector(0,0,0);
         
+        //indent the first line if using NORMAL style
+        if ((indent != 0) && (indentStyle == INDENT_NORMAL))
+        	gOffset.add(indent, 0, 0);
+        
         while ( st.hasMoreTokens() ) {
         	// Get each token
             String tokenStr = st.nextToken();
@@ -368,13 +372,24 @@ public class TextObjectBuilder {
             // If the token is a \n begin a new line
             if (tokenStr.equals("\n")) {
             	gOffset.x = 0;
-            	gOffset.add(lineHeight);
+            	gOffset.add(lineHeight);	// move by the line height
+            	gOffset.add(0, lineSpacing, 0); //move to space between lines
+            	
+            	//indent lines below first if using the HANGING style
+            	if ((indent != 0) && (indentStyle == INDENT_HANGING)) {
+            		gOffset.add(indent, 0, 0);
+            	}
+
             	continue;
             }
             
             // display other words
             TextObjectGroup token = createGroup( tokenStr, gOffset );
             gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
+            
+            // If the token is a space then add the offset if set
+            if (tokenStr.equals(" "))
+            	gOffset.add(spaceOffset, 0, 0); 
             
             newGroup.attachChild( token );
         }
