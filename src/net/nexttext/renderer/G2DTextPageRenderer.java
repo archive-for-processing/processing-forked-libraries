@@ -164,7 +164,6 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
      *            The TextObjectGlyph
      */
     protected void renderGlyph(TextObjectGlyph glyph) {
-
         // ////////////////////////////////////
         // Optimize based on presence of DForms and of outlines
         if (glyph.isDeformed() || glyph.isStroked()) {
@@ -187,7 +186,22 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
                 g2.setColor(glyph.getColorAbsolute());
                 g2.fill(gp);
             }
-        } else {
+        }
+        //if the PFont size and the set font size are the same then use the
+        //text function to draw bitmaps.
+        //this will create better results at small sizes.
+        else if ((glyph.getFont().getFont() == null) ||
+        		 (glyph.getFont().size == glyph.getFont().getFont().getSize())) {
+        	//set the color
+        	p.fill(glyph.getColorAbsolute().getRGB());
+        	//set the font
+        	p.textFont(glyph.getFont());
+        	//draw the glyph
+        	p.text(glyph.getGlyph(), 0, 0);
+        }
+        //if the set font size is not the same as the PFont then draw using
+        //the outlines so as not to get a pixelated scaling effect.
+        else {
             // /////////////////////////////////////////
             // Render glyph using Graphics.drawString()
             g2.setColor(glyph.getColorAbsolute());

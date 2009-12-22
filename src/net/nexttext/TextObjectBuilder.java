@@ -123,18 +123,22 @@ public class TextObjectBuilder {
         Font f = Book.loadFontFromPFont(pf);
         setFont(pf, f);
     }
+    
     public void setFont(PFont pf, Font f) { 
         pfont = pf;
         font = f;
+        
         //this could use the proper FRC from the PApplet's Graphics, but would
         //it really make a difference?
-        FontRenderContext frc = new FontRenderContext(null, false, false);
+        //FontRenderContext frc = new FontRenderContext(null, false, false);
         
         //get measurement from the space character
-		GlyphVector sp = f.createGlyphVector( frc, " " );		
-		spaceWidth = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
+		//GlyphVector sp = f.createGlyphVector( frc, " " );		
+		//spaceWidth = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);
+		spaceWidth = new PVector(pf.width(' ')*pf.size, 0, 0);
 		trackingOffset = new PVector(0, 0, 0);
-		lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
+		//lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
+		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size, 0);
     }
     public PFont getFont() { return pfont; }
 
@@ -593,7 +597,20 @@ public class TextObjectBuilder {
         String groupStr = newGroup.getString();
         
         //get the line metrics of the font for this line of text
-    	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
+    	float ascent;
+    	float descent;
+    	float leading;
+    	//XXX
+        if (font == null) {
+        	ascent = pfont.size*pfont.ascent();
+        	descent = pfont.size*pfont.descent();
+        	leading = (ascent + descent) * 1.275f;
+        } else {
+        	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
+        	ascent = metrics.getAscent();
+        	descent = metrics.getDescent();
+        	leading = ascent + descent + metrics.getLeading();
+        }
     	
     	if (!isSentence) {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
@@ -610,11 +627,11 @@ public class TextObjectBuilder {
 
         	//adjust for vertical align
         	if (alignY == PConstants.CENTER) {
-        		offset.sub(new PVector(0, offset.y-metrics.getAscent()/2));
+        		offset.sub(new PVector(0, offset.y-ascent/2));
         	} else if (alignY == PConstants.TOP) { 
-        		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+        		offset.sub(new PVector(0, offset.y-ascent));
         	} else if (alignY == PConstants.BOTTOM) {
-        		offset.sub(new PVector(0, offset.y+metrics.getDescent()));
+        		offset.sub(new PVector(0, offset.y+descent));
         	} else if (alignY == PConstants.BASELINE) {
         		offset.sub(new PVector(0, offset.y));
         	}
@@ -633,7 +650,7 @@ public class TextObjectBuilder {
             	if (lastPos == null)
             		lastPos = child.getPositionAbsolute();
             	else if (lastPos.y != child.getPositionAbsolute().y) {
-              	  multiLineHeight += metrics.getAscent() + metrics.getDescent() + metrics.getLeading();
+              	  multiLineHeight += leading;
               	  lastPos.set(child.getPositionAbsolute());
             	}
 
@@ -650,7 +667,7 @@ public class TextObjectBuilder {
         		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
         		if (sibling == null) {
         			// only one group in this sentence, center it
-        			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
+        			alignLine(firstInLine, sibling, bb, ascent, descent, multiLineHeight);
                 	// set first group to null to exit the loop
                 	firstInLine = null;
         		}
@@ -662,14 +679,14 @@ public class TextObjectBuilder {
             			sibling = (TextObjectGroup)sibling.getRightSibling();
             			if (sibling == null) {
             				// we reached the end of the group, center the line
-            	    		alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
+            	    		alignLine(firstInLine, sibling, bb, ascent, descent, multiLineHeight);
                         	// set first group and sibling to null to exit the loop
                         	firstInLine = sibling = null;
             			}
             		// the sibling is on a new line
             		} else {
             			// center the previous line
-            			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
+            			alignLine(firstInLine, sibling, bb, ascent, descent, multiLineHeight);
                     	// set the sibling as the new start group of the line
                     	firstInLine = sibling;
                     	sibling = null;
@@ -679,7 +696,7 @@ public class TextObjectBuilder {
         }
     }
     
-    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds, LineMetrics metrics, float multiLineHeight) {
+    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds, float ascent, float descent, float multiLineHeight) {
     	PVector offset = first.getPositionAbsolute();
     	
     	//horizontal align
@@ -693,11 +710,11 @@ public class TextObjectBuilder {
     	
     	//vertical align
     	if (alignY == PConstants.CENTER) {
-    		offset.sub(new PVector(0, offset.y-(metrics.getAscent()-multiLineHeight)/2));
+    		offset.sub(new PVector(0, offset.y-(ascent-multiLineHeight)/2));
     	} else if (alignY == PConstants.TOP) { 
-    		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+    		offset.sub(new PVector(0, offset.y-ascent));
     	} else if (alignY == PConstants.BOTTOM) {
-    		offset.sub(new PVector(0, offset.y+metrics.getDescent()+multiLineHeight));
+    		offset.sub(new PVector(0, offset.y+descent+multiLineHeight));
     	} else if (alignY == PConstants.BASELINE) {
     		offset.sub(new PVector(0, offset.y));
     	}    	

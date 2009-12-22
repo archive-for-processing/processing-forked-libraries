@@ -372,6 +372,15 @@ public class TextObjectGlyph extends TextObject {
 		PVector	lastAnchor = new PVector();
 		PVector lastControlPoint = new PVector();
 		
+		//calculate outline only if we have the native font object
+		//XXX
+		if (font == null) {
+			logicalBounds = new Rectangle2D.Float(0, 0,
+									 pfont.size*pfont.width(getGlyph().charAt(0)),
+									 pfont.size*(pfont.ascent()+pfont.descent()));
+			return;
+		}
+		
 		// get the Shape for this glyph
 		GlyphVector gv = font.createGlyphVector( frc, this.glyph );
 		Shape outline = gv.getOutline();
@@ -506,26 +515,36 @@ public class TextObjectGlyph extends TextObject {
         float maxX = Float.NEGATIVE_INFINITY;
         float maxY = Float.NEGATIVE_INFINITY;
 
-        // Spaces are calculated differently because they don't have control
-        // points in the same way as other glyphs.
-        if ( getGlyph().equals(" ") ) {
-            Rectangle2D sb = Book.loadFontFromPFont(pfont).getStringBounds(" ", frc);
-            minX = (float)sb.getMinX();
-            minY = (float)sb.getMinY();
-            maxX = (float)sb.getMaxX();
-            maxY = (float)sb.getMaxY();
-
-        } else {
-        	PVectorListProperty vertices = getControlPoints();
-
-            for ( Iterator<PVectorProperty> i = vertices.iterator(); i.hasNext(); ) {
-            	PVectorProperty vertex = i.next();
-                minX = Math.min(vertex.getX(), minX);
-                minY = Math.min(vertex.getY(), minY);
-                maxX = Math.max(vertex.getX(), maxX);
-                maxY = Math.max(vertex.getY(), maxY);
-            }
-        }
+        //XXX
+    	if (font == null) {
+    		minX = 0;
+    		minY = 0;
+    		maxX = pfont.size*pfont.width(getGlyph().charAt(0));
+    		maxY = pfont.size*(pfont.ascent()+pfont.descent());
+    	}
+    	else {    	
+	        // Spaces are calculated differently because they don't have control
+	        // points in the same way as other glyphs.
+	        if ( getGlyph().equals(" ") ) {
+	        	
+	            Rectangle2D sb = Book.loadFontFromPFont(pfont).getStringBounds(" ", frc);
+	            minX = (float)sb.getMinX();
+	            minY = (float)sb.getMinY();
+	            maxX = (float)sb.getMaxX();
+	            maxY = (float)sb.getMaxY();
+	        	
+	        } else {
+	        	PVectorListProperty vertices = getControlPoints();
+	
+	            for ( Iterator<PVectorProperty> i = vertices.iterator(); i.hasNext(); ) {
+	            	PVectorProperty vertex = i.next();
+	                minX = Math.min(vertex.getX(), minX);
+	                minY = Math.min(vertex.getY(), minY);
+	                maxX = Math.max(vertex.getX(), maxX);
+	                maxY = Math.max(vertex.getY(), maxY);
+	            }
+	        }
+    	}
         
         // return the box as a polygon object
         

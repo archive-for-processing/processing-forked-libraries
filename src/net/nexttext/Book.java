@@ -319,22 +319,24 @@ public class Book {
             PGraphics.showException("Use textFont() before Book.addText()");
         }
 
-        Font f = loadFontFromPFont(pf).deriveFont(p.g.textSize);
-        pf.setFont(f);
+        //Font f = loadFontFromPFont(pf).deriveFont(p.g.textSize);
+        //pf.setFont(f);
         
         toBuilder.setTextAlign(p.g.textAlign); // LEFT/CENTER/RIGHT
         toBuilder.setTextAlignY(p.g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
-        toBuilder.setFont(pf, f);
+        //toBuilder.setFont(pf, f);
+        toBuilder.setFont(pf);
     }
     
     public static Font loadFontFromPFont(PFont pf) {
-     // try setting the Font from the PFont
+    	// try setting the Font from the PFont
         Font f = pf.getFont();
         if (f == null) {
-            f = pf.findFont();
-            if (f == null) {
-                PGraphics.showException("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
-            }
+            //f = pf.findFont();
+            //if (f == null) {
+                //PGraphics.showException("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
+        	System.err.println("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
+            //}
         }
         return f;
     }
