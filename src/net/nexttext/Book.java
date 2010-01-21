@@ -331,13 +331,13 @@ public class Book {
     public static Font loadFontFromPFont(PFont pf) {
     	// try setting the Font from the PFont
         Font f = pf.getFont();
-        if (f == null) {
+        //if (f == null) {
             //f = pf.findFont();
             //if (f == null) {
                 //PGraphics.showException("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
-        	System.err.println("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
+        	//System.err.println("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
             //}
-        }
+        //}
         return f;
     }
     
