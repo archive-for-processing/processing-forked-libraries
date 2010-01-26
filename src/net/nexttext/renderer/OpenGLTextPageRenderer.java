@@ -75,7 +75,10 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
         p.pushStyle();
 
         // set text properties
-        p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        if (glyph.getFont().getFont() != null)
+        	p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        else
+        	p.textFont(glyph.getFont());
         p.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible
