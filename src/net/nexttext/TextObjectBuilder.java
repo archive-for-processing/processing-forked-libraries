@@ -109,7 +109,7 @@ public class TextObjectBuilder {
     Font font;
 
     private PVector spaceWidth; // Width of a space character
-    private PVector trackingOffset; // Space between two characters
+    private PVector trackingOffset = new PVector(0, 0, 0); // Space between two characters
     private PVector lineHeight;  // Height of a line
     
     private int spaceOffset; // space to add/remove from the width of space characters
@@ -133,7 +133,7 @@ public class TextObjectBuilder {
         //get measurement from the space character
 		GlyphVector sp = f.createGlyphVector( frc, " " );		
 		spaceWidth = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
-		trackingOffset = new PVector(0, 0, 0);
+		//trackingOffset = new PVector(0, 0, 0);
 		lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
     }
     public PFont getFont() { return pfont; }
