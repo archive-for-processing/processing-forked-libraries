@@ -211,7 +211,7 @@ public class Book {
 	 * <p>Do not call this method while iterating over the TextObjectRoot 
 	 * for synchronization reasons. </p> 
 	 */
-	protected void removeQueuedObjects() {
+	public void removeQueuedObjects() {
 	    
 	    if ( objectsToRemove.size() > 0 ) {
 	        
