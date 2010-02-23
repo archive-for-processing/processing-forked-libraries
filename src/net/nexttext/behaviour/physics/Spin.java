@@ -20,17 +20,14 @@
 package net.nexttext.behaviour.physics;
 
 import net.nexttext.TextObject;
-import net.nexttext.behaviour.Action.ActionResult;
 import net.nexttext.property.NumberProperty;
-import net.nexttext.property.PVectorProperty;
-import processing.core.PVector;
 
 /**
  * This action gives the object a one-time angular spin.
  */
 public class Spin extends PhysicsAction {
     /** 
-     * Default constructor. Angular force is equal to 0.1.
+     * Default constructor. Angular force is equal to 0.1 rad.
      */
     public Spin() {
         init(0.1f);
@@ -38,15 +35,24 @@ public class Spin extends PhysicsAction {
 
     /** 
      * Default constructor. Angular force is equal to 0.1.
+     * @param force angular force in rad
      */
     public Spin(float force) {
         init(force);
     }
     
+    /**
+     * Initialize properties.
+     * @param force
+     */
     public void init(float force) {
         properties().init("Force", new NumberProperty( force ) );
     }
 
+    /**
+     * Apply behaviour to text object.
+     * @param to text object
+     */
     public ActionResult behave( TextObject to ) {
         // get a push vector in a random direction
         float force = ((NumberProperty)properties().get("Force")).get();

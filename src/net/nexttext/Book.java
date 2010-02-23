@@ -1,5 +1,6 @@
 /*
   This file is part of the NextText project.
+  This file is part of the NextText project.
   http://www.nexttext.net/
 
   Copyright (c) 2004-08 Obx Labs / Jason Lewis
@@ -211,7 +212,7 @@ public class Book {
 	 * <p>Do not call this method while iterating over the TextObjectRoot 
 	 * for synchronization reasons. </p> 
 	 */
-	public void removeQueuedObjects() {
+	public synchronized void removeQueuedObjects() {
 	    
 	    if ( objectsToRemove.size() > 0 ) {
 	        
@@ -319,25 +320,19 @@ public class Book {
             PGraphics.showException("Use textFont() before Book.addText()");
         }
 
-        //Font f = loadFontFromPFont(pf).deriveFont(p.g.textSize);
-        //pf.setFont(f);
-        
         toBuilder.setTextAlign(p.g.textAlign); // LEFT/CENTER/RIGHT
         toBuilder.setTextAlignY(p.g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
-        //toBuilder.setFont(pf, f);
         toBuilder.setFont(pf);
     }
     
     public static Font loadFontFromPFont(PFont pf) {
-    	// try setting the Font from the PFont
+    	// get the Font from the PFont
         Font f = pf.getFont();
-        //if (f == null) {
-            //f = pf.findFont();
-            //if (f == null) {
-                //PGraphics.showException("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
-        	//System.err.println("Cannot find the native version of the active PFont. Make sure it is installed on this machine!");
-            //}
-        //}
+        
+        // if the font isn't there, try finding it on the machine
+        if (f == null)
+            f = pf.findFont();
+        
         return f;
     }
     

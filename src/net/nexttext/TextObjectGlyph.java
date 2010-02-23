@@ -41,6 +41,7 @@ import net.nexttext.property.ColorProperty;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PGraphics;
 import processing.core.PVector;
 
 /**
@@ -251,6 +252,12 @@ public class TextObjectGlyph extends TextObject {
      * Get the outline of the glyph.
      */
     public GeneralPath getOutline() {
+    	//if the contours aren't set then the glyph must be using
+    	//a bitmap only font
+    	if (contours == null) {
+    		PGraphics.showException("Outline not found. Use native fonts to access glyph outlines or use DForm behaviours.");
+    	}
+    	
     	if (outline == null) {   		
             // we need to rebuild the outline
             // get the list of vertices for this glyph
@@ -347,6 +354,18 @@ public class TextObjectGlyph extends TextObject {
 		// clear previously stored vertices
 		vertices.clear();
 
+		//calculate outline only if we have the native font object
+		//if we don't, we are using a bitmap font, so calculate the bounds
+		//using the font metrics
+		if (font == null) {
+			logicalBounds = new Rectangle2D.Float(
+									 0,
+									 -(pfont.size*pfont.ascent()),
+									 pfont.size*pfont.width(getGlyph().charAt(0)),
+									 pfont.size*(pfont.ascent()+pfont.descent()));
+			return;
+		}
+		
 		// create a Vector to store the list of contours
 		this.contours = new Vector();
 		
@@ -371,15 +390,6 @@ public class TextObjectGlyph extends TextObject {
 		// see the architecture document.
 		PVector	lastAnchor = new PVector();
 		PVector lastControlPoint = new PVector();
-		
-		//calculate outline only if we have the native font object
-		//XXX
-		if (font == null) {
-			logicalBounds = new Rectangle2D.Float(0, 0,
-									 pfont.size*pfont.width(getGlyph().charAt(0)),
-									 pfont.size*(pfont.ascent()+pfont.descent()));
-			return;
-		}
 		
 		// get the Shape for this glyph
 		GlyphVector gv = font.createGlyphVector( frc, this.glyph );
@@ -515,18 +525,19 @@ public class TextObjectGlyph extends TextObject {
         float maxX = Float.NEGATIVE_INFINITY;
         float maxY = Float.NEGATIVE_INFINITY;
 
-        //XXX
+        // if font is not defined then we are using a bitmap font, so
+        // calculate the bounds using the font metrics
     	if (font == null) {
     		minX = 0;
-    		minY = 0;
+    		minY = -(pfont.size*pfont.ascent());
     		maxX = pfont.size*pfont.width(getGlyph().charAt(0));
-    		maxY = pfont.size*(pfont.ascent()+pfont.descent());
+    		maxY = pfont.size*(pfont.descent());
     	}
+    	// if not, we have an outline so calculate by checking contour points
     	else {    	
 	        // Spaces are calculated differently because they don't have control
 	        // points in the same way as other glyphs.
-	        if ( getGlyph().equals(" ") ) {
-	        	
+	        if ( getGlyph().equals(" ") ) {        	
 	            Rectangle2D sb = Book.loadFontFromPFont(pfont).getStringBounds(" ", frc);
 	            minX = (float)sb.getMinX();
 	            minY = (float)sb.getMinY();

@@ -5,6 +5,7 @@ import java.awt.geom.GeneralPath;
 import java.util.Stack;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
 import net.nexttext.Book;
 import net.nexttext.TextObject;
@@ -196,8 +197,16 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
         	p.fill(glyph.getColorAbsolute().getRGB());
         	//set the font
         	p.textFont(glyph.getFont());
+        	//save the PApplet text alignment
+        	int savedTextAlign = p.g.textAlign;
+        	int savedTextAlignY = p.g.textAlignY;
+        	//set the text alignment to LEFT / BASELINE
+        	//to match the glyph position in NextText
+        	p.textAlign(PConstants.LEFT, PConstants.BASELINE);
         	//draw the glyph
         	p.text(glyph.getGlyph(), 0, 0);
+        	//set text alignment back to what it was
+        	p.textAlign(savedTextAlign, savedTextAlignY);
         }
         //if the set font size is not the same as the PFont then draw using
         //the outlines so as not to get a pixelated scaling effect.

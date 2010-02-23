@@ -108,7 +108,6 @@ public class TextObjectBuilder {
     PFont pfont;
     Font font;
 
-    private PVector spaceWidth; // Width of a space character
     private PVector trackingOffset; // Space between two characters
     private PVector lineHeight;  // Height of a line
     
@@ -128,18 +127,23 @@ public class TextObjectBuilder {
         pfont = pf;
         font = f;
         
-        //this could use the proper FRC from the PApplet's Graphics, but would
-        //it really make a difference?
-        //FontRenderContext frc = new FontRenderContext(null, false, false);
-        
-        //get measurement from the space character
-		//GlyphVector sp = f.createGlyphVector( frc, " " );		
-		//spaceWidth = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);
-		spaceWidth = new PVector(pf.width(' ')*pf.size, 0, 0);
+        //if we only have the bitmap font, then use it
+        //to calculate metrics
+        if (font == null) {
+            //get measurement from the space character
+    		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size, 0);
+        }
+        else {
+	        //this could use the proper FRC from the PApplet's Graphics, but would
+	        //it really make a difference?
+	        FontRenderContext frc = new FontRenderContext(null, false, false);
+	        GlyphVector sp = f.createGlyphVector( frc, " " );		
+			lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
+        }
+
 		trackingOffset = new PVector(0, 0, 0);
-		//lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
-		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size, 0);
     }
+    
     public PFont getFont() { return pfont; }
 
 

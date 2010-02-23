@@ -244,36 +244,32 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         p.pushStyle();
 
         // set text properties
-        p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        if (glyph.getFont().getFont() != null)
+        	p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        else
+        	p.textFont(glyph.getFont());
         p.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible
-        //GeneralPath gp = null;       
-        //if (glyph.isDeformed() || glyph.isStroked())
-        GeneralPath	gp = glyph.getOutline();
-
+        // use the cached path if possible
+        GeneralPath gp = null;       
+        if (glyph.isDeformed() || glyph.isStroked())
+        	gp = glyph.getOutline();
+        
         // optimize rendering based on the presence of DForms and of outlines
         if (glyph.isFilled()) {
-            // fill the shape
-            p.noStroke();
-            p.fill(glyph.getColorAbsolute().getRGB());
-            fillPath(glyph, gp);
 
-            /*
-             * Don't use Processing's native with P3D because it leaves
-             * hairlines when anti-aliasing shapes. 
-            if (glyph.isDeformed()) {
+        	if (glyph.isDeformed()) {
                 // fill the shape
                 p.noStroke();
                 p.fill(glyph.getColorAbsolute().getRGB());
-                fillPath(glyph, gp);
-                
+                fillPath(glyph, gp);              
             } else {
                 // render glyph using Processing's native PFont drawing method
                 p.fill(glyph.getColorAbsolute().getRGB());
                 p.text(glyph.getGlyph(), 0, 0);
             }
-            */
+        	
         }
 
         if (glyph.isStroked()) {
