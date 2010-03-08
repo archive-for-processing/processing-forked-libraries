@@ -40,7 +40,7 @@ import processing.core.PGraphicsJava2D;
  * to render glyphs. If the glyphs to be rendered are deformed, their shapes are
  * tesselated using the GLU tesselator from the OpenGL library.</p>
  */
-public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
+public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
     protected GLU glu;
     protected TessCallback tessCallback;
     protected GLUtessellator tobj;
@@ -51,7 +51,7 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
      * @param p the parent PApplet
      */
     public OpenGLTextPageRenderer(PApplet p) throws NoClassDefFoundError {
-        super(p);
+        super(p, 4.0f);
         
         glu = new GLU();
         tobj = glu.gluNewTess();
@@ -61,8 +61,6 @@ public class OpenGLTextPageRenderer extends P3DTextPageRenderer {
         glu.gluTessCallback(tobj, GLU.GLU_TESS_VERTEX, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_COMBINE, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_ERROR, tessCallback); 
-        
-        bezierDetail = 4.0f;
     }
 
     /**

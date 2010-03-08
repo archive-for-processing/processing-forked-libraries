@@ -44,7 +44,6 @@ import net.nexttext.renderer.util.ClosedPolygon;
 import net.nexttext.renderer.util.Glyph3D;
 import net.nexttext.renderer.util.TriangulationVertex;
 
-
 /**
  * 
  * Renders the text stored in a text page.
@@ -54,184 +53,20 @@ import net.nexttext.renderer.util.TriangulationVertex;
  * </p>
  * 
  */
-public class P3DTextPageRenderer extends TextPageRenderer {
+public class P3DTextPageRenderer extends G3DTextPageRenderer {
 
-	//detail level for curve approximation
-	protected float bezierDetail;
-	
-    /**
-     * Renderer type enumeration.
-     */
-	public enum RendererType
-	{
-		TWO_D,
-		THREE_D
-	}
-	RendererType renderer_type = RendererType.THREE_D;
-	
+	/**
+	 * Constructor.
+	 * @param p
+	 */
     public P3DTextPageRenderer(PApplet p) {
-        super(p);
-        bezierDetail = 1.0f;
-        
+        super(p, 1.0f);
+
+        //check if the Processing renderer is 2D and keep track of it
+        //we need this to make sure we flatten values when needed.
         if ((p.g instanceof PGraphics2D) || (p.g instanceof PGraphicsJava2D)) {
         	renderer_type = RendererType.TWO_D;
         }
-    }
-
-    /**
-     * The rendering loop. Takes as input a TextPage and traverses its root
-     * node, rendering all the TextObjectGlyph objects along the way.
-     * 
-     * @param textPage the TextPage to render
-     */
-	public void renderPage(TextPage textPage) {
-        // When resizing, it's possible to lose the reference to the graphics
-        // context, so we skip rendering the frame.
-        if (p.g == null) {
-            System.out.println(("Skipping rendering frame because the graphics context was lost temporarily."));
-        }
-
-        else if (textPage.getTextRoot() == null) {
-            System.out.println("TextPage: No root specified yet");
-        } 
-
-        // traverse the TextObject hierarchy
-        else {
-        	enterCoords(textPage);
-            traverse(textPage.getTextRoot());
-            exitCoords();
-        }
-	}
-	
-    /**
-     * Traverse the TextObject tree to render all of its glyphs.
-     * 
-     * <p>The tree is traversed using a variable to point at the current node
-     * being processed. TextObjects specify their rotation and position
-     * relative to their parent, which is handled by registering coordinate
-     * system changes with the drawing surface as the tree is traversed.</p>
-     * 
-     * Currently, rendering is not synchronized with modifications to the
-     * TextObjectTree. This is dodgy, but gives a performance boost, so will 
-     * stay that way for the moment. However, it affects this method, because we
-     * can't assume that the tree is always well structured.</p>
-     * 
-     * <p>Transformations are stored in a stack so that they can be undone as
-     * needed. It is not appropriate to use the position of the TextObject to 
-     * undo the transformation, because this may have changed due to the lack of
-     * synchronization.</p>
-     * 
-     * @param root the TextObject node to traverse
-     */
-    protected void traverse(TextObject root) {
-        TextObject current = root;
-        do {
-        	// Draw any glyphs
-            if (current instanceof TextObjectGlyph) {
-        		enterCoords(current);
-        		renderGlyph((TextObjectGlyph) current);
-        		exitCoords();
-            }
-
-            // Descend to process any children
-            if (current instanceof TextObjectGroup) {
-                TextObjectGroup tog = (TextObjectGroup) current;
-                TextObject child = tog.getLeftMostChild();
-                if (child != null) {
-                    enterCoords(current);
-                    current = child;
-                    continue;
-                }
-            }
-        
-            // Processing of this node is complete, so move on to siblings.
-            // Since a node may not have siblings, a search is made up the tree
-            // for the first appropriate sibling. The search ends if a sibling
-            // is found, or if it reaches the top of the tree.
-            while (current != root) {
-                TextObject sibling = current.getRightSibling();
-                if (sibling != null) {
-                    current = sibling;
-                    break;
-                } else {
-                    current = current.getParent();
-                    if (current == null) {
-                        // Aaarghh, we were detached from the tree mid-render,
-                        // so just abort the whole process.
-                        return;
-                    }
-                    exitCoords();
-                }
-            }
-        } while (current != root);
-    }
-    
-    /**
-     * Transform the drawing surface into the coordinates of the given 
-     * TextPage.
-     * 
-     * @param page the TextPage
-     */
-    protected void enterCoords(TextPage page) {
-        p.pushMatrix();
-
-        // properties
-        PVector pos = page.getPosition().get();
-        PVector rot = page.getRotation().get();
-        
-        //only use 3D function if the renderer is 3D and the position
-        //and rotation are actually using 3D. This allows to use 2D recorders
-        //with 3D renderers.
-        if (((pos.z != 0) || (rot.x != 0) || (rot.y != 0))
-        	&& (renderer_type == RendererType.THREE_D)) {
-			p.translate((float)pos.x, (float)pos.y, (float)pos.z);
-        	p.translate(p.width/2.0f, p.height/2.0f, 0);
-        	p.rotateX((float)rot.x);
-        	p.rotateY((float)rot.y);
-        	p.rotateZ((float)rot.z);
-        	p.translate(-p.width/2.0f, -p.height/2.0f, 0);
-		}
-		else {
-			p.translate((float)pos.x, (float)pos.y);
-        	p.translate(p.width/2.0f, p.height/2.0f);
-			p.rotate((float)rot.z);
-        	p.translate(-p.width/2.0f, -p.height/2.0f);
-		}
-    }
-    
-    /**
-     * Transform the drawing surface into the coordinates of the given 
-     * TextObject.
-     * 
-     * <p>Once this transformation is done, the TextObject and any of its 
-     * children can be drawn directly to the PApplet without having to handle
-     * position or rotation.</p>
-     * 
-     * @param node the TextObject holding the translation and rotation info
-     */
-    protected void enterCoords(TextObject node) {
-        p.pushMatrix();
-
-        // translation
-        PVector pos = node.getPosition().get();
-        
-        //3D TextObject's positioning is not supported yet. 
-        //if ((pos.z != 0) && (renderer_type == RendererType.THREE_D))
-        //	p.translate((float)pos.x, (float)pos.y, 0); //todo: use Z coord
-        //else
-        	p.translate((float)pos.x, (float)pos.y);
-        // rotation
-        float rotation = (float)node.getRotation().get();	//todo: rotate in 3D
-        p.rotate(rotation);
-    }
-
-    /**
-     * Transform the drawing surface out of the coordinates on top of the stack.
-     * 
-     * <p>This undoes the change of enterCoords(...).</p>
-     */
-    protected void exitCoords() {
-        p.popMatrix();
     }
     
     /**

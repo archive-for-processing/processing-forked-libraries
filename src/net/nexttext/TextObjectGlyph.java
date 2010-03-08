@@ -363,6 +363,7 @@ public class TextObjectGlyph extends TextObject {
 									 -(pfont.size*pfont.ascent()),
 									 pfont.size*pfont.width(getGlyph().charAt(0)),
 									 pfont.size*(pfont.ascent()+pfont.descent()));
+			//nothing else to compute for bitmap fonts
 			return;
 		}
 		

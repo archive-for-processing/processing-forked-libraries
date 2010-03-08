@@ -20,9 +20,12 @@
 package net.nexttext.renderer;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 
 import processing.core.*;
 
+import net.nexttext.Book;
+import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextPage;
 
 /**
@@ -68,4 +71,69 @@ public class Java2DTextPageRenderer extends G2DTextPageRenderer {
             g2.setTransform(original);
         }
     } // end rendering
+
+    /**
+     * Renders a TextObjectGlyph using quads, either as an outline or as a
+     * filled shape.
+     * 
+     * @param glyph
+     *            The TextObjectGlyph
+     */
+    protected void renderGlyph(TextObjectGlyph glyph) {
+        // ////////////////////////////////////
+        // Optimize based on presence of DForms and of outlines
+        if (glyph.isDeformed() || glyph.isStroked()) {
+
+            // ////////////////////////////////
+            // Render glyph using vertex list
+
+            // Use the cached path if possible.
+            GeneralPath gp = glyph.getOutline();
+
+            // draw the outline of the shape
+            if (glyph.isStroked()) {
+                g2.setColor(glyph.getStrokeColorAbsolute());
+                g2.setStroke(glyph.getStrokeAbsolute());
+                g2.draw(gp);
+            }
+
+            // fill the shape
+            if (glyph.isFilled()) {
+                g2.setColor(glyph.getColorAbsolute());
+                g2.fill(gp);
+            }
+        }
+        //if the PFont size and the set font size are the same then use the
+        //text function to draw bitmaps.
+        //this will create better results at small sizes.
+        else if ((glyph.getFont().getFont() == null) ||
+        		 (glyph.getFont().size == glyph.getFont().getFont().getSize())) {
+        	//set the color
+        	p.fill(glyph.getColorAbsolute().getRGB());
+        	//set the font
+        	p.textFont(glyph.getFont());
+        	//save the PApplet text alignment
+        	int savedTextAlign = p.g.textAlign;
+        	int savedTextAlignY = p.g.textAlignY;
+        	//set the text alignment to LEFT / BASELINE
+        	//to match the glyph position in NextText
+        	p.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        	//draw the glyph
+        	p.text(glyph.getGlyph(), 0, 0);
+        	//set text alignment back to what it was
+        	p.textAlign(savedTextAlign, savedTextAlignY);
+        }
+        //if the set font size is not the same as the PFont then draw using
+        //the outlines so as not to get a pixelated scaling effect.
+        else {
+            // /////////////////////////////////////////
+            // Render glyph using Graphics.drawString()
+            g2.setColor(glyph.getColorAbsolute());
+            // set the font
+            g2.setFont(Book.loadFontFromPFont(glyph.getFont()));
+            // draw the glyph
+            g2.drawString(glyph.getGlyph(), 0, 0);
+        }
+
+    } // end renderGlyph
 }

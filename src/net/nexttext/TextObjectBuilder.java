@@ -604,11 +604,12 @@ public class TextObjectBuilder {
     	float ascent;
     	float descent;
     	float leading;
-    	//XXX
+
+    	//calculate the metrics (if font is null we have a bitmap font)
         if (font == null) {
         	ascent = pfont.size*pfont.ascent();
         	descent = pfont.size*pfont.descent();
-        	leading = (ascent + descent) * 1.275f;
+        	leading = (ascent + descent) * 1.275f;	//multiplier is from the value hardcoded in Processing
         } else {
         	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
         	ascent = metrics.getAscent();
