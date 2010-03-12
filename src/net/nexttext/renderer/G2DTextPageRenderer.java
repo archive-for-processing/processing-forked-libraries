@@ -25,6 +25,7 @@ import java.util.Stack;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PVector;
 import net.nexttext.Book;
 import net.nexttext.TextObject;
@@ -45,12 +46,22 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
     protected Graphics2D g2;
 
     /**
-     * Builds a TextPageRenderer.
+     * Builds a G2DTextPageRenderer.
      * 
      * @param p the parent PApplet
      */
     public G2DTextPageRenderer(PApplet p) {
-        super(p);    
+        this(p, p.g);    
+    }
+
+    /**
+     * Builds a G2DTextPageRenderer.
+     * 
+     * @param p the parent PApplet
+     * @param g the PGraphics
+     */
+    public G2DTextPageRenderer(PApplet p, PGraphics g) {
+        super(p, g);    
     }
     
     /**
@@ -123,9 +134,9 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
     	PVector rot = page.getRotation().get();
 
     	g2.translate(pos.x, pos.y);
-        g2.translate(p.width/2.0f, p.height/2.0f);
+        g2.translate(g.width/2.0f, g.height/2.0f);
 		g2.rotate(rot.z);
-    	g2.translate(-p.width/2.0f, -p.height/2.0f);
+    	g2.translate(-g.width/2.0f, -g.height/2.0f);
     }
 
     /**
@@ -135,9 +146,9 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
     	PVector pos = page.getPosition().get();
     	PVector rot = page.getRotation().get();
 
-        g2.translate(p.width/2.0f, p.height/2.0f);
+        g2.translate(g.width/2.0f, g.height/2.0f);
 		g2.rotate(-rot.z);
-    	g2.translate(-p.width/2.0f, -p.height/2.0f);
+    	g2.translate(-g.width/2.0f, -g.height/2.0f);
 
     	g2.translate(-pos.x, -pos.y);
     }

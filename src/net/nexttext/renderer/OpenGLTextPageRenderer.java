@@ -31,6 +31,7 @@ import javax.media.opengl.glu.GLUtessellatorCallbackAdapter;
 import net.nexttext.TextObjectGlyph;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PGraphicsJava2D;
 
 /**
@@ -51,18 +52,27 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
      * @param p the parent PApplet
      */
     public OpenGLTextPageRenderer(PApplet p) throws NoClassDefFoundError {
-        super(p, 4.0f);
+        this(p, p.g);
+    }
+
+    /**
+     * Builds a TextPageRenderer.
+     * 
+     * @param p the parent PApplet
+     */
+    public OpenGLTextPageRenderer(PApplet p, PGraphics g) throws NoClassDefFoundError {
+        super(p, g, 4.0f);
         
         glu = new GLU();
         tobj = glu.gluNewTess();
-        tessCallback = new TessCallback(); 
+        tessCallback = new TessCallback();
         glu.gluTessCallback(tobj, GLU.GLU_TESS_BEGIN, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_END, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_VERTEX, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_COMBINE, tessCallback); 
         glu.gluTessCallback(tobj, GLU.GLU_TESS_ERROR, tessCallback); 
     }
-
+    
     /**
      * Renders a TextObjectGlyph.
      * 
@@ -70,14 +80,14 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
      */
     protected void renderGlyph(TextObjectGlyph glyph) {    	
         // save the current properties
-        p.pushStyle();
+        g.pushStyle();
 
         // set text properties
         if (glyph.getFont().getFont() != null)
-        	p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
         else
-        	p.textFont(glyph.getFont());
-        p.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        	g.textFont(glyph.getFont());
+        g.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible
         GeneralPath gp = null;       
@@ -88,52 +98,52 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         if (glyph.isFilled()) {
             if (glyph.isDeformed()) {
                 // fill the shape
-                p.noStroke();
-                p.fill(glyph.getColorAbsolute().getRGB());
+                g.noStroke();
+                g.fill(glyph.getColorAbsolute().getRGB());
                 fillPath(glyph, gp);
                 
             } else {
                 // render glyph using Processing's native PFont drawing method
-                p.fill(glyph.getColorAbsolute().getRGB());
-                p.text(glyph.getGlyph(), 0, 0);
+                g.fill(glyph.getColorAbsolute().getRGB());
+                g.text(glyph.getGlyph(), 0, 0);
             }
         }
 
         if (glyph.isStroked()) {
             // draw the outline of the shape
-            p.stroke(glyph.getStrokeColorAbsolute().getRGB());
+            g.stroke(glyph.getStrokeColorAbsolute().getRGB());
             BasicStroke bs = glyph.getStrokeAbsolute();
-            p.strokeWeight(bs.getLineWidth());
-            if (p.g instanceof PGraphicsJava2D) {
+            g.strokeWeight(bs.getLineWidth());
+            if (g instanceof PGraphicsJava2D) {
                 switch (bs.getEndCap()) {
                     case BasicStroke.CAP_ROUND:
-                        p.strokeCap(PApplet.ROUND);
+                        g.strokeCap(PApplet.ROUND);
                         break;
                     case BasicStroke.CAP_SQUARE:
-                        p.strokeCap(PApplet.PROJECT);
+                        g.strokeCap(PApplet.PROJECT);
                         break;
                     default:
-                        p.strokeCap(PApplet.SQUARE);
+                        g.strokeCap(PApplet.SQUARE);
                     break;
                 }
                 switch (bs.getLineJoin()) {
                     case BasicStroke.JOIN_ROUND:
-                        p.strokeJoin(PApplet.ROUND);
+                        g.strokeJoin(PApplet.ROUND);
                         break;
                     case BasicStroke.JOIN_BEVEL:
-                        p.strokeJoin(PApplet.BEVEL);
+                        g.strokeJoin(PApplet.BEVEL);
                         break;
                     default:
-                        p.strokeJoin(PApplet.MITER);
+                        g.strokeJoin(PApplet.MITER);
                     break;
                 }
             }
-            p.noFill();
+            g.noFill();
             strokePath(gp);
         }
 
         // restore saved properties
-        p.popStyle();
+        g.popStyle();
 
     } // end renderGlyph    
     
@@ -145,9 +155,9 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
      */
     protected void fillPath(TextObjectGlyph glyph, GeneralPath gp) {
         // save the current smooth property
-        boolean smooth = p.g.smooth;
+        boolean smooth = g.smooth;
         // turn off smoothing so that we don't get gaps in between the triangles
-        p.noSmooth();
+        g.noSmooth();
         
         // six element array received from the Java2D path iterator
         float textPoints[] = new float[6];
@@ -191,14 +201,14 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
                 	for (int i = 1; i <= bezierDetail; i++) {
                 		float t = (float)(i/bezierDetail);
 	                    vertex = new double[] {
-	                            p.g.bezierPoint(
+	                            g.bezierPoint(
 	                                    lastX, 
 	                                    lastX + ((textPoints[0]-lastX)*2/3), 
 	                                    textPoints[2] + ((textPoints[0]-textPoints[2])*2/3), 
 	                                    textPoints[2], 
 	                                    t
 	                            ),
-	                            p.g.bezierPoint(
+	                            g.bezierPoint(
 	                                    lastY, 
 	                                    lastY + ((textPoints[1]-lastY)*2/3),
 	                                    textPoints[3] + ((textPoints[1]-textPoints[3])*2/3), 
@@ -228,7 +238,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         glu.gluTessEndPolygon(tobj);
         
         // restore saved smooth property
-        if (smooth) p.smooth();
+        if (smooth) g.smooth();
     }
 
     /**
@@ -251,15 +261,15 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
             int type = iter.currentSegment(textPoints);
             switch (type) {
                 case PathIterator.SEG_MOVETO:
-                    p.beginShape();
-                    p.vertex(textPoints[0], textPoints[1]);
+                    g.beginShape();
+                    g.vertex(textPoints[0], textPoints[1]);
                     lastX = textPoints[0];
                     lastY = textPoints[1];
                     break;
                 	
                 case PathIterator.SEG_QUADTO:
 
-                	p.bezierVertex(lastX + ((textPoints[0]-lastX)*2/3),
+                	g.bezierVertex(lastX + ((textPoints[0]-lastX)*2/3),
                 				   lastY + ((textPoints[1]-lastY)*2/3),
                 				   textPoints[2] + ((textPoints[0]-textPoints[2])*2/3),
                 				   textPoints[3] + ((textPoints[1]-textPoints[3])*2/3),
@@ -270,7 +280,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
                     break;
 
                 case PathIterator.SEG_CLOSE:
-                    p.endShape(PConstants.CLOSE);
+                    g.endShape(PConstants.CLOSE);
                     
                     break;
             }
@@ -278,7 +288,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
             iter.next();
         }
         
-        p.endShape(PConstants.CLOSE);
+        g.endShape(PConstants.CLOSE);
     }    
     /**
      * This tesselator callback uses native Processing drawing functions to 
@@ -289,19 +299,19 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         public void begin(int type) {
             switch (type) {
                 case GL.GL_TRIANGLE_FAN: 
-                    p.beginShape(PApplet.TRIANGLE_FAN); 
+                    g.beginShape(PApplet.TRIANGLE_FAN); 
                     break;
                 case GL.GL_TRIANGLE_STRIP: 
-                    p.beginShape(PApplet.TRIANGLE_STRIP); 
+                    g.beginShape(PApplet.TRIANGLE_STRIP); 
                     break;
                 case GL.GL_TRIANGLES: 
-                    p.beginShape(PApplet.TRIANGLES); 
+                    g.beginShape(PApplet.TRIANGLES); 
                     break;
             }
         }
 
         public void end() {
-            p.endShape();
+            g.endShape();
         }
 
         public void vertex(Object data) {
@@ -313,11 +323,11 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
                 }
 
                 if ((d[2] != 0) && (renderer_type == RendererType.THREE_D)) {
-                    p.vertex((float) d[0], (float) d[1], (float) d[2]);
+                    g.vertex((float) d[0], (float) d[1], (float) d[2]);
 
                 } else {
                     // assume it is 2D, ignore z
-                    p.vertex((float) d[0], (float) d[1]);
+                    g.vertex((float) d[0], (float) d[1]);
                 }
                     
             } else {

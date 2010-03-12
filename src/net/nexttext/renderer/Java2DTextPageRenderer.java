@@ -40,11 +40,25 @@ import net.nexttext.TextPage;
 /* $Id$ */
 public class Java2DTextPageRenderer extends G2DTextPageRenderer {
 
+	/**
+	 * Constructs a Java2DTextPageRenderer.
+	 * @param p the parent PApplet
+	 * @throws ClassCastException
+	 */
     public Java2DTextPageRenderer(PApplet p) throws ClassCastException {
-        super(p);
-        this.g2 = ((PGraphicsJava2D)p.g).g2;
+        this(p, p.g);
     }
 
+	/**
+	 * Constructs a Java2DTextPageRenderer.
+	 * @param p the parent PApplet
+	 * @throws ClassCastException
+	 */
+    public Java2DTextPageRenderer(PApplet p, PGraphics g) throws ClassCastException {
+        super(p, g);
+        this.g2 = ((PGraphicsJava2D)g).g2;
+    }
+    
     /**
      * The rendering loop. Takes as input a TextPage and traverses its root
      * node, rendering all the TextObjectGlyph objects along the way.
@@ -109,19 +123,19 @@ public class Java2DTextPageRenderer extends G2DTextPageRenderer {
         else if ((glyph.getFont().getFont() == null) ||
         		 (glyph.getFont().size == glyph.getFont().getFont().getSize())) {
         	//set the color
-        	p.fill(glyph.getColorAbsolute().getRGB());
+        	g.fill(glyph.getColorAbsolute().getRGB());
         	//set the font
-        	p.textFont(glyph.getFont());
+        	g.textFont(glyph.getFont());
         	//save the PApplet text alignment
-        	int savedTextAlign = p.g.textAlign;
-        	int savedTextAlignY = p.g.textAlignY;
+        	int savedTextAlign = g.textAlign;
+        	int savedTextAlignY = g.textAlignY;
         	//set the text alignment to LEFT / BASELINE
         	//to match the glyph position in NextText
-        	p.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        	g.textAlign(PConstants.LEFT, PConstants.BASELINE);
         	//draw the glyph
-        	p.text(glyph.getGlyph(), 0, 0);
+        	g.text(glyph.getGlyph(), 0, 0);
         	//set text alignment back to what it was
-        	p.textAlign(savedTextAlign, savedTextAlignY);
+        	g.textAlign(savedTextAlign, savedTextAlignY);
         }
         //if the set font size is not the same as the PFont then draw using
         //the outlines so as not to get a pixelated scaling effect.

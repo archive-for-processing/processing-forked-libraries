@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PGraphics2D;
 import processing.core.PGraphicsJava2D;
 import processing.core.PVector;
@@ -57,14 +58,22 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
 
 	/**
 	 * Constructor.
-	 * @param p
+	 * @param p the parent PApplet
 	 */
     public P3DTextPageRenderer(PApplet p) {
-        super(p, 1.0f);
+        this(p, p.g);
+    }
+
+	/**
+	 * Constructor.
+	 * @param p
+	 */
+    public P3DTextPageRenderer(PApplet p, PGraphics g) {
+        super(p, g, 1.0f);
 
         //check if the Processing renderer is 2D and keep track of it
         //we need this to make sure we flatten values when needed.
-        if ((p.g instanceof PGraphics2D) || (p.g instanceof PGraphicsJava2D)) {
+        if ((g instanceof PGraphics2D) || (g instanceof PGraphicsJava2D)) {
         	renderer_type = RendererType.TWO_D;
         }
     }
@@ -76,14 +85,14 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
      */
     protected void renderGlyph(TextObjectGlyph glyph) {
     	// save the current properties
-        p.pushStyle();
+        g.pushStyle();
 
         // set text properties
         if (glyph.getFont().getFont() != null)
-        	p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
         else
-        	p.textFont(glyph.getFont());
-        p.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        	g.textFont(glyph.getFont());
+        g.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible
         // use the cached path if possible
@@ -96,52 +105,52 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
 
         	if (glyph.isDeformed()) {
                 // fill the shape
-                p.noStroke();
-                p.fill(glyph.getColorAbsolute().getRGB());
+                g.noStroke();
+                g.fill(glyph.getColorAbsolute().getRGB());
                 fillPath(glyph, gp);              
             } else {
                 // render glyph using Processing's native PFont drawing method
-                p.fill(glyph.getColorAbsolute().getRGB());
-                p.text(glyph.getGlyph(), 0, 0);
+                g.fill(glyph.getColorAbsolute().getRGB());
+                g.text(glyph.getGlyph(), 0, 0);
             }
         	
         }
 
         if (glyph.isStroked()) {
             // draw the outline of the shape
-            p.stroke(glyph.getStrokeColorAbsolute().getRGB());
+            g.stroke(glyph.getStrokeColorAbsolute().getRGB());
             BasicStroke bs = glyph.getStrokeAbsolute();
-            p.strokeWeight(bs.getLineWidth());
-            if (p.g instanceof PGraphicsJava2D) {
+            g.strokeWeight(bs.getLineWidth());
+            if (g instanceof PGraphicsJava2D) {
                 switch (bs.getEndCap()) {
                     case BasicStroke.CAP_ROUND:
-                        p.strokeCap(PApplet.ROUND);
+                        g.strokeCap(PApplet.ROUND);
                         break;
                     case BasicStroke.CAP_SQUARE:
-                        p.strokeCap(PApplet.PROJECT);
+                        g.strokeCap(PApplet.PROJECT);
                         break;
                     default:
-                        p.strokeCap(PApplet.SQUARE);
+                        g.strokeCap(PApplet.SQUARE);
                     break;
                 }
                 switch (bs.getLineJoin()) {
                     case BasicStroke.JOIN_ROUND:
-                        p.strokeJoin(PApplet.ROUND);
+                        g.strokeJoin(PApplet.ROUND);
                         break;
                     case BasicStroke.JOIN_BEVEL:
-                        p.strokeJoin(PApplet.BEVEL);
+                        g.strokeJoin(PApplet.BEVEL);
                         break;
                     default:
-                        p.strokeJoin(PApplet.MITER);
+                        g.strokeJoin(PApplet.MITER);
                     break;
                 }
             }
-            p.noFill();
+            g.noFill();
             strokePath(gp);
         }
 
         // restore saved properties
-        p.popStyle();
+        g.popStyle();
 
     } // end renderGlyph    
     
@@ -166,9 +175,9 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
      */
     protected void fillPath(TextObjectGlyph glyph, GeneralPath gp) {
         // save the current smooth property
-        boolean smooth = p.g.smooth;
+        boolean smooth = g.smooth;
         // turn off smoothing so that we don't get gaps in between the triangles
-        p.noSmooth();
+        g.noSmooth();
         
         //Convert the path to triangles
         PathIterator pi = new FlatteningPathIterator(gp
@@ -248,22 +257,22 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
         }
         
         //draw the triangles
-        p.beginShape(PApplet.TRIANGLES);
+        g.beginShape(PApplet.TRIANGLES);
         PVector vert;
         triList.triangles.rewind();
         while(triList.triangles.remaining() > 0) {
         	vert = triList.verts[triList.triangles.get()];
         	
         	if ((vert.z != 0) && (renderer_type == RendererType.THREE_D)) {
-        		p.vertex((float)vert.x, (float)-vert.y, (float)vert.z);
+        		g.vertex((float)vert.x, (float)-vert.y, (float)vert.z);
         	}
         	else
-        		p.vertex((float)vert.x, (float)-vert.y);
+        		g.vertex((float)vert.x, (float)-vert.y);
         }
-        p.endShape();
+        g.endShape();
         
         // restore saved smooth property
-        if (smooth) p.smooth();
+        if (smooth) g.smooth();
     }
     
     /**
@@ -280,14 +289,14 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
             int type = pi.currentSegment(coords);
             switch (type) {
                 case PathIterator.SEG_MOVETO:
-                    p.beginShape();
+                    g.beginShape();
                     p.vertex(coords[0], coords[1]);
                     break;
                 case PathIterator.SEG_LINETO:
-                    p.vertex(coords[0], coords[1]);
+                    g.vertex(coords[0], coords[1]);
                     break;
                 case PathIterator.SEG_CLOSE:
-                    p.endShape(PConstants.CLOSE);
+                    g.endShape(PConstants.CLOSE);
                     
                     break;
             }
@@ -295,7 +304,7 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
             pi.next();
         }
         
-        p.endShape(PConstants.CLOSE);
+        g.endShape(PConstants.CLOSE);
     }    
     
     protected class TriangleList {

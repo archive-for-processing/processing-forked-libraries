@@ -57,7 +57,8 @@ public class Book {
     public static MouseDefault mouse;
     public static KeyboardDefault keyboard;
     
-    private PApplet p;   
+    private PApplet p;
+    private PGraphics g;
 
     /**
      * The current frame count.
@@ -83,8 +84,26 @@ public class Book {
      * @param p the parent PApplet
      */
     public Book(PApplet p) {
-        this (p, "best fit");
+        this(p, p.g, "best fit");
     }   
+
+    /**
+     * Instantiates the Book with a specific renderer.
+     * @param p the parent PApplet
+     * @param rendererType the type of renderer to use, can be JAVA2D or OPENGL
+     */
+    public Book(PApplet p, String rendererType) {
+    	this(p, p.g, rendererType);
+    }
+    
+    /**
+     * Instatiates the Book with specific PGraphics object.
+     * @param p the parent PApplet
+     * @param g the PGraphics object to render to
+     */
+    public Book(PApplet p, PGraphics g) {
+    	this(p, g, "best fit");
+    }
     
     /**
      * Instantiates the Book.
@@ -92,8 +111,9 @@ public class Book {
      * @param p the parent PApplet
      * @param rendererType the type of renderer to use, can be JAVA2D or OPENGL
      */
-    public Book(PApplet p, String rendererType) {
+    public Book(PApplet p, PGraphics g, String rendererType) {
         this.p = p;
+        this.g = g;
         
         // initialize the renderer
         if (rendererType == PConstants.JAVA2D) {
@@ -101,7 +121,7 @@ public class Book {
         	//PApplet.JAVA2D renderer, because it draws directly to
         	//the PApplet's PGraphicsJava2D objects.
             try {
-                defaultRenderer = new Java2DTextPageRenderer(p); 
+                defaultRenderer = new Java2DTextPageRenderer(p, g); 
             } catch (ClassCastException e) {
                 PGraphics.showException("The NextText and PApplet renderers are incompatible! Use the default renderer if you don't know what you are doing!");
             }
@@ -109,14 +129,14 @@ public class Book {
         		//P2D renderer is compatible with all other opens because it
         		//draws to a buffer using Java2D and then draws the whole image
         		//to the PApplet
-                defaultRenderer = new P2DTextPageRenderer(p); 
+                defaultRenderer = new P2DTextPageRenderer(p, g); 
         } else if (rendererType == PConstants.OPENGL) {
         	//NextText's OpenGL renderer is compatible with all PApplet renderer
         	//but if PApplet's OpenGL is NOT used, then NextText uses OpenGL only
         	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
         	//2D.
             try {
-                defaultRenderer = new OpenGLTextPageRenderer(p); 
+                defaultRenderer = new OpenGLTextPageRenderer(p, g); 
             } catch (NoClassDefFoundError e) {
                 PGraphics.showException("You must import the OpenGL library in your sketch! Even if you're not using the OpenGL renderer, the library is used to tesselate the font shapes!");
             }
@@ -131,37 +151,37 @@ public class Book {
         	//but if PApplet's P3D is NOT used, then NextText uses P3D only
         	//to tesselate the glyph. Z coord is dropped if PApplet's renderer is
         	//2D.       	
-            defaultRenderer = new P3DTextPageRenderer(p); 
+            defaultRenderer = new P3DTextPageRenderer(p, g); 
         } else {
         	//check if the applet is using the JAVA2D renderer
-        	if (p.g.getClass().getName().compareTo("processing.core.PGraphicsJava2D") == 0) {
+        	if (g.getClass().getName().compareTo("processing.core.PGraphicsJava2D") == 0) {
                 try {
-                    defaultRenderer = new Java2DTextPageRenderer(p); 
+                    defaultRenderer = new Java2DTextPageRenderer(p, g); 
                 } catch (ClassCastException e) {
                     PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
                 }        		
         	}
         	//check if the applet is using the P2D renderer
-        	else if (p.g.getClass().getName().compareTo("processing.core.PGraphics2D") == 0) {
+        	else if (g.getClass().getName().compareTo("processing.core.PGraphics2D") == 0) {
                 try {
-                    defaultRenderer = new P2DTextPageRenderer(p); 
+                    defaultRenderer = new P2DTextPageRenderer(p, g); 
                 } catch (ClassCastException e) {
                     PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
                 }        		
         	}
-        	else if (p.g.getClass().getName().compareTo("processing.opengl.PGraphicsOpenGL") == 0) {
+        	else if (g.getClass().getName().compareTo("processing.opengl.PGraphicsOpenGL") == 0) {
         		try {
-                    defaultRenderer = new OpenGLTextPageRenderer(p); 
+                    defaultRenderer = new OpenGLTextPageRenderer(p, g); 
                 } catch (NoClassDefFoundError err) {
                     PGraphics.showException("The NextText and PApplet renderers are incompatible. This should not have happened.");
                 }
-        	} else if (p.g.getClass().getName().compareTo("processing.core.PGraphics3D") == 0) {
-                defaultRenderer = new P3DTextPageRenderer(p);                 	        	
+        	} else if (g.getClass().getName().compareTo("processing.core.PGraphics3D") == 0) {
+                defaultRenderer = new P3DTextPageRenderer(p, g);                 	        	
         	} else {
         		//if the renderer is not recognize, then fall back on P2D which uses JAVA2D internally
         		//to draw to a buffer, so it should work with any renderer.
-                PGraphics.showException("NextText couldn't recognize the PApplet renderer: " + p.g.getClass().getName() + ".");
-                defaultRenderer = new P2DTextPageRenderer(p); 
+                PGraphics.showException("NextText couldn't recognize the PApplet renderer: " + g.getClass().getName() + ".");
+                defaultRenderer = new P2DTextPageRenderer(p, g); 
         	}
         }
         
@@ -315,13 +335,13 @@ public class Book {
      * Sets the font of the TextObjectBuilder based on the PApplet's active font.
      */
     private void setFont() {
-        PFont pf = p.g.textFont;
+        PFont pf = g.textFont;
         if (pf == null) {
             PGraphics.showException("Use textFont() before Book.addText()");
         }
 
-        toBuilder.setTextAlign(p.g.textAlign); // LEFT/CENTER/RIGHT
-        toBuilder.setTextAlignY(p.g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
+        toBuilder.setTextAlign(g.textAlign); // LEFT/CENTER/RIGHT
+        toBuilder.setTextAlignY(g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
         toBuilder.setFont(pf);
     }
     
@@ -430,10 +450,10 @@ public class Book {
     private void setStroke(TextObject to) {
     	ColorProperty colProp = to.getStrokeColor();
     	
-    	if (p.g.stroke) {
+    	if (g.stroke) {
     		// set the stroke cap
     		int cap;
-	    	switch (p.g.strokeCap) {
+	    	switch (g.strokeCap) {
 	    	case PApplet.SQUARE:
 	    		cap = BasicStroke.CAP_BUTT;
 	    		break;
@@ -447,7 +467,7 @@ public class Book {
 	    	
 	    	// set the stroke join
 	    	int join;
-	    	switch (p.g.strokeJoin) {
+	    	switch (g.strokeJoin) {
 	    	case PApplet.BEVEL:
 	    		join = BasicStroke.JOIN_BEVEL;
 	    		break;
@@ -461,12 +481,12 @@ public class Book {
     	
 	    	// set the stroke property
 	    	StrokeProperty strokeProp = to.getStroke();
-	    	strokeProp.setOriginal(new BasicStroke(p.g.strokeWeight, cap, join));
-	    	strokeProp.set(new BasicStroke(p.g.strokeWeight, cap, join));
+	    	strokeProp.setOriginal(new BasicStroke(g.strokeWeight, cap, join));
+	    	strokeProp.set(new BasicStroke(g.strokeWeight, cap, join));
     		
 	    	// set the stroke color property
-	    	colProp.setOriginal(new Color(p.g.strokeColor, true));
-	    	colProp.set(new Color(p.g.strokeColor, true));
+	    	colProp.setOriginal(new Color(g.strokeColor, true));
+	    	colProp.set(new Color(g.strokeColor, true));
             
     	} else {
     		// set the stroke color property to transparent
@@ -483,10 +503,10 @@ public class Book {
     private void setFill(TextObject to) {
     	ColorProperty colProp = to.getColor();
     	
-    	if (p.g.fill) {
+    	if (g.fill) {
             // set the fill color property
-    		colProp.setOriginal(new Color(p.g.fillColor, true));
-    		colProp.set(new Color(p.g.fillColor, true));
+    		colProp.setOriginal(new Color(g.fillColor, true));
+    		colProp.set(new Color(g.fillColor, true));
         } else {
         	// set the fill color property to transparent
         	colProp.setOriginal(new Color(0, 0, 0, 0));

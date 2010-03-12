@@ -20,6 +20,7 @@
 package net.nexttext.renderer;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PVector;
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
@@ -43,16 +44,27 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
 	protected float bezierDetail;
 	
     /**
-     * Builds a TextPageRenderer.
+     * Builds a G3DTextPageRenderer.
      * 
      * @param p the parent PApplet
      * @param curveDetail level of detail for curve approximation
      */
     public G3DTextPageRenderer(PApplet p, float curveDetail) {
-        super(p);
-        bezierDetail = curveDetail;
+        this(p, p.g, curveDetail);
     }
 
+    /**
+     * Builds a G3DTextPageRenderer.
+     * 
+     * @param p the parent PApplet
+     * @param g the PGraphics
+     * @param curveDetail level of detail for curve approximation
+     */
+    public G3DTextPageRenderer(PApplet p, PGraphics g, float curveDetail) {
+        super(p, g);
+        bezierDetail = curveDetail;
+    }
+    
     /**
      * The rendering loop. Takes as input a TextPage and traverses its root
      * node, rendering all the TextObjectGlyph objects along the way.
@@ -62,7 +74,7 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
 	public void renderPage(TextPage textPage) {
         // When resizing, it's possible to lose the reference to the graphics
         // context, so we skip rendering the frame.
-        if (p.g == null) {
+        if (g == null) {
             System.out.println(("Skipping rendering frame because the graphics context was lost temporarily."));
         }
 
@@ -148,7 +160,7 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
      * @param page the TextPage
      */
     protected void enterCoords(TextPage page) {
-        p.pushMatrix();
+        g.pushMatrix();
 
         // properties
         PVector pos = page.getPosition().get();
@@ -159,18 +171,18 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
         //with 3D renderers.
         if (((pos.z != 0) || (rot.x != 0) || (rot.y != 0))
         	&& (renderer_type == RendererType.THREE_D)) {
-			p.translate((float)pos.x, (float)pos.y, (float)pos.z);
-        	p.translate(p.width/2.0f, p.height/2.0f, 0);
-        	p.rotateX((float)rot.x);
-        	p.rotateY((float)rot.y);
-        	p.rotateZ((float)rot.z);
-        	p.translate(-p.width/2.0f, -p.height/2.0f, 0);
+			g.translate((float)pos.x, (float)pos.y, (float)pos.z);
+        	g.translate(g.width/2.0f, g.height/2.0f, 0);
+        	g.rotateX((float)rot.x);
+        	g.rotateY((float)rot.y);
+        	g.rotateZ((float)rot.z);
+        	g.translate(-g.width/2.0f, -g.height/2.0f, 0);
 		}
 		else {
-			p.translate((float)pos.x, (float)pos.y);
-        	p.translate(p.width/2.0f, p.height/2.0f);
-			p.rotate((float)rot.z);
-        	p.translate(-p.width/2.0f, -p.height/2.0f);
+			g.translate((float)pos.x, (float)pos.y);
+        	g.translate(g.width/2.0f, g.height/2.0f);
+			g.rotate((float)rot.z);
+        	g.translate(-g.width/2.0f, -g.height/2.0f);
 		}
     }
     
@@ -185,7 +197,7 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
      * @param node the TextObject holding the translation and rotation info
      */
     protected void enterCoords(TextObject node) {
-        p.pushMatrix();
+        g.pushMatrix();
 
         // translation
         PVector pos = node.getPosition().get();
@@ -194,10 +206,10 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
         //if ((pos.z != 0) && (renderer_type == RendererType.THREE_D))
         //	p.translate((float)pos.x, (float)pos.y, 0); //todo: use Z coord
         //else
-        	p.translate((float)pos.x, (float)pos.y);
+        	g.translate((float)pos.x, (float)pos.y);
         // rotation
         float rotation = (float)node.getRotation().get();	//todo: rotate in 3D
-        p.rotate(rotation);
+        g.rotate(rotation);
     }
 
     /**
@@ -206,7 +218,7 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
      * <p>This undoes the change of enterCoords(...).</p>
      */
     protected void exitCoords() {
-        p.popMatrix();
+        g.popMatrix();
     }
     
     /**

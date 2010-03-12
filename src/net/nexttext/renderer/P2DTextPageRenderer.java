@@ -33,13 +33,26 @@ import net.nexttext.TextPage;
 public class P2DTextPageRenderer extends G2DTextPageRenderer {
 	protected PGraphics pg;
 
+	/**
+	 * Constructs a P2DTextPageRenderer.
+	 * @param p the parent PApplet
+	 */
     public P2DTextPageRenderer(PApplet p) {
-        super(p);
-        this.pg = p.createGraphics(p.width, p.height, PConstants.JAVA2D);
-        this.g2 = ((PGraphicsJava2D)pg).g2;
+    	this(p, p.g);
     }
     
-	@Override
+	/**
+	 * Constructs a P2DTextPageRenderer.
+	 * @param p the parent PApplet
+	 */
+    public P2DTextPageRenderer(PApplet p, PGraphics g) {
+        super(p, g);
+        this.pg = p.createGraphics(g.width, g.height, PConstants.JAVA2D);
+        this.g2 = ((PGraphicsJava2D)pg).g2;
+    }
+
+    
+    @Override
 	public void renderPage(TextPage textPage) {
         // When resizing, it's possible to lose the reference to the graphics
         // context, so we skip rendering the frame.
@@ -67,7 +80,7 @@ public class P2DTextPageRenderer extends G2DTextPageRenderer {
             g2.setTransform(original);
             
             pg.endDraw();
-            p.image(pg, 0, 0);
+            g.image(pg, 0, 0);
         }
 	}
 	
