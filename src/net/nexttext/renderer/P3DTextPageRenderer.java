@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PGraphics2D;
 import processing.core.PGraphicsJava2D;
 import processing.core.PVector;
@@ -44,7 +45,6 @@ import net.nexttext.renderer.util.ClosedPolygon;
 import net.nexttext.renderer.util.Glyph3D;
 import net.nexttext.renderer.util.TriangulationVertex;
 
-
 /**
  * 
  * Renders the text stored in a text page.
@@ -54,184 +54,28 @@ import net.nexttext.renderer.util.TriangulationVertex;
  * </p>
  * 
  */
-public class P3DTextPageRenderer extends TextPageRenderer {
+public class P3DTextPageRenderer extends G3DTextPageRenderer {
 
-	//detail level for curve approximation
-	protected float bezierDetail;
-	
-    /**
-     * Renderer type enumeration.
-     */
-	public enum RendererType
-	{
-		TWO_D,
-		THREE_D
-	}
-	RendererType renderer_type = RendererType.THREE_D;
-	
+	/**
+	 * Constructor.
+	 * @param p the parent PApplet
+	 */
     public P3DTextPageRenderer(PApplet p) {
-        super(p);
-        bezierDetail = 1.0f;
-        
-        if ((p.g instanceof PGraphics2D) || (p.g instanceof PGraphicsJava2D)) {
+        this(p, p.g);
+    }
+
+	/**
+	 * Constructor.
+	 * @param p
+	 */
+    public P3DTextPageRenderer(PApplet p, PGraphics g) {
+        super(p, g, 1.0f);
+
+        //check if the Processing renderer is 2D and keep track of it
+        //we need this to make sure we flatten values when needed.
+        if ((g instanceof PGraphics2D) || (g instanceof PGraphicsJava2D)) {
         	renderer_type = RendererType.TWO_D;
         }
-    }
-
-    /**
-     * The rendering loop. Takes as input a TextPage and traverses its root
-     * node, rendering all the TextObjectGlyph objects along the way.
-     * 
-     * @param textPage the TextPage to render
-     */
-	public void renderPage(TextPage textPage) {
-        // When resizing, it's possible to lose the reference to the graphics
-        // context, so we skip rendering the frame.
-        if (p.g == null) {
-            System.out.println(("Skipping rendering frame because the graphics context was lost temporarily."));
-        }
-
-        else if (textPage.getTextRoot() == null) {
-            System.out.println("TextPage: No root specified yet");
-        } 
-
-        // traverse the TextObject hierarchy
-        else {
-        	enterCoords(textPage);
-            traverse(textPage.getTextRoot());
-            exitCoords();
-        }
-	}
-	
-    /**
-     * Traverse the TextObject tree to render all of its glyphs.
-     * 
-     * <p>The tree is traversed using a variable to point at the current node
-     * being processed. TextObjects specify their rotation and position
-     * relative to their parent, which is handled by registering coordinate
-     * system changes with the drawing surface as the tree is traversed.</p>
-     * 
-     * Currently, rendering is not synchronized with modifications to the
-     * TextObjectTree. This is dodgy, but gives a performance boost, so will 
-     * stay that way for the moment. However, it affects this method, because we
-     * can't assume that the tree is always well structured.</p>
-     * 
-     * <p>Transformations are stored in a stack so that they can be undone as
-     * needed. It is not appropriate to use the position of the TextObject to 
-     * undo the transformation, because this may have changed due to the lack of
-     * synchronization.</p>
-     * 
-     * @param root the TextObject node to traverse
-     */
-    protected void traverse(TextObject root) {
-        TextObject current = root;
-        do {
-        	// Draw any glyphs
-            if (current instanceof TextObjectGlyph) {
-        		enterCoords(current);
-        		renderGlyph((TextObjectGlyph) current);
-        		exitCoords();
-            }
-
-            // Descend to process any children
-            if (current instanceof TextObjectGroup) {
-                TextObjectGroup tog = (TextObjectGroup) current;
-                TextObject child = tog.getLeftMostChild();
-                if (child != null) {
-                    enterCoords(current);
-                    current = child;
-                    continue;
-                }
-            }
-        
-            // Processing of this node is complete, so move on to siblings.
-            // Since a node may not have siblings, a search is made up the tree
-            // for the first appropriate sibling. The search ends if a sibling
-            // is found, or if it reaches the top of the tree.
-            while (current != root) {
-                TextObject sibling = current.getRightSibling();
-                if (sibling != null) {
-                    current = sibling;
-                    break;
-                } else {
-                    current = current.getParent();
-                    if (current == null) {
-                        // Aaarghh, we were detached from the tree mid-render,
-                        // so just abort the whole process.
-                        return;
-                    }
-                    exitCoords();
-                }
-            }
-        } while (current != root);
-    }
-    
-    /**
-     * Transform the drawing surface into the coordinates of the given 
-     * TextPage.
-     * 
-     * @param page the TextPage
-     */
-    protected void enterCoords(TextPage page) {
-        p.pushMatrix();
-
-        // properties
-        PVector pos = page.getPosition().get();
-        PVector rot = page.getRotation().get();
-        
-        //only use 3D function if the renderer is 3D and the position
-        //and rotation are actually using 3D. This allows to use 2D recorders
-        //with 3D renderers.
-        if (((pos.z != 0) || (rot.x != 0) || (rot.y != 0))
-        	&& (renderer_type == RendererType.THREE_D)) {
-			p.translate((float)pos.x, (float)pos.y, (float)pos.z);
-        	p.translate(p.width/2.0f, p.height/2.0f, 0);
-        	p.rotateX((float)rot.x);
-        	p.rotateY((float)rot.y);
-        	p.rotateZ((float)rot.z);
-        	p.translate(-p.width/2.0f, -p.height/2.0f, 0);
-		}
-		else {
-			p.translate((float)pos.x, (float)pos.y);
-        	p.translate(p.width/2.0f, p.height/2.0f);
-			p.rotate((float)rot.z);
-        	p.translate(-p.width/2.0f, -p.height/2.0f);
-		}
-    }
-    
-    /**
-     * Transform the drawing surface into the coordinates of the given 
-     * TextObject.
-     * 
-     * <p>Once this transformation is done, the TextObject and any of its 
-     * children can be drawn directly to the PApplet without having to handle
-     * position or rotation.</p>
-     * 
-     * @param node the TextObject holding the translation and rotation info
-     */
-    protected void enterCoords(TextObject node) {
-        p.pushMatrix();
-
-        // translation
-        PVector pos = node.getPosition().get();
-        
-        //3D TextObject's positioning is not supported yet. 
-        //if ((pos.z != 0) && (renderer_type == RendererType.THREE_D))
-        //	p.translate((float)pos.x, (float)pos.y, 0); //todo: use Z coord
-        //else
-        	p.translate((float)pos.x, (float)pos.y);
-        // rotation
-        float rotation = (float)node.getRotation().get();	//todo: rotate in 3D
-        p.rotate(rotation);
-    }
-
-    /**
-     * Transform the drawing surface out of the coordinates on top of the stack.
-     * 
-     * <p>This undoes the change of enterCoords(...).</p>
-     */
-    protected void exitCoords() {
-        p.popMatrix();
     }
     
     /**
@@ -241,76 +85,72 @@ public class P3DTextPageRenderer extends TextPageRenderer {
      */
     protected void renderGlyph(TextObjectGlyph glyph) {
     	// save the current properties
-        p.pushStyle();
+        g.pushStyle();
 
         // set text properties
-        p.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
-        p.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        if (glyph.getFont().getFont() != null)
+        	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+        else
+        	g.textFont(glyph.getFont());
+        g.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible
-        //GeneralPath gp = null;       
-        //if (glyph.isDeformed() || glyph.isStroked())
-        GeneralPath	gp = glyph.getOutline();
-
+        // use the cached path if possible
+        GeneralPath gp = null;       
+        if (glyph.isDeformed() || glyph.isStroked())
+        	gp = glyph.getOutline();
+        
         // optimize rendering based on the presence of DForms and of outlines
         if (glyph.isFilled()) {
-            // fill the shape
-            p.noStroke();
-            p.fill(glyph.getColorAbsolute().getRGB());
-            fillPath(glyph, gp);
 
-            /*
-             * Don't use Processing's native with P3D because it leaves
-             * hairlines when anti-aliasing shapes. 
-            if (glyph.isDeformed()) {
+        	if (glyph.isDeformed()) {
                 // fill the shape
-                p.noStroke();
-                p.fill(glyph.getColorAbsolute().getRGB());
-                fillPath(glyph, gp);
-                
+                g.noStroke();
+                g.fill(glyph.getColorAbsolute().getRGB());
+                fillPath(glyph, gp);              
             } else {
                 // render glyph using Processing's native PFont drawing method
-                p.fill(glyph.getColorAbsolute().getRGB());
-                p.text(glyph.getGlyph(), 0, 0);
+                g.fill(glyph.getColorAbsolute().getRGB());
+                g.text(glyph.getGlyph(), 0, 0);
             }
-            */
+        	
         }
 
         if (glyph.isStroked()) {
             // draw the outline of the shape
-            p.stroke(glyph.getStrokeColorAbsolute().getRGB());
+            g.stroke(glyph.getStrokeColorAbsolute().getRGB());
             BasicStroke bs = glyph.getStrokeAbsolute();
-            p.strokeWeight(bs.getLineWidth());
-            if (p.g instanceof PGraphicsJava2D) {
+            g.strokeWeight(bs.getLineWidth());
+            if (g instanceof PGraphicsJava2D) {
                 switch (bs.getEndCap()) {
                     case BasicStroke.CAP_ROUND:
-                        p.strokeCap(PApplet.ROUND);
+                        g.strokeCap(PApplet.ROUND);
                         break;
                     case BasicStroke.CAP_SQUARE:
-                        p.strokeCap(PApplet.PROJECT);
+                        g.strokeCap(PApplet.PROJECT);
                         break;
                     default:
-                        p.strokeCap(PApplet.SQUARE);
+                        g.strokeCap(PApplet.SQUARE);
                     break;
                 }
                 switch (bs.getLineJoin()) {
                     case BasicStroke.JOIN_ROUND:
-                        p.strokeJoin(PApplet.ROUND);
+                        g.strokeJoin(PApplet.ROUND);
                         break;
                     case BasicStroke.JOIN_BEVEL:
-                        p.strokeJoin(PApplet.BEVEL);
+                        g.strokeJoin(PApplet.BEVEL);
                         break;
                     default:
-                        p.strokeJoin(PApplet.MITER);
+                        g.strokeJoin(PApplet.MITER);
                     break;
                 }
             }
-            p.noFill();
+            g.noFill();
             strokePath(gp);
         }
 
         // restore saved properties
-        p.popStyle();
+        g.popStyle();
 
     } // end renderGlyph    
     
@@ -335,9 +175,9 @@ public class P3DTextPageRenderer extends TextPageRenderer {
      */
     protected void fillPath(TextObjectGlyph glyph, GeneralPath gp) {
         // save the current smooth property
-        boolean smooth = p.g.smooth;
+        boolean smooth = g.smooth;
         // turn off smoothing so that we don't get gaps in between the triangles
-        p.noSmooth();
+        g.noSmooth();
         
         //Convert the path to triangles
         PathIterator pi = new FlatteningPathIterator(gp
@@ -417,22 +257,22 @@ public class P3DTextPageRenderer extends TextPageRenderer {
         }
         
         //draw the triangles
-        p.beginShape(PApplet.TRIANGLES);
+        g.beginShape(PApplet.TRIANGLES);
         PVector vert;
         triList.triangles.rewind();
         while(triList.triangles.remaining() > 0) {
         	vert = triList.verts[triList.triangles.get()];
         	
         	if ((vert.z != 0) && (renderer_type == RendererType.THREE_D)) {
-        		p.vertex((float)vert.x, (float)-vert.y, (float)vert.z);
+        		g.vertex((float)vert.x, (float)-vert.y, (float)vert.z);
         	}
         	else
-        		p.vertex((float)vert.x, (float)-vert.y);
+        		g.vertex((float)vert.x, (float)-vert.y);
         }
-        p.endShape();
+        g.endShape();
         
         // restore saved smooth property
-        if (smooth) p.smooth();
+        if (smooth) g.smooth();
     }
     
     /**
@@ -449,14 +289,14 @@ public class P3DTextPageRenderer extends TextPageRenderer {
             int type = pi.currentSegment(coords);
             switch (type) {
                 case PathIterator.SEG_MOVETO:
-                    p.beginShape();
+                    g.beginShape();
                     p.vertex(coords[0], coords[1]);
                     break;
                 case PathIterator.SEG_LINETO:
-                    p.vertex(coords[0], coords[1]);
+                    g.vertex(coords[0], coords[1]);
                     break;
                 case PathIterator.SEG_CLOSE:
-                    p.endShape(PConstants.CLOSE);
+                    g.endShape(PConstants.CLOSE);
                     
                     break;
             }
@@ -464,7 +304,7 @@ public class P3DTextPageRenderer extends TextPageRenderer {
             pi.next();
         }
         
-        p.endShape(PConstants.CLOSE);
+        g.endShape(PConstants.CLOSE);
     }    
     
     protected class TriangleList {

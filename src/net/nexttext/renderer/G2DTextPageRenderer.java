@@ -1,3 +1,22 @@
+/*
+  This file is part of the NextText project.
+  http://www.nexttext.net/
+
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
+
+  NextText is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software 
+  Foundation, either version 2 of the License, or (at your option) any later 
+  version.
+
+  NextText is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along with 
+  NextText.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.nexttext.renderer;
 
 import java.awt.Graphics2D;
@@ -5,6 +24,8 @@ import java.awt.geom.GeneralPath;
 import java.util.Stack;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PVector;
 import net.nexttext.Book;
 import net.nexttext.TextObject;
@@ -25,12 +46,22 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
     protected Graphics2D g2;
 
     /**
-     * Builds a TextPageRenderer.
+     * Builds a G2DTextPageRenderer.
      * 
      * @param p the parent PApplet
      */
     public G2DTextPageRenderer(PApplet p) {
-        super(p);    
+        this(p, p.g);    
+    }
+
+    /**
+     * Builds a G2DTextPageRenderer.
+     * 
+     * @param p the parent PApplet
+     * @param g the PGraphics
+     */
+    public G2DTextPageRenderer(PApplet p, PGraphics g) {
+        super(p, g);    
     }
     
     /**
@@ -103,9 +134,9 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
     	PVector rot = page.getRotation().get();
 
     	g2.translate(pos.x, pos.y);
-        g2.translate(p.width/2.0f, p.height/2.0f);
+        g2.translate(g.width/2.0f, g.height/2.0f);
 		g2.rotate(rot.z);
-    	g2.translate(-p.width/2.0f, -p.height/2.0f);
+    	g2.translate(-g.width/2.0f, -g.height/2.0f);
     }
 
     /**
@@ -115,9 +146,9 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
     	PVector pos = page.getPosition().get();
     	PVector rot = page.getRotation().get();
 
-        g2.translate(p.width/2.0f, p.height/2.0f);
+        g2.translate(g.width/2.0f, g.height/2.0f);
 		g2.rotate(-rot.z);
-    	g2.translate(-p.width/2.0f, -p.height/2.0f);
+    	g2.translate(-g.width/2.0f, -g.height/2.0f);
 
     	g2.translate(-pos.x, -pos.y);
     }
@@ -155,47 +186,10 @@ public abstract class G2DTextPageRenderer extends TextPageRenderer {
         PVector pos = (PVector) ct.pop();
         g2.translate(-pos.x, -pos.y);
     }
-
+    
     /**
-     * Renders a TextObjectGlyph using quads, either as an outline or as a
-     * filled shape.
-     * 
+     * Render a glyph for the specific renderer it is implemented for.
      * @param glyph
-     *            The TextObjectGlyph
      */
-    protected void renderGlyph(TextObjectGlyph glyph) {
-
-        // ////////////////////////////////////
-        // Optimize based on presence of DForms and of outlines
-        if (glyph.isDeformed() || glyph.isStroked()) {
-
-            // ////////////////////////////////
-            // Render glyph using vertex list
-
-            // Use the cached path if possible.
-            GeneralPath gp = glyph.getOutline();
-
-            // draw the outline of the shape
-            if (glyph.isStroked()) {
-                g2.setColor(glyph.getStrokeColorAbsolute());
-                g2.setStroke(glyph.getStrokeAbsolute());
-                g2.draw(gp);
-            }
-
-            // fill the shape
-            if (glyph.isFilled()) {
-                g2.setColor(glyph.getColorAbsolute());
-                g2.fill(gp);
-            }
-        } else {
-            // /////////////////////////////////////////
-            // Render glyph using Graphics.drawString()
-            g2.setColor(glyph.getColorAbsolute());
-            // set the font
-            g2.setFont(Book.loadFontFromPFont(glyph.getFont()));
-            // draw the glyph
-            g2.drawString(glyph.getGlyph(), 0, 0);
-        }
-
-    } // end renderGlyph
+    protected abstract void renderGlyph(TextObjectGlyph glyph);
 }

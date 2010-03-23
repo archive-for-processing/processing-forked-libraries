@@ -20,23 +20,39 @@
 package net.nexttext.renderer;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PGraphicsJava2D;
+import net.nexttext.Book;
+import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextPage;
 
 public class P2DTextPageRenderer extends G2DTextPageRenderer {
 	protected PGraphics pg;
 
+	/**
+	 * Constructs a P2DTextPageRenderer.
+	 * @param p the parent PApplet
+	 */
     public P2DTextPageRenderer(PApplet p) {
-        super(p);
-        this.pg = p.createGraphics(p.width, p.height, PConstants.JAVA2D);
-        this.g2 = ((PGraphicsJava2D)pg).g2;
+    	this(p, p.g);
     }
     
-	@Override
+	/**
+	 * Constructs a P2DTextPageRenderer.
+	 * @param p the parent PApplet
+	 */
+    public P2DTextPageRenderer(PApplet p, PGraphics g) {
+        super(p, g);
+        this.pg = p.createGraphics(g.width, g.height, PConstants.JAVA2D);
+        this.g2 = ((PGraphicsJava2D)pg).g2;
+    }
+
+    
+    @Override
 	public void renderPage(TextPage textPage) {
         // When resizing, it's possible to lose the reference to the graphics
         // context, so we skip rendering the frame.
@@ -64,7 +80,72 @@ public class P2DTextPageRenderer extends G2DTextPageRenderer {
             g2.setTransform(original);
             
             pg.endDraw();
-            p.image(pg, 0, 0);
+            g.image(pg, 0, 0);
         }
 	}
+	
+    /**
+     * Renders a TextObjectGlyph using quads, either as an outline or as a
+     * filled shape.
+     * 
+     * @param glyph
+     *            The TextObjectGlyph
+     */
+    protected void renderGlyph(TextObjectGlyph glyph) {
+        // ////////////////////////////////////
+        // Optimize based on presence of DForms and of outlines
+        if (glyph.isDeformed() || glyph.isStroked()) {
+
+            // ////////////////////////////////
+            // Render glyph using vertex list
+
+            // Use the cached path if possible.
+            GeneralPath gp = glyph.getOutline();
+
+            // draw the outline of the shape
+            if (glyph.isStroked()) {
+                g2.setColor(glyph.getStrokeColorAbsolute());
+                g2.setStroke(glyph.getStrokeAbsolute());
+                g2.draw(gp);
+            }
+
+            // fill the shape
+            if (glyph.isFilled()) {
+                g2.setColor(glyph.getColorAbsolute());
+                g2.fill(gp);
+            }
+        }
+        //if the PFont size and the set font size are the same then use the
+        //text function to draw bitmaps.
+        //this will create better results at small sizes.
+        else if ((glyph.getFont().getFont() == null) ||
+        		 (glyph.getFont().size == glyph.getFont().getFont().getSize())) {
+        	//set the color
+        	pg.fill(glyph.getColorAbsolute().getRGB());
+        	//set the font
+        	pg.textFont(glyph.getFont());
+        	//save the PApplet text alignment
+        	int savedTextAlign = pg.textAlign;
+        	int savedTextAlignY = pg.textAlignY;
+        	//set the text alignment to LEFT / BASELINE
+        	//to match the glyph position in NextText
+        	pg.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        	//draw the glyph
+        	pg.text(glyph.getGlyph(), 0, 0);
+        	//set text alignment back to what it was
+        	pg.textAlign(savedTextAlign, savedTextAlignY);
+        }
+        //if the set font size is not the same as the PFont then draw using
+        //the outlines so as not to get a pixelated scaling effect.
+        else {
+            // /////////////////////////////////////////
+            // Render glyph using Graphics.drawString()
+            g2.setColor(glyph.getColorAbsolute());
+            // set the font
+            g2.setFont(Book.loadFontFromPFont(glyph.getFont()));
+            // draw the glyph
+            g2.drawString(glyph.getGlyph(), 0, 0);
+        }
+
+    } // end renderGlyph	
 }

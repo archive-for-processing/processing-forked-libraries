@@ -108,11 +108,10 @@ public class TextObjectBuilder {
     PFont pfont;
     Font font;
 
-    private PVector spaceWidth; // Width of a space character
-    private PVector trackingOffset = new PVector(0, 0, 0); // Space between two characters
     private PVector lineHeight;  // Height of a line
     
-    private int spaceOffset; // space to add/remove from the width of space characters
+    private int spaceOffset = 0; // space to add/remove from the width of space characters
+    private int trackingOffset = 0; //space between two characters
     private int lineSpacing = 0; // Space between lines (px)
     private int indent = 0; // Paragraph indentation (px)
     public static final int INDENT_NORMAL = 1;
@@ -123,19 +122,26 @@ public class TextObjectBuilder {
         Font f = Book.loadFontFromPFont(pf);
         setFont(pf, f);
     }
+    
     public void setFont(PFont pf, Font f) { 
         pfont = pf;
         font = f;
-        //this could use the proper FRC from the PApplet's Graphics, but would
-        //it really make a difference?
-        FontRenderContext frc = new FontRenderContext(null, false, false);
         
-        //get measurement from the space character
-		GlyphVector sp = f.createGlyphVector( frc, " " );		
-		spaceWidth = new PVector( (int)sp.getLogicalBounds().getWidth(), 0,0);        
-		//trackingOffset = new PVector(0, 0, 0);
-		lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
+        //if we only have the bitmap font, then use it
+        //to calculate metrics
+        if (font == null) {
+            //get measurement from the space character
+    		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size*1.275f, 0);
+        }
+        else {
+	        //this could use the proper FRC from the PApplet's Graphics, but would
+	        //it really make a difference?
+	        FontRenderContext frc = new FontRenderContext(null, false, false);
+        	LineMetrics metrics = font.getLineMetrics(" ", frc);
+			lineHeight = new PVector( 0, metrics.getAscent()+metrics.getDescent()+metrics.getLeading(),0);
+        }
     }
+    
     public PFont getFont() { return pfont; }
 
 
@@ -362,8 +368,12 @@ public class TextObjectBuilder {
         PVector gOffset = new PVector(0,0,0);
         
         //indent the first line if using NORMAL style
-        if ((indent != 0) && (indentStyle == INDENT_NORMAL))
-        	gOffset.add(indent, 0, 0);
+        if ((indent != 0) && (indentStyle == INDENT_NORMAL)) {
+        	if (align == PConstants.LEFT)
+        		gOffset.add(indent, 0, 0);
+        	else if (align == PConstants.RIGHT)
+        		gOffset.sub(indent, 0, 0);
+        }
         
         while ( st.hasMoreTokens() ) {
         	// Get each token
@@ -377,15 +387,18 @@ public class TextObjectBuilder {
             	
             	//indent lines below first if using the HANGING style
             	if ((indent != 0) && (indentStyle == INDENT_HANGING)) {
-            		gOffset.add(indent, 0, 0);
+                	if (align == PConstants.LEFT)
+                		gOffset.add(indent, 0, 0);
+                	else if (align == PConstants.RIGHT)
+                		gOffset.sub(indent, 0, 0);
             	}
-
+           	
             	continue;
             }
             
             // display other words
             TextObjectGroup token = createGroup( tokenStr, gOffset );
-            gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
+            gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset, 0, 0) );
             
             // If the token is a space then add the offset if set
             if (tokenStr.equals(" "))
@@ -505,7 +518,7 @@ public class TextObjectBuilder {
             TextObjectGlyph to = 
                 new TextObjectGlyph(glyph, pfont, glyphProperties, gOffset);
 
-			gOffset.x += to.getLogicalBounds().getWidth()+trackingOffset.x;
+			gOffset.x += to.getLogicalBounds().getWidth()+trackingOffset;
 
             newGroup.attachChild(to);
         }
@@ -593,7 +606,21 @@ public class TextObjectBuilder {
         String groupStr = newGroup.getString();
         
         //get the line metrics of the font for this line of text
-    	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
+    	float ascent;
+    	float descent;
+    	float leading;
+
+    	//calculate the metrics (if font is null we have a bitmap font)
+        if (font == null) {
+        	ascent = pfont.size*pfont.ascent();
+        	descent = pfont.size*pfont.descent();
+        	leading = (ascent + descent) * 1.275f + lineSpacing;	//multiplier is from the value hardcoded in Processing
+        } else {
+        	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
+        	ascent = metrics.getAscent();
+        	descent = metrics.getDescent();
+        	leading = ascent + descent + metrics.getLeading() + lineSpacing;
+        }
     	
     	if (!isSentence) {
         	Rectangle bb = newGroup.getBoundingPolygon().getBounds();
@@ -610,11 +637,11 @@ public class TextObjectBuilder {
 
         	//adjust for vertical align
         	if (alignY == PConstants.CENTER) {
-        		offset.sub(new PVector(0, offset.y-metrics.getAscent()/2));
+        		offset.sub(new PVector(0, offset.y-ascent/2));
         	} else if (alignY == PConstants.TOP) { 
-        		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+        		offset.sub(new PVector(0, offset.y-ascent));
         	} else if (alignY == PConstants.BOTTOM) {
-        		offset.sub(new PVector(0, offset.y+metrics.getDescent()));
+        		offset.sub(new PVector(0, offset.y+descent));
         	} else if (alignY == PConstants.BASELINE) {
         		offset.sub(new PVector(0, offset.y));
         	}
@@ -633,7 +660,7 @@ public class TextObjectBuilder {
             	if (lastPos == null)
             		lastPos = child.getPositionAbsolute();
             	else if (lastPos.y != child.getPositionAbsolute().y) {
-              	  multiLineHeight += metrics.getAscent() + metrics.getDescent() + metrics.getLeading();
+              	  multiLineHeight += leading;
               	  lastPos.set(child.getPositionAbsolute());
             	}
 
@@ -650,7 +677,7 @@ public class TextObjectBuilder {
         		TextObjectGroup sibling = (TextObjectGroup)firstInLine.getRightSibling();
         		if (sibling == null) {
         			// only one group in this sentence, center it
-        			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
+        			alignLine(firstInLine, sibling, bb, ascent, descent, multiLineHeight);
                 	// set first group to null to exit the loop
                 	firstInLine = null;
         		}
@@ -662,14 +689,14 @@ public class TextObjectBuilder {
             			sibling = (TextObjectGroup)sibling.getRightSibling();
             			if (sibling == null) {
             				// we reached the end of the group, center the line
-            	    		alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
+            	    		alignLine(firstInLine, sibling, bb, ascent, descent, multiLineHeight);
                         	// set first group and sibling to null to exit the loop
                         	firstInLine = sibling = null;
             			}
             		// the sibling is on a new line
             		} else {
             			// center the previous line
-            			alignLine(firstInLine, sibling, bb, metrics, multiLineHeight);
+            			alignLine(firstInLine, sibling, bb, ascent, descent, multiLineHeight);
                     	// set the sibling as the new start group of the line
                     	firstInLine = sibling;
                     	sibling = null;
@@ -679,7 +706,7 @@ public class TextObjectBuilder {
         }
     }
     
-    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds, LineMetrics metrics, float multiLineHeight) {
+    private void alignLine(TextObjectGroup first, TextObjectGroup limit, Rectangle lineBounds, float ascent, float descent, float multiLineHeight) {
     	PVector offset = first.getPositionAbsolute();
     	
     	//horizontal align
@@ -693,11 +720,11 @@ public class TextObjectBuilder {
     	
     	//vertical align
     	if (alignY == PConstants.CENTER) {
-    		offset.sub(new PVector(0, offset.y-(metrics.getAscent()-multiLineHeight)/2));
+    		offset.sub(new PVector(0, offset.y-(ascent-multiLineHeight)/2));
     	} else if (alignY == PConstants.TOP) { 
-    		offset.sub(new PVector(0, offset.y-metrics.getAscent()));
+    		offset.sub(new PVector(0, offset.y-ascent));
     	} else if (alignY == PConstants.BOTTOM) {
-    		offset.sub(new PVector(0, offset.y+metrics.getDescent()+multiLineHeight));
+    		offset.sub(new PVector(0, offset.y+descent+multiLineHeight));
     	} else if (alignY == PConstants.BASELINE) {
     		offset.sub(new PVector(0, offset.y));
     	}    	
@@ -732,7 +759,7 @@ public class TextObjectBuilder {
      * @param d tracking in pixel
      * @deprecated
      */
-    public void setTrackingOffset(float d) { setTracking(d); }
+    public void setTrackingOffset(float d) { setTracking((int)d); }
 
     /**
      * Get the tracking of the text.
@@ -745,13 +772,13 @@ public class TextObjectBuilder {
      * Set the tracking of the text.
      * @param d tracking in pixel
      */
-    public void setTracking(float d) { trackingOffset.x = d; }
+    public void setTracking(int d) { trackingOffset = d; }
 
     /**
      * Get the tracking of the text.
      * @return tracking in pixel of the current font
      */
-    public float getTracking() { return trackingOffset.x; }
+    public int getTracking() { return trackingOffset; }
     
     /**
      * Set the space offset.
@@ -791,7 +818,6 @@ public class TextObjectBuilder {
     public void setIndent(int indent, int style) {
     	//check if style exists
     	if ((style != INDENT_NORMAL) && (style != INDENT_HANGING)) {
-    		//XXX should output warning here
     		style = INDENT_NORMAL;
     	}
     	this.indent = indent;

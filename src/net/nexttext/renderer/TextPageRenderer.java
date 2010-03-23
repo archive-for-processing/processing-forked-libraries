@@ -28,6 +28,7 @@ import processing.core.*;
 /* $Id$ */
 public abstract class TextPageRenderer {
     protected PApplet p;
+    protected PGraphics g;
     
     /**
      * Builds a TextPageRenderer.
@@ -35,7 +36,17 @@ public abstract class TextPageRenderer {
      * @param p the parent PApplet
      */
     public TextPageRenderer(PApplet p) {
+        this(p, p == null ? null : p.g);    
+    }
+    
+    /**
+     * 
+     * @param p the parent PApplet
+     * @param g the PGraphics
+     */
+    public TextPageRenderer(PApplet p, PGraphics g) {
         this.p = p;    
+        this.g = g;     
     }
     
     /**
