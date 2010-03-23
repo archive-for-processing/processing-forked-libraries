@@ -108,10 +108,10 @@ public class TextObjectBuilder {
     PFont pfont;
     Font font;
 
-    private PVector trackingOffset; // Space between two characters
     private PVector lineHeight;  // Height of a line
     
-    private int spaceOffset; // space to add/remove from the width of space characters
+    private int spaceOffset = 0; // space to add/remove from the width of space characters
+    private int trackingOffset = 0; //space between two characters
     private int lineSpacing = 0; // Space between lines (px)
     private int indent = 0; // Paragraph indentation (px)
     public static final int INDENT_NORMAL = 1;
@@ -131,17 +131,15 @@ public class TextObjectBuilder {
         //to calculate metrics
         if (font == null) {
             //get measurement from the space character
-    		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size, 0);
+    		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size*1.275f, 0);
         }
         else {
 	        //this could use the proper FRC from the PApplet's Graphics, but would
 	        //it really make a difference?
 	        FontRenderContext frc = new FontRenderContext(null, false, false);
-	        GlyphVector sp = f.createGlyphVector( frc, " " );		
-			lineHeight = new PVector( 0,(int)sp.getLogicalBounds().getHeight(),0);
+        	LineMetrics metrics = font.getLineMetrics(" ", frc);
+			lineHeight = new PVector( 0, metrics.getAscent()+metrics.getDescent()+metrics.getLeading(),0);
         }
-
-		trackingOffset = new PVector(0, 0, 0);
     }
     
     public PFont getFont() { return pfont; }
@@ -370,8 +368,12 @@ public class TextObjectBuilder {
         PVector gOffset = new PVector(0,0,0);
         
         //indent the first line if using NORMAL style
-        if ((indent != 0) && (indentStyle == INDENT_NORMAL))
-        	gOffset.add(indent, 0, 0);
+        if ((indent != 0) && (indentStyle == INDENT_NORMAL)) {
+        	if (align == PConstants.LEFT)
+        		gOffset.add(indent, 0, 0);
+        	else if (align == PConstants.RIGHT)
+        		gOffset.sub(indent, 0, 0);
+        }
         
         while ( st.hasMoreTokens() ) {
         	// Get each token
@@ -385,15 +387,18 @@ public class TextObjectBuilder {
             	
             	//indent lines below first if using the HANGING style
             	if ((indent != 0) && (indentStyle == INDENT_HANGING)) {
-            		gOffset.add(indent, 0, 0);
+                	if (align == PConstants.LEFT)
+                		gOffset.add(indent, 0, 0);
+                	else if (align == PConstants.RIGHT)
+                		gOffset.sub(indent, 0, 0);
             	}
-
+           	
             	continue;
             }
             
             // display other words
             TextObjectGroup token = createGroup( tokenStr, gOffset );
-            gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset.x, 0, 0) );
+            gOffset.add( new PVector(token.getBoundingPolygon().getBounds().width+trackingOffset, 0, 0) );
             
             // If the token is a space then add the offset if set
             if (tokenStr.equals(" "))
@@ -513,7 +518,7 @@ public class TextObjectBuilder {
             TextObjectGlyph to = 
                 new TextObjectGlyph(glyph, pfont, glyphProperties, gOffset);
 
-			gOffset.x += to.getLogicalBounds().getWidth()+trackingOffset.x;
+			gOffset.x += to.getLogicalBounds().getWidth()+trackingOffset;
 
             newGroup.attachChild(to);
         }
@@ -609,12 +614,12 @@ public class TextObjectBuilder {
         if (font == null) {
         	ascent = pfont.size*pfont.ascent();
         	descent = pfont.size*pfont.descent();
-        	leading = (ascent + descent) * 1.275f;	//multiplier is from the value hardcoded in Processing
+        	leading = (ascent + descent) * 1.275f + lineSpacing;	//multiplier is from the value hardcoded in Processing
         } else {
         	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
         	ascent = metrics.getAscent();
         	descent = metrics.getDescent();
-        	leading = ascent + descent + metrics.getLeading();
+        	leading = ascent + descent + metrics.getLeading() + lineSpacing;
         }
     	
     	if (!isSentence) {
@@ -754,7 +759,7 @@ public class TextObjectBuilder {
      * @param d tracking in pixel
      * @deprecated
      */
-    public void setTrackingOffset(float d) { setTracking(d); }
+    public void setTrackingOffset(float d) { setTracking((int)d); }
 
     /**
      * Get the tracking of the text.
@@ -767,13 +772,13 @@ public class TextObjectBuilder {
      * Set the tracking of the text.
      * @param d tracking in pixel
      */
-    public void setTracking(float d) { trackingOffset.x = d; }
+    public void setTracking(int d) { trackingOffset = d; }
 
     /**
      * Get the tracking of the text.
      * @return tracking in pixel of the current font
      */
-    public float getTracking() { return trackingOffset.x; }
+    public int getTracking() { return trackingOffset; }
     
     /**
      * Set the space offset.

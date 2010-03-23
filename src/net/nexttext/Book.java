@@ -793,7 +793,7 @@ public class Book {
      * @param d tracking in pixel
      * @deprecated
      */
-    public void setTrackingOffset(float d) { setTracking(d); }
+    public void setTrackingOffset(float d) { setTracking((int)d); }
     
     /**
      * Get the tracking of the text.
@@ -806,13 +806,13 @@ public class Book {
      * Set the tracking of the text.
      * @param d tracking in pixel
      */
-    public void setTracking(float d) { toBuilder.setTracking(d); }
+    public void setTracking(int d) { toBuilder.setTracking(d); }
 
     /**
      * Get the tracking of the text.
      * @return tracking in pixel of the current font
      */
-    public float getTracking() { return toBuilder.getTracking(); }
+    public int getTracking() { return toBuilder.getTracking(); }
     
     /**
      * Set the space offset.
