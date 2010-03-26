@@ -342,7 +342,7 @@ public class Book {
 
         toBuilder.setTextAlign(g.textAlign); // LEFT/CENTER/RIGHT
         toBuilder.setTextAlignY(g.textAlignY); // TOP/CENTER/BOTTOM/BASELINE
-        toBuilder.setFont(pf);
+        toBuilder.setFont(pf, g.textSize);
     }
     
     public static Font loadFontFromPFont(PFont pf) {

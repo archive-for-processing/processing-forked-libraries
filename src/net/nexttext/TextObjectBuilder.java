@@ -118,12 +118,12 @@ public class TextObjectBuilder {
     public static final int INDENT_HANGING = 2;
     private int indentStyle = INDENT_NORMAL; //Style of indentation (NORMAL or HANGING)
     
-    public void setFont(PFont pf) { 
+    public void setFont(PFont pf, float size) { 
         Font f = Book.loadFontFromPFont(pf);
-        setFont(pf, f);
+        setFont(pf, f, size);
     }
     
-    public void setFont(PFont pf, Font f) { 
+    public void setFont(PFont pf, Font f, float size) { 
         pfont = pf;
         font = f;
         
@@ -134,7 +134,15 @@ public class TextObjectBuilder {
     		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size*1.275f, 0);
         }
         else {
-	        //this could use the proper FRC from the PApplet's Graphics, but would
+            //use the textsize defined in the PApplet if different
+        	//this allows to create a PFont with createFont at a small
+        	//size, less memory, while still using large vertor glyphs
+            if (font.getSize2D() != size) {
+            	font = font.deriveFont(size);
+            	pfont.setFont(font);
+            }
+
+        	//this could use the proper FRC from the PApplet's Graphics, but would
 	        //it really make a difference?
 	        FontRenderContext frc = new FontRenderContext(null, false, false);
         	LineMetrics metrics = font.getLineMetrics(" ", frc);
