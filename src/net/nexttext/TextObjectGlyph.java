@@ -84,8 +84,9 @@ public class TextObjectGlyph extends TextObject {
 	/** The character for this object.  This is a special property that is 
 	 * handled through its own get/set methods */
 	protected String glyph;
-	protected PFont pfont;
-	protected Font font;
+	protected PFont  pfont;
+	protected Font   font;
+	protected float  size;
 	
 	/** A vector containing int[] arrays with indices to the Control Points property
 	 list.  These contours define the shape of the glyph */
@@ -129,8 +130,8 @@ public class TextObjectGlyph extends TextObject {
 	 * @param glyph		A one character-long string 
 	 * @param pfont     A processing.core.PFont object 
 	 */
-	public TextObjectGlyph(String glyph, PFont pfont) {
- 		this(glyph, pfont, new PVector(0,0,0));
+	public TextObjectGlyph(String glyph, PFont pfont, float size) {
+ 		this(glyph, pfont, size, new PVector(0,0,0));
 	}
 	
 	/**
@@ -140,8 +141,8 @@ public class TextObjectGlyph extends TextObject {
 	 * @param pfont     A processing.core.PFont object 
 	 * @param position  A PVector representing the glyph's relative position
 	 */
-    public TextObjectGlyph(String glyph, PFont pfont, PVector position) {
-        this(glyph, pfont, new HashMap<String, Property>(0), position);
+    public TextObjectGlyph(String glyph, PFont pfont, float size, PVector position) {
+        this(glyph, pfont, size, new HashMap<String, Property>(0), position);
     }
 
 	/**
@@ -152,11 +153,12 @@ public class TextObjectGlyph extends TextObject {
 	 * @param pos       A PVector representing the glyph's relative position
 	 * @param props     Initial properties for the glyph.
 	 */
-	public TextObjectGlyph(String glyph, PFont pfont, Map<String, Property> props, PVector pos) {
+	public TextObjectGlyph(String glyph, PFont pfont, float size, Map<String, Property> props, PVector pos) {
         super(props, pos);
 
 	 	this.glyph 	= glyph;
 		this.pfont 	= pfont;
+		this.size   = size;
 		font = Book.loadFontFromPFont(pfont);
 
         properties.init("Control Points", new PVectorListProperty());
@@ -178,7 +180,7 @@ public class TextObjectGlyph extends TextObject {
 	 *  @param glyph	A glyph to copy
 	 */
 	public TextObjectGlyph(TextObjectGlyph glyph) {
-		this(glyph.toString(), glyph.getFont(), glyph.properties.properties, glyph.getPosition().get());
+		this(glyph.toString(), glyph.getFont(), glyph.getSize(), glyph.properties.properties, glyph.getPosition().get());
 	}
 	
     /**
@@ -189,6 +191,9 @@ public class TextObjectGlyph extends TextObject {
 
     /** Get the glyph of this object as a string of length 1. */
     public String getGlyph() { return glyph; }
+    
+    /** Get the font size of this object */
+    public float getSize() { return size; }
 	
 	/**
 	 * Rebuild the internal representation of the glyph based on the specified
@@ -360,9 +365,9 @@ public class TextObjectGlyph extends TextObject {
 		if (font == null) {
 			logicalBounds = new Rectangle2D.Float(
 									 0,
-									 -(pfont.size*pfont.ascent()),
-									 pfont.size*pfont.width(getGlyph().charAt(0)),
-									 pfont.size*(pfont.ascent()+pfont.descent()));
+									 -(size*pfont.ascent()),
+									 size*pfont.width(getGlyph().charAt(0)),
+									 size*(pfont.ascent()+pfont.descent()));
 			//nothing else to compute for bitmap fonts
 			return;
 		}
@@ -530,9 +535,9 @@ public class TextObjectGlyph extends TextObject {
         // calculate the bounds using the font metrics
     	if (font == null) {
     		minX = 0;
-    		minY = -(pfont.size*pfont.ascent());
-    		maxX = pfont.size*pfont.width(getGlyph().charAt(0));
-    		maxY = pfont.size*(pfont.descent());
+    		minY = -(size*pfont.ascent());
+    		maxX = size*pfont.width(getGlyph().charAt(0));
+    		maxY = size*pfont.descent();
     	}
     	// if not, we have an outline so calculate by checking contour points
     	else {    	

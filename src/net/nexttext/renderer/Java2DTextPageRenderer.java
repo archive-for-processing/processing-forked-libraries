@@ -121,7 +121,7 @@ public class Java2DTextPageRenderer extends G2DTextPageRenderer {
         //text function to draw bitmaps.
         //this will create better results at small sizes.
         else if ((glyph.getFont().getFont() == null) ||
-        		 (glyph.getFont().size == glyph.getFont().getFont().getSize())) {
+        		 (glyph.getSize() == glyph.getFont().getFont().getSize())) {
         	//set the color
         	g.fill(glyph.getColorAbsolute().getRGB());
         	//set the font

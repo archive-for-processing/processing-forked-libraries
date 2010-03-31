@@ -1,4 +1,7 @@
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+
 import processing.opengl.*;
 
 import net.nexttext.*;
@@ -54,7 +57,7 @@ void setup() {
   snakeMousePath = new SnakeMousePath(this, book, PATH_POINTDISTANCE);
   book.getInputs().add("SnakeMousePath", snakeMousePath);
   
-  font = createFont("GillSans-UltraBold.ttf", 36, true);
+  font = createFont("GillSans-UltraBold.ttf", FONT_SIZE, true);
   textFont(font);
   noStroke();
   
@@ -125,7 +128,7 @@ public void buildLine(String text, PVector pos) {
     // if the glyph is not a space
     } else {
       // create a new glyph
-      TextObjectGlyph glyph = new TextObjectGlyph(glyphString.toUpperCase(), font, gOffset);
+      TextObjectGlyph glyph = new TextObjectGlyph(glyphString.toUpperCase(), font, FONT_SIZE, gOffset);
 
       // initalize the glyph's colour
       ColorProperty colorProperty = glyph.getColor();

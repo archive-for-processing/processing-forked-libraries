@@ -178,7 +178,7 @@ public class Book {
         	} else if (g.getClass().getName().compareTo("processing.core.PGraphics3D") == 0) {
                 defaultRenderer = new P3DTextPageRenderer(p, g);                 	        	
         	} else {
-        		//if the renderer is not recognize, then fall back on P2D which uses JAVA2D internally
+        		//if the renderer is not recognized, then fall back on P2D which uses JAVA2D internally
         		//to draw to a buffer, so it should work with any renderer.
                 PGraphics.showException("NextText couldn't recognize the PApplet renderer: " + g.getClass().getName() + ".");
                 defaultRenderer = new P2DTextPageRenderer(p, g); 

@@ -106,7 +106,8 @@ public class TextObjectBuilder {
     // Configurable parameters
 
     PFont pfont;
-    Font font;
+    Font  font;
+    float fontSize;
 
     private PVector lineHeight;  // Height of a line
     
@@ -124,19 +125,20 @@ public class TextObjectBuilder {
     }
     
     public void setFont(PFont pf, Font f, float size) { 
-        pfont = pf;
-        font = f;
+        pfont    = pf;
+        font     = f;
+        fontSize = size;
         
         //if we only have the bitmap font, then use it
         //to calculate metrics
         if (font == null) {
             //get measurement from the space character
-    		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*pf.size*1.275f, 0);
+    		lineHeight = new PVector(0, (pf.ascent()+pf.descent())*size*1.275f, 0);
         }
         else {
             //use the textsize defined in the PApplet if different
         	//this allows to create a PFont with createFont at a small
-        	//size, less memory, while still using large vertor glyphs
+        	//size, less memory, while still using large vector glyphs
             if (font.getSize2D() != size) {
             	font = font.deriveFont(size);
             	pfont.setFont(font);
@@ -511,7 +513,7 @@ public class TextObjectBuilder {
     
     /**
      * This methods returns a TextObject group created using the given string,
-     * positioned using the given Vector3.
+     * positioned using the given PVector.
      */
     private TextObjectGroup createGroup( String text, PVector pos ) {
         
@@ -524,7 +526,7 @@ public class TextObjectBuilder {
             String glyph = text.substring(i,i+1);
             
             TextObjectGlyph to = 
-                new TextObjectGlyph(glyph, pfont, glyphProperties, gOffset);
+                new TextObjectGlyph(glyph, pfont, fontSize, glyphProperties, gOffset);
 
 			gOffset.x += to.getLogicalBounds().getWidth()+trackingOffset;
 
@@ -620,8 +622,8 @@ public class TextObjectBuilder {
 
     	//calculate the metrics (if font is null we have a bitmap font)
         if (font == null) {
-        	ascent = pfont.size*pfont.ascent();
-        	descent = pfont.size*pfont.descent();
+        	ascent  = fontSize*pfont.ascent();
+        	descent = fontSize*pfont.descent();
         	leading = (ascent + descent) * 1.275f + lineSpacing;	//multiplier is from the value hardcoded in Processing
         } else {
         	LineMetrics metrics = font.getLineMetrics(groupStr, frc);
