@@ -82,27 +82,31 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         // save the current properties
         g.pushStyle();
 
-        // set text properties
-        if (glyph.getFont().getFont() != null)
-        	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
-        else
-        	g.textFont(glyph.getFont());
-        g.textAlign(PConstants.LEFT, PConstants.BASELINE);
+        // check if the glyph's font has a vector font
+        boolean hasVectorFont = glyph.getFont().getFont() != null;
+        boolean isScaled = hasVectorFont && (glyph.getFont().size != glyph.getFont().getFont().getSize());
         
         // use the cached path if possible
         GeneralPath gp = null;       
-        if (glyph.isDeformed() || glyph.isStroked())
+        if (glyph.isDeformed() || glyph.isStroked() || isScaled)
         	gp = glyph.getOutline();
 
         // optimize rendering based on the presence of DForms and of outlines
         if (glyph.isFilled()) {
-            if (glyph.isDeformed()) {
+            if (glyph.isDeformed() || isScaled) {
                 // fill the shape
                 g.noStroke();
                 g.fill(glyph.getColorAbsolute().getRGB());
                 fillPath(glyph, gp);
                 
             } else {
+                // set text properties
+                if (hasVectorFont)
+                	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+                else
+                	g.textFont(glyph.getFont());
+                g.textAlign(PConstants.LEFT, PConstants.BASELINE);
+                
                 // render glyph using Processing's native PFont drawing method
                 g.fill(glyph.getColorAbsolute().getRGB());
                 g.text(glyph.getGlyph(), 0, 0);
