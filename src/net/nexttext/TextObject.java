@@ -116,7 +116,8 @@ public abstract class TextObject implements Locatable {
     protected TextObject(Map<String, Property> propertyMap) {
         properties.init(propertyMap);
         properties.init("BirthDateTime", new DateTimeProperty());
-        properties.init("Position", new PVectorProperty( new PVector(0,0,0)));
+        properties.init("Position", new PVectorProperty(new PVector(0,0,0)));
+        properties.init("OriginalPosition", new PVectorProperty(new PVector(0,0,0)));
         properties.init("Rotation", new NumberProperty( 0 ));
         properties.init("Color", new ColorProperty() );
         properties.init("Stroke", new StrokeProperty());

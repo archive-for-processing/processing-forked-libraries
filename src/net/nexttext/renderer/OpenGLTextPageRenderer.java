@@ -84,16 +84,15 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
 
         // check if the glyph's font has a vector font
         boolean hasVectorFont = glyph.getFont().getFont() != null;
-        boolean isScaled = hasVectorFont && (glyph.getFont().size != glyph.getFont().getFont().getSize());
         
         // use the cached path if possible
         GeneralPath gp = null;       
-        if (glyph.isDeformed() || glyph.isStroked() || isScaled)
+        if (glyph.isDeformed() || glyph.isStroked())
         	gp = glyph.getOutline();
 
         // optimize rendering based on the presence of DForms and of outlines
         if (glyph.isFilled()) {
-            if (glyph.isDeformed() || isScaled) {
+            if (glyph.isDeformed()) {
                 // fill the shape
                 g.noStroke();
                 g.fill(glyph.getColorAbsolute().getRGB());
