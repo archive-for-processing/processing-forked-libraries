@@ -38,11 +38,11 @@ public class RandomMotion extends AbstractAction {
         init(4);
     }
     
-    public RandomMotion(int speed) {
+    public RandomMotion(float speed) {
         init(speed);
     }
 
-    private void init( int speed ) {
+    private void init( float speed ) {
         properties().init("Speed", new NumberProperty(speed));
     }
     

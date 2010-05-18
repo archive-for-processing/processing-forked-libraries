@@ -32,7 +32,7 @@ import net.nexttext.renderer.TextPageRenderer;
  *
  */
 /* $Id$ */
-public class TextPage {
+public class TextPage implements Locatable {
     
 	/**
      * The properties of this TextPage.
@@ -77,5 +77,12 @@ public class TextPage {
      */
     public PVectorProperty getRotation() {
     	return (PVectorProperty)(properties.get("Rotation"));    	
+    }
+    
+    /**
+     * A getter for the page's location.
+     */
+    public PVector getLocation() {
+    	return getPosition().get();
     }
 }

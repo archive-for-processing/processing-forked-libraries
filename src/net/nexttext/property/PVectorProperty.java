@@ -65,6 +65,16 @@ public class PVectorProperty extends Property {
 	}
 	
 	/**
+	 * Set the original value of the property.
+	 */
+	public void setOriginal( PVector newValue ) {
+		original.x = newValue.x;
+		original.y = newValue.y;
+		original.z = newValue.z;	
+	    firePropertyChangeEvent();
+	}
+	
+	/**
 	 * Returns the value of this property.
      *
      * @return A copy of the value of this property.

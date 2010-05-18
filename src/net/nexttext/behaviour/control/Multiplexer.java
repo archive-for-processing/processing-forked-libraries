@@ -109,6 +109,16 @@ public class Multiplexer extends AbstractAction {
         }
         return res;
     }
+    
+    /**
+     * Reset the multiplexer.
+     */
+    public void reset(TextObject to) {
+    	for (Iterator<Action> i = actions.iterator(); i.hasNext(); ) {
+            Action current = i.next();
+            doneWithObject.get(current).remove(to);
+        }
+    }
 
     /**
      * End the multiplexer for this object.

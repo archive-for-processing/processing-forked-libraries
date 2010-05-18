@@ -165,6 +165,7 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
         // properties
         PVector pos = page.getPosition().get();
         PVector rot = page.getRotation().get();
+        PVector center = page.getTextRoot().getCenter();
         
         //only use 3D function if the renderer is 3D and the position
         //and rotation are actually using 3D. This allows to use 2D recorders
@@ -172,17 +173,21 @@ public abstract class G3DTextPageRenderer extends TextPageRenderer {
         if (((pos.z != 0) || (rot.x != 0) || (rot.y != 0))
         	&& (renderer_type == RendererType.THREE_D)) {
 			g.translate((float)pos.x, (float)pos.y, (float)pos.z);
-        	g.translate(g.width/2.0f, g.height/2.0f, 0);
+        	g.translate(center.x, center.y, pos.z);
+        	//g.translate(g.width/2.0f, g.height/2.0f, 0);
         	g.rotateX((float)rot.x);
         	g.rotateY((float)rot.y);
         	g.rotateZ((float)rot.z);
-        	g.translate(-g.width/2.0f, -g.height/2.0f, 0);
+        	g.translate(-center.x, -center.y, -pos.z);
+        	//g.translate(-g.width/2.0f, -g.height/2.0f, 0);
 		}
 		else {
-			g.translate((float)pos.x, (float)pos.y);
-        	g.translate(g.width/2.0f, g.height/2.0f);
+			g.translate((float)pos.x, (float)pos.y);		
+        	g.translate(center.x, center.y);
+        	//g.translate(g.width/2.0f, g.height/2.0f);
 			g.rotate((float)rot.z);
-        	g.translate(-g.width/2.0f, -g.height/2.0f);
+        	g.translate(-center.x, -center.y);
+        	//g.translate(-g.width/2.0f, -g.height/2.0f);
 		}
     }
     
