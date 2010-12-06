@@ -90,7 +90,7 @@ public class Reform extends DForm {
         
         // if the glyph is not deformed, don't waste time reforming it
         if (!to.isDeformed())
-            return new ActionResult(false, false, true);
+            return new ActionResult(false, false, false);
         
         while (i.hasNext()) {
         	PVectorProperty cP = i.next();
@@ -124,6 +124,7 @@ public class Reform extends DForm {
             to.setDeformed(false);
             return new ActionResult(false, false, true);
         }
+        
         return new ActionResult(false, false, false);
     }
 

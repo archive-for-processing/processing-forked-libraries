@@ -63,7 +63,7 @@
 	    	     use="true" 
 	    	     version="true">
 	    	<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-	    	<link href="http://dev.processing.org/reference/everything/javadoc/"/>
+	    	<link href="http://processing.googlecode.com/svn/trunk/processing/build/javadoc/everything/" />
 	    	<classpath refid="processing.classpath"/>
             <classpath refid="opengl.classpath"/>
             <classpath refid="jogl.classpath"/>
