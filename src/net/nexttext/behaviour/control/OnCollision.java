@@ -58,10 +58,14 @@ public class OnCollision extends AbstractAction {
      * outlined in ActionResult.  </p>
      */
     public ActionResult behave(TextObject to) {
+    	
+    	//Do not get glyph collisions for spaces because they are not added to the spatial list
+        if (to.toString().equals(" ")) 
+        	return new ActionResult(false, false, false);
         
-        // get the glyph collision set for that object.
+        // get the glyph collision set for that object. 
         Set<TextObjectGlyph> col = to.getBook().getSpatialList().getPotentialCollisions(to);
-
+    	
         if ( col.size() == 0 )
             return new ActionResult(false, false, false);
 
