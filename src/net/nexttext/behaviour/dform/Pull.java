@@ -33,7 +33,7 @@ import java.util.Iterator;
 import processing.core.PVector;
 
 /**
- * A DForm which pulls the TextObject towards the mouse.
+ * A DForm which pulls the TextObject towards a target.
  */
 /* $Id$ */
 public class Pull extends DForm implements TargetingAction {
