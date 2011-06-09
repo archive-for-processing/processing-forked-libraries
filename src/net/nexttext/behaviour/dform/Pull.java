@@ -123,7 +123,7 @@ public class Pull extends DForm implements TargetingAction {
             offset.sub(p);
 
             offset.mult(1 / (float)Math.pow(1 + 1 / reach, offset.mag() / speed));
-
+            
             p.add(offset);
             cP.set(p);
         }

@@ -29,10 +29,7 @@ import net.nexttext.input.MouseDefault;
  * down on top of the given TextObject.
  */
 /* $Id$ */
-public class OnMousePressedOver extends OnMouseDepressed {
-    
-    private boolean isPressed;
-    private boolean wasPressed;
+public class OnMousePressedOver extends OnMousePressed {
     
     /**
      * Creates an OnMousePressedOver which performs the given Action when the mouse 
@@ -53,9 +50,6 @@ public class OnMousePressedOver extends OnMouseDepressed {
      */
     public OnMousePressedOver(int buttonToCheck, Action trueAction) {
         super(buttonToCheck, trueAction);
-        
-        isPressed = false;
-        wasPressed = false;
     }
     
     /**
@@ -66,9 +60,8 @@ public class OnMousePressedOver extends OnMouseDepressed {
      * @return the outcome of the condition
      */
     public boolean condition(TextObject to) {
-        wasPressed = isPressed;
-        isPressed = super.condition(to);
-        if (!wasPressed && isPressed && to.getBoundingPolygon().contains(mouse.getX(), mouse.getY())) {
+   
+        if (super.condition(to) && to.getBoundingPolygon().contains(mouse.getX(), mouse.getY())) {
         	return true;
         }
         return false;
