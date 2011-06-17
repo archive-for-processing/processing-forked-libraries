@@ -35,7 +35,7 @@ import processing.core.PVector;
 /**
  * A DForm which pushes the TextObject outlines away from a target.
  */
-/* $Id: Pull.java 81 2009-11-10 02:34:30Z bits.in.shambles $ */
+/* $Id: Blow.java 81 2011-17-06 Bobby  $ */
 public class Blow extends DForm implements TargetingAction {
     
     Locatable target;
