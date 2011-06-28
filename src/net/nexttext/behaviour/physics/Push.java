@@ -56,7 +56,9 @@ public class Push extends PhysicsAction {
     
     /** 
      * Set the direction and force of the Push to any given values.
-     * You can even do so in the draw function.
+     * You can even set these values in the draw function.
+     * @param direction the direction of the push
+     * @param force the magnitude of the push
      */
     public void set(PVector direction, float force) {
     	((PVectorProperty)properties.get("Direction")).set( direction );
