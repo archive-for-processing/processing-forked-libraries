@@ -24,18 +24,20 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import net.nexttext.Book;
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectRoot;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
 import net.nexttext.property.Property;
+import net.nexttext.behaviour.UnsupportedActionException;
 
 /**
  * This control applies an Action when an object overlaps with another object.
  * 
- * <p>Objects affected by a OnCollision action must be added to the SpatialList,
- * otherwise the behave() method will catch an exception. </p>
+ * <p>Text objects are added to the Book's Spatial List when OnCollision is created.
+ * The Spatial List is used to keep track of objects' position.<p>
  */
 /* $Id$ */
 public class OnCollision extends AbstractAction {
@@ -47,7 +49,9 @@ public class OnCollision extends AbstractAction {
      * object that are being collided with.
      */
     public OnCollision( Action action ) {
-        this.action = action;
+        //To detect collisions, text objects must be added to the book's Spatial List
+    	Book.toBuilder.setAddToSpatialList(true);
+    	this.action = action;
     }
      
     /**
@@ -98,8 +102,19 @@ public class OnCollision extends AbstractAction {
 
         for ( Iterator<TextObject> i = colliders.iterator(); i.hasNext(); ) {
             TextObject collider = i.next();
-            ActionResult tres = action.behave(new TextObject[] { collider, to });
-            res.combine(tres);
+            try {
+            	ActionResult tres = action.behave(new TextObject[] { collider, to });
+            	res.combine(tres);
+            }
+            //if the action does not support behave with multiple text object parameters, simply
+            //have the text objects behave individually
+            catch(UnsupportedActionException e) {
+            	ActionResult toRes = action.behave(to);
+            	ActionResult colliderRes = action.behave(collider);
+            	res.combine(toRes);
+            	res.combine(colliderRes);
+            }
+            
         }
 
         return res.endCombine();
