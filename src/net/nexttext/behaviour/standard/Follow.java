@@ -91,4 +91,24 @@ public class Follow extends AbstractAction implements TargetingAction {
 		
         return new ActionResult(false, false, false);		
 	}
+	
+	/**
+	 * Change the object to follow.
+	 * @param followed the followed object
+	 */
+	public void set(Locatable followed) {
+		this.followed = followed;
+		this.lastLocation = null;
+		this.lastFrame = -1;
+	}
+
+	/**
+	 * Change the PVector point to follow
+	 * @param vector point to follow
+	 */
+	public void set(PVector vector) {
+		set(new PLocatableVector(vector));
+	}
 }
+
+

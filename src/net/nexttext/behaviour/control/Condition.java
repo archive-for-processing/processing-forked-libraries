@@ -83,4 +83,23 @@ public abstract class Condition extends AbstractAction  {
         props.putAll( falseAction.getRequiredProperties() );
         return props;
     }
+    
+    /**
+     * Set functions for conditions which lets us change the false and true actions
+     * @param trueAction
+     * @param falseAction
+     */
+    public void set( Action trueAction, Action falseAction ) {        
+        this.trueAction = trueAction;
+        this.falseAction = falseAction;
+    }
+    
+    /**
+     * Change only the true action
+     * @param trueAction
+     */
+    public void set(Action trueAction) {
+    	this.trueAction = trueAction;
+    }
+    
 }

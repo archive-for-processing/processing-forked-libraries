@@ -75,6 +75,9 @@ public class Descend extends AbstractAction {
      */
     public Descend(Action descendantAction, int depth) {
         this.descendantAction = descendantAction;
+        if(depth <= 0) {
+        	depth = 1;
+        }
         this.depth = depth;
         this.descendantReqProps = descendantAction.getRequiredProperties();
     }
@@ -153,5 +156,36 @@ public class Descend extends AbstractAction {
             to.initProperties(descendantReqProps);
             initedDescendants.put(to, true);
         }
+    }
+    
+    /**
+     * Change the action to apply to descendants.
+     * @param descendantAction
+     */
+    public void set(Action descendantAction) {
+       this.descendantAction= descendantAction;
+    }
+
+    /**
+     * Change the depth.
+     *
+     * @param depth is a non-negative integer indicating the number of levels
+     * to descend in the TextObject hierarchy to get the TextObjects to be
+     * acted on.
+     */
+    public void set( int depth) {
+        if(depth <= 0) {
+        	depth = 1;
+        }
+        this.depth = depth;
+    }
+    /**
+     * Change both the action and depth.
+     * @param desccendantAction
+     * @param depth
+     */
+    public void set(Action desccendantAction, int depth) {
+    	set(descendantAction);
+    	set(depth);
     }
 }

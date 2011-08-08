@@ -23,10 +23,13 @@ import processing.core.PVector;
 import net.nexttext.Locatable;
 import net.nexttext.PLocatableVector;
 import net.nexttext.TextObject;
+import net.nexttext.Book;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.TargetingAction;
+import net.nexttext.behaviour.control.OnDrag;
 import net.nexttext.property.NumberProperty;
 import net.nexttext.property.PVectorProperty;
+
 
 /**
  * Move an object to the location.
@@ -71,7 +74,7 @@ public class MoveTo extends AbstractAction implements TargetingAction {
 	 * travel.
      */
     public MoveTo( Locatable target, long speed ) {
-        this.target = target;
+    	this.target = target;
         properties().init("Speed", new NumberProperty(speed));
     }
 
@@ -121,6 +124,60 @@ public class MoveTo extends AbstractAction implements TargetingAction {
         PVectorProperty posProp = getPosition(to);
         posProp.add(newDir);
         return result;
+    }
+    
+    /**
+     * Set functions for changing the speed and target of the moveTo.
+     * @param x x target position
+     * @param y x target position
+     */
+    public void set(int x, int y) {
+    	setTarget(x, y);
+    }
+    
+    /**
+     * @param x x target position
+     * @param y x target position
+     * @param speed moving speed
+     */
+    public void set(int x, int y, long speed) {
+    	set(new PVector(x, y), speed);
+    }
+    
+    /**
+     * @param target locatable target
+     */
+    public void set( Locatable target ) {
+        setTarget(target);
+    }    
+    
+    /**
+     * @param target locatable target
+	 * @param speed The speed of the approach represented as the number of
+	 * pixels to move in each frame.  Use a very large number for instant
+	 * travel.
+     */
+    public void set( Locatable target, long speed ) {
+    	this.target = target;
+        ((NumberProperty)properties().get("Speed")).set(speed);
+    }
+
+    /**
+     * @param target locatable target
+     */
+    public void set( PVector target ) {
+        this.target = new PLocatableVector(target);
+    } 
+    
+    /**
+     * @param target position to move to
+	 * @param speed The speed of the approach represented as the number of
+	 * pixels to move in each frame.  Use a very large number for instant
+	 * travel.
+     */
+    public void set( PVector target, long speed ) {
+        this.target = new PLocatableVector(target);
+        ((NumberProperty)properties().get("Speed")).set(speed);
     }
 
     /**

@@ -149,4 +149,24 @@ public class OnDrag extends Condition implements Locatable {
             return lastDragged.getPositionAbsolute();
         }
     }
+    
+    /**
+     * Set functions to change the button to check and the true and false actions
+     * @param buttonToCheck
+     * @param trueAction
+     * @param falseAction
+     */
+    public void set(int buttonToCheck, Action trueAction, Action falseAction) {
+    	set(trueAction, falseAction);
+    	this.buttonToCheck = buttonToCheck;
+    }
+    
+    public void set(int buttonToCheck, Action trueAction) {
+    	set(trueAction);
+    	this.buttonToCheck = buttonToCheck;
+    }
+    
+    public void set(int buttonToCheck) {
+    	this.buttonToCheck = buttonToCheck;
+    }
 }

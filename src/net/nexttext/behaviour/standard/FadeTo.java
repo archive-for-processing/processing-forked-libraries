@@ -75,14 +75,16 @@ public class FadeTo extends AbstractAction {
         applyToFill = fill;
         applyToStroke = stroke;
         
-        if (applyToFill) {
+        if(fadeTo <= 0) { //the minimum value of the alpha is 1, not 0
+        	fadeTo = 1;
+        }
+        
+        //All properties must be initialized, in case the set functions are used to change the FadeTo
             properties().init("AlphaFill", new NumberProperty(fadeTo) );
             properties().init("SpeedFill", new NumberProperty(speed) );
-        }
-        if (applyToStroke) {
             properties().init("AlphaStroke", new NumberProperty(fadeTo) );
             properties().init("SpeedStroke", new NumberProperty(speed) );
-        }
+        
     }
     
     /**
@@ -98,6 +100,12 @@ public class FadeTo extends AbstractAction {
     public FadeTo ( int fadeToFill, int speedFill, int fadeToStroke, int speedStroke ) { 
         applyToFill = true;
         applyToStroke = true;
+        if(fadeToFill <= 0) { //the minimum value of the alpha is 1, not 0
+        	fadeToFill = 1;
+        }
+        if(fadeToStroke <= 0) { //the minimum value of the alpha is 1, not 0
+        	fadeToStroke = 1;
+        }
         properties().init("AlphaFill", new NumberProperty(fadeToFill) );
         properties().init("SpeedFill", new NumberProperty(speedFill) );
         properties().init("AlphaStroke", new NumberProperty(fadeToStroke) );
@@ -161,6 +169,60 @@ public class FadeTo extends AbstractAction {
         prop.set( newColor );
         
         return a == fadeTo;
+    }
+    /**
+     * Set function to change the speed and fade value. By default the fade is applied only to the letter
+     * bodies.
+     * @param fadeTo transparency value to fade to. Value is from 0 to 255
+     * @param speed speed at which the fade occurs
+     */
+    public void set ( int fadeTo, int speed ) {
+        set(fadeTo, speed, true, false);
+    }
+    
+    /**
+     * Set functions to change the speed and fade value of the fill or stroke, at any time.
+     * @param fadeTo
+     * @param fadeToSpeed
+     * @param fill specifies that the letter bodies will be faded
+     * @param stroke specifies that the letter outlines will be faded
+     */
+    public void set(int fadeTo, int fadeToSpeed, boolean fill, boolean stroke) {
+    	applyToFill = fill;
+    	applyToStroke = stroke;
+    	if(fadeTo <= 0) { //the minimum value of the alpha is 1, not 0
+        	fadeTo = 1;
+        }
+    	if(applyToFill) {
+    		((NumberProperty)properties().get("AlphaFill")).set(fadeTo);
+    		((NumberProperty)properties().get("SpeedFill")).set(fadeToSpeed);
+    	}
+    	if(applyToStroke) {
+    		((NumberProperty)properties().get("AlphaStroke")).set(fadeTo);
+    		((NumberProperty)properties().get("SpeedStroke")).set(fadeToSpeed);
+    	}
+    }
+    
+    /**
+     * Set function which changes the fade of both the fill and stroke.
+     * @param fadeToFill
+     * @param speedFill
+     * @param fadeToStroke
+     * @param speedStroke
+     */
+    public void set ( int fadeToFill, int speedFill, int fadeToStroke, int speedStroke ) { 
+        applyToFill = true;
+        applyToStroke = true;
+        if(fadeToFill <= 0) { //the minimum value of the alpha is 1, not 0
+        	fadeToFill = 1;
+        }
+        if(fadeToStroke <= 0) { //the minimum value of the alpha is 1, not 0
+        	fadeToStroke = 1;
+        }
+        ((NumberProperty)properties().get("AlphaFill")).set(fadeToFill);
+		((NumberProperty)properties().get("SpeedFill")).set(speedFill);
+		((NumberProperty)properties().get("AlphaStroke")).set(fadeToStroke);
+		((NumberProperty)properties().get("SpeedStroke")).set(speedStroke);
     }
 }
      

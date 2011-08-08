@@ -26,22 +26,32 @@ import net.nexttext.property.PVectorProperty;
 
 /**
  * This action gives the object a one-time velocity push in a random
- * direction.
+ * direction. A random angular velocity push can also be added, but 
+ * note that the angular push is a little computationally expensive, 
+ * thus don't use it with too many letters. 
  */
 /* $Id$ */
 public class Explode extends PhysicsAction {
     
     /** 
-     * Default constructor. Force is equal to 3.
+     * Default constructor. Force is equal to 3. Angular force is zero.
      */
     public Explode() {
         init(3,0);
     }
-
+    /**
+     * Creates an explode with a specified force and default angular fore of zero.
+     * @param force strength of the explosion
+     */
     public Explode( float force ) {
         init(force, 0);
     }
     
+    /**
+     * Creates an explode with specified force and angular force.
+     * @param force strength of the explosion
+     * @param angularForce average strength of the angualr force on objects
+     */
     public Explode( float force, float angularForce ) {
         init(force,angularForce);
     }
@@ -76,11 +86,27 @@ public class Explode extends PhysicsAction {
         vel.add(push);
         velProp.set(vel);
         
-        //Add the angular force
-        float angForce = ((NumberProperty)properties().get("AngularForce")).get();   
+        //Add a random angular force whose average depends on our chosen value
+        float angForce = ((NumberProperty)properties().get("AngularForce")).get(); 
+        angForce = angForce * (float)(Math.random());
         ((NumberProperty)to.getProperty("AngularForce")).set(angForce);
         
         // all done
         return new ActionResult(true, true, true);
+    }
+    /**
+     * Changes the force of the explosion at any time 
+     * @param force new strength of the random push
+     */
+    public void set(float force) {
+    	((NumberProperty)properties().get("Force")).set(force);
+    }
+    /**
+     * Changes the force and the angular force of the explosion at any time
+     * @param force new strength of the random push
+     * @param angularForce new average angular force of the explosion
+     */
+    public void set(float force, float angularForce) {
+    	((NumberProperty)properties().get("AngularForce")).set(angularForce);
     }
 }

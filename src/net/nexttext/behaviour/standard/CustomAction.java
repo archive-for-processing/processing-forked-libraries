@@ -70,7 +70,9 @@ public class CustomAction extends AbstractAction {
         p.die("IllegalAccessException " + methodName + " + () for " + p, e);
         return new ActionResult(false, false, false);
       } catch(InvocationTargetException e) {
-        p.die("InvocationTargetException " + methodName + " + () for " + p, e);
+ //clarified the exception thrown
+        p.die("The CustomAction function " + methodName + "() has encountered a " + 
+        		e.getCause().toString(), e);
         return new ActionResult(false, false, false);
       }      
     }

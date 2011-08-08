@@ -47,5 +47,22 @@ public class IsInside extends Condition {
         Rectangle objectBB = to.getBoundingPolygon().getBounds();
 
         return area.intersects(objectBB);
-    }     
+    }  
+    
+    /**
+     * Set functions to change the area, trua action and false action
+     * @param area
+     * @param trueAction
+     * @param falseAction
+     */
+    
+    public void set(Shape area, Action trueAction, Action falseAction) {
+        set(trueAction, falseAction);
+        this.area = area;
+    }
+    
+    public void set(Shape area) {
+    	this.area = area;
+    }
+    
 }

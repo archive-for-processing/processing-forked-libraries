@@ -99,4 +99,9 @@ public class Move extends PhysicsAction {
         
         return new ActionResult(false, false, false);
     }
+    
+    public void set(float drag, float angularDrag) {
+    	((NumberProperty)properties().get("Drag")).set(drag);
+    	((NumberProperty)properties().get("AngularDrag")).set(angularDrag);
+    }
 }

@@ -144,5 +144,54 @@ public class Blow extends DForm implements TargetingAction {
     
     public void setTarget( Locatable target ) {
         this.target = target;
-    }    
+    }   
+    
+    //set functions 
+    
+    public void set( float x, float y ) {
+    	setTarget(x, y, 0);
+    }
+
+    public void set( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    public void set( float x, float y, float speed, float reach ) {
+    	setTarget(new PLocatableVector(x, y, 0));
+    	((NumberProperty)properties().get("Speed")).set(speed);
+    	((NumberProperty)properties().get("Reach")).set(reach);
+    	
+    }
+    
+    public void set( float x, float y, float z, float speed, float reach ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    	((NumberProperty)properties().get("Speed")).set(speed);
+    	((NumberProperty)properties().get("Reach")).set(reach);
+    	
+    }
+
+    public void set( PVector target ) {
+    	setTarget(new PLocatableVector(target));
+    }
+    
+    public void set( PVector target, float speed, float reach ) {
+    	setTarget(new PLocatableVector(target));
+    	((NumberProperty)properties().get("Speed")).set(speed);
+    	((NumberProperty)properties().get("Reach")).set(reach);
+    	
+    }
+
+    public void set( Locatable target ) {
+        this.target = target;
+    }   
+    
+    public void set( Locatable target, float speed, float reach ) {
+    	this.target = target;
+    	((NumberProperty)properties().get("Speed")).set(speed);
+    	((NumberProperty)properties().get("Reach")).set(reach);
+    	
+    }
 }
+
+
+

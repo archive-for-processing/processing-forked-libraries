@@ -61,6 +61,14 @@ public class ChaosPull extends DForm implements TargetingAction{
     }
     
     /**
+     * Constructor creates a ChaosPull at the target with a default strength of 1200.
+     * @param target
+     */
+    public ChaosPull( PVector target ) {
+        this(new PLocatableVector(target), 1200);
+    }
+    
+    /**
      * Constructor creates a ChaosPull at x,y.
      * @param x
      * @param y
@@ -132,19 +140,49 @@ public class ChaosPull extends DForm implements TargetingAction{
         return new ActionResult(false, false, false);
     }
 
-    public int getChaosStrength() {
-        return chaosStrength;
-    }
-
     /**
-     * Sets the 'strength' of the chaosPull, stronger chaosPull results in 
-     * larger deformations and faster pulling.
-     * 
-     * <p>The default value is 1200.</p>
+     * Set function to change the parameters of the behaviour at any time.
      */
-    public void setChaosStrength(int chaosStrength) {
-        this.chaosStrength = chaosStrength;
+    
+    public void set( float x, float y ) {
+    	setTarget(x, y, 0);
     }
+    
+    public void set( float x, float y, int chaosStrength) {
+    	setTarget(x, y, 0);
+    	this.chaosStrength = chaosStrength;
+    }
+    
+    public void set( float x, float y, float z ) {
+    	setTarget(new PLocatableVector(x, y, z));
+    }
+    
+    public void set( float x, float y, float z, int chaosStrength) {
+    	setTarget(new PLocatableVector(x, y, z));
+    	this.chaosStrength = chaosStrength;
+    }
+    
+    public void set( PVector target ) {
+    	setTarget(new PLocatableVector(target));
+    }
+    
+    public void set( PVector target, int choasStrenght ) {
+    	setTarget(new PLocatableVector(target));
+    	this.chaosStrength = chaosStrength;
+    }
+    
+    public void set( Locatable target ) {
+        this.target = target;
+    }
+    
+    public void set( Locatable target, int chaosStrength) {
+        this.target = target;
+        this.chaosStrength = chaosStrength;
+    } 
+    
+
+    
+    //setTarget functions
     
     public void setTarget( float x, float y ) {
     	setTarget(x, y, 0);

@@ -123,4 +123,12 @@ public class OnCollision extends AbstractAction {
     public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
+    
+    /**
+     * Change tha action to perform on a collision
+     * @param action
+     */
+    public void set(Action action) {
+    	this.action = action;
+    }
 }

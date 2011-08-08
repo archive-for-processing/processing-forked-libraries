@@ -71,12 +71,10 @@ public class Scale extends DForm {
         }
         return new ActionResult(true, true, false);       
     }
+    
+    //set function
 
-    public float getScale() {
-        return scale;
-    }
-
-    public void setScale(float scale) {
+    public void set(float scale) {
         this.scale = scale;
     }
 }

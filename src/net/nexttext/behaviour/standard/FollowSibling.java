@@ -30,7 +30,13 @@ import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.property.Property;
 
 /**
- * Causes TextObjects to follow their left siblings.
+ * Causes TextObjects to follow their left or right siblings. If the objects follow their LEFT
+ * sibling a loop forms where the left most object is set to follow the right most object and each 
+ * object in between follows the object to their left. Very nice when use in conjunction with
+ * {@link net.nexttext.behaviour.physics.Approach} and a means of moving the text objects around. If the text object are set to follow 
+ * their RIGHT sibling the behaviour is quite different, the object at the end of a word will not 
+ * follow anything while objects in the word will follow their right sibling. I have yet to 
+ * figure out how to fix this abnormality, nonetheless you can still getting interesting behaviours.
  *
  * <p>The provided TargettingAction is used to have TextObjects follow either their
  * left or right siblings.  </p>
@@ -42,8 +48,9 @@ public class FollowSibling extends AbstractAction {
     int siblingDirection; // LEFT or RIGHT 
     
     /**
-     * Follow default left sibling.
-     * @param action targeting action that uses the sibling as target
+     * Follow default left sibling. 
+     * @param action targeting action with any target. Follow sibling will set all text objects
+     * to have their left sibling as their target.
      */
     public FollowSibling ( TargetingAction action ) {
     	this(PConstants.LEFT, action);
@@ -52,7 +59,8 @@ public class FollowSibling extends AbstractAction {
     /**
      * Follow left or right sibling.
      * @param siblingDirection LEFT or RIGHT sibling
-     * @param action targeting action that uses the sibling as target
+     * @param action targeting action with any target. Each text object 
+     * will have their sibling set as their target.
      */
     public FollowSibling ( int siblingDirection, TargetingAction action ) {
     	//make sure LEFT or RIGHT sibling is specified
@@ -77,10 +85,40 @@ public class FollowSibling extends AbstractAction {
              action.setTarget( sibling );
              return action.behave(to);
         }
-        return new ActionResult(false, false, false);
+        return action.behave(to);
     }
 
     public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
+    
+    /**
+     * Change the targeting action to be used by text objects to target their siblings. Remember the
+     * target of the targeting action does not matter when it is used for FollowSibling, because the 
+     * target will be reset to the sibling
+     * @param action targeting action with any target. Follow sibling will set all text objects
+     * to have their left sibling as their target.
+     */
+    public void set ( TargetingAction action ) {
+    	this.action = action;
+    } 
+    
+    /**
+     * Change the targeting action and the sibling direction.
+     * @param siblingDirection LEFT or RIGHT sibling
+     * @param action targeting action with any target. Each text object 
+     * will have their sibling set as their target.
+     */
+    public void set ( int siblingDirection, TargetingAction action ) {
+    	//make sure LEFT or RIGHT sibling is specified
+    	if ((siblingDirection != PConstants.LEFT) && (siblingDirection != PConstants.RIGHT)) {
+    		PApplet.println("Warning: the first argument of FollowSibling must be " +
+    				"LEFT or RIGHT. Using default LEFT.");
+    		siblingDirection = PConstants.LEFT;
+    	}
+    	
+    	this.siblingDirection = siblingDirection;
+    	this.action = action;
+    }
+    
 }

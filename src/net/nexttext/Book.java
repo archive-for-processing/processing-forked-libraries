@@ -37,6 +37,9 @@ import net.nexttext.input.*;
 import net.nexttext.renderer.*;
 import net.nexttext.property.ColorProperty;
 import net.nexttext.property.StrokeProperty;
+import net.nexttext.behaviour.control.Repeat;
+import net.nexttext.behaviour.control.Multiplexer;
+import net.nexttext.behaviour.control.Chain;
 
 import processing.core.*;
 
@@ -528,20 +531,10 @@ public class Book {
     ///////////////////////////////////////////////////////////////////////////
 	// Behaviour management methods 
     
-    /**
-     * Adds the given Behaviour to the list of Behaviours applied to new TextObjectGlyphs.
-     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
-     * <p>The Behaviour is automatically added to the NTPBook.</p>
-     * 
-     * @param b the Behaviour to add
-     */
-    public void addGlyphBehaviour(AbstractBehaviour b) { 
-        toBuilder.addGlyphBehaviour(b);
-        addBehaviour(b);
-    }
 
     /**
      * Adds the given Action to the list of Behaviours applied to new TextObjectGlyphs.
+     * <p>By default, the Action is repeated indefinitely.<p>
      * <p>The Action is converted into a Behaviour automatically.</p>
      * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
      * <p>The Behaviour is automatically added to the NTPBook.</p>
@@ -551,9 +544,109 @@ public class Book {
      * @return the behaviour created from the action
      */
     public Behaviour addGlyphBehaviour(AbstractAction action) { 
-        Behaviour b = action.makeBehaviour();
+        Repeat repeatedAction = new Repeat(action);
+    	Behaviour b = repeatedAction.makeBehaviour();
     	addGlyphBehaviour(b);
         return b;
+    }
+    
+    /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGlyphs. 
+     * The Action is repeated by the specified amount. Zero repeats the action indefinitely.
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @param repitions the number of times to repeat the action, use 0 to repeat indefinitely
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGlyphBehaviour(AbstractAction action, int repitions) { 
+        Repeat repeatedAction = new Repeat(action, repitions);
+    	Behaviour b = repeatedAction.makeBehaviour();
+    	addGlyphBehaviour(b);
+        return b;
+    }
+    
+    /**
+     * Adds the given Behaviour to the list of Behaviours applied to new TextObjectGlyphs.
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * 
+     * @param b the Behaviour to add
+     */
+    
+    public void addGlyphBehaviour(AbstractBehaviour b) { 
+        toBuilder.addGlyphBehaviour(b);
+        addBehaviour(b);
+    }
+    
+    /**
+     * Adds many Actions to the book at once. Simply pass an array of Actions and they will all be added 
+     * to the list of Actions applied to new TextObjects. The actions repeat indefinitely by default.
+     * <p>(Uses the Multiplexer class to combine the Actions.)</p>
+     * @param actions an array of Actions to execute simultaneously
+     * @return the behaviour created from the multiplexer action
+     */
+    public Behaviour addGlyphBehaviour(Action[] actions) {
+    	Multiplexer m = new Multiplexer();
+    	for (Action a: actions) {
+    		m.add(new Repeat(a));
+    	}
+    	Behaviour b = m.makeBehaviour();
+    	addGlyphBehaviour(b);
+    	return b;
+    }
+    
+    /**
+     * Adds many Actions to the book at once. Simply pass an array of Actions and they will all be added 
+     * to the list of Actions applied to new TextObjects. Specify the number of times you would like the
+     * actions to repeat.
+     * <p>(Uses the Multiplexer class to combine the Actions.)</p>
+     * @param actions an array of Actions to be added to the Book
+     * @return the behaviour created from the multiplexer action
+     */
+    public Behaviour addGlyphBehaviour(Action[] actions, int repetitions) {
+    	Multiplexer m = new Multiplexer();
+    	for (Action a: actions) {
+    		m.add(new Repeat(a, repetitions));
+    	}
+    	Behaviour b = m.makeBehaviour();
+    	addGlyphBehaviour(b);
+    	return b;
+    }
+    
+    /**
+     * Add a series of Actions, called a chain, to the book. The next Action in the chain 
+     * executes when the previous one has completed. Actions in the chain act in the order of their
+     * indexes in the array. For instance, the action at index 0 acts on the text objects first, on 
+     * its completion action at index 1 begins acting and so on. By default the Action chain repeats
+     *  indefinitely. 
+     * <p> (Uses the Chain class to sequentially execute the Actions)</p>
+     * @param actions an array of actions to execute in series
+     * @return the behaviour created from the chain action
+     */
+    public Behaviour addGlyphChain(Action[] actions) {
+    	Chain c = new Chain();
+    	for (Action a : actions) {
+    		c.add(a);
+    	}
+    	return addGlyphBehaviour(c);
+    }
+    
+    /**
+     * Add a series of Actions, called a chain, to the book. The next Action in the chain 
+     * executes when the previous one has completed. Actions in the chain act in the order of their
+     * indexes in the array. For instance, the action at index 0 acts on the text objects first, on 
+     * its completion action at index 1 begins acting and so on. Specify the number of times you 
+     * would like the chain to repeat.
+     * <p> (Uses the Chain class to sequentially execute the Actions)</p>
+     * @param actions an array of actions to execute in series
+     * @return the behaviour created from the chain action
+     */
+    public Behaviour addGlyphChain(Action[] actions, int repetitions) {
+    	Chain c = new Chain();
+    	for (Action a : actions) {
+    		c.add(a);
+    	}
+    	return addGlyphBehaviour(c, repetitions);
     }
     
     /**
@@ -574,6 +667,39 @@ public class Book {
     }
     
     /**
+     * Adds the given Action to the list of Behaviours applied to new words.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p> By default, the Action is repeated indefinitely.
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeWordBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addWordBehaviour(AbstractAction action) { 
+        Repeat repeatedAction = new Repeat(action);
+    	Behaviour b = repeatedAction.makeBehaviour();
+    	addWordBehaviour(b);
+        return b;
+    }
+
+    /**
+     * Adds the given Action to the list of Behaviours applied to new words
+     * The Action is repeated a specified number of times. Zero repeats the Action indefinitely. 
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @param repetitions number of times to repeat the action, 0 repeats indefinitely
+     * @return the behaviour created from the action
+     */
+    public Behaviour addWordBehaviour(AbstractAction action, int repetitions) { 
+        Repeat repeatedAction = new Repeat(action, repetitions);
+    	Behaviour b = repeatedAction.makeBehaviour();
+    	addWordBehaviour(b);
+        return b;
+    }
+    
+    /**
      * Adds the given Behaviour to the list of Behaviours applied to new words.
      * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
      * <p>The Behaviour is automatically added to the NTPBook.</p>
@@ -584,21 +710,78 @@ public class Book {
         toBuilder.addWordBehaviour(b);
         addBehaviour(b);
     }
-
+    
     /**
-     * Adds the given Action to the list of Behaviours applied to new words.
-     * <p>The Action is converted into a Behaviour automatically.</p>
-     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
-     * <p>The Behaviour is automatically added to the NTPBook.</p>
-     * <p>The Behaviour is returned to allow calling removeWordBehaviour with the correct object.</p>
-     * 
-     * @param action the AbstractAction to convert and add as a behaviour
-     * @return the behaviour created from the action
+     * Adds many Actions to the book at once. Simply pass an array of Actions and they will all be added 
+     * to the list of Actions applied to new TextObjects. The actions repeat indefinitely by default.
+     * <p>(Uses the Multiplexer class to combine the Actions.)</p>
+     * @param actions an array of Actions to be added to the Book
+     * @return the behaviour created from the multiplexer action
      */
-    public Behaviour addWordBehaviour(AbstractAction action) { 
-        Behaviour b = action.makeBehaviour();
+    public Behaviour addWordBehaviour(Action[] actions) {
+    	Multiplexer m = new Multiplexer();
+    	for (Action a: actions) {
+    		m.add(new Repeat (a));
+    	}
+    	Behaviour b = m.makeBehaviour();
     	addWordBehaviour(b);
-        return b;
+    	return b;
+    }
+    
+    /**
+     * Adds many Actions to the book at once. Simply pass an array of Actions and they will all be added 
+     * to the list of Actions applied to new TextObjects. Specify the number of times you would like the
+     * actions to repeat.
+     * <p>(Uses the Multiplexer class to combine the Actions.)</p>
+     * @param actions an array of Actions to be added to the Book
+     * @param repetitions number of time to repeat the actions
+     * @return the behaviour created from the multiplexer action
+     */
+    public Behaviour addWordBehaviour(Action[] actions, int repetitions) {
+    	Multiplexer m = new Multiplexer();
+    	for (Action a: actions) {
+    		m.add(new Repeat (a, repetitions));
+    	}
+    	Behaviour b = m.makeBehaviour();
+    	addWordBehaviour(b);
+    	return b;
+    }
+    
+    /**
+     * Add a series of Actions, called a chain, to the book. The next Action in the chain 
+     * executes when the previous one has completed. Actions in the chain act in the order of their
+     * indexes in the array. For instance, the action at index 0 acts on the text objects first, on 
+     * its completion action at index 1 begins acting and so on. By default the Action chain repeats
+     *  indefinitely. 
+     * <p> (Uses the Chain class to sequentially execute the Actions)</p>
+     * @param actions an array of actions to execute in series
+     * @return the behaviour created from the chain action
+     */
+    public Behaviour addWordChain(Action[] actions) {
+    	Chain c = new Chain();
+    	for (Action a : actions) {
+    		c.add(a);
+    	}
+    	return addWordBehaviour(c);
+    }
+    
+    /**
+     * Add a series of Actions, called a chain, to the book. The next Action in the chain 
+     * executes when the previous one has completed. Actions in the chain act in the order of their
+     * indexes in the array. For instance, the action at index 0 acts on the text objects first, on 
+     * its completion action at index 1 begins acting and so on. You may specify the number of time you
+     * desire the chain to repeat.
+     * <p> (Uses the Chain class to sequentially execute the Actions)</p>
+     * @param actions an array of actions to execute in series
+     * @param repetitions the number of times to repeat the chain
+     * @return the behaviour created from the chain action
+     */
+    public Behaviour addWordChain(Action[] actions, int repetitions) {
+    	Chain c = new Chain();
+    	for (Action a : actions) {
+    		c.add(a);
+    	}
+    	return addWordBehaviour(c, repetitions);
     }
     
     /**
@@ -619,6 +802,39 @@ public class Book {
     }   
     
     /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGroups.
+     * <p>The Action is converted into a Behaviour automatically.</p>
+     * <p> The Action is repeated indefinitely by default.</p>
+     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
+     * <p>The Behaviour is automatically added to the NTPBook.</p>
+     * <p>The Behaviour is returned to allow calling removeGlyphBehaviour with the correct object.</p>
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGroupBehaviour(AbstractAction action) { 
+        Repeat repeatedAction = new Repeat(action);
+    	Behaviour b = repeatedAction.makeBehaviour();
+    	addGroupBehaviour(b);
+        return b;
+    }
+    
+    /**
+     * Adds the given Action to the list of Behaviours applied to new TextObjectGroups.
+     * The Action is repeated a specified number of times. Zero will repeat the action indefinitely.
+     * 
+     * @param action the AbstractAction to convert and add as a behaviour
+     * @param repeat the number of times to repeat the Action, 0 to repeat indefinitely
+     * @return the behaviour created from the action
+     */
+    public Behaviour addGroupBehaviour(AbstractAction action, int repetitions) { 
+    	Repeat repeatedAction = new Repeat(action, repetitions);
+    	Behaviour b = repeatedAction.makeBehaviour();
+    	addGroupBehaviour(b);
+        return b;
+    }
+    
+    /**
      * Adds the given Behaviour to the list of Behaviours applied to new TextObjectGroups.
      * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
      * <p>The Behaviour is automatically added to the NTPBook.</p>
@@ -629,21 +845,78 @@ public class Book {
     	toBuilder.addGroupBehaviour(b);
         addBehaviour(b);
     }
-
+    
     /**
-     * Adds the given Action to the list of Behaviours applied to new TextObjectGroups.
-     * <p>The Action is converted into a Behaviour automatically.</p>
-     * <p>The Behaviour will only be added to TextObjects created after this method is called.</p>
-     * <p>The Behaviour is automatically added to the NTPBook.</p>
-     * <p>The Behaviour is returned to allow calling removeGlyphBehaviour with the correct object.</p>
-     * 
-     * @param action the AbstractAction to convert and add as a behaviour
-     * @return the behaviour created from the action
+     * Adds many Actions to the book at once. Simply pass an array of Actions and they will all be added 
+     * to the list of Actions applied to new TextObjects. The actions repeat indefinitely by default.
+     * <p>(Uses the Multiplexer class to combine the Actions.)</p>
+     * @param actions an array of Actions to be added to the Book
+     * @return the behaviour created from the multiplexer action
      */
-    public Behaviour addGroupBehaviour(AbstractAction action) { 
-        Behaviour b = action.makeBehaviour();
+    public Behaviour addGroupBehaviour(Action[] actions) {
+    	Multiplexer m = new Multiplexer();
+    	for (Action a: actions) {
+    		m.add(new Repeat (a));
+    	}
+    	Behaviour b = m.makeBehaviour();
     	addGroupBehaviour(b);
-        return b;
+    	return b;
+    }
+    
+    /**
+     * Adds many Actions to the book at once. Simply pass an array of Actions and they will all be added 
+     * to the list of Actions applied to new TextObjects. Specify the number of times you would like the
+     * actions to repeat.
+     * <p>(Uses the Multiplexer class to combine the Actions.)</p>
+     * @param actions an array of Actions to be added to the Book
+     * @param repetitions number of time to repeat the actions
+     * @return the behaviour created from the multiplexer action
+     */
+    public Behaviour addGroupBehaviour(Action[] actions, int repetitions) {
+    	Multiplexer m = new Multiplexer();
+    	for (Action a: actions) {
+    		m.add(new Repeat (a, repetitions));
+    	}
+    	Behaviour b = m.makeBehaviour();
+    	addGroupBehaviour(b);
+    	return b;
+    }
+    
+    /**
+     * Add a series of Actions, called a chain, to the book. The next Action in the chain 
+     * executes when the previous one has completed. Actions in the chain act in the order of their
+     * indexes in the array. For instance, the action at index 0 acts on the text objects first, on 
+     * its completion action at index 1 begins acting and so on. By default the Action chain repeats
+     *  indefinitely. 
+     * <p> (Uses the Chain class to sequentially execute the Actions)</p>
+     * @param actions an array of actions to execute in series
+     * @return the behaviour created from the chain action
+     */
+    public Behaviour addGroupChain(Action[] actions) {
+    	Chain c = new Chain();
+    	for (Action a : actions) {
+    		c.add(a);
+    	}
+    	return addGroupBehaviour(c);
+    }
+    
+    /**
+     * Add a series of Actions, called a chain, to the book. The next Action in the chain 
+     * executes when the previous one has completed. Actions in the chain act in the order of their
+     * indexes in the array. For instance, the action at index 0 acts on the text objects first, on 
+     * its completion action at index 1 begins acting and so on. You may specify the number of time you
+     * desire the chain to repeat.
+     * <p> (Uses the Chain class to sequentially execute the Actions)</p>
+     * @param actions an array of actions to execute in series
+     * @param repetitions the number of times to repeat the chain
+     * @return the behaviour created from the chain action
+     */
+    public Behaviour addGroupChain(Action[] actions, int repetitions) {
+    	Chain c = new Chain();
+    	for (Action a : actions) {
+    		c.add(a);
+    	}
+    	return addGroupBehaviour(c, repetitions);
     }
     
     /**
@@ -652,6 +925,7 @@ public class Book {
      * 
      * @param b the Behaviour to remove
      */
+
     public void removeGroupBehaviour(AbstractBehaviour b) {
     	toBuilder.removeGroupBehaviour(b);
     }

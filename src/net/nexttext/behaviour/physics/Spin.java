@@ -49,14 +49,7 @@ public class Spin extends PhysicsAction {
     public void init(float force) {
         properties().init("Force", new NumberProperty( force ) );
     }
-    /**
-     * Set the value of the Spin force. The set function is intended to be used in the draw loop.
-     * @param force positive force spins the object counter-clockwise, 
-     * negative force spins it clockwise
-     */
-    public void set(float force) {
-    	((NumberProperty)properties.get("Force")).set(force);
-    }
+    
 
     /**
      * Apply behaviour to text object.
@@ -71,5 +64,13 @@ public class Spin extends PhysicsAction {
                
         // all done
         return new ActionResult(true, true, true);
+    }
+    /**
+     * Set the value of the Spin force. The set function is intended to be used in the draw loop.
+     * @param force positive force spins the object counter-clockwise, 
+     * negative force spins it clockwise
+     */
+    public void set(float force) {
+    	((NumberProperty)properties.get("Force")).set(force);
     }
 }

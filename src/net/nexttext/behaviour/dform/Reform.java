@@ -128,41 +128,24 @@ public class Reform extends DForm {
         return new ActionResult(false, false, false);
     }
 
-    public float getExponentialSpeed() {
-        return exponentialSpeed;
-    }
+    
 
     /**
-     * Sets the speed of the reform when using the exponential style.
-     * @param exponentialSpeed an appropriate speed for exponential style
+     * Sets the speed and the style of the reform
+     * @param speed
+     * @param style
      */
-    public void setExponentialSpeed(float exponentialSpeed) {
-        this.exponentialSpeed = exponentialSpeed;
+    public void set(float speed, int style) {
+        
+        if (style == STYLE_LINEAR) {
+            this.style = STYLE_LINEAR;
+            linearSpeed = speed;
+            
+        } else if (style == STYLE_EXPONENTIAL) {
+            this.style = STYLE_EXPONENTIAL;
+            exponentialSpeed = speed;
+            
+        }
     }
-
-    public float getLinearSpeed() {
-        return linearSpeed;
-    }
-
-    /**
-     * Sets the speed of the reform when using the linear style.
-     * @param linearSpeed an appropriate speed for linear style
-     */
-    public void setLinearSpeed(float linearSpeed) {
-        this.linearSpeed = linearSpeed;
-    }
-
-    /**
-     * Linear style of reformation doesn't deform glyph shape.
-     */
-    public void setStyleLinear() {
-        style = STYLE_LINEAR;
-    }
-
-    /**
-     * Exponential style reformation preserves deformations longer.
-     */
-    public void setStyleExponential() {
-        style = STYLE_EXPONENTIAL;
-    }
+    
 }

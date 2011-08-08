@@ -49,13 +49,13 @@ import processing.core.PVector;
  * <pre>p * ( ( s - 1 ) * ( ( cos( f / p * 2PI - PI ) ) + 1 ) + 1 ) </pre>
  * </p>
  *
- * <p>XXXBUG: If the period or scale is changed after the behaviour has been
- * started, then it will mess up any objects that are already throbbing.  The
- * way to correct this problem is to cache the period and scale along with the
- * frame count, and only update them when a throb is completed.  </p>
- */
 /* $Id$ */
 public class Throb extends DForm {
+	
+	//used this variable to record when the period and scale are set to be changed
+	private boolean changeParams;
+	private float scale;
+	private int period;
     
     /**
      * @param scale is amount the object's size will increase, as a multiplier.
@@ -64,6 +64,11 @@ public class Throb extends DForm {
     public Throb(float scale, int period) {
         properties().init("Scale", new NumberProperty(scale));
         properties().init("Period", new NumberProperty(period));
+        //These variables are only used when the user wishes to change the period and scale once
+        //the behaviour has started
+        changeParams = false;
+        this.scale = scale;
+        this.period = period;
     }
 
     public ActionResult behave(TextObjectGlyph to) {
@@ -109,6 +114,11 @@ public class Throb extends DForm {
             cP.set(p);
         }
         if (fC % period == 0) {
+        	if(changeParams) {
+            	((NumberProperty)properties().get("Scale")).set(this.scale);
+                ((NumberProperty)properties().get("Period")).set(this.period);
+                changeParams = false;
+            }
             return new ActionResult(false, false, true);
         } else {
             return new ActionResult(false, false, false);
@@ -122,4 +132,18 @@ public class Throb extends DForm {
         float phase = (float)(Math.PI * 2 * frame / period);
         return ((float)(Math.cos(phase - Math.PI) + 1) * (scale - 1 )) + 1;
     }
+    
+    /**
+     * Set function to change the period and scale
+     *@param scale
+     *@param period
+     */
+    public void set(float scale, int period) {
+    	this.scale = scale;
+    	this.period = period;
+    	changeParams = true;
+        
+    }
+    
+     
 }

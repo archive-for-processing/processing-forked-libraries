@@ -42,6 +42,35 @@ public class Multiplexer extends AbstractAction {
     protected HashMap<Action, HashSet<TextObject>> doneWithObject;
     
     /**
+     * Creates a Multiplexer with an array of Actions. Actions will repeat indefinitely by default.
+     * @param actionsArray
+     */
+    public Multiplexer(Action[] actionsArray) {
+    	actions = new ArrayList<Action>();
+        doneWithObject = new HashMap<Action, HashSet<TextObject>>();
+    	for (Action a: actionsArray) {
+    		Repeat r = new Repeat(a);
+    		add(r);
+    	}
+    }
+    
+    /**
+     * Creates a Multiplexer with an array of Actions. Actions will repeat the specified
+     * number of times.
+     * @param actionsArray
+     * @param repetitions
+     */
+    
+    public Multiplexer(Action[] actionsArray, int repetitions) {
+    	actions = new ArrayList<Action>();
+        doneWithObject = new HashMap<Action, HashSet<TextObject>>();
+    	for (Action a: actionsArray) {
+    		Repeat r = new Repeat(a, repetitions);
+    		add(r);
+    	}
+    }
+    
+    /**
      * @param actions a List containing Action objects.
      */
     public Multiplexer( List<Action> actions ) {

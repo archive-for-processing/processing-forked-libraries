@@ -75,17 +75,36 @@ public class StayInWindow extends PhysicsAction implements Action {
      */
     public StayInWindow(Rectangle bounds, boolean bounce) {
         this.bounce = bounce;
-        setWindow(bounds);
+        set(bounds);
     }
     
     /**
      * Redefines the window region to constraint objects to.
+     * @param window new window to constrain objects to
      */
-    public void setWindow( Rectangle window ) {
+    public void set( Rectangle window ) {
         minX = (int)window.getMinX();
         minY = (int)window.getMinY();
         maxX = (int)window.getMaxX();
         maxY = (int)window.getMaxY();         
+    }
+    
+    /**
+     * Redefines the window region to constrain objects to and whether they bounce off of the window edges
+     * or merely stop at the edges
+     * @param window new window to constrain objects to
+     * @param bounce determines whether the objects bounce off the edges of the window or not
+     */
+    public void set(Rectangle window, boolean bounce) {
+    	set(window);
+    	this.bounce = bounce;
+    }
+    /**
+     * Redefines whether objects bounce off the edges or not
+     * @param bounce 
+     */
+    public void set(boolean bounce) {
+    	this.bounce = bounce;
     }
     
     /**

@@ -26,6 +26,7 @@ import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
 import net.nexttext.property.NumberProperty;
 import net.nexttext.property.Property;
+import net.nexttext.property.BooleanProperty;
 
 /**
  * Repeats an action for a fixed number of times, then stops that action.  
@@ -73,16 +74,28 @@ public class Repeat extends AbstractAction {
         
         ActionResult tres = action.behave(to);
         if (rep > 0) {
+        	
+        	//Get whether the object's behaviour has completed
+        	BooleanProperty hasCompleted = ((BooleanProperty)to.getProperty("HasCompleted"));
+        	//Create a HasCompleted property if the object does not have one
+        	if(hasCompleted == null) {
+        		to.init("HasCompleted", new BooleanProperty(false));
+        		hasCompleted = ((BooleanProperty)to.getProperty("HasCompleted"));
+        	}
             // get the counter for that object
             Integer counter = (Integer) textObjectData.get(to);
 
             // if there was no counter for that object create a new one.
             if ( counter == null ) {
-                counter = new Integer(1);
-            } else {
-                // increment the counter
-                counter = new Integer(counter.intValue()+1);    
+                counter = new Integer(0);
+                System.out.println("Counter started");
+            } else if (tres.complete && !hasCompleted.get()){
+                // increment the counter only at the moment when the action completes
+                counter = new Integer(counter.intValue()+1);
+                System.out.println("Action has completed this many times " + counter);
             }
+            //hasCompleted keeps track of whether the action completed on the last frame
+            hasCompleted.set(tres.complete);
             
             // check if we reached the max number of repetitions
             if (counter.intValue() >= rep) {
@@ -102,4 +115,20 @@ public class Repeat extends AbstractAction {
     public Map<String, Property> getRequiredProperties() {
         return action.getRequiredProperties();
     }
+    
+    /**
+     * Set functions to change the action and number of repetitions
+     * @param action
+     * @param repetitions
+     */
+    public void set (Action action, int repetitions) {
+    	set(action);
+    	set(repetitions);
+    }
+    public void set (Action action) {
+    	this.action = action;
+    }
+    public void set (int repetitions) {
+    	((NumberProperty)properties().get("Repetitions")).set(repetitions);
+    } 
 }
