@@ -70,7 +70,7 @@ public class MoveAway extends AbstractAction implements TargetingAction {
 		 * pixels to move in each frame.  Use a very large number for instant
 		 * travel.
 	     */
-	    publ
+	   
 		public MoveAway(PVector pVector, long speed) {
 			this((Locatable)pVector, speed);
 		}
