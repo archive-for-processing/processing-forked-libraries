@@ -20,12 +20,12 @@
 	
     <target name="jvm-get">
         <condition property="jvm.ok">
-            <equals arg1="${ant.java.version}" arg2="1.5"/>
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
 	    </condition>
 	</target>
 
 	<target name="jvm-check" depends="jvm-get" unless="jvm.ok">
-	    <fail message="Wrong JVM - ${ant.java.version} - You must use Java 1.5!"/>
+	    <fail message="Wrong JVM - ${ant.java.version} - You must use Java 1.6!"/>
 	</target>
 
 	<target name="jar" depends="jvm-check">
