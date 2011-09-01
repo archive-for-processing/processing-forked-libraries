@@ -97,8 +97,7 @@ public class Reform extends DForm {
         	PVector cV = cP.get();
         	PVector oV = cP.getOriginal();
 
-        	PVector offset = new PVector(oV.x, oV.y, oV.y);
-            offset.sub(cV);
+        	PVector offset = PVector.sub(oV, cV);
 
             // In order not to produce gratuitous property change events, if
             // the offset is short, nothing is done.
@@ -121,11 +120,11 @@ public class Reform extends DForm {
             cP.set(cV);
         }
         if ( done ) {
-            to.setDeformed(false);
-            return new ActionResult(false, false, true);
+        	to.setDeformed(false);
+            return new ActionResult(true, true, false);
         }
         
-        return new ActionResult(false, false, false);
+        return new ActionResult(false, true, false);
     }
 
     
