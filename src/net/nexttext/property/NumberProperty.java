@@ -46,6 +46,11 @@ public class NumberProperty extends Property {
        this.value = value;
        firePropertyChangeEvent();
     }
+    
+    public void setOriginal(float value) { 
+    	original = value;
+        firePropertyChangeEvent();
+     }
 
     public void add(float value) {
         this.value += value;
