@@ -21,6 +21,7 @@ package net.nexttext.behaviour.standard;
 
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
+import net.nexttext.property.BooleanProperty;
 
 /**
  * The Kill action flags an object for removal from the {@link net.nexttext.Book}, causing it 
@@ -35,6 +36,21 @@ import net.nexttext.behaviour.AbstractAction;
 /* $Id$ */
 public class Kill extends AbstractAction {
     
+    boolean cleanOnKill;
+    
+    public Kill() {
+        this(false);
+    }
+    
+    /** 
+     * Builds a Kill action
+     * 
+     * @param clean whether or not to clean the tree (remove empty parents) as it behaves.
+     */
+    public Kill(boolean clean) {
+        cleanOnKill = clean;
+    }
+    
     /**
      * Kills a TextObject.   
      * 
@@ -48,8 +64,10 @@ public class Kill extends AbstractAction {
      * a Book. 
      */
     public ActionResult behave(TextObject to) {
-         
         // find the TextObject root
+        if (cleanOnKill) {
+            to.init("CleanOnDetach", new BooleanProperty(true));
+        }
         to.getBook().removeObject(to);            
         return new ActionResult(true, true, false);
     }
