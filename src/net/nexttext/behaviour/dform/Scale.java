@@ -66,7 +66,7 @@ public class Scale extends DForm {
             // Scale the control point by the appropriate factor
             p.mult(scale);
             // Return p to the original coordinates
-            p.add(center);            
+            p.add(center);
             cP.set(p);
         }
         return new ActionResult(true, true, false);       

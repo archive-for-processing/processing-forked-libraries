@@ -201,7 +201,7 @@ public abstract class AbstractAction implements Action {
      * <p>This method is required by the {@link Action} interface. </p>
      */
     public Map<String, Property> getRequiredProperties() {
-        return new HashMap<String, Property>(0);
+    	return new HashMap<String, Property>(0);
     }
     
     ///////////////////////////////////////////
