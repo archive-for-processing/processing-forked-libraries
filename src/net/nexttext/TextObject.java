@@ -183,9 +183,21 @@ public abstract class TextObject implements Locatable {
         parent.attachChild(newSibling, position);
     }
     
-   
     /** Detach this from the TextObjectTree.  It can be reattached elsewhere.*/
     public void detach() {
+        Property cleanOnDetach = properties.get("CleanOnDetach");
+        if ((cleanOnDetach != null) && ((BooleanProperty)cleanOnDetach).get()) {
+            detach(true);
+        } else {
+            detach(false);
+        }
+    }
+   
+    /** 
+     * Detach this from the TextObjectTree.  It can be reattached elsewhere.
+     * @param clean detaches the parent if it has no more children
+     **/
+    public void detach(boolean clean) {
         if (parent == null) {
             throw new DataTreeException("Root cannot be detached.");
         }
@@ -201,9 +213,14 @@ public abstract class TextObject implements Locatable {
         } else {
             parent.leftMostChild = rightSibling;
         }
-
+        
         parent.numChildren--;
         parent.invalidateLocalBoundingPolygon();
+        
+        if (clean && !(parent instanceof TextObjectRoot) && (parent.numChildren == 0)) {
+            // the parent is empty, let's detach it as well
+            parent.detach(true);
+        }
         
         parent = null;
         leftSibling = null;
