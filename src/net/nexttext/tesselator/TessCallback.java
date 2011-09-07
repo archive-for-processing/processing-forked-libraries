@@ -1,4 +1,4 @@
-package net.nexttext.renderer.util;
+package net.nexttext.tesselator;
 
 import java.util.ArrayList;
 import javax.media.opengl.GL;
