@@ -38,6 +38,9 @@ import net.nexttext.property.PVectorProperty;
 import net.nexttext.property.Property;
 import net.nexttext.property.PropertyChangeListener;
 import net.nexttext.property.ColorProperty;
+import net.nexttext.property.TessDataProperty;
+import net.nexttext.tesselator.TessData;
+import net.nexttext.tesselator.Tesselator;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -80,6 +83,8 @@ public class TextObjectGlyph extends TextObject {
     // The FontRenderContext is necessary for determining glyph outlines, but is
     // never modified.
     static FontRenderContext frc = new FontRenderContext(null, false, false);
+    
+    public static Tesselator tesselator;
 
 	/** The character for this object.  This is a special property that is 
 	 * handled through its own get/set methods */
@@ -162,12 +167,21 @@ public class TextObjectGlyph extends TextObject {
 		font = Book.loadFontFromPFont(pfont);
 
         properties.init("Control Points", new PVectorListProperty());
+        properties.init("Tess Data", new TessDataProperty());
         
         glyphChanged();
 
         // When the control points change, the renderer cache is no longer
         // valid, and the glyph has been deformed.
         getControlPoints().addChangeListener(new PropertyChangeListener() {
+                public void propertyChanged(Property propertyThatChanged) {
+                    glyphDeformed();
+                }
+            });
+        
+        // When the tesselation data changes, the renderer cache is no longer
+        // valid, and the glyph has been deformed.
+        getTessData().addChangeListener(new PropertyChangeListener() {
                 public void propertyChanged(Property propertyThatChanged) {
                     glyphDeformed();
                 }
@@ -254,6 +268,13 @@ public class TextObjectGlyph extends TextObject {
     }
     
     /**
+     * Convenience accessor for the tesselation data.
+     */
+    public TessDataProperty getTessData() {
+        return (TessDataProperty) getProperty("Tess Data");
+    }
+    
+    /**
      * Get the outline of the glyph.
      */
     public GeneralPath getOutline() {
@@ -332,6 +353,7 @@ public class TextObjectGlyph extends TextObject {
      */
     protected void glyphChanged() {
         buildControlPoints();
+        buildTessData();
         outline = null;
         rendererCache = null;
         invalidateLocalBoundingPolygon();
@@ -506,6 +528,16 @@ public class TextObjectGlyph extends TextObject {
 		} // end while	
 	 }
 	
+	public void buildTessData() {
+		if (tesselator == null) {
+            PGraphics.showException("The TextObjectGlyph Tesselator has not been set.");
+		}
+		
+		TessData tessData = tesselator.tesselateGlyph(this);
+		getTessData().set(tessData);
+		getTessData().setOriginal(tessData.clone());
+	}
+	
     /**
      * See TextObject's getLocalBoundingPolygon() description for details.  
      * 
@@ -523,7 +555,7 @@ public class TextObjectGlyph extends TextObject {
         }
         localBoundingPolygonValidToFrame = Long.MAX_VALUE;
 
-        // Find the smallest box enclosing all the object's Control Points by 
+        // Find the smallest box enclosing all the object's tesselation vertices by 
         // computing the min/max
         
         float minX = Float.POSITIVE_INFINITY;
@@ -539,7 +571,7 @@ public class TextObjectGlyph extends TextObject {
     		maxX = size*pfont.width(getGlyph().charAt(0));
     		maxY = size*pfont.descent();
     	}
-    	// if not, we have an outline so calculate by checking contour points
+    	// if not, we have tesselation data so calculate by checking verts
     	else {    	
 	        // Spaces are calculated differently because they don't have control
 	        // points in the same way as other glyphs.
@@ -551,15 +583,13 @@ public class TextObjectGlyph extends TextObject {
 	            maxY = (float)sb.getMaxY();
 	        	
 	        } else {
-	        	PVectorListProperty vertices = getControlPoints();
-	
-	            for ( Iterator<PVectorProperty> i = vertices.iterator(); i.hasNext(); ) {
-	            	PVectorProperty vertex = i.next();
-	                minX = Math.min(vertex.getX(), minX);
-	                minY = Math.min(vertex.getY(), minY);
-	                maxX = Math.max(vertex.getX(), maxX);
-	                maxY = Math.max(vertex.getY(), maxY);
-	            }
+	        	float[][] vertices = getTessData().get().vertices;
+	        	for (int i=0; i < vertices.length; i++) {
+	                minX = Math.min(vertices[i][0], minX);
+	                minY = Math.min(vertices[i][1], minY);
+	                maxX = Math.max(vertices[i][0], maxX);
+	                maxY = Math.max(vertices[i][1], maxY);
+	        	}
 	        }
     	}
         
