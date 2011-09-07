@@ -168,16 +168,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
 
   		glu.gluTessEndPolygon(tess);  
 
-  		// get the glyph's position
-  		//PVector pos = glyph.getPositionAbsolute();
-  		//float rot = glyph.getParent().getRotation().get();  //a bit of a hack
-
-  		TessData data = tessCallback.getData();
-  		//data.translate(pos);
-  		//data.rotate(rot);
-  		data.stroke = colorToInt(glyph.getStrokeColor().get());
-  		data.fill = colorToInt(glyph.getColor().get());
-  		return data;
+  		return tessCallback.getData();
   	}
     
     /**
@@ -200,7 +191,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         // optimize rendering based on the presence of DForms and of outlines
         if (glyph.isFilled()) {
             if (glyph.isDeformed()) {
-                // fill the shape
+        	    // fill the shape
                 g.noStroke();
                 g.fill(glyph.getColorAbsolute().getRGB());
                 fillPath(glyph);
@@ -268,13 +259,12 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         boolean smooth = g.smooth;
         // turn off smoothing so that we don't get gaps in between the triangles
         g.noSmooth();
-
+        
         TessData tessData;
         try {
         	tessData = ((TessDataProperty)glyph.getProperty("Tess Data")).get();
         } catch (NullPointerException npe) {
         	// tesselate that shit!
-        	System.out.println("Tesselating glyph " + glyph);
         	tessData = tesselateGlyph(glyph);
         	glyph.init("Tess Data", new TessDataProperty(tessData));
         }

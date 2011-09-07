@@ -1,21 +1,15 @@
 package net.nexttext.renderer.util;
 
 import java.util.ArrayList;
-
 import processing.core.PApplet;
-import processing.core.PVector;
 
 public class TessData {
 	public int[] types;        //types of tesselated shape
 	public int[] ends;         //index of end vertices
 	public float[][] vertices; //array of vertices
-	public int stroke;         //stroke color
-	public int fill;           //fill color
-
-	/** Default constructor. */
+	
 	public TessData() {}
 
-	/** Constructor. */
 	public TessData(ArrayList<Integer> t, ArrayList<Integer> e, ArrayList<double[]> v) {
 		types = new int[t.size()];
 		for(int i = 0; i < t.size(); i++)
@@ -34,7 +28,6 @@ public class TessData {
 		}
 	}
 
-	/** Clone. */
 	public TessData clone() {
 		TessData clone = new TessData();
 		clone.types = new int[this.types.length];
@@ -52,26 +45,10 @@ public class TessData {
 			clone.vertices[i][2] = this.vertices[i][2];   
 		}
 
-		clone.stroke = this.stroke;
-		clone.fill = this.fill;
-
 		return clone;
-	}
-
-	/** Translate. */
-	public void translate(PVector offset) {
-		for(int i = 0; i < vertices.length; i++) {
-			vertices[i][0] += offset.x;
-			vertices[i][1] += offset.y;
-			vertices[i][2] += offset.z;
-		}
 	}
 	
 	public void draw(PApplet p) {
-		//p.stroke(stroke);
-		//p.noStroke();
-		//p.noFill();
-		//p.fill(fill);
 		for (int j = 0; j < types.length; j++) {
 			p.beginShape(types[j]);
 			// go through vertices
