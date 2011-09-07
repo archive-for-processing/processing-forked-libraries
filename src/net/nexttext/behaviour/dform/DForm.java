@@ -25,6 +25,7 @@ import net.nexttext.TextObjectGlyphIterator;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.TessDataProperty;
 
 /**
  * A super class for DForms.

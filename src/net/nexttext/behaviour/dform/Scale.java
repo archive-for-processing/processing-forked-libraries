@@ -19,14 +19,8 @@
 
 package net.nexttext.behaviour.dform;
 
-import net.nexttext.TextObjectGlyph;
-import net.nexttext.property.PVectorListProperty;
-import net.nexttext.property.PVectorProperty;
-
 import java.awt.Rectangle;
-
-import java.util.Iterator;
-
+import net.nexttext.TextObjectGlyph;
 import processing.core.PVector;
 
 /**
@@ -46,34 +40,25 @@ public class Scale extends DForm {
     }
 
     public ActionResult behave(TextObjectGlyph to) {
-        // Determine the center of to, in the same coordinates as the control
-        // points will be.
+    	// Determine the center of to, in the same coordinates as the verts will be.
     	PVector toAbsPos = to.getPositionAbsolute();
         Rectangle bb = to.getBoundingPolygon().getBounds();
         PVector center = new PVector((float)bb.getCenterX(), (float)bb.getCenterY());
         center.sub(toAbsPos);
-
-        // Traverse the control points of the glyph, applying the
-        // multiplication factor to each one, but offset from the center, not
-        // the position.
-        PVectorListProperty cPs = getControlPoints(to);
-        Iterator<PVectorProperty> i = cPs.iterator();
-        while (i.hasNext()) {
-        	PVectorProperty cP = i.next();
-            // Get the vector from the center of the glyph to the control point.
-        	PVector p = cP.get();
-            p.sub(center);
-            // Scale the control point by the appropriate factor
-            p.mult(scale);
-            // Return p to the original coordinates
-            p.add(center);
-            cP.set(p);
-        }
+        
+        // Traverse the verts of the glyph, applying the multiplication factor to each one, 
+        // but offset from the center, not the position.
+        float[][] verts = to.getTessData().get().vertices;
+        for (int i = 0; i < verts.length; i++) {
+        	verts[i][0] = ((verts[i][0] - center.x) * scale) + center.x;
+        	verts[i][1] = ((verts[i][1] - center.y) * scale) + center.y;
+		}
+        
+        to.setDeformed(true);
+        
         return new ActionResult(true, true, false);       
     }
     
-    //set function
-
     public void set(float scale) {
         this.scale = scale;
     }

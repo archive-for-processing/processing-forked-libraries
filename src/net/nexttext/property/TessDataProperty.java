@@ -1,11 +1,16 @@
 package net.nexttext.property;
 
-import net.nexttext.renderer.util.TessData;
+import net.nexttext.tesselator.TessData;
 
 public class TessDataProperty extends Property {
 	
 	private TessData original;
 	private TessData value;
+	
+	public TessDataProperty() {
+		original = new TessData();
+		value = new TessData();	
+	}
 	
 	public TessDataProperty(TessData data) {
 		original = data;
@@ -18,10 +23,10 @@ public class TessDataProperty extends Property {
 	}
 	
 	/**
-	 * @return a copy of the original value of this property .
+	 * @return the original value of this property .
 	 */
 	public TessData getOriginal() { 
-        return original.clone();
+        return original;
 	}
 	
 	/**
@@ -33,10 +38,10 @@ public class TessDataProperty extends Property {
 	}
 	
 	/**
-	 * @return a copy of the value of this property.
+	 * @return the value of this property.
 	 */
 	public TessData get() {
-	    return value.clone();
+	    return value;
 	}
 	
 	/**
