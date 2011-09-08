@@ -596,7 +596,7 @@ public abstract class TextObject implements Locatable {
      *
      * @return 0 if this TextObject is not connected to any book.
      */
-    synchronized long getFrameCount() {
+    protected synchronized long getFrameCount() {
         return (book == null) ? 0 : book.getFrameCount();
     }
 

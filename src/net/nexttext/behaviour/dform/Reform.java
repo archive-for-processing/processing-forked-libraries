@@ -20,12 +20,23 @@
 package net.nexttext.behaviour.dform;
 
 import net.nexttext.TextObjectGlyph;
+import net.nexttext.property.PVectorListProperty;
+import net.nexttext.property.PVectorProperty;
+
+import java.util.Iterator;
+
+import processing.core.PVector;
 
 /**
  * A DForm which reverts TextObject to its original shape.
  *
  * <p>Different ways of reforming the glyphs are provided, which given
  * different visual effects.  </p>
+ * 
+ * <p>The current ActionResult returned specifies that a Reform action never
+ * terminates, it sends a true event once it's reformed. We probably want 
+ * to change it so that it can terminate. If needs be, the Reform could be put
+ * into a Repeat behaviour. </p>
  */
 /* $Id$ */
 public class Reform extends DForm {
@@ -69,58 +80,54 @@ public class Reform extends DForm {
         }
     }
 
-    /**
-     *  Traverse the verts of the glyph, determine the distance
-     *  from its current location to the origin and move it part way there.
-     */
     public ActionResult behave(TextObjectGlyph to) {         
+        // Traverse the control points of the glyph, determine the distance
+        // from its current location to the origin and move it part way there.
+    	PVectorListProperty cPs = getControlPoints(to);
+        Iterator<PVectorProperty> i = cPs.iterator();
+        
         boolean done = true;
         
         // if the glyph is not deformed, don't waste time reforming it
         if (!to.isDeformed())
             return new ActionResult(false, false, false);
         
-        float[][] verts = to.getTessData().get().vertices;
-        float[][] origs = to.getTessData().getOriginal().vertices;
-        float[] offset = new float[2];
-        float mag, scalar;
-        for (int i = 0; i < verts.length; i++) {
-        	offset[0] = origs[i][0] - verts[i][0];
-        	offset[1] = origs[i][1] - verts[i][1];
-        	
-        	mag = (float)Math.sqrt(offset[0]*offset[0] + offset[1]*offset[1]);
-        	
-        	// In order not to produce gratuitous property change events, if
+        while (i.hasNext()) {
+        	PVectorProperty cP = i.next();
+        	PVector cV = cP.get();
+        	PVector oV = cP.getOriginal();
+
+        	PVector offset = PVector.sub(oV, cV);
+
+            // In order not to produce gratuitous property change events, if
             // the offset is short, nothing is done.
-            if (mag < 0.1f) continue;
-            
+            if (offset.mag() < 0.1f) continue;
+
             // The reform algorithm is very slow when the points are close, so
             // once we reach a distance of 0.8 we just snap it back to its
             // original.
-            if (mag > 0.8f) {
-            	done = false;
-            	
-            	if (style == STYLE_EXPONENTIAL) {
-            		scalar = 1 - (float)Math.pow(Math.E, -mag / exponentialSpeed);
-            		offset[0] *= scalar;
-                	offset[1] *= scalar;
-                } else {
-                	offset[0] *= linearSpeed;
-                	offset[1] *= linearSpeed;
-                }
-            }
-            
-            verts[i][0] += offset[0];
-            verts[i][1] += offset[1];
-		}
 
-        if (done) {
+            if (offset.mag() > 0.8f) {
+                done = false;
+
+                if (style == STYLE_EXPONENTIAL) {                    
+                    offset.mult(1 - (float)Math.pow(Math.E, - offset.mag()/exponentialSpeed));
+                } else {
+                    offset.mult(linearSpeed);
+                }
+            }            
+            cV.add(offset);
+            cP.set(cV);
+        }
+        if ( done ) {
         	to.setDeformed(false);
             return new ActionResult(true, true, false);
         }
         
         return new ActionResult(false, true, false);
-    }    
+    }
+
+    
 
     /**
      * Sets the speed and the style of the reform
