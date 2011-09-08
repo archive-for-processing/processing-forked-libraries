@@ -115,9 +115,9 @@ public class Book {
      * @param rendererType the type of renderer to use, can be JAVA2D or OPENGL
      */
     public Book(PApplet p, PGraphics g, String rendererType) {
-        this.p = p;
-        this.g = g;
-        
+    	this.p = p;
+    	this.g = g;
+
         // initialize the renderer
         if (rendererType == PConstants.JAVA2D) {
         	//NextText's JAVA2D renderer is only compatible with the
@@ -129,10 +129,10 @@ public class Book {
                 PGraphics.showException("The NextText and PApplet renderers are incompatible! Use the default renderer if you don't know what you are doing!");
             }
         } else if (rendererType == PConstants.P2D) {
-        		//P2D renderer is compatible with all other opens because it
-        		//draws to a buffer using Java2D and then draws the whole image
-        		//to the PApplet
-                defaultRenderer = new P2DTextPageRenderer(p, g); 
+        	//P2D renderer is compatible with all other opens because it
+        	//draws to a buffer using Java2D and then draws the whole image
+        	//to the PApplet
+        	defaultRenderer = new P2DTextPageRenderer(p, g); 
         } else if (rendererType == PConstants.OPENGL) {
         	//NextText's OpenGL renderer is compatible with all PApplet renderer
         	//but if PApplet's OpenGL is NOT used, then NextText uses OpenGL only
@@ -188,7 +188,23 @@ public class Book {
         	}
         }
         
-        pages = new LinkedHashMap<String, TextPage>();
+        init();
+    }
+    
+    public Book(PApplet p, TextPageRenderer renderer) {
+    	this(p, p.g, renderer);
+    }
+        
+    public Book(PApplet p, PGraphics g, TextPageRenderer renderer) {
+    	this.p = p;
+    	this.g = g;
+    	this.defaultRenderer = renderer;
+
+    	init();
+    }
+    
+    private void init() {
+    	pages = new LinkedHashMap<String, TextPage>();
     	behaviourList = new LinkedList<AbstractBehaviour>();
     	textRoot = new TextObjectRoot(this);
         spatialList = new SpatialList();
