@@ -19,12 +19,15 @@
 
 package net.nexttext.behaviour.control;
 
+import java.util.Map;
+
 import net.nexttext.TextObject;
 import net.nexttext.TextObjectGlyph;
 import net.nexttext.TextObjectGlyphIterator;
 import net.nexttext.TextObjectGroup;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.behaviour.Action;
+import net.nexttext.property.Property;
 
 
 /**
@@ -43,6 +46,17 @@ public class ApplyToGlyph extends AbstractAction {
         this.action = descendantAction;
     }
 
+    /**
+     * Gets the set of properties required by the descendant Action.
+     * @return Map containing the properties
+     */
+    public Map<String, Property> getRequiredProperties() 
+    {
+    	Map<String, Property> reqProps = super.getRequiredProperties();
+    	reqProps.putAll(action.getRequiredProperties());
+        return reqProps;
+    }
+    
     /**
      * Apply the given action to the TextObject's descendants.
      *
