@@ -76,6 +76,9 @@ public class TextObjectGroup extends TextObject {
 
     /** Get the number of children. */
     public int getNumChildren() { return numChildren; }
+    
+    /** Get whether the group is empty or not. */
+    public boolean isEmpty() { return ((numChildren == 0) || toString().compareTo("") == 0); }
 
     /**
      * Attach a child to the end of the list of children.
