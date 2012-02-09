@@ -48,7 +48,6 @@ public class Kill extends AbstractAction {
      * a Book. 
      */
     public ActionResult behave(TextObject to) {
-         
         // find the TextObject root
         to.getBook().removeObject(to);            
         return new ActionResult(true, true, false);

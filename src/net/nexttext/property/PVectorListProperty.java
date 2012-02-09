@@ -62,10 +62,24 @@ public class PVectorListProperty extends Property implements PropertyChangeListe
 	}
 	
 	/**
+	 * Returns the PVectorProperty object at the specified position in the list.
+	 */
+	public PVectorProperty getProp( int position ) {
+        return list.get(position);
+	}
+	
+	/**
 	 * Returns the PVector object at the specified position in the list.
 	 */
 	public PVector get( int position ) {
         return list.get(position).get();
+	}
+	
+	/**
+	 * Returns the original PVector object at the specified position in the list.
+	 */
+	public PVector getOriginal( int position ) {
+        return list.get(position).getOriginal();
 	}
 	
     /**

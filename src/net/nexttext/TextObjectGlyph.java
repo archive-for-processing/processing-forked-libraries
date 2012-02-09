@@ -39,7 +39,6 @@ import net.nexttext.property.Property;
 import net.nexttext.property.PropertyChangeListener;
 import net.nexttext.property.ColorProperty;
 
-import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PVector;
@@ -79,7 +78,7 @@ public class TextObjectGlyph extends TextObject {
 	
     // The FontRenderContext is necessary for determining glyph outlines, but is
     // never modified.
-    static FontRenderContext frc = new FontRenderContext(null, false, false);
+    protected static FontRenderContext frc = new FontRenderContext(null, false, false);
 
 	/** The character for this object.  This is a special property that is 
 	 * handled through its own get/set methods */

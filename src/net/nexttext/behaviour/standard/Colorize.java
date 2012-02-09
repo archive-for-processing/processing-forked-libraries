@@ -38,6 +38,59 @@ public class Colorize extends AbstractAction {
     
     //CONSTRUCTORS ------------------------------------------------------------------------------------
     /**
+     * The Colorize action will only influence the fill colour.
+     *
+     * <p>This constructor is kept for code consistency with code that was
+     * using Colorize prior to the implementation of the stroke property. </p>
+     *
+     * @param color The target color
+     * @param speed The speed factor at which the colorization is applied
+     */
+    public Colorize ( Color color, float speed ) {        
+        this(color, speed, true, false);
+    }
+    
+    /**
+     * The Colorize action is applied to the given glyph colour component
+     * (i.e. the stroke and/or the fill)
+     * 
+     * @param color The target color
+     * @param speed The speed factor at which the colorization is applied
+     * @param fill Indicates if the action has to be processed on the fill
+     * @param stroke Indicates if the action has to be processed on the stroke
+     */
+    public Colorize ( Color color, float speed, boolean fill, boolean stroke ) {        
+        applyToFill = fill;
+        applyToStroke = stroke;
+        if (fill) {
+            properties().init("ColorFill", new ColorProperty(color) );
+            properties().init("SpeedFill", new NumberProperty(speed) );
+        }
+        if (stroke) {
+            properties().init("ColorStroke", new ColorProperty(color) );
+            properties().init("SpeedStroke", new NumberProperty(speed) );
+        }
+    }
+    
+    /**
+     * The Colorize action is applied to the fill and the stroke colours,
+     * according to the given values.
+     * 
+     * @param colorFill The target color of the fill
+     * @param speedFill The colorization speed for the fill
+     * @param colorStroke The target color of the stroke
+     * @param speedStroke The colorization speed for the stroke
+     */
+    public Colorize ( Color colorFill, float speedFill, Color colorStroke, float speedStroke ) {
+        applyToFill = true;
+        applyToStroke = true;
+        properties().init("ColorFill", new ColorProperty(colorFill) );
+        properties().init("SpeedFill", new NumberProperty(speedFill) );
+        properties().init("ColorStroke", new ColorProperty(colorStroke) );
+        properties().init("SpeedStroke", new NumberProperty(speedStroke) );
+    }
+    
+    /**
      * Creates a Colorize which changes the glyphs color over time. The colorization is only applied to 
      * the glyphs fill property. Specify red, green and blue color values.
      *

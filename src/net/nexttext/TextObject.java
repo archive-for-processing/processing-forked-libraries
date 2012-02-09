@@ -183,7 +183,6 @@ public abstract class TextObject implements Locatable {
         parent.attachChild(newSibling, position);
     }
     
-   
     /** Detach this from the TextObjectTree.  It can be reattached elsewhere.*/
     public void detach() {
         if (parent == null) {
@@ -201,7 +200,7 @@ public abstract class TextObject implements Locatable {
         } else {
             parent.leftMostChild = rightSibling;
         }
-
+        
         parent.numChildren--;
         parent.invalidateLocalBoundingPolygon();
         
@@ -579,7 +578,7 @@ public abstract class TextObject implements Locatable {
      *
      * @return 0 if this TextObject is not connected to any book.
      */
-    synchronized long getFrameCount() {
+    protected synchronized long getFrameCount() {
         return (book == null) ? 0 : book.getFrameCount();
     }
 
