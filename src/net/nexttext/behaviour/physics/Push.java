@@ -49,20 +49,9 @@ public class Push extends PhysicsAction {
     	init(direction, force);
     }
     
-    private void init(PVector direction, float force) {
+    public void init(PVector direction, float force) {
         properties().init("Direction", new PVectorProperty( direction ) );
         properties().init("Force", new NumberProperty( force ) );
-    }
-    
-    /** 
-     * Set the direction and force of the Push to any given values.
-     * You can even set these values in the draw function.
-     * @param direction the direction of the push
-     * @param force the magnitude of the push
-     */
-    public void set(PVector direction, float force) {
-    	((PVectorProperty)properties.get("Direction")).set( direction );
-    	((NumberProperty)properties.get("Force")).set( force );
     }
 
     public ActionResult behave( TextObject to ) {
@@ -78,12 +67,7 @@ public class Push extends PhysicsAction {
         PVector vel = velProp.get();
         vel.add(push);
         velProp.set(vel);
-        
-    	/*
-    	PVector push = ((PVectorProperty)properties.get("Direction")).get();
-    	applyForce(to, push);
-    	System.out.println("This is the Push class");
-        */      
+               
         // all done
         return new ActionResult(true, true, true);
     }

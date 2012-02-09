@@ -29,7 +29,10 @@ import net.nexttext.input.MouseDefault;
  * on top of the given TextObject.
  */
 /* $Id$ */
-public class OnMouseReleasedOver extends OnMouseReleased {
+public class OnMouseReleasedOver extends OnMouseDepressed {
+    
+    private boolean isPressed;
+    private boolean wasPressed;
     
     /**
      * Creates an OnMouseReleasedOver which performs the given Action when the 
@@ -50,7 +53,9 @@ public class OnMouseReleasedOver extends OnMouseReleased {
      */
     public OnMouseReleasedOver(int buttonToCheck, Action trueAction) {
         super(buttonToCheck, trueAction);
- 
+    
+        isPressed = false;
+        wasPressed = false;
     }
     
     /**
@@ -61,8 +66,10 @@ public class OnMouseReleasedOver extends OnMouseReleased {
      * @return the outcome of the condition
      */
     public boolean condition(TextObject to) {
+        wasPressed = isPressed;
+        isPressed = super.condition(to);
         
-        if (super.condition(to) && to.getBoundingPolygon().contains(mouse.getX(), mouse.getY())) {
+        if (wasPressed && !isPressed && to.getBoundingPolygon().contains(mouse.getX(), mouse.getY())) {
             return true;
         }
         return false;

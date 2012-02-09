@@ -22,8 +22,6 @@ package net.nexttext.behaviour.control;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.Action;
 import net.nexttext.input.MouseDefault;
-//adding a Property to the text objects
-import net.nexttext.property.BooleanProperty;
 
 /**
  * A Condition which is true when a mouse button is pressed i.e. a single true result 
@@ -32,7 +30,7 @@ import net.nexttext.property.BooleanProperty;
 /* $Id$ */
 public class OnMousePressed extends OnMouseDepressed {
     
-    private BooleanProperty isPressed;
+    private boolean isPressed;
     private boolean wasPressed;
     
     /**
@@ -55,7 +53,7 @@ public class OnMousePressed extends OnMouseDepressed {
     public OnMousePressed(int buttonToCheck, Action trueAction) {
         super(buttonToCheck, trueAction);
         
-        isPressed = null;
+        isPressed = false;
         wasPressed = false;
     }
     
@@ -67,19 +65,10 @@ public class OnMousePressed extends OnMouseDepressed {
      * @return the outcome of the condition
      */
     public boolean condition(TextObject to) {
-    	//create a BooleanProperty for each TextObject to avoid shared variables 
-        if(to.getProperty("isPressed") == null)
-        	to.init("isPressed", new BooleanProperty(false));
-        
-        //get the "isPressed" property of the text object. It is true when the mouse is pressed.
-    	BooleanProperty isPressed = (BooleanProperty)to.getProperty("isPressed");
-    	
-    	//compare wasPressed and isPressed
-    	wasPressed = isPressed.get();
-        isPressed.set( super.condition(to) );
-        if (!wasPressed && isPressed.get() ) {
-            
-        	return true;
+        wasPressed = isPressed;
+        isPressed = super.condition(to);
+        if (!wasPressed && isPressed) {
+            return true;
         }
         return false;
     }

@@ -34,8 +34,7 @@ public class Spin extends PhysicsAction {
     }
 
     /** 
-     * Default constructor. 
-     * A positive force spins the object counter-clockwise. A negative force spins it clockwise.
+     * Default constructor. Angular force is equal to 0.1.
      * @param force angular force in rad
      */
     public Spin(float force) {
@@ -44,18 +43,10 @@ public class Spin extends PhysicsAction {
     
     /**
      * Initialize properties.
-     * @param force 
+     * @param force
      */
     public void init(float force) {
         properties().init("Force", new NumberProperty( force ) );
-    }
-    /**
-     * Set the value of the Spin force. The set function is intended to be used in the draw loop.
-     * @param force positive force spins the object counter-clockwise, 
-     * negative force spins it clockwise
-     */
-    public void set(float force) {
-    	((NumberProperty)properties.get("Force")).set(force);
     }
 
     /**

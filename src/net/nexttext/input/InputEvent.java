@@ -2,7 +2,7 @@
   This file is part of the NextText project.
   http://www.nexttext.net/
 
-  Copyright (c) 2004-11 Obx Labs / Jason Lewis
+  Copyright (c) 2004-08 Obx Labs / Jason Lewis
 
   NextText is free software: you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software 

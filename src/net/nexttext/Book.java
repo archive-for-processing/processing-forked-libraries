@@ -654,7 +654,7 @@ public class Book {
      * @param b the Behaviour to remove
      */
     public void removeWordBehaviour(AbstractBehaviour b) {
-    	toBuilder.removeWordBehaviour(b);
+        toBuilder.removeWordBehaviour(b);
     }
     
     /**
@@ -672,7 +672,7 @@ public class Book {
      * @param b the Behaviour to add
      */
     public void addGroupBehaviour(AbstractBehaviour b) { 
-    	toBuilder.addGroupBehaviour(b);
+        toBuilder.addGroupBehaviour(b);
         addBehaviour(b);
     }
 
@@ -699,7 +699,7 @@ public class Book {
      * @param b the Behaviour to remove
      */
     public void removeGroupBehaviour(AbstractBehaviour b) {
-    	toBuilder.removeGroupBehaviour(b);
+        toBuilder.removeGroupBehaviour(b);
     }
     
     /**

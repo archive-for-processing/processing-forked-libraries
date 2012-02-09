@@ -41,7 +41,7 @@ public abstract class AbstractBehaviour  {
 	  * This displayName code is duplicated in AbstractAction, however it is quite
 	  * simple so it doesn't justify creating a new baseclass just for this..
 	  */
-	 private String displayName = "";
+	 private String displayName;
 	 
 	 /**
 	  * Sets the display name of this Action instance to the specified string.   
@@ -56,7 +56,7 @@ public abstract class AbstractBehaviour  {
 	  */
 	 public String getDisplayName() {
 	      
-	     if ( displayName.equals("") ) {
+	     if ( displayName == "" ) {
 	     	// use the class name if no name was specified
 	         displayName = this.getClass().getName();
 	     }

@@ -20,7 +20,6 @@
 package net.nexttext.behaviour.control;
 
 import net.nexttext.TextObject;
-import net.nexttext.property.BooleanProperty;
 import net.nexttext.behaviour.Action;
 import net.nexttext.behaviour.standard.DoNothing;
 
@@ -32,7 +31,7 @@ import net.nexttext.behaviour.standard.DoNothing;
 /* $Id$ */
 public class OnMouseOut extends OnMouseOver {
     
-    private BooleanProperty isOver;
+    private boolean isOver;
     private boolean wasOver;
     
     /**
@@ -44,7 +43,7 @@ public class OnMouseOut extends OnMouseOver {
     public OnMouseOut(Action trueAction) {
         super(trueAction, new DoNothing());
         
-        isOver = null;
+        isOver = false;
         wasOver = false;
     }
 
@@ -56,16 +55,9 @@ public class OnMouseOut extends OnMouseOver {
      * @return the outcome of the condition
      */
     public boolean condition(TextObject to) {
-        //create a BooleanProperty for each TextObject to avoid shared variables 
-    	if(to.getProperty("isOver") == null)
-        	to.init("isOver", new BooleanProperty(false));
-    	
-    	//get the "isOver" property which is true when the mouse is over the text object
-    	isOver = (BooleanProperty)to.getProperty("isOver");
-    	
-    	wasOver = isOver.get();
-        isOver.set(super.condition(to));
-        if (wasOver && !isOver.get()) {
+        wasOver = isOver;
+        isOver = super.condition(to);
+        if (wasOver && !isOver) {
             return true;
         }
         return false;

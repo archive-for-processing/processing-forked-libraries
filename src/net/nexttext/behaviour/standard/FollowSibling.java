@@ -32,8 +32,8 @@ import net.nexttext.property.Property;
 /**
  * Causes TextObjects to follow their left siblings.
  *
- * <p>The provided TargettingAction is used to have TextObjects follow either their
- * left or right siblings.  </p>
+ * <p>The provided TargettingAction is used to have TextObjects follow their
+ * left siblings.  </p>
  */
 /* $Id$ */
 public class FollowSibling extends AbstractAction {
@@ -56,7 +56,7 @@ public class FollowSibling extends AbstractAction {
      */
     public FollowSibling ( int siblingDirection, TargetingAction action ) {
     	//make sure LEFT or RIGHT sibling is specified
-    	if ((siblingDirection != PConstants.LEFT) && (siblingDirection != PConstants.RIGHT)) {
+    	if ((siblingDirection != PConstants.LEFT) || (siblingDirection != PConstants.RIGHT)) {
     		PApplet.println("Warning: the first argument of FollowSibling must be LEFT or RIGHT. Using default LEFT.");
     		siblingDirection = PConstants.LEFT;
     	}
@@ -68,10 +68,8 @@ public class FollowSibling extends AbstractAction {
     public ActionResult behave( TextObject to ) {
         
         TextObject sibling = null;
-        if (siblingDirection == PConstants.LEFT) 
-        	sibling = to.getLeftSibling();
-        else if (siblingDirection == PConstants.RIGHT) 
-        	sibling = to.getRightSibling();
+        if (siblingDirection == PConstants.LEFT) to.getLeftSibling();
+        else if (siblingDirection == PConstants.RIGHT) to.getRightSibling();
         
         if ( sibling != null ) {   
              action.setTarget( sibling );

@@ -24,12 +24,9 @@ import net.nexttext.Book;
 import net.nexttext.Locatable;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.Action;
-import net.nexttext.behaviour.TargetingAction;
 import net.nexttext.behaviour.standard.DoNothing;
 import net.nexttext.behaviour.control.Condition;
 import net.nexttext.input.*;
-import net.nexttext.behaviour.physics.Approach;
-import net.nexttext.behaviour.standard.MoveTo;
 
 /**
  * A Condition which is true when the TextObject is being dragged by the mouse.
@@ -59,13 +56,6 @@ public class OnDrag extends Condition implements Locatable {
      */
     public OnDrag(Action trueAction) {
         this(MouseDefault.LEFT, trueAction, new DoNothing());
-        //in the case where we want a text object to move towards the mouse when it is being dragged
-        //we want the text object to target the point where it was clicked
-        if (trueAction instanceof MoveTo || trueAction instanceof Approach) {
-        	 TargetingAction mover = (TargetingAction)trueAction;
-        	 mover.setTarget(this);
-        }
-        
     }
     
     /**

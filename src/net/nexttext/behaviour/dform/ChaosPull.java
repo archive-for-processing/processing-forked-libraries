@@ -123,7 +123,7 @@ public class ChaosPull extends DForm implements TargetingAction{
             offset.sub(p);
             
             float pullForce = chaosStrength/(offset.mag()+25);
-            offset.mult(pullForce / offset.mag() );
+            offset.mult( pullForce / offset.mag() );
             
             p.add(offset);
             cP.set(p);  

@@ -33,7 +33,7 @@ import java.util.Iterator;
 import processing.core.PVector;
 
 /**
- * A DForm which pulls the TextObject towards a target.
+ * A DForm which pulls the TextObject towards the mouse.
  */
 /* $Id$ */
 public class Pull extends DForm implements TargetingAction {
@@ -123,7 +123,7 @@ public class Pull extends DForm implements TargetingAction {
             offset.sub(p);
 
             offset.mult(1 / (float)Math.pow(1 + 1 / reach, offset.mag() / speed));
-            
+
             p.add(offset);
             cP.set(p);
         }
