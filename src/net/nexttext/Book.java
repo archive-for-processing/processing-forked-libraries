@@ -258,9 +258,9 @@ public class Book {
 	        for ( Iterator<TextObject> i = objectsToRemove.iterator(); i.hasNext(); ) {
                 TextObject next = i.next();
                 if (next instanceof TextObjectGlyph) {
-                    removeObjectInner(next);
+                    removeObjectInner((TextObjectGlyph) next);
                 } else if (next instanceof TextObjectGroup) {
-                    TextObjectIterator toi = ((TextObjectGroup) next).iterator();
+                    TextObjectGlyphIterator toi = ((TextObjectGroup) next).glyphIterator();
                     while (toi.hasNext()) {
                         removeObjectInner(toi.next());
                     }
@@ -276,7 +276,7 @@ public class Book {
 	/**
 	 * See removeObject(TextObject to)
 	 */
-	private synchronized void removeObjectInner(TextObject to) {
+	private synchronized void removeObjectInner(TextObjectGlyph to) {
 		// remove the object from the spatial list
 		getSpatialList().remove( to );
 		// traverse the behaviour list.  try to remove the object from each
