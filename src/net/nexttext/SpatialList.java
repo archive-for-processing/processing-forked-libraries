@@ -131,7 +131,7 @@ public class SpatialList {
      * from the returned values, because the LEFT and TOP edges have also been
      * inserted in the lists in a lower position.  </p>
 	 */
-	public int[] getPosition( TextObjectGlyph to ) {
+	private int[] getPosition( TextObjectGlyph to ) {
 		int[] position = {0,0,0,0};	// left, right, top, and bottom position
 		
 		// not an empty list for xAxis
@@ -151,58 +151,6 @@ public class SpatialList {
 		
 		return position;
 	}
-	
-	/**
-	 * return an array of TextObjectGlyph
-	 * 
-	 * <p>the int is to know from witch side to return order
-	 * 0-right
-	 * 1-left
-	 * 2-top
-	 * 3-bottom
-	 */
-	
-	public TextObjectGlyph[] getOrder(int side){
-		TextObjectGlyph[] togA = new TextObjectGlyph[xAxis.size()/2];
-		int pointer = 0;
-		if (xAxis.size()==0)
-			return new TextObjectGlyph[0];
-			
-		if (side>4 || side<1){
-			try {
-				throw new Exception("getOrder accept int from 0 to 3");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if (side == 0){
-			for(int i=0;i<xAxis.size(); i++){
-				if(xAxis.get(i).position == side){
-					togA[pointer] = xAxis.get(i).to;
-					pointer ++;
-		}	}	}
-		if (side == 1){
-			for(int i=xAxis.size();i>0; i--){
-				if(xAxis.get(i).position == side){
-					togA[pointer] = xAxis.get(i).to;
-					pointer ++;
-		}	}	}
-		if (side == 2){
-			for(int i=0;i<yAxis.size(); i++){
-				if(yAxis.get(i).position == side){
-					togA[pointer] = yAxis.get(i).to;
-					pointer ++;
-		}	}	}
-		if (side == 3){
-			for(int i=yAxis.size();i>0; i--){
-				if(yAxis.get(i).position == side){
-					togA[pointer] = yAxis.get(i).to;
-					pointer ++;
-		}	}	}
-		return togA;
-		}
-		
-	
 	
 	/**
      * Determine the index in the provided list where an Edge with the given
