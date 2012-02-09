@@ -20,7 +20,6 @@
 package net.nexttext;
 
 import net.nexttext.behaviour.AbstractBehaviour;
-import net.nexttext.behaviour.Behaviour;
 import net.nexttext.property.Property;
 
 import java.awt.FontMetrics;
@@ -40,8 +39,6 @@ import java.util.StringTokenizer;
 import java.util.regex.*;
 
 import processing.core.*;
-
-import net.nexttext.behaviour.physics.Move;
 
 /**
  * Factory class used for creating TextObjects and adding them to NextText.
@@ -168,6 +165,7 @@ public class TextObjectBuilder {
     public void setAddToSpatialList(boolean addToSpatialList) {
         this.addToSpatialList = addToSpatialList;
     }
+
 
     int align = PConstants.LEFT;
     /** Set the horizontal alignment type of the group around the position. */

@@ -53,6 +53,17 @@ public class Push extends PhysicsAction {
         properties().init("Direction", new PVectorProperty( direction ) );
         properties().init("Force", new NumberProperty( force ) );
     }
+    
+    /** 
+     * Set the direction and force of the Push to any given values.
+     * You can even set these values in the draw function.
+     * @param direction the direction of the push
+     * @param force the magnitude of the push
+     */
+    public void set(PVector direction, float force) {
+    	((PVectorProperty)properties.get("Direction")).set( direction );
+    	((NumberProperty)properties.get("Force")).set( force );
+    }
 
     public ActionResult behave( TextObject to ) {
         
@@ -75,36 +86,5 @@ public class Push extends PhysicsAction {
         */      
         // all done
         return new ActionResult(true, true, true);
-    }
-    /** 
-     * Changes the direction and force of the Push at any time.
-     * @param direction the direction of the push
-     * @param force the magnitude of the push
-     */
-    public void set(PVector direction, float force) {
-    	((PVectorProperty)properties.get("Direction")).set( direction );
-    	((NumberProperty)properties.get("Force")).set( force );
-    }
-    /**
-     * Changes the direction and force of the Push at any time.
-     * @param x x-direction of the push
-     * @param y y-direction of the push
-     * @param force the magnitude of the push
-     */
-    public void set(float x, float y, float force) {
-    	((PVectorProperty)properties.get("Direction")).set( new PVector(x, y, 0) );
-    	((NumberProperty)properties.get("Force")).set( force );
-    }
-    
-    /**
-     * Changes the direction and force of the Push at any time.
-     * @param x x-direction of the push
-     * @param y y-direction of the push
-     * @param z z-direction of the push
-     * @param force the magnitude of the push
-     */
-    public void set(float x, float y, float z, float force) {
-    	((PVectorProperty)properties.get("Direction")).set( new PVector(x, y, z) );
-    	((NumberProperty)properties.get("Force")).set( force );
     }
 }

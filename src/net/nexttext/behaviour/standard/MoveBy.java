@@ -58,32 +58,10 @@ public class MoveBy extends AbstractAction implements TargetingAction {
     }
 
     /**
-     * Set Functions included in all behaviours.
-     * Change the target to approach. 
-     */
-    public void set( float x, float y ) {
-    	setTarget(x, y, 0);
-    }
-    
-    /**
-     * Change the target to approach.
-     */
-    public void set( PVector target ) {
-    	setTarget(new PLocatableVector(target));
-    }
-    
-    /**
-     * Change the offset to move by.
-     */
-    public void set(Locatable offset) {
-        this.offset = offset;
-   }
-    
-    /**
      * Sets a target to approach.
      */
-    public void setTarget( float x, float y) {
-    	setTarget(new PLocatableVector(x, y, 0));
+    public void setTarget( float x, float y ) {
+    	setTarget(x, y, 0);
     }
     
     /**

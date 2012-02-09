@@ -28,18 +28,7 @@ import net.nexttext.property.NumberProperty;
  */
 /* $Id$ */
 public class Gravity extends PhysicsAction {
-	
-	/**
-	 * Applies a constant downward force with a default strength of 1.
-	 */
-    public Gravity () {
-    	float strength = 1;
-        properties().init( "Strength", new NumberProperty( strength ));
-    }
-	
-	/**
-	 * Applies a constant downward force with the specified strength.
-	 */
+
     public Gravity ( float strength ) {
         properties().init( "Strength", new NumberProperty(strength) );
     }
@@ -50,12 +39,5 @@ public class Gravity extends PhysicsAction {
         applyAcceleration(to, acc);
         
         return new ActionResult(false, false, false);
-    }
-    
-    /**
-	 * Changes the value of the downward force at any time.
-	 */
-    public void set(float strength) {
-    	((NumberProperty)properties().get("Strenght")).set(strength);
     }
 }

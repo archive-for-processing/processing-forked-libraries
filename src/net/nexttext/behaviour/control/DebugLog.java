@@ -98,20 +98,4 @@ public class DebugLog extends AbstractAction {
             action.complete(to);
         }
     }
-    /**
-     * Set functions to change the prefix and action.
-     * @param prefix
-     */
-    public void set(String prefix) {
-        this.prefix = prefix;
-    }
-    /**
-     * 
-     * @param prefix
-     * @param action
-     */
-    public void set(String prefix, Action action) {
-        this.prefix = prefix;
-        this.action = action;
-    }
 }

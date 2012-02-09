@@ -37,8 +37,8 @@ public class OnMouseDepressed extends Condition {
     int buttonToCheck;
 
     /**
-     * Creates an OnMouseDepressed which performs the given Action when the left mouse
-     *  is pressed.
+     * Creates an OnMouseDepressed which performs the given Action when the mouse 
+     * button 1 is pressed.
      *
      * @param trueAction the Action to perform when the mouse button 1 is pressed
      */
@@ -91,25 +91,5 @@ public class OnMouseDepressed extends Condition {
      */
     public boolean condition(TextObject to) {
         return mouse.isPressed(buttonToCheck);
-    }
-    
-    /**
-     * Set functions to change the button to check and the true and false actions
-     * @param buttonToCheck
-     * @param trueAction
-     * @param falseAction
-     */
-    public void set(int buttonToCheck, Action trueAction, Action falseAction) {
-    	set(trueAction, falseAction);
-    	this.buttonToCheck = buttonToCheck;
-    }
-    
-    public void set(int buttonToCheck, Action trueAction) {
-    	set(trueAction);
-    	this.buttonToCheck = buttonToCheck;
-    }
-    
-    public void set(int buttonToCheck) {
-    	this.buttonToCheck = buttonToCheck;
     }
 }

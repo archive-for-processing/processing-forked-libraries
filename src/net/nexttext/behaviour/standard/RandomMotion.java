@@ -55,12 +55,4 @@ public class RandomMotion extends AbstractAction {
         pos.add(new PVector(rate * (float)(Math.random()-0.5), rate * (float)(Math.random()-0.5)));
         return new ActionResult(false, false, false);
     }
-    
-    /**
-     * Change the speed of the random motion
-     * @param speed the new speed of the motion
-     */
-    public void set (int speed) {
-    	((NumberProperty)properties().get("Speed")).set(speed);
-    }
 }

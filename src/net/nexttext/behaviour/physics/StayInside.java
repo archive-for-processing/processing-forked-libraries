@@ -112,20 +112,11 @@ public class StayInside extends PhysicsAction {
         }
     }
 
-    /** 
-     * Changes the shape to stay inside
-     * @param shape an area to remain inside of. 
-     */
-    public void set(Shape shape) {
-        this.shape = shape;
+    public Shape getShape() {
+        return shape;
     }
-    /** 
-     * Changes the shape to stay inside and the jiggle which keeps the text objects there
-     * @param shape an area to remain inside of. 
-     * @param jiggle amount of pixels to move the objects inside the shape
-     */
-    public void set(Shape shape, float jiggle) {
+
+    public void setShape(Shape shape) {
         this.shape = shape;
-        ((NumberProperty)properties().get("Jiggle")).set(jiggle);
     }
 }

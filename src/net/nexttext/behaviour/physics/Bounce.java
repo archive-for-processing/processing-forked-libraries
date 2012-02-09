@@ -28,29 +28,21 @@ import net.nexttext.property.PVectorProperty;
 
 /**
  * This action performs collision response on two objects by moving them apart
- * and reflects their velocity. Essentially this behaviour is intended to be used in an OnCollision
- * but can nevertheless be used on it's own.
+ * and reflects their velocity.
  */
 /* $Id$ */
 public class Bounce extends PhysicsAction {
     
     private float elasticity;
+    private float absorbEnergy;
     
     /**
-     * By default the collisions are perfectly elastic. Indeed, no energy is lost (or gained) 
-     * when objects bounce away from each other.
-     */
-    public Bounce() {        
-        this.elasticity = 1;
-    }
-    /**Objects will bounce off of each other. An elasticity of 1 is a perfect elastic collision. An 
-     * elasticity between 0 and 1 has objects losing energy when they bounce and greater than one has 
-     * them gaining energy. Note bounce only works if the objects have an initial velocity.
      * @param elasticity The elasticity of collision
+     * @param absorbEnergy Objects absorb energy from each other if non zero
      */
-    public Bounce( float elasticity) {  
-    	if(elasticity < 0) elasticity = 0;
+    public Bounce( float elasticity, float absorbEnergy ) {        
         this.elasticity = elasticity;
+        this.absorbEnergy = absorbEnergy;
     }
            
     /**
@@ -114,12 +106,6 @@ public class Bounce extends PhysicsAction {
             reflectVelocity( getVelocity(toA), mtd );            
         }           
         return new ActionResult(false, false, true);
-    }
-    /**
-     * Set method to change the elasticity at any time
-     */
-    public void set(float elasticity) {
-    	this.elasticity = elasticity;
     }
 
     ////////////////////////////////////////////////////////////////////////////

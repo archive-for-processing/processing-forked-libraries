@@ -69,11 +69,4 @@ public class Tracker extends AbstractAction {
     public boolean isProcessing(TextObject to) {
         return textObjectData.containsKey(to);
     }
-    
-    /**
-     * Change the action to track
-     */
-    public void set(Action action) {
-    	this.action = action;
-    }
 }

@@ -40,7 +40,7 @@ public class PhysicsFactory {
      */
     public static final AbstractBehaviour collide() {        
 	    Behaviour collide;
-	    collide = new Behaviour( new OnCollision( new Bounce()));               
+	    collide = new Behaviour( new OnCollision( new Bounce( 1, 0 )));               
         collide.setDisplayName("Collide");        
         return collide;
     }

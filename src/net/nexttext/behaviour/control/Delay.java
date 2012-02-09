@@ -37,16 +37,6 @@ public class Delay extends AbstractAction {
     
     /**
      * Creates a Delay for the given action.
-     * Default delay time is 10 seconds.
-     */
-    public Delay( Action action) {
-        this.action = action;
-        this.timeLeft = 10000;
-        properties().init("Duration", new NumberProperty(10000));
-    }
-    
-    /**
-     * Creates a Delay for the given action.
      * 
      * @param duration In seconds
      */
@@ -101,32 +91,4 @@ public class Delay extends AbstractAction {
         }        
         return new ActionResult(false, true, false);
     }
-
-	/**
-	     * Change the action to delay.
-	     */
-	    public void set( Action action) {
-	        this.action = action;
-	    }
-	    
-	    /**
-	     * Change the delay time (in seconds).
-	     * @param duration
-	     */
-	    public void set( float duration) {
-	        this.timeLeft = 1000 * (long)duration;
-	        ((NumberProperty)properties().get("Duration")).set(1000* duration);
-	    }
-	    
-	    /**
-	     * Change delay time and action to delay.
-	     * 
-	     * @param duration In seconds
-	     */
-	    public void set( Action action, float duration ) {
-	        set(action);
-	        set(duration);
-	    }
-    
-    
 }

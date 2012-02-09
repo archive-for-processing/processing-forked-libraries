@@ -24,7 +24,6 @@ import java.util.Map;
 
 import processing.core.PVector;
 
-import net.nexttext.Book;
 import net.nexttext.TextObject;
 import net.nexttext.behaviour.AbstractAction;
 import net.nexttext.property.NumberProperty;
@@ -119,7 +118,7 @@ public abstract class PhysicsAction extends AbstractAction {
      * acceleration.  </p>
      */
     public void applyAngularForce(TextObject to, float angularForce) {
-    	NumberProperty totalAngularForce =
+        NumberProperty totalAngularForce =
             (NumberProperty) to.getProperty("AngularForce");
         totalAngularForce.set(totalAngularForce.get() + angularForce);
     }
@@ -130,7 +129,7 @@ public abstract class PhysicsAction extends AbstractAction {
      * <p>This acceleration is independent of the mass of the object.  </p>
      */
     public void applyAngularAcceleration(TextObject to, float angAcc) {
-    	NumberProperty totalAngForce =
+        NumberProperty totalAngForce =
             (NumberProperty) to.getProperty("AngularForce");
 
         float newAngForce = angAcc * getMass(to).get();

@@ -83,5 +83,4 @@ public class OnMousePressed extends OnMouseDepressed {
         }
         return false;
     }
-    
 }

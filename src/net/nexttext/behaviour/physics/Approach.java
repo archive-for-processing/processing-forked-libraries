@@ -20,7 +20,6 @@
 package net.nexttext.behaviour.physics;
 
 import processing.core.PVector;
-import net.nexttext.Book;
 import net.nexttext.Locatable;
 import net.nexttext.PLocatableVector;
 import net.nexttext.TextObject;
@@ -45,7 +44,7 @@ public class Approach extends PhysicsAction implements TargetingAction {
 	 * that Approach will not return done unless the object is right on target.  
      */
     public Approach( Locatable target, float speed, int hitRange ) {
-    	this.target = target;   
+        this.target = target;   
         if ( hitRange < 1 ) hitRange = 1;
         properties().init("Speed", new NumberProperty(speed));
         properties().init("HitRange", new NumberProperty( hitRange ));   
@@ -147,83 +146,7 @@ public class Approach extends PhysicsAction implements TargetingAction {
                 return new ActionResult(false, false, false);
         }
     }
-    //set functions 
-    /**
-     * Set function to change the target, speed, hitRange and canComplete variables
-     */
-    public void set( Locatable target, float speed, int hitRange, boolean canComplete ) {
-    	this.target = target;   
-        if ( hitRange < 1 ) hitRange = 1;
-        ((NumberProperty)properties().get("Speed")).set(speed);
-        ((NumberProperty)properties().get("hitRange")).set(hitRange);
-        ((BooleanProperty)properties().get("CanComplete")).set(canComplete);
-    }
-    
-    /**
-     * Set function to change the target, speed, hitRange and canComplete variables
-     */
-    public void set( Locatable target, float speed, int hitRange) {
-    	this.target = target;   
-        if ( hitRange < 1 ) hitRange = 1;
-        ((NumberProperty)properties().get("Speed")).set(speed);
-        ((NumberProperty)properties().get("hitRange")).set(hitRange);
-    }
-    /**
-     * Set function to change the speed, hitRange and canComplete variables
-     */
-    public void set(float speed, int hitRange, boolean canComplete) {
-        if ( hitRange < 1 ) hitRange = 1;
-        ((NumberProperty)properties().get("Speed")).set(speed);
-        ((NumberProperty)properties().get("hitRange")).set(hitRange);
-        ((BooleanProperty)properties().get("CanComplete")).set(canComplete);
-    }
-    /**
-     * Set function to change the target
-     */
-    public void set( float x, float y ) {
-    	setTarget(x, y, 0);
-    }
-    /**
-     * Set function to change the target, speed and hitRange
-     */
-    public void set( float x, float y, float speed, int hitRange ) {
-    	setTarget(x, y, 0);
-    	if ( hitRange < 1 ) hitRange = 1;
-        ((NumberProperty)properties().get("Speed")).set(speed);
-        ((NumberProperty)properties().get("hitRange")).set(hitRange);
-    }
-    
-    /**
-     * Set functions to change the target
-     */
-    public void set( float x, float y, float z ) {
-    	setTarget(new PLocatableVector(x, y, z));
-    }
-    /**
-     * Set functions to change the target, speed and hit range
-     */
-    public void set ( float x, float y, float z, float speed, int hitRange ) {
-    	setTarget(x, y, z);
-    	if ( hitRange < 1 ) hitRange = 1;
-        ((NumberProperty)properties().get("Speed")).set(speed);
-        ((NumberProperty)properties().get("hitRange")).set(hitRange);
-    }
-    
-    /**
-     * Set functions to change the parameters of the behaviour at any time
-     */
-    public void set( PVector target ) {
-    	setTarget(new PLocatableVector(target));
-    }
-    
-    /**
-     * Set functions to change the parameters of the behaviour at any time
-     */
-    public void set(Locatable target) {
-       	this.target = target;
-    }
 
-    //target setters
     /**
      * Sets a target to approach.
      */

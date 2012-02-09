@@ -26,7 +26,7 @@ import net.nexttext.TextObjectGroup;
 import net.nexttext.behaviour.AbstractAction;
 
 /**
- * WARNING : This function does not work properly yet.
+ * 
  * Resets the spacing between children of a textObjectGroup. It 
  * uses the width of the bounding box of the children of that group
  * plus a constant passed in at construction to space the children.
@@ -73,14 +73,4 @@ public class Kern extends AbstractAction {
         }
         return new ActionResult(true, true, false);
     }
-
-    /**
-     * Change the Kern value.
-     * @param kern
-     */
-	public void set(int kern) {
-	    	this.kern =kern;
-	    }
-    
-    
 }
