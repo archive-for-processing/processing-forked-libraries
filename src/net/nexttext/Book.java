@@ -60,6 +60,8 @@ public class Book {
     public static MouseDefault mouse;
     public static KeyboardDefault keyboard;
     
+    public static boolean bRemoveEmptyGroups = true;
+    
     private PApplet p;
     private PGraphics g;
 
@@ -287,7 +289,32 @@ public class Book {
     	    b.removeObject(to);    	        	    					
     	}
 		// detach the object from the tree
-		to.detach();			
+		to.detach();
+	}
+	
+	private synchronized void removeEmptyGroups() {
+		System.out.println("----- removeEmptyGroups -----");
+		// traverse through all the groups
+		TextObject to = textRoot.getLeftMostChild();
+		while (to != null) {
+			if (to instanceof TextObjectGroup) {
+				TextObjectGroup tog = (TextObjectGroup)to;
+				System.out.println("  Processing TOG '" + tog + "'");
+				if (tog.isEmpty()) {
+					// remove it!
+					System.out.println("  Detaching empty TOG '" + tog + "'");
+					tog.detach();
+					to = textRoot.getLeftMostChild();
+				} else {
+					System.out.println("  Keeping TOG '" + tog + "' with " + tog.getNumChildren() + " children");
+					to = to.getRightSibling();
+				}
+			} else {
+				System.out.println("  Skipping TO '" + to + "'");
+				to = to.getRightSibling();
+			}
+		}
+		System.out.println("----------------------------");
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -307,7 +334,10 @@ public class Book {
 
         // remove all objects flagged for deletion 
         removeQueuedObjects();
-
+        
+        // remove any empty groups
+        if (bRemoveEmptyGroups) removeEmptyGroups();
+        
         // the new frame is calculated, so make it the current frame
         incrementFrameCount();
 
