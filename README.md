@@ -16,7 +16,7 @@ it will need to be installed manually by following the instructions below.
 #### Manual Install
 
 Contributed libraries may be downloaded separately and manually placed within 
-the "libraries" folder of your Processing sketchbook. To find (and change) the 
+the `libraries` folder of your Processing sketchbook. To find (and change) the 
 Processing sketchbook location on your computer, open the Preferences window 
 from the Processing application (PDE) and look for the "Sketchbook location" 
 item at the top.
@@ -28,19 +28,19 @@ contributed library.
 By default the following locations are used for your sketchbook folder: 
   For Mac users, the sketchbook folder is located inside `~/Documents/Processing`. 
   For Windows users, the sketchbook folder is located inside 
-    `'My Documents'/Processing`.
+    `My Documents/Processing`.
 
 The folder structure for library Picking should be as follows:
 
-Processing
-  libraries
-    Picking
-      examples
-      library
-        Picking.jar
-      reference
-      src
-                      
+    Processing
+      libraries
+        Picking
+          examples
+          library
+            Picking.jar
+          reference
+          src
+
 Some folders like `examples` or `src` might be missing. After library 
 Picking has been successfully installed, restart the Processing 
 application.
