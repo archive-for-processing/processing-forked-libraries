@@ -2,7 +2,7 @@
 
 ### Downloads
 
-[Library Guidelines](http://n.clavaud.free.fr/processing/library/picking/)
+[Picking library website](http://n.clavaud.free.fr/processing/library/picking/)
 
 ### How to install library Picking
 
