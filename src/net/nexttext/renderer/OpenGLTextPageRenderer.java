@@ -20,6 +20,7 @@
 package net.nexttext.renderer;
 
 import java.awt.BasicStroke;
+import java.awt.Font;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 
@@ -83,7 +84,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
         g.pushStyle();
 
         // check if the glyph's font has a vector font
-        boolean hasVectorFont = glyph.getFont().getFont() != null;
+        boolean hasVectorFont = glyph.getFont().getNative() != null;
         
         // use the cached path if possible
         GeneralPath gp = null;       
@@ -101,7 +102,7 @@ public class OpenGLTextPageRenderer extends G3DTextPageRenderer {
             } else {
                 // set text properties
                 if (hasVectorFont)
-                	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
+                	g.textFont(glyph.getFont(), ((Font)glyph.getFont().getNative()).getSize());
                 else
                 	g.textFont(glyph.getFont());
                 g.textAlign(PConstants.LEFT, PConstants.BASELINE);

@@ -393,11 +393,11 @@ public class Book {
     
     public static Font loadFontFromPFont(PFont pf) {
     	// get the Font from the PFont
-        Font f = pf.getFont();
+        Font f = (Font)pf.getNative();
         
         // if the font isn't there, try finding it on the machine
         if (f == null)
-            f = pf.findFont();
+            f = PFont.findFont(pf.getName());
         
         return f;
     }

@@ -141,7 +141,7 @@ public class TextObjectBuilder {
         	//size, less memory, while still using large vector glyphs
             if (font.getSize2D() != size) {
             	font = font.deriveFont(size);
-            	pfont.setFont(font);
+            	pfont.setNative(font);
             }
 
         	//this could use the proper FRC from the PApplet's Graphics, but would

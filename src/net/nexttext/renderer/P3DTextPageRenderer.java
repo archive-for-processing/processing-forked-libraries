@@ -88,10 +88,7 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
         g.pushStyle();
 
         // set text properties
-        if (glyph.getFont().getFont() != null)
-        	g.textFont(glyph.getFont(), glyph.getFont().getFont().getSize());
-        else
-        	g.textFont(glyph.getFont());
+        g.textFont(glyph.getFont(), glyph.getFont().getSize());
         g.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
         // use the cached path if possible

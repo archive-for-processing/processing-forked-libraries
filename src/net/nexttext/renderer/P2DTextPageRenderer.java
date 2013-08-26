@@ -19,6 +19,7 @@
 
 package net.nexttext.renderer;
 
+import java.awt.Font;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 
@@ -118,8 +119,8 @@ public class P2DTextPageRenderer extends G2DTextPageRenderer {
         //if the PFont size and the set font size are the same then use the
         //text function to draw bitmaps.
         //this will create better results at small sizes.
-        else if ((glyph.getFont().getFont() == null) ||
-        		 (glyph.getSize() == glyph.getFont().getFont().getSize())) {
+        else if ((glyph.getFont().getNative() == null) ||
+        		 (glyph.getSize() == ((Font)glyph.getFont().getNative()).getSize())) {
         	//set the color
         	pg.fill(glyph.getColorAbsolute().getRGB());
         	//set the font
