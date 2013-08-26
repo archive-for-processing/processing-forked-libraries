@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
-import processing.core.PGraphics2D;
 import processing.core.PGraphicsJava2D;
 import processing.core.PVector;
 import net.nexttext.GeometricException;
@@ -73,7 +72,7 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
 
         //check if the Processing renderer is 2D and keep track of it
         //we need this to make sure we flatten values when needed.
-        if ((g instanceof PGraphics2D) || (g instanceof PGraphicsJava2D)) {
+        if (g instanceof PGraphicsJava2D) {
         	renderer_type = RendererType.TWO_D;
         }
     }
@@ -91,7 +90,6 @@ public class P3DTextPageRenderer extends G3DTextPageRenderer {
         g.textFont(glyph.getFont(), glyph.getFont().getSize());
         g.textAlign(PConstants.LEFT, PConstants.BASELINE);
         
-        // use the cached path if possible
         // use the cached path if possible
         GeneralPath gp = null;       
         if (glyph.isDeformed() || glyph.isStroked())
