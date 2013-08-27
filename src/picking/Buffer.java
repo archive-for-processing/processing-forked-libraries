@@ -82,9 +82,10 @@ public class Buffer extends processing.opengl.PGraphics3D {
     }
 
     public int getId(int x, int y) {
-        super.loadPixels();
+        loadPixels();
         // COLOR -16777216 (black) to -1 => ID -1 (no object) to 16777214 
         int c = pixels[y*width+x];
+
         return (c == -1) ? c : c + 16777215;
     }
 }

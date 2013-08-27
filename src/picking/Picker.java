@@ -46,27 +46,25 @@ public class Picker {
 
     public Picker(PApplet parent) {
         this.parent = parent;
-        buffer = (Buffer) parent.createGraphics(parent.width, parent.height,
-                "picking.Buffer");
+        buffer = (Buffer) parent.createGraphics(parent.width, parent.height, "picking.Buffer");
         buffer.callCheckSettings();
-        if (parent.recorder == null) {
-            parent.recorder = buffer;
-        }
         buffer.background(0);
+
         parent.registerMethod("pre", this);
         parent.registerMethod("draw", this);
         welcome();
     }
 
     public void pre() {
-        buffer.beginDraw();
-        if (parent.recorder == null) {
-            parent.recorder = buffer;
-        }
+        parent.beginRecord(buffer);
     }
 
     public void draw() {
-        buffer.endDraw();
+        // make sure recorder is there before shutting it down
+        if (parent.recorder == null) {
+            parent.recorder = buffer;
+        }
+        parent.endRecord();
     }
 
     /**
@@ -79,6 +77,7 @@ public class Picker {
             PApplet.println("[Picking error] start(): ID out of range");
             return;
         }
+
         if (parent.recorder == null) {
             parent.recorder = buffer;
         }
@@ -105,10 +104,8 @@ public class Picker {
      * Reads the ID of the object at point (x, y) -1 means there is no object at
      * this point
      * 
-     * @param x
-     *            X coordinate
-     * @param y
-     *            Y coordinate
+     * @param x X coordinate
+     * @param y Y coordinate
      * @return Object ID
      */
     public int get(int x, int y) {
@@ -129,7 +126,6 @@ public class Picker {
     }
 
     private void welcome() {
-        System.out
-                .println("##library.name## ##library.prettyVersion## by ##author##");
+        System.out.println("##library.name## ##library.prettyVersion## by ##author##");
     }
 }
