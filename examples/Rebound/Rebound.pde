@@ -32,7 +32,7 @@ boolean renderInternals = false;
 
 void setup() {
   // init the applet
-  size(640, 360, OPENGL);
+  size(640, 360);
   smooth();
 
   // create the book

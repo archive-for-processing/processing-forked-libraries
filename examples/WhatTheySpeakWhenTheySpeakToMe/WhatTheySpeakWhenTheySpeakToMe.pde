@@ -48,7 +48,7 @@ Action swim;
 Action rotateBack;
 
 void setup() {
-  size(900, 600, OPENGL);
+  size(900, 600);
   smooth();
   
   book = new Book(this);

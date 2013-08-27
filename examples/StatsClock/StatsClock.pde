@@ -67,7 +67,7 @@ Kill kill;
 
 void setup() {
   // init the applet
-  size(600, 400, OPENGL);
+  size(600, 400);
   smooth();
   frameRate(FRAMERATES[SECOND]);
   rectMode(CORNER);
