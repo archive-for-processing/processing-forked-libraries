@@ -42,18 +42,27 @@ import javax.swing.JOptionPane;
  * 
  */
 
-public class Baseprogram
+public class BaseProgram
 {
 
 	public final static String VERSION = "##library.prettyVersion##";
 
+	/**
+	 * Open a dialog so that the user can enter an integer value
+	 * 
+	 * @return -1 in case of error, the entered number otherwise
+	 */
 	public static int readInt()
 	{
 		while (true)
 		{
 			try
 			{
-				String lInput = JOptionPane.showInputDialog("Bla");
+				String lInput = JOptionPane.showInputDialog("Please enter a number");
+				if (lInput == null)
+				{
+					return -1;
+				}
 				return Integer.parseInt(lInput);
 			}
 			catch (NumberFormatException pExc)
