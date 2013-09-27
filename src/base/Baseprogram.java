@@ -29,8 +29,6 @@ package base;
 
 import javax.swing.JOptionPane;
 
-import processing.core.*;
-
 /**
  * This is a template class and can be used to start a new processing library or
  * tool. Make sure you rename this class as well as the name of the example
