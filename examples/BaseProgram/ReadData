@@ -1,3 +1,0 @@
-import base.Baseprogram;
-
-println("Integer: " + Baseprogram.readInt());

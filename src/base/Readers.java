@@ -42,7 +42,7 @@ import javax.swing.JOptionPane;
  * 
  */
 
-public class BaseProgram
+public class Readers
 {
 
 	public final static String VERSION = "##library.prettyVersion##";
