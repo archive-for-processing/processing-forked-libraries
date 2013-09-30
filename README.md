@@ -1,6 +1,6 @@
 ## BaseProgram
 
-This is a library of some convenience methods which should help programming novices to create first programs very easily. 
+This is a library of some convenience classes and methods which should help programming novices to create first programs very easily. 
 
 ### Installation
 
