@@ -156,7 +156,13 @@ public class Readers
 	 */
 	public static String readString(String pMessage)
 	{
-		return JOptionPane.showInputDialog(pMessage);
+		String lInput = JOptionPane.showInputDialog(pMessage);
+		if (lInput == null)
+		{
+			lInput = "";
+		}
+
+		return lInput;
 	}
 
 	/**
