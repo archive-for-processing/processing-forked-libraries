@@ -50,13 +50,13 @@ public class Readers
 	 * 
 	 * @return -1 in case of error, the entered number otherwise
 	 */
-	public static int readInt()
+	public static int readInt(String pMessage)
 	{
 		while (true)
 		{
 			try
 			{
-				String lInput = JOptionPane.showInputDialog("Please enter a number");
+				String lInput = JOptionPane.showInputDialog(pMessage);
 				if (lInput == null)
 				{
 					return -1;
@@ -68,6 +68,105 @@ public class Readers
 				continue;
 			}
 		}
+	}
+
+	/**
+	 * Convenience function to read an integer
+	 * 
+	 * @return -1 in case of error, the entered number otherwise
+	 */
+	public static int readInt()
+	{
+		return readInt("Please enter an integer");
+	}
+
+	/**
+	 * Open a dialog so that the user can enter double value
+	 * 
+	 * @return -1.0 in case of error, the entered number otherwise
+	 */
+	public static double readDouble(String pMessage)
+	{
+		while (true)
+		{
+			try
+			{
+				String lInput = JOptionPane.showInputDialog(pMessage);
+				if (lInput == null)
+				{
+					return -1;
+				}
+				return Double.parseDouble(lInput);
+			}
+			catch (NumberFormatException pExc)
+			{
+				continue;
+			}
+		}
+	}
+
+	/**
+	 * Convenience function to read a double value
+	 * 
+	 * @return -1.0 in case of error, the entered number otherwise
+	 */
+	public static double readDouble()
+	{
+		return readDouble("Please enter a double value");
+	}
+
+	/**
+	 * Open a dialog so that the user can enter character value
+	 * 
+	 * @return '\0' in case of error, the entered character at position 0
+	 *         otherwise
+	 */
+	public static char readChar(String pMessage)
+	{
+		while (true)
+		{
+			String lInput = JOptionPane.showInputDialog(pMessage);
+			if (lInput == null)
+			{
+				return '\0';
+			}
+			else if (lInput.length() < 1)
+			{
+				continue;
+			}
+			return lInput.charAt(0);
+		}
+	}
+
+	/**
+	 * Convenience function to read a single character
+	 * 
+	 * @return '\0' in case of error, the entered character at position 0
+	 *         otherwise
+	 */
+	public static char readChar()
+	{
+		return readChar("Please enter a character");
+	}
+
+	/**
+	 * Open a dialog so that the user can enter string
+	 * 
+	 * @return The entered string
+	 */
+	public static String readString(String pMessage)
+	{
+		return JOptionPane.showInputDialog(pMessage);
+	}
+
+	/**
+	 * Convenience function to read a string
+	 * 
+	 * @return The entered string
+	 */
+	public static String readString()
+	{
+		return readString("Please enter a string");
 	}
 
 	/**
