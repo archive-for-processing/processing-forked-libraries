@@ -138,6 +138,7 @@ ${line}
 	
 	
 	<target name="compile">
+	    <echo message="${java.target.version}"/>	    
 		<javac srcdir="${project.tmp}/${project.name}/src" destdir="${project.bin}" source="${java.target.version}" target="${java.target.version}" includeantruntime="false">
 			<classpath>
 				<path refid="classpath"/>
