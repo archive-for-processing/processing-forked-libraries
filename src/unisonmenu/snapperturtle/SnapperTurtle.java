@@ -42,7 +42,7 @@ import processing.core.*;
  *
  */
 
-public class HelloLibrary {
+public class SnapperTurtle {
 	
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
@@ -59,7 +59,7 @@ public class HelloLibrary {
 	 * @example Hello
 	 * @param theParent
 	 */
-	public HelloLibrary(PApplet theParent) {
+	public SnapperTurtle(PApplet theParent) {
 		myParent = theParent;
 		welcome();
 	}
