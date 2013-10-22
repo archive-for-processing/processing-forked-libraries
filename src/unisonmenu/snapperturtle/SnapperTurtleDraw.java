@@ -30,11 +30,9 @@ package unisonmenu.snapperturtle;
 
 import processing.core.*;
 
-/**
- * This is a template class and can be used to start a new processing library or tool.
- * Make sure you rename this class as well as the name of the example package 'template' 
- * to your own library or tool naming convention.
- * 
+/**This class is used for debugging the Snapper Turtle Commands and may functionally be used for
+ * rendering. However, it won't be pretty...
+ *  
  * @example Hello 
  * 
  * (the tag @example followed by the name of an example included in folder 'examples' will
@@ -42,7 +40,7 @@ import processing.core.*;
  *
  */
 
-public class SnapperTurtleDebug  extends SnapperTurtle implements PConstants{
+public class SnapperTurtleDraw  extends SnapperTurtle implements PConstants{
 	
 	// myParent is a reference to the parent sketch
 	PApplet parent=null;
@@ -57,7 +55,7 @@ public class SnapperTurtleDebug  extends SnapperTurtle implements PConstants{
 	 * 
 	 * @param parent The calling 
 	 */
-	public SnapperTurtleDebug(PApplet parent) {
+	public SnapperTurtleDraw(PApplet parent) {
 	    	super();
 		this.parent = parent;
 	}
