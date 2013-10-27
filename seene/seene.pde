@@ -3,6 +3,7 @@ import java.io.DataInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 ArrayList<float[]> verts = new ArrayList<float[]>();
+PShape seeneImg;
 
 void setup()
 {
@@ -71,20 +72,57 @@ var n = {version: z(e, t),
     float D = cameraFX / cameraWidth;
     float P = cameraFY / cameraHeight;
     println("D/P: " + D +""+ P);
+    PImage tex = loadImage("poster.jpg");
+    textureMode(NORMAL);
+    seeneImg = createShape();
     
-    
-    for(int j = 0; j < depthmapheight;j++)
+    seeneImg.beginShape(TRIANGLE_STRIP);
+    seeneImg.noStroke();
+    seeneImg.texture(tex);
+    ArrayList<Float> uIndicies = new ArrayList<Float>();
+    for(int j = 0; j < depthmapheight-1; j++)
     {
-      for(int i = 0; i < depthmapwidth;i++)  
+      for(int i = 0; i < depthmapwidth-1;i++)  
       {
         float k = fOut[j * depthmapwidth + i];
         float vert[] = new float[]{k * ((i + .5) / depthmapwidth - .5) / D, 
                                   -k * ((j + .5) / depthmapheight - .5) / P, 
                                   -(k - 1)};
         verts.add(vert);
-    println("vert[" + (j * depthmapwidth + i) + "]: " + vert[0] + ", "+ vert[1] + ", "+ vert[2]);
+        
+        uIndicies.add((i + .5) / depthmapwidth);
+        uIndicies.add(1 - (j + .5) / depthmapheight);
+        seeneImg.vertex(k * ((i + .5) / depthmapwidth - .5) / D, 
+                                  -k * ((j + .5) / depthmapheight - .5) / P, 
+                                  -(k - 1),
+                                  (i + .5) / depthmapwidth,
+                                  1 - (j + .5) / depthmapheight);
+        k = fOut[j * depthmapwidth + i+1];
+        seeneImg.vertex(k * ((i+1 + .5) / depthmapwidth - .5) / D, 
+                                  -k * ((j + .5) / depthmapheight - .5) / P, 
+                                  -(k - 1),
+                                  (i+1 + .5) / depthmapwidth,
+                                  1 - (j + .5) / depthmapheight);
+        k = fOut[(j+1) * depthmapwidth + i];
+        seeneImg.vertex(k * ((i + .5) / depthmapwidth - .5) / D, 
+                                  -k * ((j+1 + .5) / depthmapheight - .5) / P, 
+                                  -(k - 1),
+                                  (i + .5) / depthmapwidth,
+                                  1 - (j+1 + .5) / depthmapheight);
+        k = fOut[(j+1) * depthmapwidth + i+1];
+        seeneImg.vertex(k * ((i+1 + .5) / depthmapwidth - .5) / D, 
+                                  -k * ((j+1 + .5) / depthmapheight - .5) / P, 
+                                  -(k - 1),
+                                  (i+1 + .5) / depthmapwidth,
+                                  1 - (j+1 + .5) / depthmapheight);
+                                
+                                  
+                                  
+                                  
+//    println("vert[" + (j * depthmapwidth + i) + "]: " + vert[0] + ", "+ vert[1] + ", "+ vert[2]);
       }
     }
+    seeneImg.endShape();
     /*
      var n = this, i = 0, s = [], o = [], u = [], a, f, l, y, b, w, E, S, x, T, N, C, k, L, A, O, M, _;
     var s = new Float32Array(e, i, r.depthmap_width * r.depthmap_height), 
@@ -168,9 +206,16 @@ void draw()
 {
   background(0);
   stroke(255);
+  translate(width/2,height/2);
+  rotateX(millis()/1000.f);
+  rotateY(millis()/2200.f);
+  rotateZ(millis()/2101.f);
+  scale(mouseY*800/height);
   for(float[] item : verts )
   {
-    point(item[0],item[1],item[2]);
+//    point(item[0],item[1],item[2]);
 //   System.out.println(item);
   }
+  shape(seeneImg);
+//  image(loadImage("poster.jpg"),0,0);
 }
