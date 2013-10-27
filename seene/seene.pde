@@ -1,10 +1,13 @@
 import java.io.FileInputStream;
 import java.io.DataInputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 void setup()
 {
   try
   {
-    FileInputStream fin = new FileInputStream("/Users/admin/Documents/Processing/seene/data/scene.oemodel");
+    FileInputStream fin = new FileInputStream("/Users/admin/processing-library-template/seene/data/scene.oemodel");
     println("fin.available(): " + fin.available());
     DataInputStream in = new DataInputStream(fin);
 
@@ -37,17 +40,16 @@ var n = {version: z(e, t),
     println("cameraFX: " + cameraFX);
     
     //at byte 16 should be something like 1247.39842
-    float cameraFY = in.readFloat();
+    float cameraFY = getFloatAtCurPos(in);
     println("cameraFy: " + cameraFY);
     
     //at byte 20 should be something like 0.023
-    float cameraK1 = in.readFloat();
+    float cameraK1 = getFloatAtCurPos(in);
     println("cameraK1: " + cameraK1);
     
     //at byte 20 should be something like .3207...
-    float cameraK2 = in.readFloat();
+    float cameraK2 = getFloatAtCurPos(in);
     println("cameraK2: " + cameraK2);
-    
     
     //at byte 28 ~~90
     int depthmapwidth = Integer.reverseBytes(in.readInt());
@@ -60,22 +62,25 @@ var n = {version: z(e, t),
     float fOut[] = new float[floatCount];
         for(int i = 0; i<fOut.length;i++)
     {
-     fOut[i] =  in.readFloat();
+     fOut[i] =  getFloatAtCurPos(in);
 //     print(",[" +i + "]: " + fOut[i]);
     }
     
-    double D = cameraFX / cameraWidth;
-    double P = cameraFY / cameraHeight;
+    float D = cameraFX / cameraWidth;
+    float P = cameraFY / cameraHeight;
     println("D/P: " + D +""+ P);
+    
+    ArrayList<float[]> verts = new ArrayList<float[]>();
     for(int j = 0; j < depthmapheight;j++)
     {
       for(int i = 0; i < depthmapwidth;i++)  
       {
-        double k = fOut[j * depthmapwidth + i];
-        double vert[] = new double[]{k * ((i + .5) / depthmapwidth - .5) / D, 
+        float k = fOut[j * depthmapwidth + i];
+        float vert[] = new float[]{k * ((i + .5) / depthmapwidth - .5) / D, 
                                   -k * ((j + .5) / depthmapheight - .5) / P, 
                                   -(k - 1)};
-//                                  println("vert[" + (j * depthmapwidth + i) + "]: " + vert[0] + ", "+ vert[1] + ", "+ vert[2]);
+        verts.add(vert);
+    println("vert[" + (j * depthmapwidth + i) + "]: " + vert[0] + ", "+ vert[1] + ", "+ vert[2]);
       }
     }
     /*
@@ -98,9 +103,8 @@ var n = {version: z(e, t),
                                  (H - 1) * r.depthmap_width + B, 
                                  H * r.depthmap_width + B - 1, 
                                  H * r.depthmap_width + B];
-                        h(n, 
-                          F[0], F[2], F[1], 0), 
-                          h(n, F[1], F[2], F[3], 0), 
+                        h(n,F[0], F[2], F[1], 0), 
+                        h(n, F[1], F[2], F[3], 0), 
                           m(n.faceVertexUvs[0], 
                             u[F[0] * 2], 
                             u[F[0] * 2 + 1], 
@@ -118,12 +122,17 @@ var n = {version: z(e, t),
                     }
                 }
             this.computeCentroids(), this.computeFaceNormals()
+            
             function m(e, n, r, i, s, o, u) 
             {
               e.push([new t.Vector2(n, r), 
               new t.Vector2(i, s), 
               new t.Vector2(o, u)])
             }
+            // n r i - are indicies
+            function h(e, n, r, i, s) {
+              e.faces.push(new t.Face3(n, r, i, null, null, s))
+        }
     */
     println("done. len = " + fOut.length/3);
 }
@@ -134,11 +143,16 @@ catch(Exception e)
 }
 
 
-float getFloatAtCurPos( DataInputStream in)
+float getFloatAtCurPos(DataInputStream in)
 {
+  byte[] bytes = new byte[4];
   float result = 0;
   try{
-  result = in.readFloat();
+    for(int i = bytes.length-1; i >= 0; i--)
+      bytes[i] = in.readByte();
+      
+    result = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN ).getFloat();
+//  result = in.readFloat();
   }
   catch(Exception e)
   {
@@ -147,3 +161,8 @@ float getFloatAtCurPos( DataInputStream in)
   return result;
 }
 
+
+void draw()
+{
+  
+}
