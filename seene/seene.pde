@@ -2,9 +2,11 @@ import java.io.FileInputStream;
 import java.io.DataInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+ArrayList<float[]> verts = new ArrayList<float[]>();
 
 void setup()
 {
+  size(500,500,P3D);
   try
   {
     FileInputStream fin = new FileInputStream("/Users/admin/processing-library-template/seene/data/scene.oemodel");
@@ -70,7 +72,7 @@ var n = {version: z(e, t),
     float P = cameraFY / cameraHeight;
     println("D/P: " + D +""+ P);
     
-    ArrayList<float[]> verts = new ArrayList<float[]>();
+    
     for(int j = 0; j < depthmapheight;j++)
     {
       for(int i = 0; i < depthmapwidth;i++)  
@@ -164,5 +166,11 @@ float getFloatAtCurPos(DataInputStream in)
 
 void draw()
 {
-  
+  background(0);
+  stroke(255);
+  for(float[] item : verts )
+  {
+    point(item[0],item[1],item[2]);
+//   System.out.println(item);
+  }
 }
