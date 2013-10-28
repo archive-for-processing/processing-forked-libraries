@@ -89,32 +89,35 @@ var n = {version: z(e, t),
                                   -k * ((j + .5) / depthmapheight - .5) / P, 
                                   -(k - 1)};
         verts.add(vert);
-        
         uIndicies.add((i + .5) / depthmapwidth);
         uIndicies.add(1 - (j + .5) / depthmapheight);
+        
         seeneImg.vertex(k * ((i + .5) / depthmapwidth - .5) / D, 
-                                  -k * ((j + .5) / depthmapheight - .5) / P, 
-                                  -(k - 1),
-                                  (i + .5) / depthmapwidth,
-                                  1 - (j + .5) / depthmapheight);
+                        -k * ((j + .5) / depthmapheight - .5) / P, 
+                        -(k - 1),
+                        (i + .5) / depthmapwidth,
+                        1 - (j + .5) / depthmapheight);
+                                  
         k = fOut[j * depthmapwidth + i+1];
         seeneImg.vertex(k * ((i+1 + .5) / depthmapwidth - .5) / D, 
-                                  -k * ((j + .5) / depthmapheight - .5) / P, 
-                                  -(k - 1),
-                                  (i+1 + .5) / depthmapwidth,
-                                  1 - (j + .5) / depthmapheight);
+                        -k * ((j + .5) / depthmapheight - .5) / P, 
+                        -(k - 1),
+                        (i+1 + .5) / depthmapwidth,
+                        1 - (j + .5) / depthmapheight);
+                                  
         k = fOut[(j+1) * depthmapwidth + i];
         seeneImg.vertex(k * ((i + .5) / depthmapwidth - .5) / D, 
-                                  -k * ((j+1 + .5) / depthmapheight - .5) / P, 
-                                  -(k - 1),
-                                  (i + .5) / depthmapwidth,
-                                  1 - (j+1 + .5) / depthmapheight);
+                        -k * ((j+1 + .5) / depthmapheight - .5) / P, 
+                        -(k - 1),
+                        (i + .5) / depthmapwidth,
+                         1 - (j+1 + .5) / depthmapheight);
+                         
         k = fOut[(j+1) * depthmapwidth + i+1];
         seeneImg.vertex(k * ((i+1 + .5) / depthmapwidth - .5) / D, 
-                                  -k * ((j+1 + .5) / depthmapheight - .5) / P, 
-                                  -(k - 1),
-                                  (i+1 + .5) / depthmapwidth,
-                                  1 - (j+1 + .5) / depthmapheight);
+                        -k * ((j+1 + .5) / depthmapheight - .5) / P, 
+                        -(k - 1),
+                        (i+1 + .5) / depthmapwidth,
+                         1 - (j+1 + .5) / depthmapheight);
                                 
                                   
                                   
