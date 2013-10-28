@@ -1,7 +1,16 @@
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
 import java.io.FileInputStream;
 import java.io.DataInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import java.io.InputStream;import java.net.URL;
 ArrayList<float[]> verts = new ArrayList<float[]>();
 PShape seeneImg;
 
@@ -10,7 +19,9 @@ void setup()
   size(500,500,P3D);
   try
   {
-    FileInputStream fin = new FileInputStream("/Users/admin/processing-library-template/seene/data/scene.oemodel");
+    InputStream fin = null;
+      fin = new URL("https://camera-storage.s3.amazonaws.com/uploads/scene/model/f3309098-4d40-459b-bb85-38d5ed056689/scene.oemodel").openStream();
+//    FileInputStream fin = new FileInputStream("/Users/admin/processing-library-template/seene/data/scene (4).oemodel");
     println("fin.available(): " + fin.available());
     DataInputStream in = new DataInputStream(fin);
 
@@ -72,60 +83,86 @@ var n = {version: z(e, t),
     float D = cameraFX / cameraWidth;
     float P = cameraFY / cameraHeight;
     println("D/P: " + D +""+ P);
-    PImage tex = loadImage("poster.jpg");
+    PImage tex = loadImage("https://camera-storage.s3.amazonaws.com/uploads/scene/poster/f3309098-4d40-459b-bb85-38d5ed056689/poster.jpg");
     textureMode(NORMAL);
     seeneImg = createShape();
     
-    seeneImg.beginShape(TRIANGLE_STRIP);
-    seeneImg.noStroke();
+    seeneImg.beginShape(TRIANGLES);
     seeneImg.texture(tex);
-    ArrayList<Float> uIndicies = new ArrayList<Float>();
+    seeneImg.noStroke();
+    
     for(int j = 0; j < depthmapheight-1; j++)
     {
       for(int i = 0; i < depthmapwidth-1;i++)  
       {
-        float k = fOut[j * depthmapwidth + i];
-        float vert[] = new float[]{k * ((i + .5) / depthmapwidth - .5) / D, 
-                                  -k * ((j + .5) / depthmapheight - .5) / P, 
-                                  -(k - 1)};
-        verts.add(vert);
-        uIndicies.add((i + .5) / depthmapwidth);
-        uIndicies.add(1 - (j + .5) / depthmapheight);
+        float depthVal = fOut[j * depthmapwidth + i];
+        PVector upperLeft = new PVector(-depthVal * ((i + .5) / depthmapwidth - .5) / D, 
+                                        -depthVal * ((j + .5) / depthmapheight - .5) / P, 
+                                        -(depthVal - 1));
+        PVector upperLeftUV = new PVector((i + .5) / depthmapwidth,
+                                          (j + .5) / depthmapheight);
+                                          
+        depthVal = fOut[j * depthmapwidth + i+1];
+        PVector upperRight = new PVector(-depthVal * ((i+1 + .5) / depthmapwidth - .5) / D, 
+                                        -depthVal * ((j + .5) / depthmapheight - .5) / P, 
+                                        -(depthVal - 1));
+        PVector upperRightUV = new PVector((i+1 + .5) / depthmapwidth,
+                                          (j + .5) / depthmapheight);                                     
+                                          
+        depthVal = fOut[(j+1) * depthmapwidth + i];
+        PVector lowerLeft = new PVector(-depthVal * ((i + .5) / depthmapwidth - .5) / D, 
+                                        -depthVal * ((j+1 + .5) / depthmapheight - .5) / P, 
+                                        -(depthVal - 1));
+        PVector lowerLeftUV = new PVector((i + .5) / depthmapwidth,
+                                           (j+1 + .5) / depthmapheight);
+
+        depthVal = fOut[(j+1) * depthmapwidth + i+1];
+         PVector lowerRight = new PVector(-depthVal * ((i+1 + .5) / depthmapwidth - .5) / D, 
+                                          -depthVal * ((j+1 + .5) / depthmapheight - .5) / P, 
+                                          -(depthVal - 1));
+        PVector lowerRightUV = new PVector((i+1 + .5) / depthmapwidth,
+                                           (j+1 + .5) / depthmapheight);
+                                           
+        PVector tri1Norm = PVector.sub(lowerLeft,upperLeft).cross( PVector.sub(upperRight,upperLeft));
+        tri1Norm.normalize();
+        PVector tri2Norm = PVector.sub(upperRight,lowerRight).cross( PVector.sub(lowerLeft,lowerRight));
+        tri2Norm.normalize();
         
-        seeneImg.vertex(k * ((i + .5) / depthmapwidth - .5) / D, 
-                        -k * ((j + .5) / depthmapheight - .5) / P, 
-                        -(k - 1),
-                        (i + .5) / depthmapwidth,
-                        1 - (j + .5) / depthmapheight);
+        seeneImg.normal(tri1Norm.x,tri1Norm.y,tri1Norm.z);
+        seeneImg.vertex(upperLeft.x, upperLeft.y, upperLeft.z
+                        ,upperLeftUV.x,upperLeftUV.y
+                        );
+        seeneImg.normal(tri1Norm.x,tri1Norm.y,tri1Norm.z);                          
+        seeneImg.vertex(upperRight.x, upperRight.y, upperRight.z
+                        ,upperRightUV.x,upperRightUV.y
+                        );
                                   
-        k = fOut[j * depthmapwidth + i+1];
-        seeneImg.vertex(k * ((i+1 + .5) / depthmapwidth - .5) / D, 
-                        -k * ((j + .5) / depthmapheight - .5) / P, 
-                        -(k - 1),
-                        (i+1 + .5) / depthmapwidth,
-                        1 - (j + .5) / depthmapheight);
-                                  
-        k = fOut[(j+1) * depthmapwidth + i];
-        seeneImg.vertex(k * ((i + .5) / depthmapwidth - .5) / D, 
-                        -k * ((j+1 + .5) / depthmapheight - .5) / P, 
-                        -(k - 1),
-                        (i + .5) / depthmapwidth,
-                         1 - (j+1 + .5) / depthmapheight);
-                         
-        k = fOut[(j+1) * depthmapwidth + i+1];
-        seeneImg.vertex(k * ((i+1 + .5) / depthmapwidth - .5) / D, 
-                        -k * ((j+1 + .5) / depthmapheight - .5) / P, 
-                        -(k - 1),
-                        (i+1 + .5) / depthmapwidth,
-                         1 - (j+1 + .5) / depthmapheight);
-                                
-                                  
-                                  
-                                  
+        seeneImg.normal(tri1Norm.x,tri1Norm.y,tri1Norm.z);
+        seeneImg.vertex(lowerLeft.x, lowerLeft.y, lowerLeft.z
+                        ,lowerLeftUV.x,lowerLeftUV.y
+                        );
+                        
+        // new bottom triangle - add same vert again     
+        seeneImg.normal(tri2Norm.x,tri2Norm.y,tri2Norm.z);        
+        seeneImg.vertex(lowerLeft.x, lowerLeft.y, lowerLeft.z
+                        ,lowerLeftUV.x,lowerLeftUV.y
+                        );
+                        
+        seeneImg.normal(tri2Norm.x,tri2Norm.y,tri2Norm.z); 
+        seeneImg.vertex(upperRight.x, upperRight.y, upperRight.z
+                        ,upperRightUV.x, upperRightUV.y
+                        );
+
+        seeneImg.normal(tri2Norm.x,tri2Norm.y,tri2Norm.z); 
+        seeneImg.vertex(lowerRight.x, lowerRight.y, lowerRight.z
+                        ,lowerRightUV.x, lowerRightUV.y
+                         );             
 //    println("vert[" + (j * depthmapwidth + i) + "]: " + vert[0] + ", "+ vert[1] + ", "+ vert[2]);
       }
+    
     }
-    seeneImg.endShape();
+seeneImg.endShape();
+  seeneImg.rotateZ(-PI/2);
     /*
      var n = this, i = 0, s = [], o = [], u = [], a, f, l, y, b, w, E, S, x, T, N, C, k, L, A, O, M, _;
     var s = new Float32Array(e, i, r.depthmap_width * r.depthmap_height), 
@@ -208,12 +245,13 @@ float getFloatAtCurPos(DataInputStream in)
 void draw()
 {
   background(0);
+//  lights();
   stroke(255);
   translate(width/2,height/2);
-  rotateX(millis()/1000.f);
-  rotateY(millis()/2200.f);
-  rotateZ(millis()/2101.f);
-  scale(mouseY*800/height);
+//  rotateX(millis()/1000.f);
+//  rotateY(millis()/2200.f);
+
+  scale(mouseY*1800/height);
   for(float[] item : verts )
   {
 //    point(item[0],item[1],item[2]);
