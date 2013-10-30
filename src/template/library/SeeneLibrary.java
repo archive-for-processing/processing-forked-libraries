@@ -28,7 +28,13 @@
 package template.library;
 
 
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import processing.core.*;
+import template.library.SeeneObject;
 
 /**
  * This is a template class and can be used to start a new processing library or tool.
@@ -42,7 +48,8 @@ import processing.core.*;
  *
  */
 
-public class HelloLibrary {
+public class SeeneLibrary 
+{
 	
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
@@ -53,24 +60,48 @@ public class HelloLibrary {
 	
 
 	/**
+	 * private no-param Constructor mad private to keep anyone from initializing the 
+	 * Seene Lib without passing in a pointer to the PApplet object
+	 */
+	private SeeneLibrary() 
+	{
+	}	
+	
+	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
 	 * 
 	 * @example Hello
 	 * @param theParent
 	 */
-	public HelloLibrary(PApplet theParent) {
+	public SeeneLibrary(PApplet theParent) 
+	{
 		myParent = theParent;
 		welcome();
 	}
 	
 	
-	private void welcome() {
+	private void welcome() 
+	{
 		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
 	}
 	
+	public SeeneObject createSeeneObject()
+	{
+		return new SeeneObject(myParent);
+	}
 	
-	public String sayHello() {
+	public SeeneObject createSeeneObjectFromURL(String URL)
+	{
+		return new SeeneObject(myParent,URL);
+	}
+	public SeeneObject createSeeneObjectFromFile(String oeModelFilePath, String textureFilePath)
+	{
+		return new SeeneObject(myParent,oeModelFilePath,textureFilePath);
+	}
+	
+	public String sayHello() 
+	{
 		return "hello library.";
 	}
 	/**
@@ -78,7 +109,8 @@ public class HelloLibrary {
 	 * 
 	 * @return String
 	 */
-	public static String version() {
+	public static String version() 
+	{
 		return VERSION;
 	}
 
@@ -89,7 +121,8 @@ public class HelloLibrary {
 	 * @param theB
 	 *          the height of test
 	 */
-	public void setVariable(int theA, int theB) {
+	public void setVariable(int theA, int theB) 
+	{
 		myVariable = theA + theB;
 	}
 
@@ -97,8 +130,11 @@ public class HelloLibrary {
 	 * 
 	 * @return int
 	 */
-	public int getVariable() {
+	public int getVariable() 
+	{
 		return myVariable;
 	}
+	
+	
 }
 
