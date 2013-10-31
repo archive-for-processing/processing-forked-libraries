@@ -3,6 +3,7 @@ package template.library;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -49,6 +50,7 @@ public class SeeneObject {
 		InputStream is = null;
 		try {
 			is = new URL(oeModelandTextureURL[0]).openStream();
+			loadSeeneShapeFromFile(is);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,8 +65,13 @@ public class SeeneObject {
 		mParent = applet;
 		mModelFilePath = oeModelFileName;
 		mTexture = mParent.loadImage(textureFileName);
-		
-		loadSeeneShapeFromFile();
+//		FileInputStream fin = new FileInputStream(mModelFilePath);
+		try {
+			loadSeeneShapeFromFile(new FileInputStream(mModelFilePath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private String[] getOEModelAndTextureURL(String seeneURL)
@@ -100,19 +107,19 @@ public class SeeneObject {
 		            	   }
 	            	   }
 	            	   
-	            	   processStr = data.split("fullsize_poster.jpg");
+	            	   processStr = data.split("/poster.jpg");
 	            	   if(processStr != null)
 	            	   {
 		            	   processStr = processStr[0].split("\"");
 		            	   if(processStr.length > 0)
 		            	   {
-		            		   textureStr = processStr[processStr.length-1] + "fullsize_poster.jpg";
+		            		   textureStr = processStr[processStr.length-1] + "/poster.jpg";
 			                   System.out.println(textureStr);
 		            	   }
 	            	   }
             	   }
                }
-               System.out.println("-------------------");            
+//               System.out.println("-------------------");            
          }
         
 		return new String []{modelStr,textureStr};
@@ -143,14 +150,14 @@ public class SeeneObject {
 	//walks the oeModel binary and reconstructs the 3D Data from
 	//it.  As of Oct. 28th 2013 the Java here faithfully reproduces 
 	// the models found on the website and in the app.
-	public void  loadSeeneShapeFromFile() 
+	public void  loadSeeneShapeFromFile(InputStream inputStream) 
 	{
 		mShape = null;
 		try
 		  {
-		    FileInputStream fin = new FileInputStream(mModelFilePath);
+//		    FileInputStream fin = new FileInputStream(mModelFilePath);
 //		    System.out.println("fin.available(): " + fin.available());
-		    DataInputStream in = new DataInputStream(fin);
+		    DataInputStream in = new DataInputStream(inputStream);
 
 		/*
 		var n = {version: z(e, t),
