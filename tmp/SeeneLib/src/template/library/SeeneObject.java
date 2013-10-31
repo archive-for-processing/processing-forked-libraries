@@ -49,6 +49,7 @@ public class SeeneObject {
 		InputStream is = null;
 		try {
 			is = new URL(oeModelandTextureURL[0]).openStream();
+			loadSeeneShapeFromFile( is );
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,8 +64,15 @@ public class SeeneObject {
 		mParent = applet;
 		mModelFilePath = oeModelFileName;
 		mTexture = mParent.loadImage(textureFileName);
-		
-		loadSeeneShapeFromFile();
+		try
+		{
+			DataInputStream in = new DataInputStream(new FileInputStream(mModelFilePath));
+			loadSeeneShapeFromFile( in );
+		}
+		catch(Exception e)
+		{
+			
+		}
 	}
 	
 	private String[] getOEModelAndTextureURL(String seeneURL)
@@ -143,14 +151,14 @@ public class SeeneObject {
 	//walks the oeModel binary and reconstructs the 3D Data from
 	//it.  As of Oct. 28th 2013 the Java here faithfully reproduces 
 	// the models found on the website and in the app.
-	public void  loadSeeneShapeFromFile() 
+	public void  loadSeeneShapeFromFile(InputStream is) 
 	{
 		mShape = null;
 		try
 		  {
-		    FileInputStream fin = new FileInputStream(mModelFilePath);
+//		    FileInputStream fin = new FileInputStream(mModelFilePath);
 //		    System.out.println("fin.available(): " + fin.available());
-		    DataInputStream in = new DataInputStream(fin);
+//		    DataInputStream in = new DataInputStream(fin);
 
 		/*
 		var n = {version: z(e, t),

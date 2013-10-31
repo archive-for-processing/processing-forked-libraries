@@ -1,9 +1,9 @@
 /**
- * ##library.name##
- * ##library.sentence##
- * ##library.url##
+ * SeeneLib
+ * A utility to allow editing and presentation of Seene files
+ * http://yourlibraryname.com
  *
- * Copyright ##copyright## ##author##
+ * Copyright (c) 2013 Ben Van Citters http://www.benvancitters.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +20,9 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA  02111-1307  USA
  * 
- * @author      ##author##
- * @modified    ##date##
- * @version     ##library.prettyVersion## (##library.version##)
+ * @author      Ben Van Citters http://www.benvancitters.com
+ * @modified    10/31/2013
+ * @version     1.0.0 (1)
  */
 
 package template.library;
@@ -56,7 +56,7 @@ public class SeeneLibrary
 
 	int myVariable = 0;
 	
-	public final static String VERSION = "##library.prettyVersion##";
+	public final static String VERSION = "1.0.0";
 	
 
 	/**
@@ -83,7 +83,7 @@ public class SeeneLibrary
 	
 	private void welcome() 
 	{
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
+		System.out.println("SeeneLib 1.0.0 by Ben Van Citters http://www.benvancitters.com");
 	}
 	
 	public SeeneObject createSeeneObject()
