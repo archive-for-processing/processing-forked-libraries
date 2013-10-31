@@ -1,13 +1,12 @@
 import template.library.*;
 
 SeeneLibrary seeneLibrary;
-SeeneObject so;
+SeeneObject seeneObject;
 void setup() 
 {
   size(700,700,P3D);
   seeneLibrary = new SeeneLibrary(this);
-  println(seeneLibrary);
-  so = seeneLibrary.createSeeneObjectFromURL("http://seene.co/s/rUaySD");
+  seeneObject = seeneLibrary.createSeeneObjectFromURL("http://seene.co/s/rUaySD");
 }
 
 void draw() 
@@ -20,7 +19,7 @@ void draw()
   {
     translate(mouseX/2,mouseY/2-height/4,-500);
     rotateY(PI*(mouseX*1.f/width-1/2));
-    so.draw();
+    seeneObject.draw();
   }
   popMatrix();
 }
