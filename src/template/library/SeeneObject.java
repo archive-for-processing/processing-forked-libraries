@@ -298,7 +298,7 @@ public class SeeneObject {
 		    mShape.rotateZ(-PConstants.PI/2);
 		    //apparently setting the scale flattens the mesh???
 		    mShape.is3D(true);
-		    mShape.scale(400,400,400);
+		    mShape.scale(400);
 		    /*
 		     var n = this, i = 0, s = [], o = [], u = [], a, f, l, y, b, w, E, S, x, T, N, C, k, L, A, O, M, _;
 		    var s = new Float32Array(e, i, r.depthmap_width * r.depthmap_height), 
@@ -363,6 +363,11 @@ public class SeeneObject {
 	public PShape getShape()
 	{
 		return mShape;// mParent.createShape(mShape);
+	}
+	
+	public PImage getTextureImage()
+	{
+		return mTexture;// mParent.createShape(mShape);
 	}
 	
 	public void draw()

@@ -2,25 +2,26 @@ import template.library.*;
 
 SeeneLibrary seeneLibrary;
 SeeneObject seeneObject;
+PImage seeneTexture;
 
 void setup() 
 {
   size(700,700,P3D);
   seeneLibrary = new SeeneLibrary(this);
   seeneObject = seeneLibrary.createSeeneObjectFromURL("http://seene.co/s/rUaySD");
+  seeneTexture = seeneObject.getTextureImage();
 }
 
 void draw() 
 {
   background(0);
-  fill(255);
-  translate(width/2,height/2,-500);
+  
   pushMatrix();
-  for(int i = 0; i < 50; i++)
-  {
-    translate(mouseX/2,mouseY/2-height/4,-500);
-    rotateY(PI*(mouseX*1.f/width-1/2));
-    seeneObject.draw();
-  }
+  translate(width/2,height/2,-500);
+  rotateY(mouseX*TWO_PI/width);
+  rotateX(mouseY*TWO_PI/height);
+  rotateZ(-PI/2);
+  translate(-seeneTexture.width/2,-seeneTexture.height/2);
+  image(seeneTexture,0,0);
   popMatrix();
 }
