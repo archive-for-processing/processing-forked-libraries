@@ -66,14 +66,31 @@ public class SeeneObject {
 		mModelFilePath = oeModelFileName;
 		mTexture = mParent.loadImage(textureFileName);
 //		FileInputStream fin = new FileInputStream(mModelFilePath);
-		try {
+		try 
+		{	
 			loadSeeneShapeFromFile(new FileInputStream(mModelFilePath));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileNotFoundException e) 
+		{
+			try 
+			{
+				loadSeeneShapeFromFile(new FileInputStream(mParent.sketchPath("")+mModelFilePath));
+			} catch (FileNotFoundException e2) 
+			{
+				// TODO Auto-generated catch block
+				try 
+				{
+					loadSeeneShapeFromFile(new FileInputStream(mParent.dataPath("")+"/"+mModelFilePath));
+				} catch (FileNotFoundException e3) 
+				{
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+			}
 		}
 	}
 	
+	//parses the typical seene site and extracts the 
+	//url for the oemodel and texture
 	private String[] getOEModelAndTextureURL(String seeneURL)
 	{
 		Document doc = null;
@@ -103,7 +120,7 @@ public class SeeneObject {
 		            	   if(processStr.length > 0)
 		            	   {
 			            	   modelStr = processStr[processStr.length-1] + "oemodel";
-			                   System.out.println(modelStr);
+			                   //System.out.println(modelStr);
 		            	   }
 	            	   }
 	            	   
@@ -114,14 +131,12 @@ public class SeeneObject {
 		            	   if(processStr.length > 0)
 		            	   {
 		            		   textureStr = processStr[processStr.length-1] + "/poster.jpg";
-			                   System.out.println(textureStr);
+			                   //System.out.println(textureStr);
 		            	   }
 	            	   }
             	   }
-               }
-//               System.out.println("-------------------");            
+               }         
          }
-        
 		return new String []{modelStr,textureStr};
 	}
 	
