@@ -25,7 +25,7 @@
  * @version     ##library.prettyVersion## (##library.version##)
  */
 
-package template.library;
+package algAndBeau.seenelib;
 
 
 import java.io.DataInputStream;
@@ -33,8 +33,8 @@ import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import algAndBeau.seenelib.SeeneObject;
 import processing.core.*;
-import template.library.SeeneObject;
 
 /**
  * This is a template class and can be used to start a new processing library or tool.

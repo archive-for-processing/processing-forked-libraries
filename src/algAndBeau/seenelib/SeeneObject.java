@@ -1,4 +1,4 @@
-package template.library;
+package algAndBeau.seenelib;
 
 import java.io.DataInputStream;
 import java.io.File;

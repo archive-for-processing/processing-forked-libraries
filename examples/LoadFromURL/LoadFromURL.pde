@@ -1,4 +1,4 @@
-import template.library.*;
+import algAndBeau.seenelib.*;
 
 SeeneLibrary seeneLibrary;
 SeeneObject seeneObject;
