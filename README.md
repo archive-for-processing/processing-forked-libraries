@@ -6,8 +6,8 @@ With this library you can load Seene files from disk or directly from the web.
 This library tool gives you direct access to the 3D geometry and the textures of these files through processing's PShape class.
 
 
-
 ## Installation
+Download the zipped SeeneLib [here](https://github.com/BenVanCitters/SeeneLib---Processing-Library/raw/master/distribution/SeeneLib-1/download/SeeneLib-1.zip) and extract it into the 'libraries' folder where your processing sketches are saved.  Once you have done that choose Sktch->Import Library…->SeeneLib and you're ready to get started!
 
 
 ## Seene for iOS

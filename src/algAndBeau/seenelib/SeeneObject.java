@@ -32,6 +32,7 @@ public class SeeneObject {
 	private String mOwner = "unknown";
 	private String mCaption = "unknown";
 	private PImage mTexture;
+	private int mSeeneVersion = -1;
 	
 	private int mCameraWidth = -1;
 	private int mCameraHeight = -1;
@@ -197,41 +198,42 @@ public class SeeneObject {
 		*/
 		    //0 offset
 		    int version = Integer.reverseBytes(in.readInt());
-		    System.out.println("version: " + version); //should be '2'
+		    mSeeneVersion = version;
+//		    System.out.println("version: " + version); //should be '2'
 		    //4 offset should be something like 720
 		    int cameraWidth = Integer.reverseBytes(in.readInt());
 		    mCameraWidth = cameraWidth;
-		    System.out.println("cameraWidth: " + cameraWidth);
+//		    System.out.println("cameraWidth: " + cameraWidth);
 		    
 		    //8 should be something like 720
 		    int cameraHeight = Integer.reverseBytes(in.readInt());
-		    mCameraWidth = cameraHeight;
-		    System.out.println("cameraHeight: " + cameraHeight);
+		    mCameraHeight = cameraHeight;
+//		    System.out.println("cameraHeight: " + cameraHeight);
 		    
 		    //at byte 12 should be something like 1252.39842
 		    float cameraFX = getFloatAtCurPos(in);
-		    System.out.println("cameraFX: " + cameraFX);
+//		    System.out.println("cameraFX: " + cameraFX);
 		    
 		    //at byte 16 should be something like 1247.39842
 		    float cameraFY = getFloatAtCurPos(in);
-		    System.out.println("cameraFy: " + cameraFY);
+//		    System.out.println("cameraFy: " + cameraFY);
 		    
 		    //at byte 20 should be something like 0.023
 		    float cameraK1 = getFloatAtCurPos(in);
-		    System.out.println("cameraK1: " + cameraK1);
+//		    System.out.println("cameraK1: " + cameraK1);
 		    
 		    //at byte 20 should be something like .3207...
 		    float cameraK2 = getFloatAtCurPos(in);
-		    System.out.println("cameraK2: " + cameraK2);
+//		    System.out.println("cameraK2: " + cameraK2);
 		    
 		    //at byte 28 ~~90
 		    int depthmapwidth = Integer.reverseBytes(in.readInt());
 		    mDepthWidth = depthmapwidth;
-		    System.out.println("depthmapwidth: " + depthmapwidth);
+//		    System.out.println("depthmapwidth: " + depthmapwidth);
 		    //at byte 32 ~~90
 		    int depthmapheight = Integer.reverseBytes(in.readInt());
 		    mDepthHeight = depthmapheight;
-		    System.out.println("depthmapheight: " + depthmapheight);
+//		    System.out.println("depthmapheight: " + depthmapheight);
 		    
 		    int floatCount = depthmapheight* depthmapwidth;
 		    float fOut[] = new float[floatCount];
@@ -244,7 +246,7 @@ public class SeeneObject {
 		    
 		    float D = cameraFX / cameraWidth;
 		    float P = cameraFY / cameraHeight;
-		    System.out.println("D/P: " + D +"/"+ P);
+//		    System.out.println("D/P: " + D +"/"+ P);
 		    PImage tex = mTexture;
 		    mParent.textureMode(PConstants.NORMAL);
 		    mShape = mParent.createShape();
@@ -378,7 +380,7 @@ public class SeeneObject {
 		              e.faces.push(new t.Face3(n, r, i, null, null, s))
 		        }
 		    */
-		    System.out.println("done. len = " + fOut.length/3);
+//		    System.out.println("done. len = " + fOut.length/3);
 		  }
 		catch(Exception e)
 		{
@@ -476,7 +478,17 @@ public class SeeneObject {
 	}
 	
 	
-	
+	public String toString()
+	{
+		/*
+			private String mOwner = "unknown";
+			private String mCaption = "unknown";
+		 */
+		return "SeeneObject{ shape: " + mShape + "seeneVersion" + mSeeneVersion + " model: " + mModelFilePath + " texture: " + mTextureFilePath + 
+				" cameraWidth: " + mCameraWidth + " cameraHeight: " + mCameraHeight + " depthWidth" + mDepthWidth +
+				" depthHeight: " + mDepthHeight + " PApplet: " + mParent + "}";
+		 
+	}
 	
 	/*
 	 * example javascript containing the model file location and meta-data
