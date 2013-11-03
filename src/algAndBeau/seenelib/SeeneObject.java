@@ -28,9 +28,17 @@ public class SeeneObject {
 	private PApplet mParent;
 	private PShape mShape;
 	private String mModelFilePath;
-	private String mOwner;
-	private String mCaption;
+	private String mTextureFilePath;
+	private String mOwner = "unknown";
+	private String mCaption = "unknown";
 	private PImage mTexture;
+	
+	private int mCameraWidth = -1;
+	private int mCameraHeight = -1;
+	
+	private int mDepthWidth = -1;
+	private int mDepthHeight = -1;
+	
 	
 	private SeeneObject()
 	{
@@ -64,6 +72,7 @@ public class SeeneObject {
 	{
 		mParent = applet;
 		mModelFilePath = oeModelFileName;
+		mTextureFilePath = textureFileName;
 		mTexture = mParent.loadImage(textureFileName);
 //		FileInputStream fin = new FileInputStream(mModelFilePath);
 		try 
@@ -165,7 +174,7 @@ public class SeeneObject {
 	//walks the oeModel binary and reconstructs the 3D Data from
 	//it.  As of Oct. 28th 2013 the Java here faithfully reproduces 
 	// the models found on the website and in the app.
-	public void  loadSeeneShapeFromFile(InputStream inputStream) 
+	private void  loadSeeneShapeFromFile(InputStream inputStream) 
 	{
 		mShape = null;
 		try
@@ -191,10 +200,12 @@ public class SeeneObject {
 		    System.out.println("version: " + version); //should be '2'
 		    //4 offset should be something like 720
 		    int cameraWidth = Integer.reverseBytes(in.readInt());
+		    mCameraWidth = cameraWidth;
 		    System.out.println("cameraWidth: " + cameraWidth);
 		    
 		    //8 should be something like 720
 		    int cameraHeight = Integer.reverseBytes(in.readInt());
+		    mCameraWidth = cameraHeight;
 		    System.out.println("cameraHeight: " + cameraHeight);
 		    
 		    //at byte 12 should be something like 1252.39842
@@ -215,9 +226,11 @@ public class SeeneObject {
 		    
 		    //at byte 28 ~~90
 		    int depthmapwidth = Integer.reverseBytes(in.readInt());
+		    mDepthWidth = depthmapwidth;
 		    System.out.println("depthmapwidth: " + depthmapwidth);
 		    //at byte 32 ~~90
 		    int depthmapheight = Integer.reverseBytes(in.readInt());
+		    mDepthHeight = depthmapheight;
 		    System.out.println("depthmapheight: " + depthmapheight);
 		    
 		    int floatCount = depthmapheight* depthmapwidth;
@@ -225,7 +238,7 @@ public class SeeneObject {
 		    float scale = 1;
 		    for(int i = 0; i<fOut.length;i++)
 		    {
-		     fOut[i] = scale* getFloatAtCurPos(in);
+		    	fOut[i] = scale* getFloatAtCurPos(in);
 //		     print(",[" +i + "]: " + fOut[i]);
 		    }
 		    
@@ -375,27 +388,85 @@ public class SeeneObject {
 //		return seeneImg;
 	}
 	
+	/**
+	 * 
+	 * @return PShape object containing vertices, texture, and normals
+	 * 			from the oemodel and texture file.
+	 */
 	public PShape getShape()
 	{
 		return mShape;// mParent.createShape(mShape);
 	}
 	
+	/**
+	 * 
+	 * @return PImage representing the texture of the model file
+	 */
 	public PImage getTextureImage()
 	{
 		return mTexture;// mParent.createShape(mShape);
 	}
 	
+/**
+ * 
+ * @return camera height variable used in calculating the vertices of the model
+ */
+	public int getCameraHeight()
+	{
+		return mCameraHeight;
+	}
+	
+	/**
+	 * 
+	 * @return camera width variable used in calculating the vertices of the model
+	 */
+	public int getCameraWidth()
+	{
+		return mCameraWidth;
+	}
+	
+	/**
+	 * 
+	 * @return depth height variable used in calculating the vertices of the model
+	 */
+	public int getDepthHeight()
+	{
+		return mDepthHeight;
+	}
+	
+	/**
+	 * 
+	 * @return depth width variable used in calculating the vertices of the model
+	 */
+	public int getDepthWidth()
+	{
+		return mDepthWidth;
+	}
+
+	/**
+	 *  renders the geomtery/texture/normals 
+	 */
 	public void draw()
 	{
 		mParent.shape(mShape);
 	}
 	
+	/**
+	 * renders the oemodel at <x,y>
+	 * @param x position component
+	 * @param y position component
+	 */
 	public void draw(float x, float y)
 	{
 		this.draw(x,y,0);
 	}
 	
-	
+	/**
+	 * renders the oemodel at <x,y,z>
+	 * @param x position component
+	 * @param y position component
+	 * @param z position component
+	 */
 	public void draw(float x, float y, float z)
 	{
 		mParent.pushMatrix();
@@ -404,7 +475,11 @@ public class SeeneObject {
 		mParent.popMatrix();
 	}
 	
+	
+	
+	
 	/*
+	 * example javascript containing the model file location and meta-data
 	 * window.appBootstrapData = 
 {
 "scene":{

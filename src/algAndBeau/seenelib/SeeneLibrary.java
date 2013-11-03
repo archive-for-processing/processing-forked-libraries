@@ -71,7 +71,6 @@ public class SeeneLibrary
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
 	 * 
-	 * @example Hello
 	 * @param theParent
 	 */
 	public SeeneLibrary(PApplet theParent) 
@@ -94,6 +93,7 @@ public class SeeneLibrary
 	/**
 	 * Constructs a 3D mesh from a url string
 	 * 
+	 * @example seeneLibrary.createSeeneObjectFromURL("http://seene.co/s/rUaySD");
 	 * @param URL
 	 *          a url to the seene.com website for a particular 3D model
 	 */
@@ -103,13 +103,15 @@ public class SeeneLibrary
 	}
 	
 	/**
-	 * Constructs a 3D mesh from a url string
+	 * Constructs a 3D mesh from a texture and a model file
+	 * 
+	 * @example SeeneObject so = seeneLibrary.createSeeneObjectFromFile("scene.oemodel","poster.jpg");
 	 * 
 	 * @param oeModelFilePath
-	 *          the path to the .oemodel file containing your seene
+	 *          the path to the .oemodel file containing your seene on disk
 	 *          
 	 * @param textureFilePath
-	 *          the path to the texture file for the seene
+	 *          the path to the texture file for the seene on disk
 	 */
 	public SeeneObject createSeeneObjectFromFile(String oeModelFilePath, String textureFilePath)
 	{
@@ -126,9 +128,5 @@ public class SeeneLibrary
 		return VERSION;
 	}
 
-
-
-	
-	
 }
 
