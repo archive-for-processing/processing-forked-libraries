@@ -5,10 +5,12 @@ With this library you can load Seene files from disk or directly from the web.
 
 This library tool gives you direct access to the 3D geometry and the textures of these files through processing's PShape class.
 
-
 ## Installation
 Download the zipped SeeneLib [here](https://github.com/BenVanCitters/SeeneLib---Processing-Library/raw/master/distribution/SeeneLib-1/download/SeeneLib-1.zip) and extract it into the 'libraries' folder where your processing sketches are saved.  Once you have done that choose Sktch->Import Library…->SeeneLib and you're ready to get started!
 
+## Compatibility
+This Library works best in Processing 2.1+ and won't run on 1.5.1.  This library has no special class for storing or displaying 3D meshes and so it uses PShape objects.  There was a bug in processing 2.0… that caused PShapes that have 3D data to become smashed into 2 dimensions and so sketches running in 2.0… will need to extract the data from the PShape as demonstrated in the 'ShapeData' example in order to have proper access the data.
+
 
 ## Seene for iOS
-Seene is a fantastic app created by [Obvious Engineering](http://obviousengine.com/) and can be obtained from the iTunes store [here](https://itunes.apple.com/gb/app/seene/id698878590?ls=1&mt=8)
+Seene is a fantastic app created by [Obvious Engineering](http://obviousengine.com/) to quickly and easily generate realistic 3D surfaces from the world around us and can be obtained from the iTunes store [here](https://itunes.apple.com/gb/app/seene/id698878590?ls=1&mt=8).
