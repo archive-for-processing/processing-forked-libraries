@@ -1,4 +1,4 @@
-package queue;
+package polargraph.queue;
 
 public class VirtualComQueueWriter extends QueueWriter {
 

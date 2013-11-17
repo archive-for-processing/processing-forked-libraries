@@ -1,4 +1,4 @@
-package comms;
+package polargraph.comms;
 
 import java.util.HashMap;
 import java.util.Map;

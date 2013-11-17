@@ -1,9 +1,8 @@
-package queue;
+package polargraph.queue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import comms.Command;
+import polargraph.comms.Command;
 
 public class QueueWriter {
 	

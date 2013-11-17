@@ -1,4 +1,4 @@
-package comms;
+package polargraph.comms;
 
 import java.util.ArrayList;
 import java.util.List;
