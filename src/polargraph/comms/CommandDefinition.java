@@ -1,47 +1,100 @@
 package polargraph.comms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
-public class CommandDefinition {
+public class CommandDefinition{
+
 	protected String name;
-	private List<String> paramPatterns = new ArrayList<String>(4);
-	private Boolean[] optionalParams = {false, false, false, false};
+	private List<String> paramTypes = null;
+	private List<String> paramNames = null;
+	private List<String> paramPatts = null;
+	private Boolean[] optionalParams = null;
+	private Pattern pattern;
 	
-	public CommandDefinition(String name) {
-		this.name = name;
-	}
-	public CommandDefinition(String name, String p1) {
+	
+	/*
+	 * No-access constructor!
+	 */
+	private CommandDefinition() {}
+	
+	/*
+	 * Constructor that takes name, and a list each of command parameter NAMES
+	 * and TYPES.
+	 */
+	protected CommandDefinition(String name, String[] paramNames, String[] paramTypes) {
 		this(name);
-		this.paramPatterns.add(0, p1);
+		for (int i = 0; i<paramNames.length; i++) {
+			this.paramNames.add(paramNames[i]);
+			this.paramTypes.add(paramTypes[i]);
+		}
 	}
-	public CommandDefinition(String name, String p1, String p2) {
-		this(name, p1);
-		this.paramPatterns.add(1, p2);
+	/* 
+	 * NAme-only constructor - used when the command has no parameters
+	 */
+	protected CommandDefinition(String name) {
+		this.name = name;
+		this.paramTypes = new ArrayList<String>(4);
+		this.paramNames = new ArrayList<String>(4);
+		this.setOptional(false, false, false, false);
+		this.buildPattern();
 	}
-	public CommandDefinition(String name, String p1, String p2, String p3) {
-		this(name, p1, p2);
-		this.paramPatterns.add(2, p3);
+	
+	/**
+	 * Builds and compiles a regex that will check this command for validity.
+	 * @return
+	 */
+	private void buildPattern() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.getName());
+		for (int i = 0; i < this.getNumberOfParams(); i++) {
+			sb.append(CommandFactory.patterns.get(CommandFactory.SEP))
+			  .append(CommandFactory.patterns.get(this.getParamTypes().get(i)));
+		}
+		sb.append(CommandFactory.patterns.get(CommandFactory.SEP))
+		  .append(CommandFactory.patterns.get(CommandFactory.SUFFIX));
+		
+		String regex = sb.toString();
+		Pattern p = Pattern.compile(regex); 
+		this.pattern = p;
 	}
-	public CommandDefinition(String name, String p1, String p2, String p3, String p4) {
-		this(name, p1, p2, p3);
-		this.paramPatterns.add(3, p4);
+	
+	public Pattern getPattern() {
+		return this.pattern;
 	}
 
+	/*
+	 * Use to set which params are marked as optional.
+	 */
+	public void setOptional(boolean b, boolean c, boolean d, boolean e) {
+		this.optionalParams = new Boolean[] {b, c, d, e};
+	}
+	
+	/*
+	 * Getter for name.
+	 */
 	public String getName() {
 		return this.name;
 	}
-	public List<String> getParamPatterns() {
-		return this.paramPatterns;
+	
+	/*
+	 * Getter for paramTypes
+	 */
+	public List<String> getParamTypes() {
+		return this.paramTypes;
 	}
-	public int getNumberOfParams() {
-		return this.paramPatterns.size();
+	/*
+	 * Getter for paramNames
+	 */
+	public List<String> getParamNames() {
+		return this.paramNames;
 	}
 	
-	public void setOptional(boolean b, boolean c, boolean d, boolean e) {
-		this.optionalParams[0] = b;
-		this.optionalParams[1] = c;
-		this.optionalParams[2] = d;
-		this.optionalParams[3] = e;
+	public int getNumberOfParams() {
+		return this.paramNames.size();
 	}
+	
 }
