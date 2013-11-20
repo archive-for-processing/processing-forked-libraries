@@ -20,7 +20,7 @@ public class CommandFactory extends Command {
 	public static final String P_NUM = "\\d*\\.?\\d+";
 	public static final String P_SNUM = "[-+]?\\d*\\.?\\d+";
 	public static final String P_STR = "\\w+";
-	public static final String P_SEP = ", +";
+	public static final String P_SEP = ",";
 	public static final String P_SUFFIX = SUFFIX;
 
 	public static final Map<String, String> patterns;
@@ -102,7 +102,7 @@ public class CommandFactory extends Command {
 		cmds.put(CMD_DRAW_SAW_PIXEL, new CommandDefinition(CMD_DRAW_SAW_PIXEL, new String[]{"aOrigin", "bOrigin", "size", "density"}, new String[]{T_NUM, T_NUM, T_NUM, T_NUM}));
 		cmds.put(CMD_DRAW_ROUND_PIXEL, new CommandDefinition(CMD_DRAW_ROUND_PIXEL, new String[]{"aOrigin", "bOrigin", "size", "density"}, new String[]{T_NUM, T_NUM, T_NUM, T_NUM}));
 		
-		cmds.put(CMD_CHANGELENGTHDIRECT, new CommandDefinition(CMD_CHANGELENGTHDIRECT, new String[]{"x", "y"}, new String[]{T_NUM, T_NUM}));
+		cmds.put(CMD_CHANGELENGTHDIRECT, new CommandDefinition(CMD_CHANGELENGTHDIRECT, new String[]{"a", "b"}, new String[]{T_NUM, T_NUM}));
 		cmds.put(CMD_STARTROVE, new CommandDefinition(CMD_STARTROVE));
 		cmds.put(CMD_STOPROVE, new CommandDefinition(CMD_STOPROVE));
 		
@@ -147,12 +147,12 @@ public class CommandFactory extends Command {
 	/*
 	 * Command maker.  It creates a new Command, with the definition loaded.
 	 */
-	public static Command getCommand(String name) {
+	public static Command newCommand(String name) {
 		if (cmds.keySet().contains(name)) {
 			Command c = new Command(cmds.get(name));
 			return c;
 		}
 		else
-			throw new RuntimeException ("No command found for " + name);
+			throw new IllegalArgumentException ("No command found for " + name);
 	}
 }
