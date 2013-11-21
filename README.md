@@ -4,6 +4,7 @@ This is to be a reusable set of components that can be used to build commands fo
 
 Use the pattern
 
+``` java
 //  Create a new machine of a certain size, specifying a drawable area within it, and a native unit size
 Polargraph machine = new Polargraph(700, 500, new Rectangle2D.Float(0,0,350,500), 1.0D);
 
@@ -36,5 +37,5 @@ if (queue.isConnected()) {
 			queue.dispatchNextCommand();
 	}
 }
-
+```
 
