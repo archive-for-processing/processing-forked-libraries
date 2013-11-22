@@ -7,4 +7,5 @@ public class VirtualComQueueWriter extends QueueWriter {
 	public VirtualComQueueWriter(String portName) {
 		this.portName = portName;
 	}
+	
 }

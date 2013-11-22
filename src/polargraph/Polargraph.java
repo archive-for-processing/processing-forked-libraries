@@ -11,6 +11,22 @@ import java.util.UUID;
 
 import processing.core.PVector;
 
+/**
+ * This is the most generic class, simulates a Polargraph machine.  It has an extent and a
+ * reachable area (a section within the extent that can be safely drawn to).  The units
+ * the machine is measured in is not stated, but would normally be mm.
+ * 
+ * It also has a native unit size - this is the pitch of the finest reliable grid that
+ * the machine can address.  In most cases this is related to the sprocket (or pulley)
+ * circumference, divided by the number of motor steps per revolution.
+ * 
+ * For a PolargraphSD this will be 92mm / 400 =  0.23mm
+ * 
+ * 
+ * 
+ * @author sandy_000
+ *
+ */
 public class Polargraph {
 	
 	// basic machine extent.
@@ -33,8 +49,25 @@ public class Polargraph {
 	private Map<String, PolargraphDrawing> drawings = new HashMap<String, PolargraphDrawing>();
 
 	
-	/*
-	 * Root constructor.
+	/**
+	 * Root constructor that takes sprocket/motor definition to calculate nativeUnitSize.
+	 * @param width
+	 * @param height
+	 * @param reachableArea
+	 * @param unitPerRev
+	 * @param stepsPerRev
+	 */
+	public Polargraph(float width, float height, RectangularShape reachableArea, Double unitPerRev, Integer stepsPerRev) {
+		this(width, height, reachableArea, unitPerRev / stepsPerRev.doubleValue());
+	}
+
+	/**
+	 * Constructor that accepts the nativeUnitSize directly.
+	 *  
+	 * @param width
+	 * @param height
+	 * @param reachableArea
+	 * @param nativeUnitSize
 	 */
 	public Polargraph(float width, float height, RectangularShape reachableArea, Double nativeUnitSize) {
 		if (width > 0 && height > 0)
