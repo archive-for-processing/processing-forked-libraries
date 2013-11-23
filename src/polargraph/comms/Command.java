@@ -93,7 +93,6 @@ public class Command {
 			}
 			else if (CommandFactory.T_NUM.equals(this.def.getParamTypes().get(i))) {
 				// deal with decimal numbers
-				Float pf = (Float) value;
 				String formatted = String.format("%.4f", value);
 				sb.append(formatted);
 			}

@@ -9,7 +9,7 @@ import java.util.Queue;
 
 import polargraph.comms.Command;
 
-public class QueueWriter {
+public abstract class QueueWriter {
 	
 	private Queue<Command> queue = new ArrayDeque<Command>(1000);
 	private Queue<Command> priorityQueue = new ArrayDeque<Command>(20);
