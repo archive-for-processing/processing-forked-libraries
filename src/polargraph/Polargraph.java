@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import polargraph.queue.QueueWriter;
 import processing.core.PVector;
 
 /**
@@ -40,13 +41,14 @@ public class Polargraph {
 	// eg the machine size is speced in mm, one machine motor step extends 0.23mm of cord, 
 	// so the native unit size is 0.23.  Hooray!
 	// This figure is actually a result of sprocket circumference / number of steps per rev.
-	private double nativeUnitSize = 1.0;
+	private float nativeUnitSize = 1.0f;
 	
 	// home position
 	private RPoint homePosition = new RPoint(0, 0);
 	
 	// collection of registered drawings
 	private Map<String, PolargraphDrawing> drawings = new HashMap<String, PolargraphDrawing>();
+	private RPoint topRight = null;
 
 	
 	/**
@@ -57,8 +59,8 @@ public class Polargraph {
 	 * @param unitPerRev
 	 * @param stepsPerRev
 	 */
-	public Polargraph(float width, float height, RectangularShape reachableArea, Double unitPerRev, Integer stepsPerRev) {
-		this(width, height, reachableArea, unitPerRev / stepsPerRev.doubleValue());
+	public Polargraph(float width, float height, RectangularShape reachableArea, Float unitPerRev, Integer stepsPerRev) {
+		this(width, height, reachableArea, unitPerRev / stepsPerRev.floatValue());
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class Polargraph {
 	 * @param reachableArea
 	 * @param nativeUnitSize
 	 */
-	public Polargraph(float width, float height, RectangularShape reachableArea, Double nativeUnitSize) {
+	public Polargraph(float width, float height, RectangularShape reachableArea, Float nativeUnitSize) {
 		if (width > 0 && height > 0)
 			this.extent = new Rectangle2D.Float(ORIGIN.x,ORIGIN.y,width,height);
 		this.reachableArea = new Rectangle2D.Float((float)reachableArea.getX(), 
@@ -104,6 +106,9 @@ public class Polargraph {
 	 * @return
 	 */
 	public PolargraphDrawing createNewDrawing(String name, RectangularShape drawingExtent) {
+		return this.createNewDrawing(name,  drawingExtent, drawingExtent);
+	}
+	public PolargraphDrawing createNewDrawing(String name, RectangularShape drawingExtent, RectangularShape inputShape) {
 		
 		Rectangle2D.Float drawingExtent2D = new Rectangle2D.Float((float)drawingExtent.getX(), (float)drawingExtent.getY(), (float)drawingExtent.getWidth(), (float)drawingExtent.getHeight());
 		PolargraphDrawing drawing = new PolargraphDrawing(name, drawingExtent2D, this);
@@ -129,32 +134,44 @@ public class Polargraph {
 		return rs;
 	}
 	
+	public PVector convertToNative(PVector p) {
+		RPoint rp = this.convertToNative(new RPoint(p.x, p.y));
+		return new PVector(rp.x, rp.y);
+	}
+	
 	/**
 	 * Converts cartesian coordinates to triangular coordinates, and changes the unit size.
 	 * @param p
 	 * @return
 	 */
 	public RPoint convertToNative(RPoint p) {
-		this.convertToNativeCoordinates(p);
-		this.convertToNativeUnitSize(p);
+		p = this.convertToNativeCoordinates(p);
+		p = this.convertToNativeUnitSize(p);
 		return p;
 	}
 	
 	/**
 	 *  Converts cartesian coordinates to triangular coordinates, but does NOT change
-	 *  the unit size.  Note it converts in-place - it does not create a new object.
+	 *  the unit size.
 	 *  
 	 * @param p the RPoint to convert to
 	 * @return the same object as was passed in, but with changed values
 	 */
 	public RPoint convertToNativeCoordinates(RPoint p) {
-		p.x = p.dist(ORIGIN);
-		p.y = p.dist(new RPoint(this.extent.width, this.extent.height));
-		return p;
+		RPoint newP = new RPoint(p);
+		newP.x = p.dist(ORIGIN);
+		newP.y = p.dist(this.getTopRight());
+		return newP;
 	}
 	
+	private RPoint getTopRight() {
+		if (this.topRight  == null)
+			this.topRight = new RPoint(this.getExtent().getWidth(), this.getExtent().getY());
+		return this.topRight;
+	}
+
 	/** Simply converts natural units to native units, ie multiplies by nativeUnitSize.
-	 * Note it converts in-place - does not create and return a new object.
+	 *  Note it converts in-place - does not create and return a new object.
 	 * 
 	 * @param p the RPoint to convert
 	 * @return same point object, with values changed.
@@ -163,5 +180,12 @@ public class Polargraph {
 		p.x = p.x * (float) this.nativeUnitSize;
 		p.y = p.y * (float) this.nativeUnitSize;
 		return p;
+	}
+	
+	public RectangularShape getExtent() {
+		return this.extent;
+	}
+	public RectangularShape getReachbleArea() {
+		return this.reachableArea;
 	}
 }

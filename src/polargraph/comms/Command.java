@@ -23,7 +23,11 @@ public class Command {
 	private Map<String, Object> params = new HashMap<String, Object>(4);
 	
 	// default constructor is hidden
-	protected Command() {} 
+	protected Command() {}
+	protected Command(Command c) {
+		this.def = c.def;
+		this.params = c.params;
+	}
 	protected Command(CommandDefinition def) {
 		this.def = def;
 	}

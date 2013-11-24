@@ -9,10 +9,16 @@ import java.util.Queue;
 
 import polargraph.comms.Command;
 
+/**
+ * This class has most of the functionality of the command queue system.  It rolls up a pair of queues,
+ * one regular, and one priority that will always be promoted
+ * @author sandy_000
+ *
+ */
 public abstract class QueueWriter {
 	
-	private Queue<Command> queue = new ArrayDeque<Command>(1000);
-	private Queue<Command> priorityQueue = new ArrayDeque<Command>(20);
+	private Queue<QueuedCommand> queue = new ArrayDeque<QueuedCommand>(1000);
+	private Queue<QueuedCommand> priorityQueue = new ArrayDeque<QueuedCommand>(20);
 	private Command current = null;
 	private Queue<Command> history = new ArrayDeque<Command>(1000);
 	
@@ -34,7 +40,7 @@ public abstract class QueueWriter {
 	 * @throws IndexOutOfBoundsException
 	 */
 	public Command next() throws NoSuchElementException {
-		Command next = null;
+		QueuedCommand next = null;
 		if (priorityQueue.isEmpty()) 
 			next = queue.remove();
 		else
@@ -55,10 +61,10 @@ public abstract class QueueWriter {
 	}
 
 	public void add(Command command) {
-		queue.add(command);
+		queue.add(new QueuedCommand(command));
 	}
 	public void addPriority(Command command) {
-		priorityQueue.add(command);
+		priorityQueue.add(new QueuedCommand(command).promote());
 	}
 
 }
