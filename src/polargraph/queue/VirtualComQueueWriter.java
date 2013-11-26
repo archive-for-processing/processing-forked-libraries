@@ -1,6 +1,6 @@
 package polargraph.queue;
 
-import processing.serial.*;
+import processing.serial.Serial;
 public class VirtualComQueueWriter extends QueueWriter {
 
 	private boolean connected = false;
