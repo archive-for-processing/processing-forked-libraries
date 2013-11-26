@@ -12,7 +12,7 @@ Polargraph machine = new Polargraph(700, 500, new Rectangle2D.Float(0,0,350,500)
 PolargraphDrawing drawing = machine.createNewDrawing("main", new Rectangle2D.Float(100,100,100,100));
 
 // Create a Queue, that will communicate on a usb COM port (ie a connected Arduino).
-QueueWriter queue = new VirtualComQueueWriter("COM 14");
+QueueWriter queue = new VirtualComQueueWriter(new Serial(this, "COM14", 57600));
 
 // Build a simple command
 Command c = CommandFactory.newCommand(CommandFactory.CMD_PEN_UP);
@@ -31,11 +31,6 @@ Command c = CommandFactory.newCommand(CommandFactory.CMD_CHANGELENGTH)
 queue.add(c);
 
 // Send some commands
-if (queue.isConnected()) {
-	while (queue.hasCommands) {
-		if (queue.isReady()) 
-			queue.dispatchNextCommand();
-	}
-}
+queue.run();
 ```
 
