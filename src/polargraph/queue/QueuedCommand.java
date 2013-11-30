@@ -14,13 +14,4 @@ public class QueuedCommand extends Command {
 	public Boolean isPriority() {
 		return this.isPriority();
 	}
-	public int compareTo(Object o) {
-		try {
-			QueuedCommand c = (QueuedCommand) o;
-			return this.isPriority().compareTo(c.isPriority());
-		}
-		catch (Exception e) {
-			return 1;
-		}
-	}
 }

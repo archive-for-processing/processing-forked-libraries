@@ -15,7 +15,7 @@ import polargraph.comms.Command;
  * @author sandy_000
  *
  */
-public abstract class QueueWriter {
+public abstract class QueueWriter extends Thread {
 	
 	private Queue<QueuedCommand> queue = new ArrayDeque<QueuedCommand>(1000);
 	private Queue<QueuedCommand> priorityQueue = new ArrayDeque<QueuedCommand>(20);

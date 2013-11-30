@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import polargraph.PolargraphDrawing;
 import polargraph.queue.QueueWriter;
 import processing.core.PVector;
 
@@ -177,8 +178,8 @@ public class Polargraph {
 	 * @return same point object, with values changed.
 	 */
 	public RPoint convertToNativeUnitSize(RPoint p) {
-		p.x = p.x * (float) this.nativeUnitSize;
-		p.y = p.y * (float) this.nativeUnitSize;
+		p.x = p.x * this.nativeUnitSize;
+		p.y = p.y * this.nativeUnitSize;
 		return p;
 	}
 	

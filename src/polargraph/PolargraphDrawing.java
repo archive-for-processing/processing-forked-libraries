@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D.Float;
 import java.awt.geom.RectangularShape;
 import java.util.UUID;
 
+import polargraph.Polargraph;
 import polargraph.queue.QueueWriter;
 
 public class PolargraphDrawing {

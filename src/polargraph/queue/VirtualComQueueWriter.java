@@ -24,6 +24,7 @@ public class VirtualComQueueWriter extends QueueWriter {
 	 * MEthod that starts the queue.  This means that it will send a command every time it's client broadcasts that
 	 * it is ready for one.
 	 */
+	@Override
 	public void run() {
 		this.running = true;
 	}
