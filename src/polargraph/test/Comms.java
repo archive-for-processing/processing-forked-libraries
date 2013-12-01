@@ -11,6 +11,7 @@ import polargraph.PolargraphDrawing;
 import polargraph.comms.Command;
 import polargraph.comms.CommandFactory;
 import polargraph.queue.QueueWriter;
+import polargraph.queue.QueuedCommand;
 import polargraph.queue.VirtualComQueueWriter;
 
 import java.awt.geom.Rectangle2D;
@@ -178,7 +179,7 @@ public void keyPressed() {
 		ellipse(p.x, p.y, 10, 10);
 	}
 	
-	for (Command c : this.queue) {
+	for (QueuedCommand c : this.queue.iterator()) {
 		println("...." + c);
 	}
 }
@@ -237,9 +238,8 @@ public void draw() {
 	fill(255, 255, 255, 255);
 	PVector textPos = new PVector((float)this.machinePanel.getMaxX()+20, (float)this.machinePanel.getMinY()+rowHeight);
 	
-	while (this.queue.hasNext()) {
-		Command command = this.queue.next();
-		text("Command: " + command, textPos.x, textPos.y + (rowHeight * rowNo++));
+	for (QueuedCommand c : this.queue.iterator()) {
+		text("Command: " + c, textPos.x, textPos.y + (rowHeight * rowNo++));
 	}
 
 }

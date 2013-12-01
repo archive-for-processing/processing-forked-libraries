@@ -38,9 +38,4 @@ public class VirtualComQueueWriter extends QueueWriter {
 		this.sending = false;
 	}
 
-	@Override
-	public Iterator<Command> iterator() {
-		return super.iterator();
-	}
-	
 }

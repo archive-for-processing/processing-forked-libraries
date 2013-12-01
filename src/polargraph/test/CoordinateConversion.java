@@ -177,9 +177,6 @@ public void keyPressed() {
 		ellipse(p.x, p.y, 10, 10);
 	}
 	
-	while (this.queue.hasNext()) {
-		println(this.queue.next());
-	}
 }
 
 public void draw() {
