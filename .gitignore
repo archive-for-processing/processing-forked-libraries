@@ -2,3 +2,4 @@ distribution
 /bin
 *.class
 /resources
+/tmp
