@@ -3,3 +3,6 @@ distribution
 *.class
 /resources
 /tmp
+
+*.class
+.classpath
