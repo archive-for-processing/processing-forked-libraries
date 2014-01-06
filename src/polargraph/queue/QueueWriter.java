@@ -34,7 +34,7 @@ public class QueueWriter implements Runnable {
 	}
 
 	public Iterable<QueuedCommand> iterator() {
-		System.out.println("Hello");
+//		System.out.println("Hello");
 		return this.queue;
 	}
 

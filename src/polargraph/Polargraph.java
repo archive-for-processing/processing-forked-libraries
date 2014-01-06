@@ -9,9 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import polargraph.PolargraphDrawing;
 import polargraph.queue.QueueWriter;
+import polargraph.queue.VirtualComQueueWriter;
 import processing.core.PVector;
+import processing.serial.Serial;
 
 /**
  * This is the most generic class, simulates a Polargraph machine.  It has an extent and a
@@ -50,7 +54,15 @@ public class Polargraph {
 	// collection of registered drawings
 	private Map<String, PolargraphDrawing> drawings = new HashMap<String, PolargraphDrawing>();
 	private RPoint topRight = null;
-
+	
+	// hardware
+	private static final int HARDWARE_VER_UNO = 1;
+	private static final int HARDWARE_VER_MEGA = 100;
+	private static final int HARDWARE_VER_MEGA_POLARSHIELD = 200;
+	private int currentHardware = HARDWARE_VER_MEGA_POLARSHIELD;	
+	
+	// Current pen position
+	private PolargraphTool tool = new PolargraphTool();
 	
 	/**
 	 * Root constructor that takes sprocket/motor definition to calculate nativeUnitSize.
@@ -83,9 +95,18 @@ public class Polargraph {
 			throw new RuntimeException("Reachable area is not actually inside the machine extent.");
 		
 		this.nativeUnitSize = nativeUnitSize;
+		this.addTool(this.tool);
 	}
 	
 	
+	public void addTool(PolargraphTool tool) {
+		this.tool = tool;
+		this.tool.setParentMachine(this);
+	}
+	public PolargraphTool getTool() {
+		return this.tool;
+	}
+
 	/**
 	 * Sets a the home position of the drawing tool.
 	 * 
@@ -135,6 +156,13 @@ public class Polargraph {
 		return rs;
 	}
 	
+	/**
+	 * Converts a PVector cartesian coordinate to a triangular coordinate PVector.
+	 * It is a wrapper around convertToNative(RPoint).
+	 *  
+	 * @param p
+	 * @return
+	 */
 	public PVector convertToNative(PVector p) {
 		RPoint rp = this.convertToNative(new RPoint(p.x, p.y));
 		return new PVector(rp.x, rp.y);
@@ -152,6 +180,18 @@ public class Polargraph {
 	}
 	
 	/**
+	 * Takes a coordinate in the native triangular system and converts to cartesian values.
+	 *  
+	 * @param p
+	 * @return
+	 */
+	public RPoint convertToCartesian(RPoint p) {
+		p = this.convertToCartesianCoordinates(p);
+		p = this.convertToCartesianUnitSize(p);
+		return p;
+	}
+	
+	/**
 	 *  Converts cartesian coordinates to triangular coordinates, but does NOT change
 	 *  the unit size.
 	 *  
@@ -163,6 +203,19 @@ public class Polargraph {
 		newP.x = p.dist(ORIGIN);
 		newP.y = p.dist(this.getTopRight());
 		return newP;
+	}
+	
+	/**
+	 * Converts triangular machine coordinates to cartesian screen coords.
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public RPoint convertToCartesianCoordinates(RPoint p) {
+	    double calcX = (pow(this.getExtent().getWidth(), 2) - pow(p.y, 2) + pow(p.x, 2)) / (this.getExtent().getWidth()*2);
+	    double calcY = sqrt(pow(p.x,2)-pow(calcX,2));
+	    RPoint rp = new RPoint(calcX, calcY);
+	    return rp;
 	}
 	
 	private RPoint getTopRight() {
@@ -183,10 +236,85 @@ public class Polargraph {
 		return p;
 	}
 	
+	/**
+	 * Converts a number of native measurement units into a cartesian (natural)
+	 * units.
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public RPoint convertToCartesianUnitSize(RPoint p) {
+		p.x = p.x / this.nativeUnitSize;
+		p.y = p.y / this.nativeUnitSize;
+		return p;
+	}
+	
+	/**
+	 * Returns a rectangular shape that is the entirety of the machine, including non-drawable areas.
+	 * 
+	 * @return RectangularShape
+	 */
 	public RectangularShape getExtent() {
 		return this.extent;
 	}
-	public RectangularShape getReachbleArea() {
+	/**
+	 * Returns a rectanglular shape that designated the area that the machine can actually draw to.
+	 * In principle this will be the full size of the machine, less the margins. It is designed to 
+	 * isolate areas that the machine can theoretically move to (because they are on the board), but
+	 * lacks the power to actually be controllable in. The top margin is the main danger area.
+	 * 
+	 * @return RectangularShape.
+	 */
+	public RectangularShape getReachableArea() {
 		return this.reachableArea;
 	}
+	
+	/**
+	 * Extracts the hardware version message from the regular "READY" transmission from 
+	 * the polargraph machine, returns it as an Integer.
+	 * 
+	 * @param readyString eg something like "READY_200"
+	 */
+	public Integer decodeHardwareVersionFromReady(String readyString)
+	{
+		Integer newHardwareVersion = HARDWARE_VER_UNO;
+		if ("READY".equals(readyString))
+		{
+			newHardwareVersion = HARDWARE_VER_UNO;
+		}
+		else
+		{
+			String ver = readyString.substring(6);
+			Integer verInt = HARDWARE_VER_UNO;
+			try
+			{
+				verInt = Integer.parseInt(ver);
+			}
+			catch (NumberFormatException nfe)
+			{
+				System.out.println("Bad format for hardware version - defaulting to ATMEGA328 (Uno)");
+				verInt = HARDWARE_VER_UNO;
+			}
+
+			if (HARDWARE_VER_MEGA == verInt || HARDWARE_VER_MEGA_POLARSHIELD == verInt)
+				newHardwareVersion = verInt;
+			else
+				newHardwareVersion = HARDWARE_VER_UNO;
+		}
+		return newHardwareVersion;
+	}
+
+	/**
+	 * Sets the hardware version to a new one.
+	 * @param newHardwareVersion
+	 */
+	public void setHardwareVersion(Integer newHardwareVersion) {
+		// now see if it's different to last time.
+		if (newHardwareVersion != currentHardware)
+		{
+			// and make the controller reflect the new hardware.
+			this.currentHardware = newHardwareVersion;
+		}
+	}
+
 }

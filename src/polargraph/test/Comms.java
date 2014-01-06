@@ -26,7 +26,7 @@ public class Comms extends PApplet {
 //  These variables are set up in the setup() method.
 private Polargraph machine = null;
 private PolargraphDrawing drawing = null;
-private QueueWriter queue = null;
+private VirtualComQueueWriter queue = null;
 
 // a shape to draw
 private RShape rshape;
@@ -68,13 +68,13 @@ public void setup() {
 	 * 1. a name - useful if you have multiple drawing areas.
 	 * 2. an extent, specified using a Rectangle2D object (origin, width, height)
 	 */
-	drawing = machine.createNewDrawing("main", new Rectangle2D.Float(5,5,4,4));
+	drawing = this.machine.createNewDrawing("main", new Rectangle2D.Float(5,5,4,4));
 	
 	/*
 	 * Connect up a queue writer to a particular com port.
 	 * The parameter here is the Serial object to communicate on.
 	 */
-	queue = new VirtualComQueueWriter(getPort("COM1"));
+	queue = new VirtualComQueueWriter(getPort("COM8"));
 
 	// set up some panel sizes for the display areas
 	// work out the scaling factor between the machine model and the on-screen panel
@@ -113,6 +113,7 @@ public Serial getPort(String portName) {
 	Serial port = null;
 	try {
 		port = new Serial(this, portName, 57600);
+		println("Port selected: " + portName + ", " + port.toString());
 	}
 	catch (Exception e) {
 		// not using a serial port!
@@ -120,6 +121,16 @@ public Serial getPort(String portName) {
 		port = null;
 	}
 	return port;
+}
+
+public void serialEvent(Serial port) {
+	try {
+		this.queue.handleIncomingEvent();
+	}
+	catch (Exception e) {
+//		println("Exception during serial event: " + e.toString());
+//		e.printStackTrace();
+	}
 }
 
 public void keyPressed() {
