@@ -56,9 +56,9 @@ public class Polargraph {
 	private RPoint topRight = null;
 	
 	// hardware
-	private static final int HARDWARE_VER_UNO = 1;
-	private static final int HARDWARE_VER_MEGA = 100;
-	private static final int HARDWARE_VER_MEGA_POLARSHIELD = 200;
+	public static final int HARDWARE_VER_UNO = 1;
+	public static final int HARDWARE_VER_MEGA = 100;
+	public static final int HARDWARE_VER_MEGA_POLARSHIELD = 200;
 	private int currentHardware = HARDWARE_VER_MEGA_POLARSHIELD;	
 	
 	// Current pen position
@@ -269,40 +269,7 @@ public class Polargraph {
 		return this.reachableArea;
 	}
 	
-	/**
-	 * Extracts the hardware version message from the regular "READY" transmission from 
-	 * the polargraph machine, returns it as an Integer.
-	 * 
-	 * @param readyString eg something like "READY_200"
-	 */
-	public Integer decodeHardwareVersionFromReady(String readyString)
-	{
-		Integer newHardwareVersion = HARDWARE_VER_UNO;
-		if ("READY".equals(readyString))
-		{
-			newHardwareVersion = HARDWARE_VER_UNO;
-		}
-		else
-		{
-			String ver = readyString.substring(6);
-			Integer verInt = HARDWARE_VER_UNO;
-			try
-			{
-				verInt = Integer.parseInt(ver);
-			}
-			catch (NumberFormatException nfe)
-			{
-				System.out.println("Bad format for hardware version - defaulting to ATMEGA328 (Uno)");
-				verInt = HARDWARE_VER_UNO;
-			}
 
-			if (HARDWARE_VER_MEGA == verInt || HARDWARE_VER_MEGA_POLARSHIELD == verInt)
-				newHardwareVersion = verInt;
-			else
-				newHardwareVersion = HARDWARE_VER_UNO;
-		}
-		return newHardwareVersion;
-	}
 
 	/**
 	 * Sets the hardware version to a new one.

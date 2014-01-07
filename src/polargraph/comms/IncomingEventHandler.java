@@ -1,5 +1,11 @@
 package polargraph.comms;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import geomerative.RPoint;
 import polargraph.Polargraph;
 
@@ -14,7 +20,9 @@ import polargraph.Polargraph;
  * @author Sandy Noble
  */
 public class IncomingEventHandler {
+	private static final int HISTORY_MAX_SIZE = 200;
 	private Polargraph machine = null;
+	private Map<String, SortedMap<Date, String>> history =  new HashMap<String, SortedMap<Date, String>>(13);
 	
 	public IncomingEventHandler(Polargraph machine) {
 		this.machine = machine;
@@ -32,13 +40,13 @@ public class IncomingEventHandler {
 	  
 		if (incoming.startsWith("READY"))
 		{
-			System.out.println("Dealing with READY.");
-			Integer hardwareVersion = this.getMachine().decodeHardwareVersionFromReady(incoming);
+			this.addToHistory("READY", incoming);
+			Integer hardwareVersion = this.parseHardwareVersionFromReady(incoming);
 			this.getMachine().setHardwareVersion(hardwareVersion);
 		}
 		else if (incoming.startsWith("SYNC")) {
-			System.out.println("Dealing with SYNC.");
-			getMachine().getTool().setPosition(this.unpackSync(incoming));
+			this.addToHistory("SYNC", incoming);
+			getMachine().getTool().setPosition(this.parseSync(incoming));
 		}
 	//  else if (incoming.startsWith("CARTESIAN"))
 	//    readCartesianMachinePosition(incoming);
@@ -69,7 +77,68 @@ public class IncomingEventHandler {
 	  
 		return this;
 	}
-	private RPoint unpackSync(String incoming) {
+	/**
+	 * Keeps a history of the incoming events, in a couple of sorted treemaps, datestamped.
+	 * It should limit the size of the collections to the value of HISTORY_MAX_SIZE 
+	 * automatically.
+	 * 
+	 * @param key the "type" of message, eg READY, or SYNC, or "UNKNOWN"
+	 * @param incoming the value to store in the history
+	 */
+	private void addToHistory(String key, String incoming) {
+		if (!this.history.containsKey(key)) {
+			this.history.put(key, new TreeMap<Date, String>());
+		}
+		System.out.println("Historicising " + key);
+		this.history.get(key).put(new Date(), incoming);
+		
+		// remove the first key if the collection is getting too big
+		if (this.history.get(key).size() > HISTORY_MAX_SIZE) {
+			this.history.get(key).remove(this.history.get(key).firstKey());
+		}
+	}
+
+	/**
+	 * Extracts the hardware version message from the regular "READY" transmission from 
+	 * the polargraph machine, returns it as an Integer.
+	 * 
+	 * @param readyString eg something like "READY_200"
+	 */
+	public Integer parseHardwareVersionFromReady(String readyString)
+	{
+		Integer newHardwareVersion = Polargraph.HARDWARE_VER_UNO;
+		if ("READY".equals(readyString))
+		{
+			newHardwareVersion = Polargraph.HARDWARE_VER_UNO;
+		}
+		else
+		{
+			String ver = readyString.substring(6);
+			Integer verInt = Polargraph.HARDWARE_VER_UNO;
+			try
+			{
+				verInt = Integer.parseInt(ver);
+			}
+			catch (NumberFormatException nfe)
+			{
+				System.out.println("Bad format for hardware version - defaulting to ATMEGA328 (Uno)");
+				verInt = Polargraph.HARDWARE_VER_UNO;
+			}
+
+			if (Polargraph.HARDWARE_VER_MEGA == verInt || Polargraph.HARDWARE_VER_MEGA_POLARSHIELD == verInt)
+				newHardwareVersion = verInt;
+			else
+				newHardwareVersion = Polargraph.HARDWARE_VER_UNO;
+		}
+		return newHardwareVersion;
+	}
+	/**
+	 * Splits and parses a SYNC message, converts it into a RPoint.
+	 * 
+	 * @param incoming
+	 * @return RPoint object 
+	 */
+	private RPoint parseSync(String incoming) {
 		String[] splitted = incoming.split(",");
 		if (splitted.length == 4)
 		{
@@ -78,6 +147,7 @@ public class IncomingEventHandler {
 			Double a = Double.valueOf(currentAPos);
 			Double b = Double.valueOf(currentBPos);
 			RPoint rp = new RPoint(a, b);
+			rp = this.getMachine().convertToCartesian(rp);
 			return rp;
 		}
 		else
