@@ -56,10 +56,10 @@ public class Polargraph {
 	private RPoint topRight = null;
 	
 	// hardware
-	public static final int HARDWARE_VER_UNO = 1;
-	public static final int HARDWARE_VER_MEGA = 100;
-	public static final int HARDWARE_VER_MEGA_POLARSHIELD = 200;
-	private int currentHardware = HARDWARE_VER_MEGA_POLARSHIELD;	
+	public static final Integer HARDWARE_VER_UNO = 1;
+	public static final Integer HARDWARE_VER_MEGA = 100;
+	public static final Integer HARDWARE_VER_MEGA_POLARSHIELD = 200;
+	private Integer currentHardware = HARDWARE_VER_MEGA_POLARSHIELD;	
 	
 	// Current pen position
 	private PolargraphTool tool = new PolargraphTool();

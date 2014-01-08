@@ -48,8 +48,10 @@ public class IncomingEventHandler {
 			this.addToHistory("SYNC", incoming);
 			getMachine().getTool().setPosition(this.parseSync(incoming));
 		}
-	//  else if (incoming.startsWith("CARTESIAN"))
-	//    readCartesianMachinePosition(incoming);
+		else if (incoming.startsWith("CARTESIAN")) {
+			this.addToHistory("CARTESIAN", incoming);
+			getMachine().getTool().setPosition(this.parseCartesian(incoming));
+		}
 	//  else if (incoming.startsWith("PGNAME"))
 	//    readMachineName(incoming);
 	//  else if (incoming.startsWith("PGSIZE"))
@@ -77,6 +79,21 @@ public class IncomingEventHandler {
 	  
 		return this;
 	}
+	private RPoint parseCartesian(String incoming) {
+		String[] splitted = incoming.split(",");
+		if (splitted.length == 4)
+		{
+			String currentAPos = splitted[1];
+			String currentBPos = splitted[2];
+			Double a = Double.valueOf(currentAPos);
+			Double b = Double.valueOf(currentBPos);
+			RPoint rp = new RPoint(a, b);
+			return rp;
+		}
+		else
+			throw new IllegalArgumentException("Incoming did not contain a proper machine position reference: " +incoming);
+	}
+
 	/**
 	 * Keeps a history of the incoming events, in a couple of sorted treemaps, datestamped.
 	 * It should limit the size of the collections to the value of HISTORY_MAX_SIZE 
@@ -121,11 +138,11 @@ public class IncomingEventHandler {
 			}
 			catch (NumberFormatException nfe)
 			{
-				System.out.println("Bad format for hardware version - defaulting to ATMEGA328 (Uno)");
+				//System.out.printf("Bad format for hardware version ('%s')- defaulting to ATMEGA328 (Uno)\n", ver);
 				verInt = Polargraph.HARDWARE_VER_UNO;
 			}
 
-			if (Polargraph.HARDWARE_VER_MEGA == verInt || Polargraph.HARDWARE_VER_MEGA_POLARSHIELD == verInt)
+			if (Polargraph.HARDWARE_VER_MEGA.equals(verInt) || Polargraph.HARDWARE_VER_MEGA_POLARSHIELD.equals(verInt))
 				newHardwareVersion = verInt;
 			else
 				newHardwareVersion = Polargraph.HARDWARE_VER_UNO;
@@ -138,7 +155,7 @@ public class IncomingEventHandler {
 	 * @param incoming
 	 * @return RPoint object 
 	 */
-	private RPoint parseSync(String incoming) {
+	public RPoint parseSync(String incoming) {
 		String[] splitted = incoming.split(",");
 		if (splitted.length == 4)
 		{
