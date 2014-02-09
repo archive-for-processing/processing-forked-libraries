@@ -4,7 +4,7 @@ import processing.core.*;
 
 public class ColorMap {
 
-  public enum Type {
+  public enum Mode {
     HOT, COOL
   }
 
@@ -15,9 +15,9 @@ public class ColorMap {
   private float myMin = 0.0f;
   private float myMax = 1.0f;
 
-  public ColorMap(PApplet parent, Type type) {
+  public ColorMap(PApplet parent, Mode mode) {
 //    myParent = parent;
-    mySelector = ColorSelector.loadColorSelector(parent, mapData, type);
+    mySelector = ColorSelector.loadColorSelector(parent, mapData, mode);
   }
 
   public int getColor(float value) {

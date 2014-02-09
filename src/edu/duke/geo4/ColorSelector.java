@@ -26,9 +26,9 @@ class ColorSelector {
     return myParent.lerpColor(myColorArray[lowerIdx], myColorArray[upperIdx], pos - (float) lowerIdx);
   }
   
-  public static ColorSelector loadColorSelector(PApplet parent, String filename, ColorMap.Type type) {
+  public static ColorSelector loadColorSelector(PApplet parent, String filename, ColorMap.Mode mode) {
     JSONArray maps = parent.loadJSONObject(filename).getJSONArray("maps");
-    String jsonKey = getJsonKey(type);
+    String jsonKey = getJsonKey(mode);
     
     JSONObject selectedMap = null;
     for (int i = 0; i < maps.size(); i++) {
@@ -45,14 +45,14 @@ class ColorSelector {
     return new ColorSelector(parent, colorArray);
   }
   
-  private static String getJsonKey(ColorMap.Type type) {
-    switch (type) {
+  private static String getJsonKey(ColorMap.Mode mode) {
+    switch (mode) {
       case HOT:
         return "hot";
       case COOL:
         return "cool";
       default:
-        throw new RuntimeException("No colormap defined for the provided type");
+        throw new RuntimeException("No colormap defined for the specified mode");
     }
   }
   
