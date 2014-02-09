@@ -5,7 +5,7 @@ import processing.core.*;
 public class ColorMap {
 
   public enum Mode {
-    HOT, COOL
+    HOT, COOL, JET, SPRING, SUMMER, AUTUMN, WINTER, GRAY, BONE, COPPER, HSV
   }
 
   private static final String mapData = "colormaps.json";
