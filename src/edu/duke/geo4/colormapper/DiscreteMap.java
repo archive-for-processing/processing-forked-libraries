@@ -3,18 +3,18 @@ package edu.duke.geo4.colormapper;
 
 import processing.core.*;
 
+/**
+ * Provides an interface to map discrete values to colormap. The number of different colors the map
+ * is divided into are referred to as steps, and can be changed after the map is initialized.
+ * 
+ * @author Grant Oakley
+ * 
+ */
 public class DiscreteMap {
 
   private final GradientMap myMap;
   private int mySteps;
 
-  /**
-   * Provides an interface to map discrete values to colormap. The number of different colors the
-   * map is divided into are referred to as steps, and can be changed after the map is initialized.
-   * 
-   * @author Grant Oakley
-   * 
-   */
   public DiscreteMap(PApplet parent, ColorMap map, int steps) {
     myMap = new GradientMap(parent, map);
     setNumSteps(steps);
