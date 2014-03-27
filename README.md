@@ -90,7 +90,10 @@ The following callback events need to be implemented inside the main Processing 
 
 * __onTickEvent(int timerId, long timeLeftUntilFinish)__
 
-    The onTickEvent will be called whenever a tick interval has finished. The event will provide info about which timer has triggered the event and how much time is left till that timer finishes.
+    The onTickEvent will be called whenever a tick interval has finished.
+    The event will provide info about which timer has triggered the event and how much time is left till that timer finishes.
+
+    *NOTICE:* If the onTickEvent operation runs longer than the tick interval, the subsequent onTickEvent that was supposed to be triggered under normal circumstances will be skipped.
 
 * __onFinishEvent(int timerId)__
 

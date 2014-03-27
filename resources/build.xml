@@ -55,7 +55,9 @@
 	<property name="install.source" location="resources/install_instructions.txt"/>
 	<property name="install.destination" location="${project.dist.version}/INSTALL.txt"/>
 	<property name="libprops.source" location="resources/library.properties"/>
-	
+    <!-- created for own purpose -->
+    <property name="project.release" location="release"/>
+
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
 			<pathelement location="./resources/code/ant-contrib-1.0b3.jar"/>
@@ -112,11 +114,22 @@ ${line}
 		<antcall target="generate.distribution" />
 		<antcall target="generate.install.library" />
 		<antcall target="generate.web" />
-	  	<antcall target="generate.zip" />	
+	  	<antcall target="generate.zip" />
+        <antcall target="generate.release" />
+
 	  	<delete dir="${project.tmp}"/>
 	</target>
-	
-	
+
+
+    <!-- created for own purpose -->
+    <target name="generate.release" if="is.normal">
+        <delete dir="${project.release}" />
+        <mkdir dir="${project.release}" />
+        <copy file="${project.dist.version}/download/${project.name}.zip" tofile="${project.release}/${project.name}.zip" />
+        <copy file="${project.dist.version}/download/${project.name}.txt" tofile="${project.release}/${project.name}.txt" />
+    </target>
+
+
 	
 	<target name="generate.libprops" if="is.normal">
 		<property name="libprops.destination" location="${project.tmp}/${project.name}/library.properties"/>
