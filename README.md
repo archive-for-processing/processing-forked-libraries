@@ -77,21 +77,20 @@ In case you want to perform operations to a timer with a specific id, you can us
 * __CountdownTimer.getCountdownTimerForId(int id)__
 
     Returns the timer associated with the corresponding id.
-
-```java
-// example of stopping a timer with an id of 5
-CountdownTimer.getCountdownTimerForId(5).stop();
-```
+    ```java
+    // example of stopping a timer with an id of 5
+    CountdownTimer.getCountdownTimerForId(5).stop();
+    ```
 
 ### Implementing Callback Events Inside the Main Processing Applet
 
 The following callback events need to be implemented inside the main Processing applet in order for the library to be used.
 
-* onTickEvent(int timerId, long timeLeftUntilFinish)
+* __onTickEvent(int timerId, long timeLeftUntilFinish)__
 
     The onTickEvent will be called whenever a tick interval has finished. The event will provide info about which timer has triggered the event and how much time is left till that timer finishes.
 
-* void onFinishEvent(int timerId)
+* __onFinishEvent(int timerId)__
 
     The onFinishEvent will be called whenever a timer has finished running the configured amount of duration. The event will provide info about which timer has triggered the event.
 
