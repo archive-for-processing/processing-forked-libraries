@@ -3,8 +3,8 @@
 
 The CountdownTimer is an easy to use library for performing timed events.
 It will allow the user to configure the timer's duration and intervals at which tick events will occur.
-The timer will trigger onTickEvents after each interval and finish with an onFinishEvent.
-In order to use the library, the main Processing applet will have to implement two callback events:
+The timer will trigger onTickEvents after each tick interval and will eventually trigger an onFinishEvent when the whole time duration has finished.
+In order to use the library, the main Processing applet will have to implement the two callback events:
 
 * __onTickEvent(int timerId, long timeLeftUntilFinish)__
 * __onFinishEvent(int timerId)__
