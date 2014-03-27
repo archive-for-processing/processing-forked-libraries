@@ -293,7 +293,7 @@ public class CountdownTimer {
             try {
                 method.invoke(mApp, args);
             } catch (Exception e) {
-                System.err.println("failed to call " + method.toString() + " event inside main app");
+                System.err.println("failed to call method " + method.toString() + " inside main app");
                 e.printStackTrace();
             }
         }
