@@ -96,4 +96,11 @@ The following callback events need to be implemented inside the main Processing 
 
     The onFinishEvent will be called whenever a timer has finished running the configured amount of duration. The event will provide info about which timer has triggered the event.
 
-Any other details can be found inside the reference folder from the downloaded library. Additional examples are also bundled along with the library.
+## Additional Info
+
+Any other details about how to use this can be found inside the reference folder from the downloaded library.
+Additional examples are also bundled along with the library.
+The library does not require any other dependencies to run, and it has been tested with the following environments:
+
+* __Platforms:__ OS X, Windows 7
+* __Processing Version:__ > 2.0
