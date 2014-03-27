@@ -77,10 +77,12 @@ In case you want to perform operations to a timer with a specific id, you can us
 * __CountdownTimer.getCountdownTimerForId(int id)__
 
     Returns the timer associated with the corresponding id.
-    ```java
-    // example of stopping a timer with an id of 5
-    CountdownTimer.getCountdownTimerForId(5).stop();
-    ```
+
+Once the CountdownTimer with the corresponding id has been found, regular operations can be applied to it as usual.
+```java
+// example of stopping a timer with an id of 5
+CountdownTimer.getCountdownTimerForId(5).stop();
+```
 
 ### Implementing Callback Events Inside the Main Processing Applet
 
