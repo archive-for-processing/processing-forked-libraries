@@ -31,7 +31,7 @@ CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this);
 CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000);
 
 // creates a new configured timer and start it right away
-CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000).start;
+CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000).start();
 ```
 
 A CountdownTimer **MUST** be configured at least once before being started, or else an exception will be thrown.
@@ -102,5 +102,5 @@ Any other details about how to use this can be found inside the reference folder
 Additional examples are also bundled along with the library.
 The library does not require any other dependencies to run, and it has been tested with the following environments:
 
-* __Platforms:__ OS X, Windows 7
+* __Platforms:__ OS X Mavericks, Windows 7
 * __Processing Version:__ > 2.0
