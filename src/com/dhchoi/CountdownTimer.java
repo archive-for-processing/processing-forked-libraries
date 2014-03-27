@@ -98,8 +98,9 @@ public class CountdownTimer {
 
     /**
      * Returns a new timer that can be used inside the main Processing applet.
-     * The first created timer will have an id of 0.
-     * All subsequently created timers will have an id that is an increment of 1 of the previously created timer's id.
+     * The first created timer will always have an id of 0.
+     * All subsequently created timers will have an id that is 1 higher than the previously created timer's id
+     * (e.g. second created timer will have id 1, third created timer will have id 2, and so on).
      *
      * @param app the main Processing applet
      * @return CountdownTimer
@@ -222,7 +223,7 @@ public class CountdownTimer {
 
     /**
      * Stops the timer and resets it to the most recent configuration.
-     * If the method was called while the timer was running, it will first stop it by effectively calling stop().
+     * If the method was called while the timer was running, it will first stop the timer by effectively calling stop().
      * Attempts to reset a timer that was already reset or stopped will have no effect.
      *
      * @return CountdownTimer

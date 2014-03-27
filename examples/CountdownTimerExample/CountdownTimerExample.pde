@@ -4,10 +4,10 @@ CountdownTimer timer;
 String timerCallbackInfo = "";
 
 void setup() {
-   size(300, 300);
+  size(300, 300);
 
-   // create and start a timer that has been configured to trigger onTickEvents every 10 ms and run for 5000 ms
-   timer = CountdownTimer.getNewCountdownTimer(this).configure(10, 5000).start();
+  // create and start a timer that has been configured to trigger onTickEvents every 10 ms and run for 5000 ms
+  timer = CountdownTimer.getNewCountdownTimer(this).configure(10, 5000).start();
 }
 
 void draw() {
