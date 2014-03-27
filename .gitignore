@@ -1,1 +1,7 @@
 distribution
+
+##IntelliJ
+.idea/
+out/
+*.iml
+*.iws

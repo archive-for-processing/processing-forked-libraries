@@ -1,55 +1,53 @@
 import com.dhchoi.CountdownTimer;
 
-CountdownTimer redCircleTimer;
-CountdownTimer blueCircleTimer;
-float redCircleRadius = 0;
-float blueCircleRadius = 0;
-float maxCircleRadius = 150;
+CountdownTimer timer;
+String timerCallbackInfo = "";
 
 void setup() {
-  size(500, 300);
+   size(300, 300);
 
-  // create timers
-  redCircleTimer = CountdownTimer.getNewCountdownTimer(this).configure(100, 6000).start(); // this timer will have timerId = 0
-  blueCircleTimer = CountdownTimer.getNewCountdownTimer(this).configure(150, 9000).start(); // this timer will have timerId = 1
+   // create and start a timer that has been configured to trigger onTickEvents every 10 ms and run for 5000 ms
+   timer = CountdownTimer.getNewCountdownTimer(this).configure(10, 5000).start();
 }
 
 void draw() {
   background(255);
-  noStroke();
-  ellipseMode(CENTER);
+  fill(0);
+  textAlign(LEFT, TOP);
 
-  // draw red circle
-  fill(255, 0, 0);
-  ellipse(width/3, height/2, redCircleRadius, redCircleRadius);
+  // show the status of the timer
+  text("timer.isRunning():" + timer.isRunning(), 0, 0);
+  text("timer.isPaused():" + timer.isPaused(), 0, 15);
 
-  // draw blue circle
-  fill(0, 0, 255);
-  ellipse(width*2/3, height/2, blueCircleRadius, blueCircleRadius);
+  // show the info of event callbacks
+  textAlign(CENTER, CENTER);
+  text(timerCallbackInfo, width/2, height/2);
 }
 
 void onTickEvent(int timerId, long timeLeftUntilFinish) {
-  // change the radius of the circle based on which timer it was hooked up to
-  switch (timerId) {
-    case 0:
-      redCircleRadius = map(timeLeftUntilFinish, 6000, 0, 0, maxCircleRadius);
-      break;
-    case 1:
-      blueCircleRadius = map(timeLeftUntilFinish, 9000, 0, 0, maxCircleRadius);
-      break;
-    }
+  timerCallbackInfo = "[timerId:" + timerId + "] tick - timeLeft:" + timeLeftUntilFinish;
+  println(timerCallbackInfo);
 }
 
 void onFinishEvent(int timerId) {
-  // finalize any changes when the timer finishes
-  switch (timerId) {
-    case 0:
-      redCircleRadius = maxCircleRadius;
+  timerCallbackInfo = "[timerId:" + timerId + "] finished";
+  println(timerCallbackInfo);
+}
+
+void keyPressed() {
+  // user interface for operating the timer
+  switch(key) {
+    case 'a':
+      println("Starting timer...");
+      timer.start();
       break;
-    case 1:
-      blueCircleRadius = maxCircleRadius;
+    case 's':
+      println("Stopping timer...");
+      timer.stop();
+      break;
+    case 'r':
+      println("Resetting timer...");
+      timer.reset();
       break;
   }
-
-  println("[timerId:" + timerId + "] finished");
 }
