@@ -137,7 +137,7 @@ public class CountdownTimer {
     }
 
     /**
-     * Configures the tick intervals and duration of the timer in milliseconds.
+     * Configures the tick interval and timer duration in milliseconds.
      * The timer must be configured first before calling the start() method.
      *
      * @param tickIntervalMillis the tick interval (in milliseconds)
@@ -179,7 +179,7 @@ public class CountdownTimer {
     }
 
     /**
-     * Starts the timer with the most recent tick interval and duration configurations.
+     * Starts the timer with the most recent tick interval and timer duration configuration.
      * If the timer was stopped before the finish time, the method call will resume the timer from where it was stopped.
      * Starting an already running timer will have no effect.
      *

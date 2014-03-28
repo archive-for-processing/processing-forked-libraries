@@ -2,8 +2,8 @@
 ## Introduction
 
 The CountdownTimer is an easy to use library for performing timed events.
-It will allow the user to configure the timer's duration and intervals at which tick events will occur.
-The timer will trigger onTickEvents after each tick interval and will eventually trigger an onFinishEvent when the whole time duration has finished.
+It will allow the user to configure the timer's duration and interval at which tick events will occur.
+The timer will trigger onTickEvents after each tick interval and will eventually trigger an onFinishEvent when the whole timer duration has finished.
 In order to use the library, the main Processing applet will have to implement the two callback events:
 
 * __onTickEvent(int timerId, long timeLeftUntilFinish)__
@@ -27,25 +27,25 @@ Several examples of creating a CountdownTimer are:
 // creates a new timer that has not been configured and started
 CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this);
 
-// creates a new timer that has been configured to have tick intervals every 1000 ms and run for a total of 5000 ms
+// creates a new timer that has been configured to trigger ticks every 1000 ms and run for a total of 5000 ms
 CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000);
 
-// creates a new configured timer and start it right away
+// creates and configures a new timer and starts it right away
 CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000).start();
 ```
 
-A CountdownTimer **MUST** be configured at least once before being started, or else an exception will be thrown.
+A CountdownTimer **MUST** be configured at least once before being started, or else an IllegalStateException will be thrown.
 It won't make sense for a CountdownTimer to start when it doesn't know how long it should run.
 
 ### Using a CountdownTimer
 
 * __configure(long tickIntervalMillis, long timerDurationMillis)__
 
-    Configures the tick intervals and duration of the timer in milliseconds. The timer must be configured first before calling the start() method.
+    Configures the tick interval and timer duration in milliseconds. The timer must be configured first before calling the start() method.
 
 * __start()__
 
-    Starts the timer with the most recent tick interval and duration configurations. If the timer was stopped before the finish time, the method call will resume the timer from where it was stopped. Starting an already running timer will have no effect.
+    Starts the timer with the most recent tick interval and timer duration configuration. If the timer was stopped before the finish time, the method call will resume the timer from where it was stopped. Starting an already running timer will have no effect.
 
 * __stop()__
 
@@ -70,21 +70,21 @@ It won't make sense for a CountdownTimer to start when it doesn't know how long 
 ### Using Multiple CountdownTimers
 
 The first created timer will always have an id of 0.
-All subsequently created timers will have an id that is 1 higher than the previously created timer's id (e.g. second created timer will have id 1, third created timer will have id 2, and so on).
-The id of the timer that is calling the callback event will always be passed along, so this can be used to distinguish among different timers when multiple timers are used.
-In case you want to perform operations to a timer with a specific id, you can use the following method to get the corresponding timer:
+All subsequently created timers will have an id that is 1 higher than the previously created timer's id (e.g. second created timer will have an id of 1, third created timer will have an id of 2, and so on).
+The id of the timer that is calling the callback event will always be passed along to the callback event method. This can be used to distinguish timers from one another when multiple timers are being used.
+In case you want to perform operations to a timer with a specific id, you can use the following static method to get the timer with the corresponding id:
 
 * __CountdownTimer.getCountdownTimerForId(int id)__
 
     Returns the timer associated with the corresponding id.
 
-Once the CountdownTimer with the corresponding id has been found, any necessary operations can be applied to it as usual.
+Once the timer with the corresponding id has been found, any necessary operations can be applied to it as usual.
 ```java
 // example of stopping a timer with an id of 5
 CountdownTimer.getCountdownTimerForId(5).stop();
 ```
 
-### Implementing Callback Events Inside the Main Processing Applet
+### Implementing Callback Events
 
 The following callback events need to be implemented inside the main Processing applet in order for the library to be used.
 
@@ -97,7 +97,7 @@ The following callback events need to be implemented inside the main Processing 
 
 * __onFinishEvent(int timerId)__
 
-    The onFinishEvent will be called whenever a timer has finished running the configured amount of duration. The event will provide info about which timer has triggered the event.
+    The onFinishEvent will be called whenever a timer has finished running for the configured amount of timer duration. The event will provide info about which timer has triggered the event.
 
 ## Additional Info
 
