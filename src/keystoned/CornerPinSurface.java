@@ -270,14 +270,14 @@ public class CornerPinSurface implements Draggable {
      * Renders without an image using the parent applet's
      * renderer.
      */
-    public void render() {
-        render(parent.g);
+    public void renderFrame() {
+        renderFrame(parent.g);
     }
 
     /**
      * Renders without an image using a specific render.
      */
-    public void render(PGraphics g) {
+    public void renderFrame(PGraphics g) {
         g.pushMatrix();
         g.translate(x, y);
         if (Keystone.calibrate)
@@ -452,7 +452,7 @@ public class CornerPinSurface implements Draggable {
 
             Keystone.calibrate = calibrate;
             if (calibrate) {
-                render(g);
+                renderFrame(g);
             }
 
             return;

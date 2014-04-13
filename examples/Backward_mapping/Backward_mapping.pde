@@ -52,7 +52,7 @@ void draw() {
   // render without a texture
   // if toggleCalibration is off
   // then you won't be able to see this
-  inSurface.render();
+  inSurface.renderFrame();
 
   outSurface.render(img, inSurface);
   //outSurface.render(this.g, img, 0, 0, img.width, img.height ,inSurface);
