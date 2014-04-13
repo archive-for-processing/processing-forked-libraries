@@ -260,6 +260,8 @@ public class Keystone {
 
                     CornerPinSurface s = surfaces.get(i);
 
+                    if (s.ignoreCalibration) continue;
+
                     if (s.isMouseOver()) {
 
                         top = s;

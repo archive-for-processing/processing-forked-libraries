@@ -59,6 +59,8 @@ public class CornerPinSurface implements Draggable {
     int res;
 
     // Daniel Wiedeman: made them public static
+    // Doeke Wartena: removed static, it's causing problems
+    // when using a CornerPinSurface as render output
     public int TL; // top left
     public int TR; // top right
     public int BL; // bottom left
@@ -69,6 +71,8 @@ public class CornerPinSurface implements Draggable {
 
     int gridColor;
     int controlPointColor;
+
+    boolean ignoreCalibration;
 
     // Jai class for keystone calculus
     WarpPerspective warpPerspective = null;
@@ -226,7 +230,7 @@ public class CornerPinSurface implements Draggable {
 
         g.pushMatrix();
         g.translate(x, y);
-        if (Keystone.calibrate)
+        if (!ignoreCalibration && Keystone.calibrate)
             g.stroke(gridColor);
         else
             g.noStroke();
@@ -257,7 +261,7 @@ public class CornerPinSurface implements Draggable {
         }
         g.endShape(PApplet.CLOSE);
 
-        if (Keystone.calibrate)
+        if (!ignoreCalibration && Keystone.calibrate)
             renderControlPoints(g);
 
         g.popMatrix();
@@ -280,7 +284,7 @@ public class CornerPinSurface implements Draggable {
     public void renderFrame(PGraphics g) {
         g.pushMatrix();
         g.translate(x, y);
-        if (Keystone.calibrate)
+        if (!ignoreCalibration && Keystone.calibrate)
             g.stroke(gridColor);
         else
             g.noStroke();
@@ -301,7 +305,7 @@ public class CornerPinSurface implements Draggable {
         }
         g.endShape(PApplet.CLOSE);
 
-        if (Keystone.calibrate)
+        if (!ignoreCalibration && Keystone.calibrate)
             renderControlPoints(g);
 
         g.popMatrix();
@@ -418,6 +422,7 @@ public class CornerPinSurface implements Draggable {
             outputSurface.gridColor = gridColor;
             outputSurface.controlPointColor = controlPointColor;
 
+            outputSurface.ignoreCalibration = ignoreCalibration;
 
             MeshPoint mp;
 
@@ -451,7 +456,7 @@ public class CornerPinSurface implements Draggable {
             outputSurface.render(g, texture, tX, tY, tW, tH, inputSurface);
 
             Keystone.calibrate = calibrate;
-            if (calibrate) {
+            if (calibrate && !ignoreCalibration) {
                 renderFrame(g);
             }
 
@@ -460,7 +465,7 @@ public class CornerPinSurface implements Draggable {
 
         g.pushMatrix();
         g.translate(x, y);
-        if (Keystone.calibrate)
+        if (!ignoreCalibration && Keystone.calibrate)
             g.stroke(gridColor);
         else
             g.noStroke();
@@ -514,7 +519,7 @@ public class CornerPinSurface implements Draggable {
         }
         g.endShape(PApplet.CLOSE);
 
-        if (Keystone.calibrate)
+        if (!ignoreCalibration && Keystone.calibrate)
             renderControlPoints(g);
 
         g.popMatrix();
@@ -790,6 +795,23 @@ public class CornerPinSurface implements Draggable {
     }
 
     /**
+     *
+     * @param b Set to true to ignore calibration
+     */
+    public void ignoreCalibration(boolean b) {
+        ignoreCalibration = b;
+    }
+
+    /**
+     *
+     * @return returns yes if calibration will be ignored for this surface.
+     */
+    public boolean ignoreCalibration() {
+        return ignoreCalibration;
+    }
+
+
+    /**
      * @invisible
      *
      *            Populates values from an XML object
@@ -811,6 +833,7 @@ public class CornerPinSurface implements Draggable {
         calculateMesh();
     }
 
+    // TODO save color
     public XML save() {
 
         XML parent = new XML("surface");
