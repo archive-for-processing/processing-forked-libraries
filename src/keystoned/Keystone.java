@@ -28,14 +28,7 @@
 package keystoned;
 
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import processing.core.*;
 import processing.data.XML;
@@ -50,7 +43,8 @@ import processing.event.MouseEvent;
  * The Keystone object also provides load/save functionality, once you've calibrated the layout to
  * your liking.
  * 
- * @example Hello 
+ * @example CornerPin
+ * @example Backward_mapping
  * 
  * (the tag @example followed by the name of an example included in folder 'examples' will
  * automatically include the example in the javadoc.)
@@ -72,14 +66,16 @@ public class Keystone {
     static boolean calibrate;
 
 
+
+
+
 	
 
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
 	 * 
-	 * @example Hello
-	 * @param parent
+	 * @param parent The PApplet.
 	 */
 	public Keystone(PApplet parent) {
 		this.parent = parent;
@@ -90,12 +86,10 @@ public class Keystone {
 
         // check the renderer type
         // issue a warning if it's PGraphicsJava2D
-        PGraphics pg = (PGraphics)parent.g;
+        PGraphics pg = parent.g;
         if ((pg instanceof PGraphicsJava2D) ) {
-            // TODO check how to handle this error
-            // P2D works also
-            PApplet.println("The keystone library will not work with PGraphics2D as the renderer because it relies on texture mapping. " +
-                    "Try P3D, OPENGL or GLGraphics.");
+            PApplet.println("The keystone library will not work with JAVA2D as the renderer because it relies on texture mapping. " +
+                    "Try P2D, P3D or OPENGL");
         }
 
         PApplet.println("Keystone " + VERSION);
@@ -123,7 +117,7 @@ public class Keystone {
      * @param w width
      * @param h height
      * @param res resolution (number of tiles per axis)
-     * @return
+     * @return Returns a new CornerPin surface.
      */
     public CornerPinSurface createCornerPinSurface(int w, int h, int res) {
         CornerPinSurface s = new CornerPinSurface(parent, w, h, res);
@@ -259,17 +253,57 @@ public class Keystone {
         switch (e.getAction()) {
 
             case MouseEvent.PRESS:
+
                 CornerPinSurface top = null;
+
+                for (int i=surfaces.size()-1; i >= 0; i--) {
+
+                    CornerPinSurface s = surfaces.get(i);
+
+                    if (s.isMouseOver()) {
+
+                        top = s;
+                        dragged = s;
+
+                        MeshPoint mp = s.isOnControlPoint(x, y);
+
+                        if (mp != null) {
+                            dragged = mp;
+                            break;
+                        }
+
+                        s.clickX = x - s.x;
+                        s.clickY = y - s.y;
+
+                    }
+                    else {
+                        // we are not over the surface but we could
+                        // still be over a control point
+                        MeshPoint mp = s.isOnControlPoint(x, y);
+                        if (mp != null) {
+                            dragged = mp;
+                            //break;
+                        }
+                    }
+
+                }
+
+
+                /*
                 // navigate the list backwards, as to select
                 for (int i=surfaces.size()-1; i >= 0; i--) {
                     CornerPinSurface s = surfaces.get(i);
+
+
+
                     dragged = s.select(x, y);
                     if (dragged != null) {
                         top = s;
                         break;
                     }
                 }
-
+                */
+                 /*
                 if (top != null) {
                     // moved the dragged surface to the beginning of the list
                     // this actually breaks the load/save order.
@@ -280,6 +314,7 @@ public class Keystone {
                     //surfaces.remove(i);
                     //surfaces.add(0, top);
                 }
+                */
                 break;
 
             case MouseEvent.DRAG:

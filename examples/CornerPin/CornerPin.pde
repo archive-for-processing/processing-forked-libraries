@@ -25,6 +25,7 @@ CornerPinSurface surface;
 PGraphics offscreen;
 
 void setup() {
+  // P2D also works
   size(800, 600, OPENGL);
 
   ks = new Keystone(this);

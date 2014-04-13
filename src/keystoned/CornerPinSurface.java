@@ -34,10 +34,7 @@ import java.awt.geom.Point2D;
 import javax.media.jai.PerspectiveTransform;
 import javax.media.jai.WarpPerspective;
 
-import processing.core.PApplet;
-import processing.core.PGraphics;
-import processing.core.PImage;
-import processing.core.PVector;
+import processing.core.*;
 import processing.data.XML;
 
 /**
@@ -62,10 +59,10 @@ public class CornerPinSurface implements Draggable {
     int res;
 
     // Daniel Wiedeman: made them public static
-    public static int TL; // top left
-    public static int TR; // top right
-    public static int BL; // bottom left
-    public static int BR; // bottom right
+    public int TL; // top left
+    public int TR; // top right
+    public int BL; // bottom left
+    public int BR; // bottom right
 
     int w;
     int h;
@@ -75,6 +72,12 @@ public class CornerPinSurface implements Draggable {
 
     // Jai class for keystone calculus
     WarpPerspective warpPerspective = null;
+
+    // used for render(texture, inputSurface) when the res of the inputSurface does not equal the output surface (this)
+    CornerPinSurface outputSurface;
+
+    // speed optimisation, used in render to only calculate once instead of 4 times
+    private boolean skipCalculateMesh = false;
 
     /**
      * @param parent
@@ -140,6 +143,43 @@ public class CornerPinSurface implements Draggable {
     }
 
     /**
+     * Manually set one of the corners for this surface.
+     * The "corner" parameter should be either: CornerPinSurface.TL, CornerPinSurface.BL,
+     * CornerPinSurface.TR or CornerPinSurface.BR*
+     */
+    public void setMeshPoint(int corner, float x, float y) {
+        mesh[corner].moveTo(mesh[corner].x = x, mesh[corner].y = y);
+    }
+
+    /**
+     * @return Returns MeshPoint of top left.
+     */
+    public MeshPoint getTL() {
+        return mesh[TL];
+    }
+
+    /**
+     * @return Returns MeshPoint of top right.
+     */
+    public MeshPoint getTR() {
+        return mesh[TR];
+    }
+
+    /**
+     * @return Returns MeshPoint of bottom right.
+     */
+    public MeshPoint getBR() {
+        return mesh[BR];
+    }
+
+    /**
+     * @return Returns MeshPoint of bottom left.
+     */
+    public MeshPoint getBL() {
+        return mesh[BL];
+    }
+
+    /**
      * @return The surface's mesh resolution, in number of "tiles"
      */
     public int getRes() {
@@ -165,7 +205,7 @@ public class CornerPinSurface implements Draggable {
 
     /**
      * Renders and applies keystoning to the image using the parent applet's
-     * renderer.The tX, tY, tW and tH parameters specify which section of the
+     * renderer. The tX, tY, tW and tH parameters specify which section of the
      * image to render onto this surface.
      */
     public void render(PImage texture, int tX, int tY, int tW, int tH) {
@@ -177,8 +217,13 @@ public class CornerPinSurface implements Draggable {
      * tX, tY, tW and tH parameters specify which section of the image to render
      * onto this surface.
      */
-    public void render(PGraphics g, PImage texture, int tX, int tY, int tW,
-                       int tH) {
+    public void render(PGraphics g, PImage texture, int tX, int tY, int tW, int tH) {
+
+        // texture mode needs to be Image
+        // we restore it to what it was later
+        int textureMode = g.textureMode;
+        g.textureMode = PConstants.IMAGE;
+
         g.pushMatrix();
         g.translate(x, y);
         if (Keystone.calibrate)
@@ -188,7 +233,7 @@ public class CornerPinSurface implements Draggable {
         g.fill(255);
         g.beginShape(PApplet.QUADS);
         g.texture(texture);
-        float u, v = 0;
+        float u, v;
         for (int x = 0; x < res - 1; x++) {
             for (int y = 0; y < res - 1; y++) {
                 MeshPoint mp;
@@ -216,7 +261,273 @@ public class CornerPinSurface implements Draggable {
             renderControlPoints(g);
 
         g.popMatrix();
+
+        g.textureMode = textureMode;
     }
+
+
+    /**
+     * Renders without an image using the parent applet's
+     * renderer.
+     */
+    public void render() {
+        render(parent.g);
+    }
+
+    /**
+     * Renders without an image using a specific render.
+     */
+    public void render(PGraphics g) {
+        g.pushMatrix();
+        g.translate(x, y);
+        if (Keystone.calibrate)
+            g.stroke(gridColor);
+        else
+            g.noStroke();
+        g.noFill();
+        g.beginShape(PApplet.QUADS);
+        for (int x = 0; x < res - 1; x++) {
+            for (int y = 0; y < res - 1; y++) {
+                MeshPoint mp;
+                mp = mesh[(x) + (y) * res];
+                g.vertex(mp.x, mp.y);
+                mp = mesh[(x + 1) + (y) * res];
+                g.vertex(mp.x, mp.y);
+                mp = mesh[(x + 1) + (y + 1) * res];
+                g.vertex(mp.x, mp.y);
+                mp = mesh[(x) + (y + 1) * res];
+                g.vertex(mp.x, mp.y);
+            }
+        }
+        g.endShape(PApplet.CLOSE);
+
+        if (Keystone.calibrate)
+            renderControlPoints(g);
+
+        g.popMatrix();
+    }
+
+
+    /*
+     * Was working on this till i had the idea to use o CornerPinSurface as output.
+     */
+    /*
+    public void backwardMap(PGraphics g, PImage texture, int tX, int tY, int tW,
+                       int tH, float oX, float oY, float oW, float oH) {
+
+
+        float xOff = x;
+        float yOff = y;
+
+        // get the xy values of each cell
+        for (int x = 0; x < res - 1; x++) {
+            for (int y = 0; y < res - 1; y++) {
+                MeshPoint mp;
+
+                float u, v;
+
+                // this are the output coordinates
+                float oX1 = PApplet.map(x, 0, res-1, oX, oX+oW);
+                float oY1 = PApplet.map(y, 0, res-1, oY, oY+oH);
+                float oX2 = PApplet.map(x+1, 0, res-1, oX, oX+oW);
+                float oY2 = PApplet.map(y+1, 0, res-1, oY, oY+oH);
+
+                g.beginShape(PConstants.QUADS);
+                g.texture(texture);
+
+
+                // we use mp to get uv values
+                mp = mesh[(x) + (y) * res]; // TL
+                u = mp.x + tX;
+                v = mp.y + tY;
+
+                //u = PApplet.map(mp.u, 0, w, tX, tX + tW);
+                //v = PApplet.map(mp.v, 0, h, tY, tY + tH);
+
+                g.vertex(oX1, oY1, u, v);
+                mp = mesh[(x + 1) + (y) * res]; // TR
+                //u = mp.x;
+                //v = mp.y;
+                u = mp.x + tX;
+                v = mp.y + tY;
+                g.vertex(oX2, oY1, u, v);
+                mp = mesh[(x + 1) + (y + 1) * res]; // BR
+                //u = mp.x;
+                //v = mp.y;
+                u = mp.x + tX;
+                v = mp.y + tY;
+                g.vertex(oX2, oY2, u, v);
+                mp = mesh[(x) + (y + 1) * res]; // BL
+                //u = mp.x;
+                //v = mp.y;
+                u = mp.x + tX;
+                v = mp.y + tY;
+                g.vertex(oX1, oY2, u, v);
+                g.endShape(PConstants.CLOSE);
+            }
+        }
+
+
+    }
+    */
+
+
+    /**
+     * Renders and applies keystoning to the image.
+     */
+    public void render(PImage texture, CornerPinSurface inputSurface) {
+        render(parent.g, texture, inputSurface);
+    }
+
+    /**
+     * Renders and applies keystoning to the image using a specific render.
+     */
+    public void render(PGraphics g, PImage texture,  CornerPinSurface inputSurface) {
+        render(g, texture, 0, 0, w, h, inputSurface);
+    }
+
+    /**
+     * Renders and applies keystoning to the image. The
+     * tX, tY, tW and tH parameters specify which section of the image to render
+     * onto this surface.
+     */
+    public void render(PImage texture, int tX, int tY, int tW, int tH, CornerPinSurface inputSurface) {
+        render(parent.g, texture, tX, tY, tW, tH, inputSurface);
+    }
+
+
+    /**
+     * Renders and applies keystoning to the image using a specific render. The
+     * tX, tY, tW and tH parameters specify which section of the image to render
+     * onto this surface.
+     */
+    public void render(PGraphics g, PImage texture, int tX, int tY, int tW, int tH, CornerPinSurface inputSurface) {
+
+        // texture mode needs to be Image
+        // we restore it to what it was later
+        int textureMode = g.textureMode;
+        g.textureMode = PConstants.IMAGE;
+
+        if (res != inputSurface.res) {
+            // create a surface where the res does match
+
+            if (outputSurface == null || outputSurface.res != inputSurface.res) {
+                outputSurface = new CornerPinSurface(parent, w, h, inputSurface.getRes());
+            }
+
+            outputSurface.gridColor = gridColor;
+            outputSurface.controlPointColor = controlPointColor;
+
+
+            MeshPoint mp;
+
+            // avoid recalculation of the mesh
+            // with every MeshPoint we move
+            skipCalculateMesh = true;
+
+            mp = mesh[TL];
+            outputSurface.setMeshPoint(outputSurface.TL, mp.x+x, mp.y+y);
+            mp = mesh[TR];
+            outputSurface.setMeshPoint(outputSurface.TR, mp.x+x, mp.y+y);
+            mp = mesh[BR];
+            outputSurface.setMeshPoint(outputSurface.BR, mp.x+x, mp.y+y);
+            mp = mesh[BL];
+            // set to false again so we will recalculate now
+            skipCalculateMesh = false;
+            outputSurface.setMeshPoint(outputSurface.BL, mp.x+x, mp.y+y);
+
+            // we have to position the output res according to this one
+            outputSurface.x = x;
+            outputSurface.y = y;
+            outputSurface.clickX = clickX;
+            outputSurface.clickY = clickY;
+
+            // the following renders with an image
+            // followed by rendering the original output
+            // surface without a texture
+            boolean calibrate = Keystone.calibrate; // store value
+
+            Keystone.calibrate = false;
+            outputSurface.render(g, texture, tX, tY, tW, tH, inputSurface);
+
+            Keystone.calibrate = calibrate;
+            if (calibrate) {
+                render(g);
+            }
+
+            return;
+        }
+
+        g.pushMatrix();
+        g.translate(x, y);
+        if (Keystone.calibrate)
+            g.stroke(gridColor);
+        else
+            g.noStroke();
+
+        g.beginShape(PApplet.QUADS);
+        g.texture(texture);
+        float u, v;
+
+        float inOffsetX =  inputSurface.x;
+        float inOffsetY =  inputSurface.y;
+
+        for (int x = 0; x < res - 1; x++) {
+            for (int y = 0; y < res - 1; y++) {
+
+                // we are in the outputSurface
+                // we have to look at the u,v from the input surface
+                MeshPoint mpOut, mpIn;
+                mpOut = mesh[(x) + (y) * res];
+                mpIn = inputSurface.mesh[(x) + (y) * res];
+
+                u = PApplet.map(mpIn.x, 0, w, tX+inOffsetX, tW+inOffsetX);
+                v = PApplet.map(mpIn.y, 0, h, tY+inOffsetY, tH+inOffsetY);
+
+                g.vertex(mpOut.x, mpOut.y, u, v);
+
+                mpOut = mesh[(x + 1) + (y) * res];
+                mpIn = inputSurface.mesh[(x + 1) + (y) * res];
+
+                u = PApplet.map(mpIn.x, 0, w, tX+inOffsetX, tW+inOffsetX);
+                v = PApplet.map(mpIn.y, 0, h, tY+inOffsetY, tH+inOffsetY);
+
+                g.vertex(mpOut.x, mpOut.y, u, v);
+
+                mpOut = mesh[(x + 1) + (y + 1) * res];
+                mpIn = inputSurface.mesh[(x + 1) + (y + 1) * res];
+
+                u = PApplet.map(mpIn.x, 0, w, tX+inOffsetX, tW+inOffsetX);
+                v = PApplet.map(mpIn.y, 0, h, tY+inOffsetY, tH+inOffsetY);
+
+                g.vertex(mpOut.x, mpOut.y, u, v);
+
+                mpOut = mesh[(x) + (y + 1) * res];
+                mpIn = inputSurface.mesh[(x) + (y + 1) * res];
+
+                u = PApplet.map(mpIn.x, 0, w, tX+inOffsetX, tW+inOffsetX);
+                v = PApplet.map(mpIn.y, 0, h, tY+inOffsetY, tH+inOffsetY);
+
+                g.vertex(mpOut.x, mpOut.y, u, v);
+
+            }
+        }
+        g.endShape(PApplet.CLOSE);
+
+        if (Keystone.calibrate)
+            renderControlPoints(g);
+
+        g.popMatrix();
+
+        // restore
+        g.textureMode = textureMode;
+
+    }
+
+
+
+
+
 
     /**
      * This function will give you the position of the mouse in the surface's
@@ -231,6 +542,7 @@ public class CornerPinSurface implements Draggable {
         return new PVector((int) point.getX(), (int) point.getY());
     }
 
+    /*
     private PVector getTransformedMouseOld() {
 
         // this was more of a pain than I tought!
@@ -293,6 +605,7 @@ public class CornerPinSurface implements Draggable {
 
         return new PVector((int) (s * w), (int) (t * h));
     }
+ */
 
     public PVector getTransformedMouse() {
         return getTransformedCursor(parent.mouseX, parent.mouseY);
@@ -336,6 +649,7 @@ public class CornerPinSurface implements Draggable {
      */
     Draggable select(float x, float y) {
         // first, see if one of the control points are selected
+        /*
         x -= this.x;
         y -= this.y;
         for (int i = 0; i < mesh.length; i++) {
@@ -343,15 +657,35 @@ public class CornerPinSurface implements Draggable {
                     && mesh[i].isControlPoint())
                 return mesh[i];
         }
+        */
+        MeshPoint mp = isOnControlPoint(x, y);
+        if (mp != null) {
+            return mp;
+        }
 
         // then, see if the surface itself is selected
         if (isMouseOver()) {
-            clickX = x;
-            clickY = y;
+            clickX = x - this.x;
+            clickY = y - this.y;
             return this;
         }
         return null;
     }
+
+
+    public MeshPoint isOnControlPoint(float x, float y) {
+        x -= this.x;
+        y -= this.y;
+
+        if (PApplet.dist(mesh[TL].x, mesh[TL].y, x, y) < 30) return mesh[TL];
+        if (PApplet.dist(mesh[TR].x, mesh[TR].y, x, y) < 30) return mesh[TR];
+        if (PApplet.dist(mesh[BR].x, mesh[BR].y, x, y) < 30) return mesh[BR];
+        if (PApplet.dist(mesh[BL].x, mesh[BL].y, x, y) < 30) return mesh[BL];
+
+        return null;
+    }
+
+
 
     /**
      * Returns true if the mouse is over this surface, false otherwise.
@@ -397,6 +731,8 @@ public class CornerPinSurface implements Draggable {
      */
     protected void calculateMesh() {
 
+        if (skipCalculateMesh) return;
+
         // The float constructor is deprecated, so casting everything to double
         PerspectiveTransform transform = PerspectiveTransform.getQuadToQuad(0,
                 0, w, 0, w, h, 0,
@@ -427,6 +763,7 @@ public class CornerPinSurface implements Draggable {
         }
     }
 
+    /*
     private void calculateMeshOld() {
 
         for (int i = 0; i < mesh.length; i++) {
@@ -439,6 +776,7 @@ public class CornerPinSurface implements Draggable {
             mesh[i].interpolateBetween(bot, top, fY);
         }
     }
+    */
 
     /**
      * @invisible
@@ -456,7 +794,7 @@ public class CornerPinSurface implements Draggable {
      *
      *            Populates values from an XML object
      */
-    void load(XML xml) {
+    public void load(XML xml) {
 
         this.x = xml.getFloat("x");
         this.y = xml.getFloat("y");
@@ -473,7 +811,7 @@ public class CornerPinSurface implements Draggable {
         calculateMesh();
     }
 
-    XML save() {
+    public XML save() {
 
         XML parent = new XML("surface");
 
