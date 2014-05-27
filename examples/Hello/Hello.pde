@@ -1,13 +1,10 @@
-import template.library.*;
+import manoloide.*;
 
 HelloLibrary hello;
 
 void setup() {
   size(400,400);
-  smooth();
-  
   hello = new HelloLibrary(this);
-  
   PFont font = createFont("",40);
   textFont(font);
 }
