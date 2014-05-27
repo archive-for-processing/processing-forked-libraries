@@ -1,3 +1,4 @@
+package manoloide;
 /**
  * ##library.name##
  * ##library.sentence##
@@ -25,7 +26,6 @@
  * @version     ##library.prettyVersion## (##library.version##)
  */
 
-package template.library;
 
 
 import processing.core.*;
@@ -42,7 +42,7 @@ import processing.core.*;
  *
  */
 
-public class HelloLibrary {
+public class Hola {
 	
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
@@ -59,7 +59,7 @@ public class HelloLibrary {
 	 * @example Hello
 	 * @param theParent
 	 */
-	public HelloLibrary(PApplet theParent) {
+	public Hola(PApplet theParent) {
 		myParent = theParent;
 		welcome();
 	}
