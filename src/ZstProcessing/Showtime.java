@@ -25,7 +25,7 @@ public class Showtime extends ZstNode{
 		registerMethod(methodName, accessMode, owner, new String[0]);
 	}
 	
-	public void registerMethod(String methodName, String accessMode, Object owner, String[] args){
+	public void registerMethod(String methodName, String accessMode, Object callbackOwner, String[] args){
 		Map<String, Object> nodeArgs = new HashMap<String, Object>();
 		
 		for(String arg : args)
@@ -33,12 +33,23 @@ public class Showtime extends ZstNode{
 		
 		Method callback = null;
 		try {
-			callback = owner.getClass().getDeclaredMethod(methodName, new Class[]{ZstMethod.class});
+			callback = callbackOwner.getClass().getDeclaredMethod(methodName, new Class[]{ZstMethod.class});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-        requestRegisterMethod(methodName, accessMode, nodeArgs, owner, callback);
+        requestRegisterMethod(methodName, accessMode, nodeArgs, callbackOwner, callback);
+	}
+	
+	public void subscribe(ZstMethod remoteMethod, String callbackName, Object callbackOwner){
+		Method callback = null;
+		try {
+			callback = callbackOwner.getClass().getDeclaredMethod(callbackName, new Class[]{ZstMethod.class});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		subscribeToMethod(remoteMethod, callbackOwner, callback);
 	}
 
 }

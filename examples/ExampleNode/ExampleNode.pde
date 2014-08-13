@@ -1,5 +1,6 @@
 import ZstProcessing.*;
 import ZST.*;
+import java.util.Map;
 
 Showtime node;
 
@@ -9,6 +10,9 @@ void setup() {
   String[] args = {"arg1"};
   node = new Showtime("processing","tcp://curiosity.soad.vuw.ac.nz:6000");
   node.registerMethod("testCallback", ZstMethod.WRITE, this, args);
+  Map<String, ZstPeerlink> peers = node.requestNodePeerlinks();
+  
+  node.subscribe(peers.get("LiveNode").getMethods().get("fire_clip"), "testSubscriber", this);
 }
 
 void draw() {
@@ -16,6 +20,10 @@ void draw() {
   fill(255);
 }
 
+void testSubscriber(ZstMethod methodData){
+  println(methodData.getOutput());
+}
+
 void testCallback(ZstMethod methodData){
-  print("Hello world!");
+  println(methodData.getArgs().get("arg1"));
 }
