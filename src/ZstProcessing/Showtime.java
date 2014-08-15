@@ -16,7 +16,7 @@ public class Showtime extends ZstNode{
 	}
 	
 	public Showtime(String nodeId, String stageAddress) {
-		super(nodeId, stageAddress);
+		super(nodeId, "tcp://" + stageAddress);
 		requestRegisterNode();
 		start();
 	}

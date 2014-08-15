@@ -15,8 +15,8 @@ void setup() {
   meterValues = new HashMap<Integer, Float>();
   //Create a new Showtime node and connect it to a stage node.
   //Here I have it connecting a Python instance running the zst_stage.py script
-  node = new Showtime("processing", "tcp://curiosity.soad.vuw.ac.nz:6000");
-
+  node = new Showtime("processing", "127.0.0.1:6000");
+  
   //Get a list of nodes connected to the stage
   Map<String, ZstPeerlink> peers = node.requestNodePeerlinks();
 
@@ -55,18 +55,18 @@ void setup() {
 }
 
 void draw() {
-  background(0);
+  background(255);
 
   for (int i = 0; i < trackList.size (); i++) {   
     if (meterValues.size() > 0) {
       //Draw outlines
       stroke(80);
       strokeWeight(0.4);
-      fill(0);
+      fill(255);
       rect(i * width/meterValues.size(), 0, width/meterValues.size(), height);
 
       //Draw interiors
-      noStroke();
+      //noStroke();
       fill(trackColors[i]);
       rect(i * width/meterValues.size(), height, width/meterValues.size(), meterValues.get(i) * -height);
     }
