@@ -13,7 +13,7 @@ Grab a copy of the lastest build from the [releases](https://github.com/Mystfit/
 Usage
 -----
 
-Here's an example of how to use the library where we're connecting to a [Showtime-Live node](https://github.com/Mystfit/Showtime-Live) hooked up to Ableton Live. The full example can be found in the Examples window underneath `Contributed Libraries->Showtime Processing Bridge`.
+Here's an example of how to use the library where we connect to a [Showtime-Live node](https://github.com/Mystfit/Showtime-Live) hooked up to Ableton Live. The full example can be found in the Examples window underneath `Contributed Libraries->Showtime Processing Bridge`.
 
 The sketch in action:  
 
