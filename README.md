@@ -13,7 +13,12 @@ Grab a copy of the lastest build from the [releases](https://github.com/Mystfit/
 Usage
 -----
 
-Here's an example of how to use the library where we're connecting to a [Showtime-Live node](https://github.com/Mystfit/Showtime-Live) hooked up to Ableton Live. The full version of this example can be found in the Examples window underneath `Contributed Libraries->Showtime Processing Bridge`
+Here's an example of how to use the library where we're connecting to a [Showtime-Live node](https://github.com/Mystfit/Showtime-Live) hooked up to Ableton Live. The full example can be found in the Examples window underneath `Contributed Libraries->Showtime Processing Bridge`.
+
+The sketch in action:  
+
+[![Example of Showtime-Processing talking to Ableton Live](http://img.youtube.com/vi/0-5mLBCJWJk/0.jpg)](http://www.youtube.com/watch?v=0-5mLBCJWJk)
+
 
 ### Setup ###
  - Set up the Stage node. This is to provide a fixed point that all nodes need to register their addresses and methods to upon startup, so that they can be discovered by other nodes. *TODO create stage node processing sketch.* In the meantime, I'd recommend using the zst_stage.py script from [Showtime-Python](https://github.com/Mystfit/Showtime-Python) to create a stage.
@@ -27,8 +32,7 @@ import ZST.*;
 Showtime node = new Showtime("processing", "127.0.0.1:6000");
 ```
 
-
-### Exploring the stage ### 
+### Exploring the stage ###
  - Ask the stage for a list of all the nodes available. 
 ```
 Map<String, ZstPeerlink> peers = node.requestNodePeerlinks();
