@@ -13,64 +13,103 @@ Grab a copy of the lastest build from the [releases](https://github.com/Mystfit/
 Usage
 -----
 
-Here's an example of how to use the library where we're connecting to a [Showtime-Live node](https://github.com/Mystfit/Showtime-Live) hooked up to Ableton Live.
+Here's an example of how to use the library where we're connecting to a [Showtime-Live node](https://github.com/Mystfit/Showtime-Live) hooked up to Ableton Live. The full version of this example can be found in the Examples window underneath `Contributed Libraries->Showtime Processing Bridge`
 
- - Step 1: Setting up the Stage node. This is to provide a fixed point that all nodes need to register their addresses and methods to upon startup, so that they can be discovered by other nodes. *TODO create stage node processing sketch.* In the meantime, I'd recommend using the zst_stage.py script from [Showtime-Python](https://github.com/Mystfit/Showtime-Python) to create a stage.
- - Step 2: Import the libraries.
+### Setup ###
+ - Set up the Stage node. This is to provide a fixed point that all nodes need to register their addresses and methods to upon startup, so that they can be discovered by other nodes. *TODO create stage node processing sketch.* In the meantime, I'd recommend using the zst_stage.py script from [Showtime-Python](https://github.com/Mystfit/Showtime-Python) to create a stage.
+ - Import the libraries.
 ```
-import ZstProcessing.*;  //Processing specific lib
+import ZstProcessing.*;  // Processing specific lib
 import ZST.*;
 ```
- - Step 3: Create a new node with a unique name and the address/port of the stage.
+ - Create a new node with a unique name and the address/port of the stage.
 ```
 Showtime node = new Showtime("processing", "127.0.0.1:6000");
 ```
- - Step 4: Ask the stage for a list of all the nodes available. 
+
+
+### Exploring the stage ### 
+ - Ask the stage for a list of all the nodes available. 
 ```
 Map<String, ZstPeerlink> peers = node.requestNodePeerlinks();
 ```
- - Step 5a: If we want to listen to messages being sent from another node, subscribe to the node and assign local callback functions that will run when messages of that type arrive.
+
+### Listening to other nodes ###
+ - If we want to listen to messages being sent from another node, subscribe to the node and assign local callback functions that will run when messages of that type arrive.
 ```
   ZstPeerlink liveNode = peers.get("LiveNode");
   node.subscribeToNode(liveNode);
   node.subscribe(liveNode.getMethod("meters_updated"), "displayMeter", this);
 ```
- - Step 5b: The callback function needs to accept a single ZstMethod argument, which is the method object sent by the remote node.
+ - The callback function needs to accept a single ZstMethod argument, which is the method object sent by the remote node.
 ```
 void displayMeter(ZstMethod methodData) {
- println(meterData.getName());        //Name of method
- println(meterData.getNode());        //Name of origin node this method belongs to
- println(meterData.getAccessMode());  //Type of method: read, write or responder
- println(meterData.getArgs());        //Arguments remote method accepts. Map of String/Objects.
- println(meterData.getOutput();       //Output of remote method. 
+ println(meterData.getName());        // Name of method
+ println(meterData.getNode());        // Name of origin node this method belongs to
+ println(meterData.getAccessMode());  // Type of method: read, write or responder
+ println(meterData.getArgs());        // Arguments remote method accepts. Map of String/Objects.
+ println(meterData.getOutput();       // Output of remote method. 
 }
-
 ```
- - Step 6a: If we want to control a remote node, we have to ask it to listen to messages that we send its way.
+
+### Controlling remote nodes ###
+ - If we want to control a remote node, we have to ask it to listen to messages that we send its way.
 ```
 node.connectToPeer(liveNode);
 
-//Need to wait a few ms for the remote node to connect else it loses the first bunch of messages 
+// Need to wait a few ms for the remote node to connect
+// else it loses the first bunch of messages 
 delay(100);
 ```
- - Step 6b: When calling a remote method, we need to provide a Map of Strings/Objects containing the arguments that we're sending, followed by the call to the remote method.
+ - When calling a remote method, we need to provide a Map of Strings/Objects containing the arguments that we're sending, followed by the call to the remote method.
 ```
 Map<String, Object> clipArgs = new HashMap<String, Object>();
 clipArgs.put("trackindex", 0);
 clipArgs.put("clipindex", 0);
 node.updateRemoteMethod(liveNode.getMethod("fire_clip"), clipArgs);
 ```
-- Step 6c: When working with methods where the accessmode is a responder, the `updateRemoteMethod()` call will return a ZstMethod containing the output of the method. Something to be aware of is that if the remote node doesn't send back a response, the program may wait indefinitely. This will be fixed in a future release.
+ - When working with methods where the accessmode is a responder, the `updateRemoteMethod()` call will return a ZstMethod containing the output of the method. Something to be aware of is that if the remote node doesn't send back a response, the program may wait indefinitely. This will be fixed in a future release.
 ```
 Map<String, Object> songArgs = new HashMap<String, Object>();
-songArgs.put("category", 0);  //The category lets us switch between normal tracks and return tracks
+songArgs.put("category", 0);  // The category lets us switch between normal tracks and return tracks
 ZstMethod layoutMethod = node.updateRemoteMethod(liveNode.getMethod("get_tracks"), songArgs);
 
-//Convert the track layout from JSON
+// Convert the track layout from JSON
 JSONObject parser = new JSONObject();
 trackList = parser.parse(layoutMethod.getOutput().toString()).getJSONArray("tracklist");
 trackColors = new color[trackList.size()]; 
 ```
+
+### Registering local methods ###
+ - To register a local method for other nodes to control, you need to provide the method name, the accessmode, the arguments required when calling the method, the object to run the callback method from, and the name of the callback method to run. The callback needs to accept a ZstMethod object in order to access incoming arguments.
+```
+String[] args = {"arg1"};
+node.registerMethod("testCallback", ZstMethod.WRITE, this, args);
+
+void testCallback(ZstMethod methodData){
+  println(methodData.getArgs().get("arg1"));
+}
+```
+
+### Updating local methods ###
+- When we've run a local method, we need to let any listening nodes know that the method was called.
+```
+node.registerMethod("foo", ZstMethod.READ, this, args);
+
+void foo(String someMessage){
+ node.updateLocalMethod(node.getMethods().get("foo"), someMessage);
+}
+```
+- We can update local methods by name as well.
+```
+node.updateLocalMethodByName("foo", someMessage);
+```
+
+
+### Accessmode types ###
+- `ZstMethod.READ`: Can subscribe to messages from this remote method, but cannot call it.
+- `ZstMethod.WRITE`: Can call this remote method but cannot listen to messages it sends.
+- `ZstMethod.RESPONDER`: Can call this remote method and receive a response. This is the most similar to how you would usually call a local method.
 
 
 Contributing
