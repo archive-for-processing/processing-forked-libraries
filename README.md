@@ -26,7 +26,7 @@ The sketch in action:
 import ZstProcessing.*;  // Processing specific lib
 import ZST.*;
 ```
-- Create or connect to a Stage node. This is to provide a fixed point for letting nodes register their addresses and methods to, so that they can be discovered by other nodes. A stage is incredibly simple, it is just a node that has a manually specified port, rather than a remote address. Multiple nodes can run in the same sketch, so you can have stage node as well as any other custom nodes running side by side. Ideally you'll want to run the stage on a computer that is accessible by all the other nodes via a network.
+- Create or connect to a Stage node. This is to provide a fixed point for letting nodes register their addresses and methods to, so that they can be discovered by other nodes. A stage is incredibly simple, it is just a node that has a manually specified port, rather than a remote address. Multiple nodes can run in the same sketch, so you can have stage node as well as any other custom nodes running side by side. Ideally you'll want to run the stage on a computer that is accessible by all the other nodes via a network. An example Stage sketch is availble in the library examples.
 ```
 // Stage node
 Showtime stage = new Showtime("stage",6000);
