@@ -21,17 +21,19 @@ The sketch in action:
 
 
 ### Setup ###
- - Set up the Stage node. This is to provide a fixed point that all nodes need to register their addresses and methods to upon startup, so that they can be discovered by other nodes. *TODO create stage node processing sketch.* In the meantime, I'd recommend using the zst_stage.py script from [Showtime-Python](https://github.com/Mystfit/Showtime-Python) to create a stage.
  - Import the libraries.
 ```
 import ZstProcessing.*;  // Processing specific lib
 import ZST.*;
 ```
- - Create a new node with a unique name and the address/port of the stage.
+- Create or connect to a Stage node. This is to provide a fixed point for letting nodes register their addresses and methods to, so that they can be discovered by other nodes. A stage is incredibly simple, it is just a node that has a manually specified port, rather than a remote address. Multiple nodes can run in the same sketch, so you can have stage node as well as any other custom nodes running side by side. Ideally you'll want to run the stage on a computer that is accessible by all the other nodes via a network.
 ```
+// Stage node
+Showtime stage = new Showtime("stage",6000);
+
+// Ordinary node connecting to a lcoal stage
 Showtime node = new Showtime("processing", "127.0.0.1:6000");
 ```
-
 ### Exploring the stage ###
  - Ask the stage for a list of all the nodes available. 
 ```
