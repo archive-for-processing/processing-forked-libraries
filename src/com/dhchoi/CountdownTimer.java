@@ -285,15 +285,13 @@ public class CountdownTimer {
     }
 
     /**
-     * Returns the current time left until the next tick event in milliseconds.
+     * Returns the current time left until the next tick or finish event in milliseconds.
      *
-     * @return the current time left until the next tick event in milliseconds
+     * @return the current time left until the next tick or finish event in milliseconds
      */
-    public final long getTimeLeftUntilNextTick() {
-        long timeLeft = mFinishTimeInFuture - getSystemTimeMillis();
-
-        if(isRunning() && timeLeft > mTickInterval) {
-            return timeLeft % mTickInterval;
+    public final long getTimeLeftUntilNextEvent() {
+        if(isRunning()) {
+            return (mFinishTimeInFuture - getSystemTimeMillis()) % mTickInterval;
         }
 
         return 0;
