@@ -11,6 +11,28 @@ In order to use the library, the main Processing applet will have to implement t
 
 Multiple CountdownTimers can run inside the applet, in which case the timers will have their own unique id when needed to be distinguished.
 
+## How the CountdownTimer Operates
+
+Once a configured timer starts, the first onTickEvent will be triggered after a period of tick interval has passed.
+Subsequent onTickEvents will follow until the time left is equal or less than the tick interval.
+If there is no more time left for an onTickEvent to happen, the onFinishEvent will be triggered as soon as the timer runs out of remaining time. 
+
+* Example with tickIntervalMillis=10, timerDurationMillis=50  
+start         (timeLeftUntilFinish=50)  
+onTickEvent   (timeLeftUntilFinish=40)  
+onTickEvent   (timeLeftUntilFinish=30)  
+onTickEvent   (timeLeftUntilFinish=20)  
+onTickEvent   (timeLeftUntilFinish=10)  
+onFinishEvent (timeLeftUntilFinish=0)  
+
+* Example with tickIntervalMillis=10, timerDurationMillis=45  
+start         (timeLeftUntilFinish=45)  
+onTickEvent   (timeLeftUntilFinish=35)  
+onTickEvent   (timeLeftUntilFinish=25)  
+onTickEvent   (timeLeftUntilFinish=15)  
+onTickEvent   (timeLeftUntilFinish=5)  
+onFinishEvent (timeLeftUntilFinish=0) 
+
 ## Installing the Library
 
 The official method for installing Processing libraries can be found [here](http://wiki.processing.org/w/How_to_Install_a_Contributed_Library).
@@ -67,6 +89,22 @@ It won't make sense for a CountdownTimer to start when it doesn't know how long 
 
     Returns the id of the timer.
 
+* __getTickInterval()__
+
+    Returns the configured tick interval in milliseconds.
+
+* __getTimerDuration()__
+
+    Returns the configured timer duration in milliseconds.
+
+* __getTimeLeftUntilNextEvent()__
+
+    Returns the current time left until the upcoming tick or finish event in milliseconds.
+
+* __getTimeLeftUntilFinish()__
+
+    Returns the current time left until the timer finishes in milliseconds.
+
 ### Using Multiple CountdownTimers
 
 The first created timer will always have an id of 0.
@@ -83,6 +121,19 @@ Once the timer with the corresponding id has been found, any necessary operation
 // example of stopping a timer with an id of 5
 CountdownTimer.getCountdownTimerForId(5).stop();
 ```
+
+If you want to check the set of timers that have been created along with its ids, you can use the following static method:
+
+* __CountdownTimer.getTimerIds()__
+
+    Returns a set of timer ids that have been created.
+
+```java
+CountdownTimer.getNewCountdownTimer(this);
+CountdownTimer.getNewCountdownTimer(this);
+CountdownTimer.getTimerIds(); // will return a set with ids [0, 1]
+```
+    
 
 ### Implementing Callback Events
 
