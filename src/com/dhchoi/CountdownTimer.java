@@ -335,4 +335,9 @@ public class CountdownTimer {
             }
         }
     }
+    
+    @Override
+    public String toString() {
+        return "(timerId=" + getId() + ")";
+    }
 }
