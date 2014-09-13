@@ -214,6 +214,19 @@ public class CountdownTimer {
     }
 
     /**
+     * Interrupts the timer to stop after the currently running interval has been completed.
+     * Attempts to stop a timer that was already stopped or reset will have no effect.
+     *
+     * @return the CountdownTimer that has been stopped
+     */
+    public synchronized final CountdownTimer stop() {
+        mIsRunning = false;
+        mScheduledExecutorService.shutdown();
+
+        return this;
+    }
+
+    /**
      * Stops the timer and resets it to the most recent configuration.
      * If the method was called while the timer was running, it will first stop the timer by effectively calling stop().
      * Attempts to reset a timer that was already reset or stopped will have no effect.
@@ -226,16 +239,21 @@ public class CountdownTimer {
     }
 
     /**
-     * Interrupts the timer to stop after the currently running interval has been completed.
-     * Attempts to stop a timer that was already stopped or reset will have no effect.
+     * Returns true if the timer is currently running.
      *
-     * @return the CountdownTimer that has been stopped
+     * @return true if the timer is currently running
      */
-    public synchronized final CountdownTimer stop() {
-        mIsRunning = false;
-        mScheduledExecutorService.shutdown();
+    public final boolean isRunning() {
+        return mIsRunning;
+    }
 
-        return this;
+    /**
+     * Returns true if the timer was stopped before being finished.
+     *
+     * @return true if the timer was stopped before being finished
+     */
+    public final boolean isPaused() {
+        return !mIsRunning && (mTimeLeftAtStartOfTick > 0) && !mDoReset;
     }
 
     /**
@@ -267,31 +285,13 @@ public class CountdownTimer {
     }
 
     /**
-     * Returns true if the timer is currently running.
-     *
-     * @return true if the timer is currently running
-     */
-    public final boolean isRunning() {
-        return mIsRunning;
-    }
-
-    /**
-     * Returns true if the timer was stopped before being finished.
-     *
-     * @return true if the timer was stopped before being finished
-     */
-    public final boolean isPaused() {
-        return !mIsRunning && (mTimeLeftAtStartOfTick > 0) && !mDoReset;
-    }
-
-    /**
      * Returns the current time left until the next tick event in milliseconds.
-     * 
+     *
      * @return the current time left until the next tick event in milliseconds
      */
-    public final long timeLeftUntilNextTick() {
-        long timeLeft = mFinishTimeInFuture - getSystemTimeMillis(); 
-        
+    public final long getTimeLeftUntilNextTick() {
+        long timeLeft = mFinishTimeInFuture - getSystemTimeMillis();
+
         if(isRunning() && timeLeft > mTickInterval) {
             return timeLeft % mTickInterval;
         }
@@ -301,14 +301,14 @@ public class CountdownTimer {
 
     /**
      * Returns the current time left until the timer finishes in milliseconds.
-     * 
+     *
      * @return the current time left until the timer finishes in milliseconds
      */
-    public final long timeLeftUntilFinish() {
+    public final long getTimeLeftUntilFinish() {
         if(isRunning()) {
             return mFinishTimeInFuture - getSystemTimeMillis();
         }
-        
+
         return 0;
     }
 
