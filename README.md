@@ -129,8 +129,8 @@ If you want to check the set of timers that have been created along with its ids
     Returns a set of timer ids that have been created.
 
 ```java
-CountdownTimer.getNewCountdownTimer(this);
-CountdownTimer.getNewCountdownTimer(this);
+CountdownTimer.getNewCountdownTimer(this); // new CountdownTimer with id=0
+CountdownTimer.getNewCountdownTimer(this); // new CountdownTimer with id=1
 CountdownTimer.getTimerIds(); // will return a set with ids [0, 1]
 ```
     
