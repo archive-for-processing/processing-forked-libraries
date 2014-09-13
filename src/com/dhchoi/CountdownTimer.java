@@ -258,6 +258,15 @@ public class CountdownTimer {
     }
 
     /**
+     * Returns a set of timerIds that have been created.
+     *
+     * @return a set of timerIds that have been created
+     */
+    public static HashSet<Integer> getTimerIds() {
+        return new HashSet<Integer>(timerIdMap.keySet());
+    }
+
+    /**
      * Returns true if the timer is currently running.
      *
      * @return true if the timer is currently running
