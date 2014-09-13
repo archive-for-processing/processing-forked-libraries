@@ -282,9 +282,9 @@ public class CountdownTimer {
     }
 
     /**
-     * Returns a set of timerIds that have been created.
+     * Returns a set of timer ids that have been created.
      *
-     * @return a set of timerIds that have been created
+     * @return a set of timer ids that have been created
      */
     public static final HashSet<Integer> getTimerIds() {
         return new HashSet<Integer>(timerIdMap.keySet());
@@ -292,6 +292,7 @@ public class CountdownTimer {
 
     /**
      * Returns the configured tick interval in milliseconds.
+     * 
      * @return the configured tick interval in milliseconds
      */
     public final long getTickInterval() {
@@ -308,9 +309,9 @@ public class CountdownTimer {
     }
 
     /**
-     * Returns the current time left until the next tick or finish event in milliseconds.
+     * Returns the current time left until the upcoming tick or finish event in milliseconds.
      *
-     * @return the current time left until the next tick or finish event in milliseconds
+     * @return the current time left until the upcoming tick or finish event in milliseconds
      */
     public final long getTimeLeftUntilNextEvent() {
         if(isRunning()) {
