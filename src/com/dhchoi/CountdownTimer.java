@@ -28,8 +28,10 @@
 package com.dhchoi;
 
 import processing.core.*;
+
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.*;
 import java.lang.reflect.Method;
 
@@ -103,7 +105,7 @@ public class CountdownTimer {
      * (e.g. second created timer will have id 1, third created timer will have id 2, and so on).
      *
      * @param app the main Processing applet
-     * @return CountdownTimer
+     * @return a newly created CountdownTimer
      */
     public static CountdownTimer getNewCountdownTimer(PApplet app) {
         timerIdCounter++;
@@ -127,22 +129,12 @@ public class CountdownTimer {
     }
 
     /**
-     * Returns the timer associated with the corresponding id.
-     *
-     * @param id id of the desired timer
-     * @return CountdownTimer
-     */
-    public static CountdownTimer getCountdownTimerForId(int id) {
-        return timerIdMap.get(id);
-    }
-
-    /**
      * Configures the tick interval and timer duration in milliseconds.
      * The timer must be configured first before calling the start() method.
      *
      * @param tickIntervalMillis the tick interval (in milliseconds)
      * @param timerDurationMillis the total timer duration (in milliseconds)
-     * @return CountdownTimer
+     * @return the CountdownTimer that has been configured
      * @throws IllegalArgumentException if timerDurationMillis or tickIntervalMillis is not greater than zero, or if tickIntervalMillis is greater than timerDurationMillis
      * @throws IllegalStateException when attempted to configure a running or paused timer
      */
@@ -183,7 +175,7 @@ public class CountdownTimer {
      * If the timer was stopped before the finish time, the method call will resume the timer from where it was stopped.
      * Starting an already running timer will have no effect.
      *
-     * @return CountdownTimer
+     * @return the CountdownTimer that has been started
      * @throws IllegalStateException if timer has not been configured before the initial call to the method
      */
     public synchronized final CountdownTimer start() {
@@ -226,7 +218,7 @@ public class CountdownTimer {
      * If the method was called while the timer was running, it will first stop the timer by effectively calling stop().
      * Attempts to reset a timer that was already reset or stopped will have no effect.
      *
-     * @return CountdownTimer
+     * @return the CountdownTimer that has been reset
      */
     public synchronized final CountdownTimer reset() {
         mDoReset = true;
@@ -237,7 +229,7 @@ public class CountdownTimer {
      * Interrupts the timer to stop after the currently running interval has been completed.
      * Attempts to stop a timer that was already stopped or reset will have no effect.
      *
-     * @return CountdownTimer
+     * @return the CountdownTimer that has been stopped
      */
     public synchronized final CountdownTimer stop() {
         mIsRunning = false;
@@ -249,16 +241,26 @@ public class CountdownTimer {
     /**
      * Returns the id of the timer.
      *
-     * @return int
+     * @return the id of the timer
      */
     public final int getId() {
         return mId;
     }
 
     /**
+     * Returns the timer associated with the corresponding id.
+     *
+     * @param id id of the desired timer
+     * @return the CountdownTimer associated with the corresponding id
+     */
+    public static CountdownTimer getCountdownTimerForId(int id) {
+        return timerIdMap.get(id);
+    }
+
+    /**
      * Returns true if the timer is currently running.
      *
-     * @return boolean
+     * @return true if the timer is currently running
      */
     public final boolean isRunning() {
         return mIsRunning;
@@ -267,10 +269,38 @@ public class CountdownTimer {
     /**
      * Returns true if the timer was stopped before being finished.
      *
-     * @return boolean
+     * @return true if the timer was stopped before being finished
      */
     public final boolean isPaused() {
         return !mIsRunning && (mTimeLeftAtStartOfTick > 0) && !mDoReset;
+    }
+
+    /**
+     * Returns the current time left until the next tick event in milliseconds.
+     * 
+     * @return the current time left until the next tick event in milliseconds
+     */
+    public final long timeLeftUntilNextTick() {
+        long timeLeft = mFinishTimeInFuture - getSystemTimeMillis(); 
+        
+        if(isRunning() && timeLeft > mTickInterval) {
+            return timeLeft % mTickInterval;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the current time left until the timer finishes in milliseconds.
+     * 
+     * @return the current time left until the timer finishes in milliseconds
+     */
+    public final long timeLeftUntilFinish() {
+        if(isRunning()) {
+            return mFinishTimeInFuture - getSystemTimeMillis();
+        }
+        
+        return 0;
     }
 
     /**
