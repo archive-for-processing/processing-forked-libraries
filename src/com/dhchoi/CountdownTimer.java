@@ -21,8 +21,14 @@
  * Boston, MA  02111-1307  USA
  *
  * @author      Dong Hyun Choi
- * @modified    Mar 26, 2014
- * @version     0.9.0 (1)
+ * @created     Mar 26, 2014
+ * @modified    Sep 13, 2014
+ * @version     0.9.1 (2)
+ *
+ * Possible updates:
+ *  - TODO: change the id concept to label concept and let users apply labels to timers
+ *  - TODO: change callback function params so that timer itself is returned instead of the id/label
+ *  - TODO: make it able to delete unused timers from the map of timers created
  */
 
 package com.dhchoi;
@@ -271,7 +277,7 @@ public class CountdownTimer {
      * @param id id of the desired timer
      * @return the CountdownTimer associated with the corresponding id
      */
-    public static CountdownTimer getCountdownTimerForId(int id) {
+    public static final CountdownTimer getCountdownTimerForId(int id) {
         return timerIdMap.get(id);
     }
 
@@ -280,8 +286,25 @@ public class CountdownTimer {
      *
      * @return a set of timerIds that have been created
      */
-    public static HashSet<Integer> getTimerIds() {
+    public static final HashSet<Integer> getTimerIds() {
         return new HashSet<Integer>(timerIdMap.keySet());
+    }
+
+    /**
+     * Returns the configured tick interval in milliseconds.
+     * @return the configured tick interval in milliseconds
+     */
+    public final long getTickInterval() {
+        return mTickInterval;
+    }
+
+    /**
+     * Returns the configured timer duration in milliseconds.
+     * 
+     * @return the configured timer duration in milliseconds
+     */
+    public final long getTimerDuration() {
+        return mTimerDuration;
     }
 
     /**
