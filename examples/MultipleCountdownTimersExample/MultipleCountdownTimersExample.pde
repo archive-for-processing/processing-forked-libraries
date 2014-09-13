@@ -19,6 +19,11 @@ void draw() {
   noStroke();
   ellipseMode(CENTER);
 
+  // show created timers
+  fill(0);
+  textAlign(CENTER, CENTER);
+  text("Created timerIds: " + CountdownTimer.getTimerIds(), width/2, height/2 - 100);
+  
   // draw red circle
   fill(255, 0, 0);
   ellipse(width/3, height/2, redCircleRadius, redCircleRadius);
