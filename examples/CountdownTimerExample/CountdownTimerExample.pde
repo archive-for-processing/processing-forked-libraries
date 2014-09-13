@@ -6,8 +6,8 @@ String timerCallbackInfo = "";
 void setup() {
   size(300, 300);
 
-  // create and start a timer that has been configured to trigger onTickEvents every 10 ms and run for 5000 ms
-  timer = CountdownTimer.getNewCountdownTimer(this).configure(10, 5000).start();
+  // create and start a timer that has been configured to trigger onTickEvents every 100 ms and run for 5000 ms
+  timer = CountdownTimer.getNewCountdownTimer(this).configure(100, 5000).start();
 }
 
 void draw() {
@@ -16,8 +16,9 @@ void draw() {
   textAlign(LEFT, TOP);
 
   // show the status of the timer
-  text("timer.isRunning():" + timer.isRunning(), 0, 0);
-  text("timer.isPaused():" + timer.isPaused(), 0, 15);
+  text("timer.isRunning():" + timer.isRunning(), 15, 10);
+  text("timer.isPaused():" + timer.isPaused(), 15, 25);
+  text("tickInterval=" + timer.getTickInterval() + ", timerDuration=" + timer.getTimerDuration(), 15, 40);
 
   // show the info of event callbacks
   textAlign(CENTER, CENTER);
@@ -25,13 +26,11 @@ void draw() {
 }
 
 void onTickEvent(int timerId, long timeLeftUntilFinish) {
-  timerCallbackInfo = "[timerId:" + timerId + "] tick - timeLeft:" + timeLeftUntilFinish;
-  println(timerCallbackInfo);
+  timerCallbackInfo = "[tick] - timeLeft: " + timeLeftUntilFinish + "ms";
 }
 
 void onFinishEvent(int timerId) {
-  timerCallbackInfo = "[timerId:" + timerId + "] finished";
-  println(timerCallbackInfo);
+  timerCallbackInfo = "[finished]";
 }
 
 void keyPressed() {
@@ -48,6 +47,12 @@ void keyPressed() {
     case 'r':
       println("Resetting timer...");
       timer.reset();
+      break;
+    case 'q':
+      println("getTimeLeftUntilNextEvent: " + timer.getTimeLeftUntilNextEvent());
+      break;
+    case 'w':
+      println("getTimeLeftUntilFinish: " + timer.getTimeLeftUntilFinish());
       break;
   }
 }
