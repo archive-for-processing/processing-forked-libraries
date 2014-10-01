@@ -25,7 +25,7 @@
  * @version     ##library.prettyVersion## (##library.version##)
  */
 
-package template.library;
+package me.max.chartly;
 
 
 import processing.core.*;
@@ -38,66 +38,21 @@ import processing.core.*;
  * (the tag example followed by the name of an example included in folder 'examples' will
  * automatically include the example in the javadoc.)
  *
- * @example Hello 
  */
 
-public class HelloLibrary {
+public class Chartly {
 	
 	// myParent is a reference to the parent sketch
-	PApplet myParent;
-
-	int myVariable = 0;
+	public static PApplet app;
 	
 	public final static String VERSION = "##library.prettyVersion##";
 	
-
-	/**
-	 * a Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 * 
-	 * @example Hello
-	 * @param theParent
-	 */
-	public HelloLibrary(PApplet theParent) {
-		myParent = theParent;
-		welcome();
-	}
-	
-	
-	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
-	}
-	
-	
-	public String sayHello() {
-		return "hello library.";
-	}
-	/**
-	 * return the version of the library.
-	 * 
-	 * @return String
-	 */
-	public static String version() {
-		return VERSION;
+	public Chartly(PApplet app) {
+		Chartly.app = app;
 	}
 
-	/**
-	 * 
-	 * @param theA
-	 *          the width of test
-	 * @param theB
-	 *          the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
-
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
+	public static float percentToRadians(double d) {
+		return (float) ((d * 2 * PConstants.PI) / 100);
 	}
 }
 
