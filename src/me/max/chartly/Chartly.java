@@ -54,5 +54,46 @@ public class Chartly {
 	public static float percentToRadians(double d) {
 		return (float) ((d * 2 * PConstants.PI) / 100);
 	}
+	
+	public static void quickSort(Float[] arr, int low, int high) {
+		 
+		if (arr == null || arr.length == 0)
+			return;
+ 
+		if (low >= high)
+			return;
+ 
+		//pick the pivot
+		float middle = low + (high - low) / 2;
+		float pivot = arr[(int) middle];
+ 
+		//make left < pivot and right > pivot
+		int i = low, j = high;
+		while (i <= j) {
+			while (arr[i] < pivot) {
+				i++;
+			}
+ 
+			while (arr[j] > pivot) {
+				j--;
+			}
+ 
+			if (i <= j) {
+				float temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+				i++;
+				j--;
+			}
+		}
+ 
+		//recursively sort two sub parts
+		if (low < j)
+			quickSort(arr, low, j);
+ 
+		if (high > i)
+			quickSort(arr, i, high);
+	}
 }
+
 

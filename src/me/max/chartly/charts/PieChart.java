@@ -82,17 +82,15 @@ public class PieChart implements Chart {
 			PApplet.println("CHARTLY ERROR: UNEQUAL AMOUNTS OF KEYS AND DATA PROVIDED!");
 			return;
 		}
-
 		data.clear();
-
 		for (int i = 0; i < keys.length; i++) {
 			data.put(keys[i], values[i]);
 		}
 	}
 
 	@Override
-	public HashMap<String, Double> getData() {
-		return null;
+	public HashMap<String, Float> getData() {
+		return data;
 	}
 
 	@Override

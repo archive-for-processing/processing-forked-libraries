@@ -8,7 +8,7 @@ public interface Chart {
 	public void refresh();
 	
 	public void setData(String[] keys, Float[] values);
-	public HashMap<String, Double> getData();
+	public HashMap<String, Float> getData();
 	
 	public ColorScheme getColorScheme();
 	public void setColorScheme(ColorScheme scheme);
