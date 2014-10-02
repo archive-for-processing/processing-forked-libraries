@@ -9,5 +9,5 @@ public interface Chart {
 	
 	public void setData(String[] keys, Float[] values);
 	public HashMap<String, Double> getData();
-
+	
 }

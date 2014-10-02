@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import me.max.chartly.Chartly;
+import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PFont;
 
 public class PieChart implements Chart {
 	
 	private HashMap<String, Float> data;
 	private float x,y,radius;
+	private PFont font;
 	
 	public PieChart(float radius) {
 		data = new HashMap<String, Float>();
@@ -18,6 +21,8 @@ public class PieChart implements Chart {
 		x = Chartly.app.width/2;
 		y = Chartly.app.height/2;
 		this.radius = radius;
+		
+		font = Chartly.app.createFont("Helvetica", 12);
 	}
 	
 	public void draw() {
@@ -26,6 +31,9 @@ public class PieChart implements Chart {
 	
 	@Override
 	public void draw(float x, float y) {
+		
+		Chartly.app.textFont(font);
+		
 		this.x = x; 
 		this.y = y;
 		
@@ -34,29 +42,46 @@ public class PieChart implements Chart {
 		int color = 0;
 		
 		while(it.hasNext()) {
+			//Chart
 			String current = it.next();
 			float dr = Chartly.percentToRadians(data.get(current));
 			
 			Chartly.app.stroke(color);
 			Chartly.app.fill(color);
 			
-			Chartly.app.arc(x, y, radius, radius, r, r+dr);
+			Chartly.app.arc(x, y, radius * 2, radius * 2, r, r+dr);
 			
+			//Labeling
+			double tx = (1.1 * radius) * Math.cos(r + dr/2); 
+			double ty = (1.1 * radius) * Math.sin(r + dr/2);
+			
+			Chartly.app.pushMatrix();
+			Chartly.app.translate((float) tx, (float) ty);
+			Chartly.app.textAlign(tx+x > x ? PConstants.LEFT : PConstants.RIGHT);
+			Chartly.app.text(current + " " + data.get(current) + "%", x, y);
+			Chartly.app.popMatrix();
+			
+			PApplet.println("Key: " + current);
+			PApplet.println(">> Translate x: " + tx);
+			PApplet.println(">> Translate y: " + ty);
+			PApplet.println(">> Alignment: " + (tx+x > x ? PConstants.RIGHT : PConstants.LEFT));
+
+			//incrementation
 			r+=dr;
 			color += 255/data.keySet().size();
+			
 		}
 	}
-
+	
 	@Override
 	public void refresh() {
 		draw();
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public void setData(String[] keys, Float[] values) {
 		if (keys.length != values.length) {
-			Chartly.app.println("CHARTLY ERROR: UNEQUAL AMOUNTS OF KEYS AND DATA PROVIDED!");
+			PApplet.println("CHARTLY ERROR: UNEQUAL AMOUNTS OF KEYS AND DATA PROVIDED!");
 			return;
 		}
 
