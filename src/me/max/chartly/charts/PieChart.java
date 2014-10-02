@@ -13,6 +13,7 @@ public class PieChart implements Chart {
 	private HashMap<String, Float> data;
 	private float x,y,radius;
 	private PFont font;
+	private ColorScheme colorScheme;
 	
 	public PieChart(float radius) {
 		data = new HashMap<String, Float>();
@@ -39,15 +40,14 @@ public class PieChart implements Chart {
 		
 		float r = PConstants.PI / 2; //90 degrees	
 		Iterator<String> it = data.keySet().iterator();	
-		int color = 0;
 		
 		while(it.hasNext()) {
 			//Chart
 			String current = it.next();
 			float dr = Chartly.percentToRadians(data.get(current));
 			
-			Chartly.app.stroke(color);
-			Chartly.app.fill(color);
+			Chartly.app.stroke(colorScheme.getAxisColor());
+			Chartly.app.fill(colorScheme.next());
 			
 			Chartly.app.arc(x, y, radius * 2, radius * 2, r, r+dr);
 			
@@ -61,15 +61,13 @@ public class PieChart implements Chart {
 			Chartly.app.text(current + " " + data.get(current) + "%", x, y);
 			Chartly.app.popMatrix();
 			
-			PApplet.println("Key: " + current);
-			PApplet.println(">> Translate x: " + tx);
-			PApplet.println(">> Translate y: " + ty);
-			PApplet.println(">> Alignment: " + (tx+x > x ? PConstants.RIGHT : PConstants.LEFT));
+//			PApplet.println("Key: " + current);
+//			PApplet.println(">> Translate x: " + tx);
+//			PApplet.println(">> Translate y: " + ty);
+//			PApplet.println(">> Alignment: " + (tx+x > x ? PConstants.RIGHT : PConstants.LEFT));
 
 			//incrementation
-			r+=dr;
-			color += 255/data.keySet().size();
-			
+			r+=dr;			
 		}
 	}
 	
@@ -96,5 +94,17 @@ public class PieChart implements Chart {
 	public HashMap<String, Double> getData() {
 		return null;
 	}
+
+	@Override
+	public ColorScheme getColorScheme() {
+		return colorScheme;
+	}
+
+	@Override
+	public void setColorScheme(ColorScheme scheme) {
+		this.colorScheme = scheme;
+	}
+	
+	
 
 }

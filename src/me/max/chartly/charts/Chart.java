@@ -10,4 +10,7 @@ public interface Chart {
 	public void setData(String[] keys, Float[] values);
 	public HashMap<String, Double> getData();
 	
+	public ColorScheme getColorScheme();
+	public void setColorScheme(ColorScheme scheme);
+	
 }
