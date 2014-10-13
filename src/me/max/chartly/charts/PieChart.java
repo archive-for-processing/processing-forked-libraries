@@ -1,22 +1,23 @@
 package me.max.chartly.charts;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 import me.max.chartly.Chartly;
-import processing.core.PApplet;
+import me.max.chartly.components.color.ColorScheme;
+import me.max.chartly.components.data.DataPair;
+import me.max.chartly.components.data.DataSet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
 public class PieChart implements Chart {
 	
-	private HashMap<String, Float> data;
+	private DataSet data;
 	private float x,y,radius;
 	private PFont font;
 	private ColorScheme colorScheme;
 	
 	public PieChart(float radius) {
-		data = new HashMap<String, Float>();
+		data = new DataSet();
 		
 		//Default to center
 		x = Chartly.app.width/2;
@@ -39,12 +40,12 @@ public class PieChart implements Chart {
 		this.y = y;
 		
 		float r = PConstants.PI / 2; //90 degrees	
-		Iterator<String> it = data.keySet().iterator();	
+		Iterator<DataPair> it = data.getData().iterator();	
 		
 		while(it.hasNext()) {
 			//Chart
-			String current = it.next();
-			float dr = Chartly.percentToRadians(data.get(current));
+			DataPair current = it.next();
+			float dr = Chartly.percentToRadians(current.value);
 			
 			Chartly.app.stroke(colorScheme.getAxisColor());
 			Chartly.app.fill(colorScheme.next());
@@ -58,13 +59,8 @@ public class PieChart implements Chart {
 			Chartly.app.pushMatrix();
 			Chartly.app.translate((float) tx, (float) ty);
 			Chartly.app.textAlign(tx+x > x ? PConstants.LEFT : PConstants.RIGHT);
-			Chartly.app.text(current + " " + data.get(current) + "%", x, y);
+			Chartly.app.text(current + " " + Chartly.trimNumber(current.value) + "%", x, y);
 			Chartly.app.popMatrix();
-			
-//			PApplet.println("Key: " + current);
-//			PApplet.println(">> Translate x: " + tx);
-//			PApplet.println(">> Translate y: " + ty);
-//			PApplet.println(">> Alignment: " + (tx+x > x ? PConstants.RIGHT : PConstants.LEFT));
 
 			//incrementation
 			r+=dr;			
@@ -77,19 +73,13 @@ public class PieChart implements Chart {
 	}
 
 	@Override
-	public void setData(String[] keys, Float[] values) {
-		if (keys.length != values.length) {
-			PApplet.println("CHARTLY ERROR: UNEQUAL AMOUNTS OF KEYS AND DATA PROVIDED!");
-			return;
-		}
-		data.clear();
-		for (int i = 0; i < keys.length; i++) {
-			data.put(keys[i], values[i]);
-		}
+	public PieChart setData(DataSet data) {
+		this.data = data;
+		return this;
 	}
 
 	@Override
-	public HashMap<String, Float> getData() {
+	public DataSet getData() {
 		return data;
 	}
 
@@ -99,8 +89,9 @@ public class PieChart implements Chart {
 	}
 
 	@Override
-	public void setColorScheme(ColorScheme scheme) {
+	public PieChart setColorScheme(ColorScheme scheme) {
 		this.colorScheme = scheme;
+		return this;
 	}
 	
 	

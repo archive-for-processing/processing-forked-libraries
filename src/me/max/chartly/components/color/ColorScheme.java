@@ -1,4 +1,4 @@
-package me.max.chartly.charts;
+package me.max.chartly.components.color;
 
 public class ColorScheme {
 	private int[] chartColors;

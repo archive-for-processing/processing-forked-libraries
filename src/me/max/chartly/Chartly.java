@@ -42,11 +42,14 @@ import processing.core.*;
 
 public class Chartly {
 	
-	// myParent is a reference to the parent sketch
+	/**
+	 * Exceptions
+	 * Rename variables
+	 * Line Chart
+	 */
+	
 	public static PApplet app;
-	
-	public final static String VERSION = "##library.prettyVersion##";
-	
+		
 	public Chartly(PApplet app) {
 		Chartly.app = app;
 	}
@@ -55,45 +58,14 @@ public class Chartly {
 		return (float) ((d * 2 * PConstants.PI) / 100);
 	}
 	
-	public static void quickSort(Float[] arr, int low, int high) {
-		 
-		if (arr == null || arr.length == 0)
-			return;
- 
-		if (low >= high)
-			return;
- 
-		//pick the pivot
-		float middle = low + (high - low) / 2;
-		float pivot = arr[(int) middle];
- 
-		//make left < pivot and right > pivot
-		int i = low, j = high;
-		while (i <= j) {
-			while (arr[i] < pivot) {
-				i++;
-			}
- 
-			while (arr[j] > pivot) {
-				j--;
-			}
- 
-			if (i <= j) {
-				float temp = arr[i];
-				arr[i] = arr[j];
-				arr[j] = temp;
-				i++;
-				j--;
-			}
+	public static String trimNumber(float f) {
+		if (f ==  (int) f) {
+			return String.valueOf((int) f);
+		} else {
+			return String.valueOf(f);
 		}
- 
-		//recursively sort two sub parts
-		if (low < j)
-			quickSort(arr, low, j);
- 
-		if (high > i)
-			quickSort(arr, i, high);
 	}
+
 }
 
 

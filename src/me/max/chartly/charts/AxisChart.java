@@ -1,48 +1,50 @@
 package me.max.chartly.charts;
 
+import java.util.ArrayList;
+
+import processing.core.PApplet;
 import processing.core.PConstants;
 import me.max.chartly.Chartly;
+import me.max.chartly.components.data.DataPair;
 
 public abstract class AxisChart implements Chart {
 
-	public void drawAxis(float x, float y, float dx, float dy, float w, String[] xlabels, String[] ylabels) {
+	public void drawAxis(float x, float y, float dx, float dy, float w, float yend, float yincr, ArrayList<DataPair> data) {
 
 		Chartly.app.stroke(this.getColorScheme().getAxisColor());
 		Chartly.app.fill(this.getColorScheme().getAxisColor());
 
 		// X Axis
 		Chartly.app.rect(x, y, dx, w);
-		Chartly.app.beginShape();
-		Chartly.app.vertex((float) (x + (1.1 * dx)), (float) (y + (.5 * w)));
-		Chartly.app.vertex(x + dx, y - w);
-		Chartly.app.vertex(x + dx, (float) (y + (1.5 * w)));
-		Chartly.app.endShape();
 
 		// Labels
-		float xincr = dx / xlabels.length;
 		int xcount = 0;
-		for (String label : xlabels) {
-			Chartly.app.textAlign(PConstants.RIGHT);
-			Chartly.app.text(label, x + (xcount * xincr), y + 20);
+		for (DataPair pair : data) {
+			Chartly.app.textAlign(PConstants.CENTER);
+			Chartly.app.text(pair.label, x + getTextDistanceFactor(xcount, dx, data), y + 20);
 			xcount++;
 		}
 
 		// Y Axis
 		Chartly.app.rect(x, y, w, -dy);
-		Chartly.app.beginShape();
-		Chartly.app.vertex((float) x - w / 2, (float) (y - (1.1 * dy)));
-		Chartly.app.vertex(x - w, y - dy);
-		Chartly.app.vertex((float) (x - (1.5 * w)), y - dy);
-		Chartly.app.endShape();
 
 		// Labels
-		float yincr = dy / ylabels.length;
 		int ycount = 0;
-		for (String label : ylabels) {
+		float pxincr = incrToPixels(yincr, 0, yend, dy);
+		for (int i = 0; i <= dy; i+=pxincr) {
 			Chartly.app.textAlign(PConstants.RIGHT);
-			Chartly.app.text(label, x - 3, y - (ycount * yincr));
+			Chartly.app.text(Chartly.trimNumber(yincr * ycount), x - 3, y - (pxincr * ycount));
 			ycount++;
 		}
+	}
+	
+	private float incrToPixels(float incr, float ystart, float yend, float dy) {
+		return PApplet.map(incr, ystart, yend, 0, dy);
+	}
+	
+	private float getTextDistanceFactor(int count, float dx, ArrayList<DataPair> data) {
+		float w = (float) (dx/(1.5 * data.size() + .5)); //Math done on whiteboard.
+		return (float) (w + w * 1.5 * (count));
 	}
 
 }
