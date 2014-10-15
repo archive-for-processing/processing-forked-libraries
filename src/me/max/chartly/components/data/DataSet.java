@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import me.max.chartly.charts.BarChart;
 import me.max.chartly.charts.PieChart;
-import processing.core.PApplet;
+import me.max.chartly.exceptions.KeyValueAmountException;
 
 public class DataSet {
 	
@@ -16,23 +16,27 @@ public class DataSet {
 	
 	public DataSet(String[] keys, Float[] values) {
 		this.data = new ArrayList<DataPair>();
-
-		if (keys.length != values.length) {
-			PApplet.println("CHARTLY ERROR: UNEQUAL AMOUNTS OF KEYS AND DATA PROVIDED!");
-		}
-		data.clear();
-		for (int i = 0; i < keys.length; i++) {
-			data.add(new DataPair(keys[i], values[i]));
+		try {
+			for (int i = 0; i < keys.length; i++) {
+				data.add(new DataPair(keys[i], values[i]));
+			}
+		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			try {
+				throw new KeyValueAmountException("Check your DataSet(s)!", aioobe);
+			} catch (KeyValueAmountException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	public void setData(String[] keys, Float[] values) {
-		if (keys.length != values.length) {
-			PApplet.println("CHARTLY ERROR: UNEQUAL AMOUNTS OF KEYS AND DATA PROVIDED!");
-		}
+	public void setData(String[] keys, Float[] values) throws KeyValueAmountException {
 		data.clear();
-		for (int i = 0; i < keys.length; i++) {
-			data.add(new DataPair(keys[i], values[i]));
+		try {
+			for (int i = 0; i < keys.length; i++) {
+				data.add(new DataPair(keys[i], values[i]));
+			}
+		} catch (ArrayIndexOutOfBoundsException aioobe) {
+			throw new KeyValueAmountException("Check your DataSet(s)!", aioobe);
 		}
 	}
 	
