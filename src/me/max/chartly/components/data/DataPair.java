@@ -1,7 +1,5 @@
 package me.max.chartly.components.data;
 
-import me.max.chartly.charts.BarChart;
-
 public class DataPair {
 	
 	public String label;
