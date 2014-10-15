@@ -33,9 +33,13 @@ public abstract class AxisChart implements Chart {
 		float pxincr = incrToPixels(yincr, 0, yend, dy);
 		for (int i = 0; i <= dy; i+=pxincr) {
 			Chartly.app.textAlign(PConstants.RIGHT);
-			Chartly.app.text(Chartly.trimNumber(yincr * ycount), x - 3, y - (pxincr * ycount));
+			Chartly.app.text(Chartly.trimNumber(yincr * ycount), x - 3, y - (pxincr * ycount) + Chartly.app.getFont().getSize()/2);
 			ycount++;
 		}
+	}
+	
+	protected float getHeightFactor(float value, float yend, float dy) {
+		return PApplet.map(value, 0, yend, 0, dy);
 	}
 	
 	private float incrToPixels(float incr, float ystart, float yend, float dy) {
