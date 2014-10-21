@@ -29,7 +29,8 @@ public abstract class AxisChart implements Chart {
 	 * @param y_axis_increment The increment size from 0 to yend
 	 * @param data Data used in the graph
 	 */
-	protected void drawAxis(float x, float y) {		
+	
+	public void draw(float x, float y) {		
 		this.current_x = x;
 		this.current_y = y;
 		

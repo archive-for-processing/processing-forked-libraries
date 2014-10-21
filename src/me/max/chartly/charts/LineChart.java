@@ -31,8 +31,6 @@ public class LineChart extends AxisChart {
 			return;
 		}
 		
-		this.drawAxis(x,y);
-		
 		Chartly.app.textFont(font);
 		
 		float w = (float) (x_axis_width/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
@@ -56,6 +54,7 @@ public class LineChart extends AxisChart {
 			previous[1] = yFactor;
 			count++;
 		}
+		super.draw(x, y);
 	}
 
 	@Override

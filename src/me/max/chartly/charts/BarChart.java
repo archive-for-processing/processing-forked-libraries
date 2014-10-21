@@ -46,7 +46,7 @@ public class BarChart extends AxisChart {
 			count++;
 		}
 		
-		this.drawAxis(x,y);
+		super.draw(x, y);
 	}
 	
 	/**
