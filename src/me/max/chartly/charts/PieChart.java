@@ -6,16 +6,24 @@ import me.max.chartly.Chartly;
 import me.max.chartly.components.color.ColorScheme;
 import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
+import me.max.chartly.exceptions.ExceptionWriter;
+import me.max.chartly.exceptions.MissingInformationException;
+import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
 public class PieChart implements Chart {
 	
 	private DataSet data;
-	private float x,y,radius;
+	private float x,y,radius,max;
 	private PFont font;
 	private ColorScheme colorScheme;
 	
+	/**
+	 * Constructor
+	 * @param dx Width
+	 * @param dy Height
+	 */
 	public PieChart(float radius) {
 		data = new DataSet();
 		
@@ -27,12 +35,14 @@ public class PieChart implements Chart {
 		font = Chartly.app.createFont("Helvetica", 12);
 	}
 	
-	public void draw() {
-		draw(x,y);
-	}
-	
 	@Override
-	public void draw(float x, float y) {
+	public void draw(float x, float y) {		
+		try {
+			testComplete();
+		} catch (MissingInformationException ex) {
+			ExceptionWriter.write(ex);
+			return;
+		}
 		
 		Chartly.app.textFont(font);
 		
@@ -45,7 +55,8 @@ public class PieChart implements Chart {
 		while(it.hasNext()) {
 			//Chart
 			DataPair current = it.next();
-			float dr = Chartly.percentToRadians(current.value);
+			float percent = dataToPercent(current.value);
+			float dr = Chartly.percentToRadians(percent);
 			
 			Chartly.app.stroke(colorScheme.getAxisColor());
 			Chartly.app.fill(colorScheme.next());
@@ -59,7 +70,7 @@ public class PieChart implements Chart {
 			Chartly.app.pushMatrix();
 			Chartly.app.translate((float) tx, (float) ty);
 			Chartly.app.textAlign(tx+x > x ? PConstants.LEFT : PConstants.RIGHT);
-			Chartly.app.text(current + " " + Chartly.trimNumber(current.value) + "%", x, y);
+			Chartly.app.text(current.label + " " + Chartly.trimNumber(percent) + "%", x, y);
 			Chartly.app.popMatrix();
 
 			//incrementation
@@ -69,12 +80,13 @@ public class PieChart implements Chart {
 	
 	@Override
 	public void refresh() {
-		draw();
+		draw(x,y);
 	}
 
 	@Override
 	public PieChart setData(DataSet data) {
 		this.data = data;
+		this.max = data.getTotal();
 		return this;
 	}
 
@@ -94,6 +106,15 @@ public class PieChart implements Chart {
 		return this;
 	}
 	
+	private float dataToPercent(float f) {
+		return PApplet.map(f, 0, max, 0, 100);
+	}
+	
+	private void testComplete() throws MissingInformationException {
+		if (this.data.getData().isEmpty()) {
+			throw MissingInformationException.noData();
+		}
+	}
 	
 
 }
