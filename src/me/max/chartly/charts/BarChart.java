@@ -6,14 +6,8 @@ import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.ExceptionWriter;
 import me.max.chartly.exceptions.MissingInformationException;
-import processing.core.PFont;
 
 public class BarChart extends AxisChart {
-	
-	private DataSet data;
-	private float x,y,dx,dy,yend,yincr;
-	private PFont font;
-	private ColorScheme colorScheme;
 	
 	/**
 	 * Constructor
@@ -24,8 +18,8 @@ public class BarChart extends AxisChart {
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
 		colorScheme = ColorScheme.getDefaultColorScheme();
-		this.dx = dx;
-		this.dy = dy;
+		this.x_axis_width = dx;
+		this.y_axis_height = dy;
 	}
 	
 	@Override
@@ -37,12 +31,9 @@ public class BarChart extends AxisChart {
 			return;
 		}
 		
-		this.x = x;
-		this.y = y;
-		
 		Chartly.app.textFont(font);
 		
-		float w = (float) (dx/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
+		float w = (float) (x_axis_width/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
 		int count = 0;
 		for (DataPair pair : data.getData()) {
 			int c = colorScheme.next();
@@ -50,12 +41,12 @@ public class BarChart extends AxisChart {
 			Chartly.app.fill(c);
 			Chartly.app.rect(
 					(float) (x + w * (.5 + 1.5 * count)), y, 
-					w, -1 * this.getHeightFactor(pair.value, yend, dy) // Reverse the Y
+					w, -1 * this.getHeightFactor(pair.value, max_y_scale, y_axis_height) // Reverse the Y
 			);
 			count++;
 		}
 		
-		this.drawAxis(x, y, dx, dy, 2F,  yend, yincr, data.getData());
+		this.drawAxis(x,y);
 	}
 	
 	/**
@@ -65,8 +56,8 @@ public class BarChart extends AxisChart {
 	 * @return this
 	 */
 	public BarChart setYLabels(float end, float incr) {
-		this.yend = end;
-		this.yincr = incr;
+		this.max_y_scale = end;
+		this.y_axis_increment = incr;
 		return this;
 	}
 	
@@ -77,14 +68,14 @@ public class BarChart extends AxisChart {
 	 * @return
 	 */
 	public BarChart resize(float dx, float dy) {
-		this.dx = dx == 0 ? this.dx : dx;
-		this.dy = dy == 0 ? this.dy : dy;
+		this.x_axis_width = dx == 0 ? this.x_axis_width : dx;
+		this.y_axis_height = dy == 0 ? this.y_axis_height : dy;
 		return this;
 	}
 	
 	@Override
 	public void refresh() {
-		draw(x,y);
+		draw(current_x,current_y);
 	}
 	
 	@Override
@@ -119,7 +110,7 @@ public class BarChart extends AxisChart {
 		if (this.data.getData().isEmpty()) {
 			throw MissingInformationException.noData();
 		}
-		if (yincr == 0 && yend == 0) {
+		if (y_axis_increment == 0 && max_y_scale == 0) {
 			throw MissingInformationException.noLabels();
 		}
 	}

@@ -1,65 +1,80 @@
 package me.max.chartly.charts;
 
-import java.util.ArrayList;
-
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PFont;
 import me.max.chartly.Chartly;
+import me.max.chartly.components.color.ColorScheme;
 import me.max.chartly.components.data.DataPair;
+import me.max.chartly.components.data.DataSet;
 
 public abstract class AxisChart implements Chart {
 
+	protected DataSet data;
+	protected float current_x, current_y, x_axis_width, y_axis_height, max_y_scale, y_axis_increment;
+	protected PFont font;
+	protected ColorScheme colorScheme;
+	
 	private String xtitle, ytitle, title;
+	private static final float TOP_TITLE = 7, AXIS_TITLE = 9, LABEL = 10, AXIS_WIDTH = 100;
 	
 	/**
 	 * Draws the axes of the graph
 	 * @param x Bottom left corner's x-coord
 	 * @param y Bottom left corner's y-coord
-	 * @param dx Length of Graph
-	 * @param dy Height of Graph
+	 * @param x_axis_width Length of Graph
+	 * @param y_axis_height Height of Graph
 	 * @param w Width of axes
-	 * @param yend The max "units" of the graph
-	 * @param yincr The increment size from 0 to yend
+	 * @param max_y_scale The max "units" of the graph
+	 * @param y_axis_increment The increment size from 0 to yend
 	 * @param data Data used in the graph
 	 */
-	public void drawAxis(float x, float y, float dx, float dy, float w, float yend, float yincr, ArrayList<DataPair> data) {		
+	protected void drawAxis(float x, float y) {		
+		this.current_x = x;
+		this.current_y = y;
+		
 		Chartly.app.stroke(this.getColorScheme().getAxisColor());
 		Chartly.app.fill(this.getColorScheme().getAxisColor());
 
 		// X Axis
-		Chartly.app.rect(x, y, dx, w);
+		Chartly.app.rect(x, y, x_axis_width, y_axis_height/AXIS_WIDTH);
 
 		// X-Axis Labels
+		optimizeLabelFontSize();
 		int xcount = 0;
-		for (DataPair pair : data) {
+		for (DataPair pair : data.getData()) {
 			Chartly.app.textAlign(PConstants.CENTER);
-			Chartly.app.text(pair.label, x + getTextDistanceFactor(xcount, dx, data), y + 20);
+			Chartly.app.text(pair.label, x + getTextDistanceFactor(xcount), y + Chartly.app.getFont().getSize());
 			xcount++;
 		}
 
 		// Y Axis
-		Chartly.app.rect(x, y, w, -dy);
+		Chartly.app.rect(x, y, y_axis_height/AXIS_WIDTH, -y_axis_height);
 
 		// Y-Axis Labels
 		int ycount = 0;
-		float pxincr = incrToPixels(yincr, 0, yend, dy);
-		for (int i = 0; i <= dy; i+=pxincr) {
+		float pxincr = incrToPixels();
+		Chartly.app.textSize(y_axis_height/pxincr);
+		for (int i = 0; i <= y_axis_height; i+=pxincr) {
 			Chartly.app.textAlign(PConstants.RIGHT);
-			Chartly.app.text(Chartly.trimNumber(yincr * ycount), x - 3, y - (pxincr * ycount) + Chartly.app.getFont().getSize()/2);
+			Chartly.app.text(Chartly.trimNumber(y_axis_increment * ycount), x - 3, y - (pxincr * ycount) + Chartly.app.getFont().getSize()/2);
 			ycount++;
 		}
 		
 		// Titles
+		titleFontSize(TOP_TITLE);
 		Chartly.app.textAlign(PConstants.CENTER, PConstants.BOTTOM);
 		if (title != null) {
-			Chartly.app.text(title, x + dx/2, y - dy - 20);
+			Chartly.app.text(title, x + x_axis_width/2, y - y_axis_height - 20);
 		}
+		
+		titleFontSize(AXIS_TITLE);
 		if (xtitle != null) {
-			Chartly.app.text(xtitle, x + dx/2, y + 40);
+			Chartly.app.text(xtitle, x + x_axis_width/2, y + 40);
 		}
 		if (ytitle != null) {
 			Chartly.app.pushMatrix();
-			Chartly.app.translate(x - 30, y - dy/2);
+			Chartly.app.translate(x - 30, y - y_axis_height/2);
 			Chartly.app.rotate(-PConstants.PI/2);
 			Chartly.app.text(ytitle, 0, 0);
 			Chartly.app.popMatrix();
@@ -70,12 +85,12 @@ public abstract class AxisChart implements Chart {
 		return PApplet.map(value, 0, yend, 0, dy);
 	}
 	
-	private float incrToPixels(float incr, float ystart, float yend, float dy) {
-		return PApplet.map(incr, ystart, yend, 0, dy);
+	private float incrToPixels() {
+		return PApplet.map(y_axis_increment, 0, max_y_scale, 0, y_axis_height);
 	}
 	
-	private float getTextDistanceFactor(int count, float dx, ArrayList<DataPair> data) {
-		float w = (float) (dx/(1.5 * data.size() + .5)); //Math done on whiteboard.
+	private float getTextDistanceFactor(int count) {
+		float w = (float) (x_axis_width/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
 		return (float) (w + w * 1.5 * (count));
 	}
 	
@@ -84,6 +99,24 @@ public abstract class AxisChart implements Chart {
 		this.ytitle = ytitle;
 		this.title = title;
 		return this;
+	}
+
+	private void optimizeLabelFontSize() {
+		float max_size = Float.MAX_VALUE;
+		float contrainer = (float) (2 * (x_axis_width/(1.5 * data.getData().size() + .5)));
+		for (DataPair pair : data.getData()) {
+			String string = pair.label;
+			float local_size = 0;
+			do {
+				Chartly.app.textSize(++local_size);
+			} while (Chartly.app.textWidth(string) < contrainer && local_size < y_axis_height/LABEL);
+			if (local_size < max_size) max_size = local_size;
+		}
+		Chartly.app.textSize(max_size);
+	}
+	
+	private void titleFontSize(float level) {
+		Chartly.app.textSize(y_axis_height/level);
 	}
 
 }

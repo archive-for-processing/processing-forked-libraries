@@ -1,6 +1,5 @@
 package me.max.chartly.charts;
 
-import processing.core.PFont;
 import me.max.chartly.Chartly;
 import me.max.chartly.components.color.ColorScheme;
 import me.max.chartly.components.data.DataPair;
@@ -9,11 +8,6 @@ import me.max.chartly.exceptions.ExceptionWriter;
 import me.max.chartly.exceptions.MissingInformationException;
 
 public class LineChart extends AxisChart {
-	
-	private DataSet data;
-	private float x,y,dx,dy,yend,yincr;
-	private PFont font;
-	private ColorScheme colorScheme;
 	
 	/**
 	 * Constructor
@@ -24,8 +18,8 @@ public class LineChart extends AxisChart {
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
 		colorScheme = ColorScheme.getDefaultColorScheme();
-		this.dx = dx;
-		this.dy = dy;
+		this.x_axis_width = dx;
+		this.y_axis_height = dy;
 	}
 	
 	@Override
@@ -37,19 +31,16 @@ public class LineChart extends AxisChart {
 			return;
 		}
 		
-		this.drawAxis(x, y, dx, dy, 2F, yend, yincr, data.getData());
-		
-		this.x = x;
-		this.y = y;
+		this.drawAxis(x,y);
 		
 		Chartly.app.textFont(font);
 		
-		float w = (float) (dx/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
+		float w = (float) (x_axis_width/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
 		int count = 0;
 		float[] previous = new float[]{Float.MAX_VALUE, Float.MIN_VALUE}; //placeholders
 		for (DataPair pair : data.getData()) {
 			float xFactor =  (float) (x + w * (1 + 1.5 * count));
-			float yFactor = y + -1 * this.getHeightFactor(pair.value, yend, dy);
+			float yFactor = y + -1 * this.getHeightFactor(pair.value, max_y_scale, y_axis_height);
 			int c = colorScheme.next();
 			
 			Chartly.app.stroke(c);
@@ -69,7 +60,7 @@ public class LineChart extends AxisChart {
 
 	@Override
 	public void refresh() {
-		draw(x,y);	
+		draw(current_x,current_y);	
 	}
 	
 	/**
@@ -79,8 +70,8 @@ public class LineChart extends AxisChart {
 	 * @return this
 	 */
 	public LineChart setYLabels(float end, float incr) {
-		this.yend = end;
-		this.yincr = incr;
+		this.max_y_scale = end;
+		this.y_axis_increment = incr;
 		return this;
 	}
 
@@ -116,7 +107,7 @@ public class LineChart extends AxisChart {
 		if (this.data.getData().isEmpty()) {
 			throw MissingInformationException.noData();
 		}
-		if (yincr == 0 && yend == 0) {
+		if (y_axis_increment == 0 && max_y_scale == 0) {
 			throw MissingInformationException.noLabels();
 		}
 	}

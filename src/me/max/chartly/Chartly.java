@@ -36,15 +36,17 @@ public class Chartly {
 
 	// Processing app using this library.
 	public static PApplet app;
-	
-	// Build number
-	public static int BUILD = 3;
-	
+		
 	/**
 	 * --- TODO ---
 	 * Var control
-	 * Titles (units)
 	 * More Datatype inputs
+	 * Get rid of build number (When possible)
+	 * Fontsize reset post-drawing
+	 * Formatted titles
+	 * refactor axisgraph
+	 * rename variables
+	 * reorder axis drawing
 	 */
 	
 	/**
