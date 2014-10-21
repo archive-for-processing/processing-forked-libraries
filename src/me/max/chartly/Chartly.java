@@ -28,29 +28,52 @@
 package me.max.chartly;
 
 
+import java.text.DecimalFormat;
+
 import processing.core.*;
 
 public class Chartly {
+
+	// Processing app using this library.
+	public static PApplet app;
+	
+	// Build number
+	public static int BUILD = 3;
 	
 	/**
-	 * Rename variables
+	 * --- TODO ---
+	 * Var control
+	 * Titles (units)
+	 * More Datatype inputs
 	 */
 	
-	public static PApplet app;
-		
+	/**
+	 * Constructor for the main Library object
+	 * @param app Your project. (In most cases, use the keyword "this")
+	 */
 	public Chartly(PApplet app) {
 		Chartly.app = app;
 	}
 
+	/**
+	 * Converts a percent to the equivalent portion of 2 PI Radians
+	 * @param d Percent to convert
+	 * @return Radians
+	 */
 	public static float percentToRadians(double d) {
 		return (float) ((d * 2 * PConstants.PI) / 100);
 	}
 	
+	/**
+	 * Shortens numbers to a representable state (#*.###)
+	 * @param f float to trim
+	 * @return trimmed number as a string
+	 */
 	public static String trimNumber(float f) {
 		if (f ==  (int) f) {
 			return String.valueOf((int) f);
 		} else {
-			return String.valueOf(f);
+			return new DecimalFormat("#.##").format(f);
 		}
 	}
 
