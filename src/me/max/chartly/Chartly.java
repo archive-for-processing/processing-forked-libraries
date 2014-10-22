@@ -27,26 +27,20 @@
 
 package me.max.chartly;
 
-
-import java.text.DecimalFormat;
-
 import processing.core.*;
 
 public class Chartly {
 
 	// Processing app using this library.
 	public static PApplet app;
-		
+	public static Cleaner cleaner;
 	/**
 	 * --- TODO ---
-	 * Var control
-	 * More Datatype inputs
-	 * Get rid of build number (When possible)
-	 * Fontsize reset post-drawing
-	 * Formatted titles
-	 * refactor axisgraph
 	 * rename variables
-	 * reorder axis drawing
+	 * Getters and setters
+	 * Looks comments (rename?)
+	 * Change relative dimensions?
+	 * Refactor Constants?
 	 */
 	
 	/**
@@ -55,28 +49,8 @@ public class Chartly {
 	 */
 	public Chartly(PApplet app) {
 		Chartly.app = app;
-	}
-
-	/**
-	 * Converts a percent to the equivalent portion of 2 PI Radians
-	 * @param d Percent to convert
-	 * @return Radians
-	 */
-	public static float percentToRadians(double d) {
-		return (float) ((d * 2 * PConstants.PI) / 100);
-	}
-	
-	/**
-	 * Shortens numbers to a representable state (#*.###)
-	 * @param f float to trim
-	 * @return trimmed number as a string
-	 */
-	public static String trimNumber(float f) {
-		if (f ==  (int) f) {
-			return String.valueOf((int) f);
-		} else {
-			return new DecimalFormat("#.##").format(f);
-		}
+		Chartly.cleaner = new Cleaner();
+		Defaults.create();	
 	}
 
 }
