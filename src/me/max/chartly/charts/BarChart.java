@@ -1,7 +1,8 @@
 package me.max.chartly.charts;
 
 import me.max.chartly.Chartly;
-import me.max.chartly.components.color.ColorScheme;
+import me.max.chartly.Defaults;
+import me.max.chartly.components.color.Looks;
 import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.ExceptionWriter;
@@ -14,16 +15,18 @@ public class BarChart extends AxisChart {
 	 * @param dx Width
 	 * @param dy Height
 	 */
-	public BarChart(float dx, float dy) {
+	public BarChart(float width, float height) {
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
-		colorScheme = ColorScheme.getDefaultColorScheme();
-		this.x_axis_width = dx;
-		this.y_axis_height = dy;
+		looks = Defaults.getLooks();
+		this.x_axis_width = width;
+		this.y_axis_height = height;
 	}
 	
 	@Override
-	public void draw(float x, float y) {
+	public void draw(float x, float y) {		
+		Chartly.cleaner.load();
+		
 		try {
 			testComplete();
 		} catch (MissingInformationException ex) {
@@ -33,10 +36,10 @@ public class BarChart extends AxisChart {
 		
 		Chartly.app.textFont(font);
 		
-		float w = (float) (x_axis_width/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
+		float w = (float) (x_axis_width/(1.5 * data.size() + .5)); //Math done on whiteboard.
 		int count = 0;
 		for (DataPair pair : data.getData()) {
-			int c = colorScheme.next();
+			int c = looks.next();
 			Chartly.app.stroke(c);
 			Chartly.app.fill(c);
 			Chartly.app.rect(
@@ -90,13 +93,13 @@ public class BarChart extends AxisChart {
 	}
 
 	@Override
-	public ColorScheme getColorScheme() {
-		return colorScheme;
+	public Looks getLooks() {
+		return looks;
 	}
 
 	@Override
-	public BarChart setColorScheme(ColorScheme scheme) {
-		this.colorScheme = scheme;
+	public BarChart setLooks(Looks scheme) {
+		this.looks = scheme;
 		return this;
 	}
 	
@@ -104,15 +107,6 @@ public class BarChart extends AxisChart {
 	public BarChart setTitles(String xtitle, String ytitle, String title) {
 		super.setTitles(xtitle, ytitle, title);
 		return this;
-	}
-	
-	private void testComplete() throws MissingInformationException {
-		if (this.data.getData().isEmpty()) {
-			throw MissingInformationException.noData();
-		}
-		if (y_axis_increment == 0 && max_y_scale == 0) {
-			throw MissingInformationException.noLabels();
-		}
 	}
 
 }

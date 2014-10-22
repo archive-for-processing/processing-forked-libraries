@@ -1,6 +1,6 @@
 package me.max.chartly.charts;
 
-import me.max.chartly.components.color.ColorScheme;
+import me.max.chartly.components.color.Looks;
 import me.max.chartly.components.data.DataSet;
 
 public interface Chart {
@@ -31,16 +31,16 @@ public interface Chart {
 	public DataSet getData();
 	
 	/**
-	 * Get the current ColorScheme
-	 * @return the ColorScheme
+	 * Get the current Looks
+	 * @return the Looks
 	 */
-	public ColorScheme getColorScheme();
+	public Looks getLooks();
 	
 	/**
 	 * Provides the chart with a colorscheme
 	 * @param scheme the new colorscheme
 	 * @return this
 	 */
-	public Chart setColorScheme(ColorScheme scheme);
+	public Chart setLooks(Looks looks);
 		
 }

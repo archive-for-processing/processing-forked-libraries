@@ -3,7 +3,8 @@ package me.max.chartly.charts;
 import java.util.Iterator;
 
 import me.max.chartly.Chartly;
-import me.max.chartly.components.color.ColorScheme;
+import me.max.chartly.DataUtils;
+import me.max.chartly.components.color.Looks;
 import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.ExceptionWriter;
@@ -17,7 +18,7 @@ public class PieChart implements Chart {
 	private DataSet data;
 	private float x,y,radius,max;
 	private PFont font;
-	private ColorScheme colorScheme;
+	private Looks looks;
 	
 	/**
 	 * Constructor
@@ -37,6 +38,8 @@ public class PieChart implements Chart {
 	
 	@Override
 	public void draw(float x, float y) {		
+		Chartly.cleaner.load();
+		
 		try {
 			testComplete();
 		} catch (MissingInformationException ex) {
@@ -56,10 +59,10 @@ public class PieChart implements Chart {
 			//Chart
 			DataPair current = it.next();
 			float percent = dataToPercent(current.value);
-			float dr = Chartly.percentToRadians(percent);
+			float dr = DataUtils.percentToRadians(percent);
 			
-			Chartly.app.stroke(colorScheme.getAxisColor());
-			Chartly.app.fill(colorScheme.next());
+			Chartly.app.stroke(looks.getAxisColor());
+			Chartly.app.fill(looks.next());
 			
 			Chartly.app.arc(x, y, radius * 2, radius * 2, r, r+dr);
 			
@@ -70,12 +73,14 @@ public class PieChart implements Chart {
 			Chartly.app.pushMatrix();
 			Chartly.app.translate((float) tx, (float) ty);
 			Chartly.app.textAlign(tx+x > x ? PConstants.LEFT : PConstants.RIGHT);
-			Chartly.app.text(current.label + " " + Chartly.trimNumber(percent) + "%", x, y);
+			Chartly.app.text(current.label + " " + DataUtils.floatToFormattedString(percent) + "%", x, y);
 			Chartly.app.popMatrix();
 
 			//incrementation
 			r+=dr;			
 		}
+		
+		Chartly.cleaner.restore();
 	}
 	
 	@Override
@@ -96,13 +101,13 @@ public class PieChart implements Chart {
 	}
 
 	@Override
-	public ColorScheme getColorScheme() {
-		return colorScheme;
+	public Looks getLooks() {
+		return looks;
 	}
 
 	@Override
-	public PieChart setColorScheme(ColorScheme scheme) {
-		this.colorScheme = scheme;
+	public PieChart setLooks(Looks scheme) {
+		this.looks = scheme;
 		return this;
 	}
 	
