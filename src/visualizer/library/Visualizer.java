@@ -27,26 +27,37 @@
 
 package visualizer.library;
 
-
 import processing.core.*;
+import ddf.minim.*;
 
-/**
- * This is a template class and can be used to start a new processing library or tool.
- * Make sure you rename this class as well as the name of the example package 'template' 
- * to your own library or tool naming convention.
- * 
- * (the tag example followed by the name of an example included in folder 'examples' will
- * automatically include the example in the javadoc.)
- *
- * @example Hello 
- */
 
 public class Visualizer {
 	
-	// myParent is a reference to the parent sketch
-	PApplet myParent;
-
-	int myVariable = 0;
+	/**
+	 * myParent is a reference to the parent sketch
+	 */
+	PApplet Parent;	
+	
+	/**
+	 * Minim reference + var name
+	 */
+	public static Minim minim;
+	
+	/**
+	 * Minim reference + var name
+	 */
+	AudioPlayer song;
+	
+	/**
+	* Defaults
+	* Amount of data points/second given
+	*/
+	int sampleRate = 44100;
+	
+	/**
+     *Amount of points remembered (Needs to be larger for slower computers)
+	 */
+	int bufferSize = 2048;
 	
 	public final static String VERSION = "##library.prettyVersion##";
 	
@@ -55,11 +66,11 @@ public class Visualizer {
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
 	 * 
-	 * @example Hello
-	 * @param theParent
+	 * @param theParent The project that created the class
 	 */
 	public Visualizer(PApplet theParent) {
-		myParent = theParent;
+		Parent = theParent;
+		minim = new Minim(this);
 		welcome();
 	}
 	
@@ -72,32 +83,15 @@ public class Visualizer {
 	public String sayHello() {
 		return "hello library.";
 	}
+	
 	/**
-	 * return the version of the library.
-	 * 
-	 * @return String
+	 * @param song to play and be analyzed, amount of points remembered, Datapoints/second
 	 */
-	public static String version() {
-		return VERSION;
+	public void songSet(String songName){
+		song = minim.loadFile(songName, bufferSize);
 	}
-
-	/**
-	 * 
-	 * @param theA
-	 *          the width of test
-	 * @param theB
-	 *          the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
-
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
+	public void songSet(String songName, int bufferSize){
+		this.bufferSize = bufferSize;
+		song = minim.loadFile(songName,this.bufferSize);
 	}
 }
-
