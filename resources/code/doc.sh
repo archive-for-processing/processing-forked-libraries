@@ -5,7 +5,7 @@
 # fit the structure of your library
 
 # the package name of your library
-package=template;
+package=visualizer;
 
 # source folder location
 src=../src;
