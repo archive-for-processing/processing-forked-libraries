@@ -2,6 +2,12 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/will/git/Visualizer/lib/core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/jl1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/jsminim.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/minim.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/tritonus_aos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/will/Desktop/workspace/Visualizer/lib/tritonus_share.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
