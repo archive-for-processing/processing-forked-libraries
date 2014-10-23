@@ -3,6 +3,11 @@ package me.max.chartly.components.color;
 import me.max.chartly.Defaults;
 import processing.core.PFont;
 
+/**
+ * Class used to customize one or more charts.
+ * 
+ * @author maxjohnson
+ */
 public class Looks {	
 	private int[] chartColors;
 	private int axisColor;

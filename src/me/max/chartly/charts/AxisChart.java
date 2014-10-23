@@ -10,6 +10,11 @@ import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.MissingInformationException;
 
+/**
+ * Superclass of all axis-having charts.
+ * 
+ * @author Max Johnson
+ */
 public abstract class AxisChart implements Chart {
 
 	protected DataSet data;
@@ -133,10 +138,18 @@ public abstract class AxisChart implements Chart {
 		}
 	}
 	
+	/**
+	 * Get the width of the Chart
+	 * @return the width (in pixels)
+	 */
 	public float getWidth() {
 		return this.x_axis_width;
 	}
 	
+	/**
+	 * Get the height of the Chart
+	 * @return the height (in pixels)
+	 */
 	public float getHeight() {
 		return this.y_axis_height;
 	}

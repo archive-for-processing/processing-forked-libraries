@@ -2,6 +2,7 @@ package me.max.chartly.components.data;
 
 /**
  * Wrapper class for the chart data.
+ * 
  * @author Max Johnson
  */
 public class DataPair {

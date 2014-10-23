@@ -3,6 +3,11 @@ package me.max.chartly.charts;
 import me.max.chartly.components.color.Looks;
 import me.max.chartly.components.data.DataSet;
 
+/**
+ * Interface of all Chart objects
+ *
+ * @author maxjohnson
+ */
 public interface Chart {
 
 	/**

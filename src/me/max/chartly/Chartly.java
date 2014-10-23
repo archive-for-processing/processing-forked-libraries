@@ -29,6 +29,14 @@ package me.max.chartly;
 
 import processing.core.*;
 
+/**
+ * Main class of the Chartly library. Only used for storing the
+ * processing applet using the library.
+ * 
+ * Must be initialized before using the library.
+ * 
+ * @author maxjohnson
+ */
 public class Chartly {
 
 	// Processing app using this library.

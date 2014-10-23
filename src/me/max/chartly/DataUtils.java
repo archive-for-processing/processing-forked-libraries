@@ -4,6 +4,11 @@ import java.text.DecimalFormat;
 
 import processing.core.PConstants;
 
+/**
+ * Used for intra-library conversions.
+ *
+ * @author Max Johnson
+ */
 public class DataUtils {
 	/**
 	 * Converts a percent to the equivalent portion of 2 PI Radians

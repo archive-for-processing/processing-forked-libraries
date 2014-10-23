@@ -2,6 +2,13 @@ package me.max.chartly.exceptions;
 
 import processing.core.PApplet;
 
+/**
+ * Custom Exception writer. This class prints
+ * more user-friendly error messages than the 
+ * default printstacktrace.
+ * 
+ * @author maxjohnson
+ */
 public class ExceptionWriter {
 	
 	public static void write(Exception ex) {

@@ -1,5 +1,11 @@
 package me.max.chartly.exceptions;
 
+/**
+ * This exceptions represents an attempt to draw a chart
+ * without the prerequisite information.
+ * 
+ * @author maxjohnson
+ */
 public class MissingInformationException extends InputException {
 	
 	private static final long serialVersionUID = 1004224374531146022L;

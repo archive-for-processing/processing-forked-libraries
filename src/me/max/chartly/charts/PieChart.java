@@ -13,6 +13,11 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
+/**
+ * Represents a PieChart
+ * 
+ * @author maxjohnson
+ */
 public class PieChart implements Chart {
 	
 	private DataSet data;

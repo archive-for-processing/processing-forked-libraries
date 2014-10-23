@@ -3,6 +3,13 @@ package me.max.chartly;
 import me.max.chartly.components.color.Looks;
 import processing.core.PFont;
 
+/**
+ * Class used by the library to store
+ * default settings. Changing these can
+ * decrease the code needed to create similar graphs.
+ * 
+ * @author Max Johnson
+ */
 public class Defaults {
 	private static PFont font;
 	private static Looks looks;

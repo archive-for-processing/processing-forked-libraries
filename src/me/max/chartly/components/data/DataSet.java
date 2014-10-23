@@ -13,7 +13,7 @@ import me.max.chartly.exceptions.KeyValueAmountException;
 /**
  * Used to contain sets of data to be given to charts
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class DataSet {
 	public ArrayList<DataPair> data;

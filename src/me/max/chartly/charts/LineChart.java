@@ -8,12 +8,17 @@ import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.ExceptionWriter;
 import me.max.chartly.exceptions.MissingInformationException;
 
+/**
+ * Represents a LineChart (also known as a Line Graph)
+ *
+ * @author Max Johnson
+ */
 public class LineChart extends AxisChart {
 	
 	/**
-	 * Constructor
-	 * @param dx Width
-	 * @param dy Height
+	 * Creates a new BarChart object with the specified width and height
+	 * @param dx Width (in pixels)
+	 * @param dy Height (in pixels)
 	 */
 	public LineChart(float width, float height) {
 		data = new DataSet();

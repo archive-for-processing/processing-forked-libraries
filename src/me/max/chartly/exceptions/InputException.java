@@ -1,5 +1,10 @@
 package me.max.chartly.exceptions;
 
+/**
+ * Superclass for all input-based custom exceptions
+ * 
+ * @author maxjohnson
+ */
 public abstract class InputException extends Exception {
 
 	private static final long serialVersionUID = 1L; //no idea what this does.
