@@ -36,7 +36,7 @@ public class Visualizer {
 	/**
 	 * myParent is a reference to the parent sketch
 	 */
-	PApplet Parent;	
+	public static PApplet Parent;	
 	
 	/**
 	 * Minim reference + var name
@@ -46,20 +46,31 @@ public class Visualizer {
 	/**
 	 * Minim reference + var name
 	 */
-	AudioPlayer song;
+	public static AudioPlayer song;
+	
+	/**
+	 * Height of proccesing window
+	 */
+	public static int height;
+	
+	/** 
+	 * Width of proccesing window
+	 */
+	public static int width;
 	
 	/**
 	* Defaults
 	* Amount of data points/second given
 	*/
-	int sampleRate = 44100;
+	public static int sampleRate = 44100;
 	
 	/**
      *Amount of points remembered (Needs to be larger for slower computers)
 	 */
-	int bufferSize = 2048;
+	public static int bufferSize = 2048;
 	
 	public final static String VERSION = "##library.prettyVersion##";
+	
 	
 
 	/**
@@ -70,7 +81,9 @@ public class Visualizer {
 	 */
 	public Visualizer(PApplet theParent) {
 		Parent = theParent;
-		minim = new Minim(this);
+		minim = new Minim(Parent);
+		height = Parent.height;
+		width = Parent.width;
 		welcome();
 	}
 	
@@ -85,13 +98,15 @@ public class Visualizer {
 	}
 	
 	/**
-	 * @param song to play and be analyzed, amount of points remembered, Datapoints/second
+	 * @param song to play and be analyzed, amount of points remembered, dataPoints/second
 	 */
 	public void songSet(String songName){
 		song = minim.loadFile(songName, bufferSize);
+		song.play();
 	}
 	public void songSet(String songName, int bufferSize){
-		this.bufferSize = bufferSize;
-		song = minim.loadFile(songName,this.bufferSize);
+		Visualizer.bufferSize = bufferSize;
+		song = minim.loadFile(songName,Visualizer.bufferSize);
+		song.play();
 	}
 }
