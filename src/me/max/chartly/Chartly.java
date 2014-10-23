@@ -34,14 +34,6 @@ public class Chartly {
 	// Processing app using this library.
 	public static PApplet app;
 	public static Cleaner cleaner;
-	/**
-	 * --- TODO ---
-	 * rename variables
-	 * Getters and setters
-	 * Looks comments (rename?)
-	 * Change relative dimensions?
-	 * Refactor Constants?
-	 */
 	
 	/**
 	 * Constructor for the main Library object
