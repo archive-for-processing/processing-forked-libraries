@@ -60,7 +60,7 @@ public class DataSet {
 	public void setData(String[] keys, int[] values) {
 		setData(keys, DataUtils.intToFloatArray(values));
 	}
-
+	
 	public ArrayList<DataPair> getData() {
 		return data;
 	}

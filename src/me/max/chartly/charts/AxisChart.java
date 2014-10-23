@@ -132,5 +132,13 @@ public abstract class AxisChart implements Chart {
 			throw MissingInformationException.noLabels();
 		}
 	}
+	
+	public float getWidth() {
+		return this.x_axis_width;
+	}
+	
+	public float getHeight() {
+		return this.y_axis_height;
+	}
 
 }

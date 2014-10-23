@@ -121,5 +121,8 @@ public class PieChart implements Chart {
 		}
 	}
 	
+	public float getRadius() {
+		return this.radius;
+	}
 
 }
