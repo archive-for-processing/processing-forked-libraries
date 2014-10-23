@@ -7,7 +7,7 @@ import processing.core.PApplet;
  * more user-friendly error messages than the 
  * default printstacktrace.
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class ExceptionWriter {
 	

@@ -4,7 +4,7 @@ package me.max.chartly.exceptions;
  * This exceptions represents an invalid input in which
  * the user either gives more keys than values or visa versa.
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class KeyValueAmountException extends InputException {
 

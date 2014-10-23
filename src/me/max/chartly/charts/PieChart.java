@@ -16,7 +16,7 @@ import processing.core.PFont;
 /**
  * Represents a PieChart
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class PieChart implements Chart {
 	

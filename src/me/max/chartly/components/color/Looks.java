@@ -6,7 +6,7 @@ import processing.core.PFont;
 /**
  * Class used to customize one or more charts.
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class Looks {	
 	private int[] chartColors;

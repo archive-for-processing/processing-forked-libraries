@@ -11,7 +11,7 @@ import me.max.chartly.exceptions.MissingInformationException;
 /**
  * Represents a BarChart (also called a bar-graph)
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class BarChart extends AxisChart {
 	

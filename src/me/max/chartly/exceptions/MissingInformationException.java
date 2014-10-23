@@ -4,7 +4,7 @@ package me.max.chartly.exceptions;
  * This exceptions represents an attempt to draw a chart
  * without the prerequisite information.
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class MissingInformationException extends InputException {
 	

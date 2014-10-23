@@ -3,7 +3,7 @@ package me.max.chartly.exceptions;
 /**
  * Superclass for all input-based custom exceptions
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public abstract class InputException extends Exception {
 

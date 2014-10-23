@@ -35,7 +35,7 @@ import processing.core.*;
  * 
  * Must be initialized before using the library.
  * 
- * @author maxjohnson
+ * @author Max Johnson
  */
 public class Chartly {
 
