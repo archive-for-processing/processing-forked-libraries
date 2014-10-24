@@ -32,22 +32,30 @@ Chart's size.
 
 #####Step 1: Initialize the library
 
-```Chartly chartly = new Chartly(this);```
+```
+Chartly chartly = new Chartly(this);
+```
 
 If you do not need to store the Chartly object, you can simply write
 
-```new Chartly(this);```
+```
+new Chartly(this);
+```
 
 #####Step 2: Data
 Chartly does not provide you with ways of gathering data at the moment. In order to use the library, you must have data that can be expressed in the form of ```Label:Value```. Once you have that, you can create a new DataSet
 Object to store you data in.
 
-```DataSet data = new DataSet();```
-```data.setData(labels[], values[]);```
+```
+DataSet data = new DataSet();
+data.setData(labels[], values[]);
+```
 
 or
 
-```DataSet data = new DataSet(labels[], values[]);```
+```
+DataSet data = new DataSet(labels[], values[]);
+```
 
 #####Step 3: Looks (Optional)
 If you do not care about how your chart looks, you may simply
@@ -62,12 +70,18 @@ Once you have chosen between the current chart types availible
 - PieChart
 You can use the DataSet's to Chart methods to get a new Chart Object
 
-```BarChart barchart = data.toBarChart(width, height);```
-```LineChart linechart = data.toLineChart(width, height);```
-```PieChart piechart = data.toPieChart(radius);```
+```
+BarChart barchart = data.toBarChart(width, height);
+LineChart linechart = data.toLineChart(width, height);
+PieChart piechart = data.toPieChart(radius);
+```
 
-Alternatively, you can use the constructor followed by
-```yourChart.setData(data);```
+Alternatively, you can use the constructor and add the data later.
+Example:
+```
+BarChart barchart = new BarChart(x, y); // Works with all charts, not just BarCharts
+bar.setData(data);
+```
 
 #####Step 5: Draw
 In order to draw your chart, use:
