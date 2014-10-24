@@ -8,7 +8,7 @@ import processing.core.PFont;
  * Restores original processing settings (font, stroke, and fill)
  * after drawing the graph.
  *
- *@author Max Johnson
+ * @author Max Johnson
  */
 public class Cleaner {
 	private Font font;
