@@ -71,8 +71,9 @@ You can use the DataSet's to Chart methods to get a new Chart Object
 Alternatively, you can use the constructor followed by
 ```yourChart.setData(data);```
 
-Finally, use
-```yourChart.draw(x,y)```
-For charts with axes, x and y refer to the bottom-left corner of the chart. For piecharts, it is the center. 
+#####Step 5: Draw
+In order to draw your chart, use:
+```yourChart.draw(x, y)```
+For charts with axes, ```x``` and ```y``` refer to the bottom-left corner of the chart. For piecharts, it is the center. 
 All labeling and titles are automatically sized based on the Chart's size.
  
