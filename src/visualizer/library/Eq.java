@@ -37,16 +37,32 @@ public class Eq {
 			Visualizer.Parent.rect(i*w, Visualizer.height- 1, i*w,Visualizer.height - (fft.getAvg(i)*5));
 		}
 	}
+	public void eq(String input){
+		Visualizer.Parent.rectMode(1);
+		sizex = Visualizer.width;
+		fft.linAverages(200);
+		leftRight(input);
+		Visualizer.Parent.fill(0);
+		Visualizer.Parent.stroke(0,255,0);
+		float w = (this.sizex / fft.avgSize());
+		if( w == 0){
+			PApplet.println("ERROR: X restriction is too small either increase window size");
+		}
+		for(int i = 1; i < fft.avgSize(); i++){
+			Visualizer.Parent.rect(i*w, Visualizer.height- 1, i*w,Visualizer.height - (fft.getAvg(i)*5));
+		}
+	}
+	
 	/**
 	 * Eq with xy positions
 	 * @param x xposition
 	 * @param y yposition
 	 */
-	public void eq(int x, int y){
+	public void eq(String input, int x, int y){
 		Visualizer.Parent.rectMode(1);
 		sizex = Visualizer.width - x;
 		fft.linAverages(100);
-		fft.forward(Visualizer.song.mix);
+		leftRight(input);
 		Visualizer.Parent.fill(0);
 		Visualizer.Parent.stroke(0,255,0);
 		float w = (this.sizex / fft.avgSize());
@@ -64,7 +80,7 @@ public class Eq {
 	 * @param sizex restriction on drawing passed this x value(added to xposition)
 	 * @param sizey restriction to height(added with y)
 	 */
-	public void eq(int x, int y, int sizex, int sizey){
+	public void eq(String input, int x, int y, int sizex, int sizey){
 		this.sizex = sizex;
 		fft.linAverages(100);
 		Visualizer.Parent.rectMode(1);
@@ -95,11 +111,11 @@ public class Eq {
 	 * @param sizey restriction to height(added with y)
 	 * @param amount Amount of eq lines (Minim sets the number to bundle together with the number put here)
 	 */
-	public void eq(int x, int y, int sizex, int sizey, int amount){
+	public void eq(String input, int x, int y, int sizex, int sizey, int amount){
 		this.sizex = sizex;
 		fft.linAverages(amount);
 		Visualizer.Parent.rectMode(1);
-		fft.forward(Visualizer.song.mix);
+		leftRight(input);
 		Visualizer.Parent.fill(0);
 		Visualizer.Parent.stroke(0,255,0);
 		float w = (this.sizex / fft.avgSize());
@@ -121,4 +137,22 @@ public class Eq {
 		}
 	}
   }
+	private void leftRight(String input){
+		switch(input){
+		case "LEFT":
+		fft.forward(Visualizer.song.left);
+		break;
+		
+		case "RIGHT":
+		fft.forward(Visualizer.song.right);
+		break;
+		
+		case "MIX":
+		fft.forward(Visualizer.song.mix);
+		break;
+		default:
+		PApplet.println("The argument " + input + "is not valid. Try 'LEFT' 'RIGHT' or 'MIX'");
+		break;
+		}		
+	}
 }
