@@ -27,8 +27,7 @@ public class PieChart implements Chart {
 	
 	/**
 	 * Constructor
-	 * @param dx Width
-	 * @param dy Height
+	 * @param radius Radius (in pixels)
 	 */
 	public PieChart(float radius) {
 		data = new DataSet();

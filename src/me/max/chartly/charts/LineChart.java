@@ -17,8 +17,8 @@ public class LineChart extends AxisChart {
 	
 	/**
 	 * Creates a new BarChart object with the specified width and height
-	 * @param dx Width (in pixels)
-	 * @param dy Height (in pixels)
+	 * @param width Width (in pixels)
+	 * @param height Height (in pixels)
 	 */
 	public LineChart(float width, float height) {
 		data = new DataSet();
@@ -72,8 +72,8 @@ public class LineChart extends AxisChart {
 	
 	/**
 	 * Provides the height in units and the increment of the yaxis
-	 * @param end Max height (in units)
-	 * @param incr distance between labels on YAxis
+	 * @param top Max height (in units)
+	 * @param increment distance between labels on YAxis
 	 * @return this
 	 */
 	public LineChart setYLabels(float top, float increment) {

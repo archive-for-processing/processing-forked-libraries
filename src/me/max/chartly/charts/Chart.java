@@ -42,8 +42,10 @@ public interface Chart {
 	public Looks getLooks();
 	
 	/**
-	 * Provides the chart with a colorscheme
-	 * @param scheme the new colorscheme
+	 * Provides the chart with a Looks instance.
+	 * Looks changes how the chart will look
+	 * including fonts and colorschemes.
+	 * @param looks the new Looks
 	 * @return this
 	 */
 	public Chart setLooks(Looks looks);

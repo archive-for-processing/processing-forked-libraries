@@ -17,8 +17,8 @@ public class BarChart extends AxisChart {
 	
 	/**
 	 * Creates a new BarChart object with the specified width and height
-	 * @param dx Width (in pixels)
-	 * @param dy Height (in pixels)
+	 * @param width Width (in pixels)
+	 * @param height Height (in pixels)
 	 */
 	public BarChart(float width, float height) {
 		data = new DataSet();
@@ -71,13 +71,13 @@ public class BarChart extends AxisChart {
 	
 	/**
 	 * Resize the graph
-	 * @param dx New width
-	 * @param dy New height
-	 * @return
+	 * @param width New width
+	 * @param height New height
+	 * @return this
 	 */
-	public BarChart resize(float dx, float dy) {
-		this.x_axis_width = dx == 0 ? this.x_axis_width : dx;
-		this.y_axis_height = dy == 0 ? this.y_axis_height : dy;
+	public BarChart resize(float width, float height) {
+		this.x_axis_width = width == 0 ? this.x_axis_width : width;
+		this.y_axis_height = height == 0 ? this.y_axis_height : height;
 		return this;
 	}
 	

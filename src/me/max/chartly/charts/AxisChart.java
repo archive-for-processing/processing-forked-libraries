@@ -29,14 +29,7 @@ public abstract class AxisChart implements Chart {
 	 * Draws the axes of the graph
 	 * @param x Bottom left corner's x-coord
 	 * @param y Bottom left corner's y-coord
-	 * @param x_axis_width Length of Graph
-	 * @param y_axis_height Height of Graph
-	 * @param w Width of axes
-	 * @param max_y_scale The max "units" of the graph
-	 * @param y_axis_increment The increment size from 0 to yend
-	 * @param data Data used in the graph
 	 */
-	
 	public void draw(float x, float y) {		
 		this.current_x = x;
 		this.current_y = y;

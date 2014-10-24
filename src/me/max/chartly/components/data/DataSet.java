@@ -111,7 +111,7 @@ public class DataSet {
 	private void qsort(DataPair[] pairs, int low, int high, boolean lowestFirst) {
 		int j = low;
 		int i = high;
-		DataPair pivot = pairs[(int) pairs.length/2];
+		DataPair pivot = pairs[pairs.length/2];
 		
 		boolean cont;
 		while (j <= i) {
