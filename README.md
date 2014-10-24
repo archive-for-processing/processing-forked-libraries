@@ -19,7 +19,7 @@ The library, while far from being finished, as I plan to continue working on it,
 Through documenation, refactoring, and examples I tried to make the 
 charts easier to use. I plan on finding ways in the future  to further reduce the learning curve.
 
-For charts with axes, ```x``` and ```y``` refer to the bottom-left corner of the
+For charts with axes, `x` and `y` refer to the bottom-left corner of the
 chart. For piecharts, it is the center.
 
 All labeling and titles are automatically sized based on the
@@ -82,7 +82,12 @@ bar.setData(data);
 
 #####Step 5: Draw
 In order to draw your chart, use:
-```yourChart.draw(x, y)```
-For charts with axes, ```x``` and ```y``` refer to the bottom-left corner of the chart. For piecharts, it is the center. 
+```
+yourChart.draw(x, y)
+```
+For charts with axes, 
+`x` and `y` refer to the bottom-left corner of the chart. For piecharts, it is the center. 
 All labeling and titles are automatically sized based on the Chart's size.
- 
+
+For a working example of how to use the library, see
+https://github.com/TheMaxJ/Chartly/blob/master/examples/Chart_Example/Chart_Example.pde
