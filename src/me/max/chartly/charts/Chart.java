@@ -7,6 +7,7 @@ import me.max.chartly.components.data.DataSet;
  * Interface of all Chart objects
  *
  * @author Max Johnson
+ * @example Chart_Example
  */
 public interface Chart {
 

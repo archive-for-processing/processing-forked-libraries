@@ -11,7 +11,6 @@ import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.ExceptionWriter;
 import me.max.chartly.exceptions.MissingInformationException;
 import processing.core.PConstants;
-import processing.core.PFont;
 
 /**
  * Represents a PieChart
@@ -19,12 +18,12 @@ import processing.core.PFont;
  * its values' sum
  * 
  * @author Max Johnson
+ * @example Chart_Example
  */
 public class PieChart implements Chart {
 	
 	private DataSet data;
 	private float x,y,radius,max;
-	private PFont font;
 	private Looks looks;
 	
 	/**
@@ -34,6 +33,11 @@ public class PieChart implements Chart {
 	 * @param radius Radius (in pixels)
 	 */
 	public PieChart(float radius) {
+		if (!Chartly.hasApplet()) {
+			 ExceptionWriter.write(MissingInformationException.noApplet());
+			 return;
+		}
+		
 		data = new DataSet();
 		this.radius = radius;
 		this.looks = Defaults.getLooks();
@@ -50,7 +54,7 @@ public class PieChart implements Chart {
 			return;
 		}
 		
-		Chartly.app.textFont(font);
+		Chartly.app.textFont(looks.getFont());
 		
 		this.x = x; 
 		this.y = y;
@@ -125,10 +129,8 @@ public class PieChart implements Chart {
 			throw MissingInformationException.noData();
 		}
 	}
-	
-	/**
-	 * Incredibly complex algorithm takes the radius, and returns it
-	 * without modification.
+	 
+	/** 
 	 * 
 	 * @return the radius
 	 */

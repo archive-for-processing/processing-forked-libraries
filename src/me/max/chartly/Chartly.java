@@ -35,6 +35,8 @@ import processing.core.*;
  * 
  * Must be initialized before using the library.
  * 
+ * @example Chart_Example
+ * 
  * @author Max Johnson
  */
 public class Chartly {
@@ -52,7 +54,16 @@ public class Chartly {
 		Chartly.cleaner = new Cleaner();
 		Defaults.create();	
 	}
+	
+	/**
+	 * Tests to ensure that Chartly has been given an applet.
+	 * @return whether the library is loaded with an applet
+	 */
+	public static boolean hasApplet() {
+		return app != null;
+	}
 
 }
+
 
 

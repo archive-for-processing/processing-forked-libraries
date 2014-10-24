@@ -5,11 +5,11 @@ package me.max.chartly.exceptions;
  * without the prerequisite information.
  * 
  * @author Max Johnson
+ * @example Error_Example
  */
+@SuppressWarnings("serial")
 public class MissingInformationException extends InputException {
-	
-	private static final long serialVersionUID = 1004224374531146022L;
-	
+		
 	public MissingInformationException() { super(); }
 	public MissingInformationException(String message) { super(message); }
 	public MissingInformationException(String message, Throwable cause) { super(message, cause); }
@@ -22,9 +22,8 @@ public class MissingInformationException extends InputException {
 	public static MissingInformationException noLabels() {
 		return new MissingInformationException("No Labels Provided.");
 	}
-	
-	public static MissingInformationException noTitles() {
-		return new MissingInformationException("No Titles Provided.");
-	}
 
+	public static MissingInformationException noApplet() {
+		return new MissingInformationException("No App Registered. Try adding \"new Chartly(this)\" to your code");
+	}
 }

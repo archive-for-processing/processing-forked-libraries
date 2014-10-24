@@ -12,6 +12,7 @@ import me.max.chartly.exceptions.MissingInformationException;
  * Represents a BarChart (also called a bar-graph)
  * 
  * @author Max Johnson
+ * @example Chart_Example
  */
 public class BarChart extends AxisChart {
 	
@@ -21,6 +22,10 @@ public class BarChart extends AxisChart {
 	 * @param height Height (in pixels)
 	 */
 	public BarChart(float width, float height) {
+		if (Chartly.app == null) {
+			 ExceptionWriter.write(MissingInformationException.noApplet());
+			 return;
+		}
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
 		looks = Defaults.getLooks();

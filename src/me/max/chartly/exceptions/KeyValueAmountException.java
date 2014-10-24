@@ -5,10 +5,10 @@ package me.max.chartly.exceptions;
  * the user either gives more keys than values or visa versa.
  * 
  * @author Max Johnson
+ * @example Error_Example
  */
+@SuppressWarnings("serial")
 public class KeyValueAmountException extends InputException {
-
-	private static final long serialVersionUID = -4181974239466042064L; //auto-generated
 	
 	public KeyValueAmountException() { super(); }
 	public KeyValueAmountException(String message) { super(message); }

@@ -12,6 +12,7 @@ import me.max.chartly.exceptions.MissingInformationException;
  * Represents a LineChart (also known as a Line Graph)
  *
  * @author Max Johnson
+ * @example Chart_Example
  */
 public class LineChart extends AxisChart {
 	
@@ -22,6 +23,11 @@ public class LineChart extends AxisChart {
 	 * @param height Height (in pixels)
 	 */
 	public LineChart(float width, float height) {
+		if (!Chartly.hasApplet()) {
+			 ExceptionWriter.write(MissingInformationException.noApplet());
+			 return;
+		}
+		
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
 		looks = Defaults.getLooks();

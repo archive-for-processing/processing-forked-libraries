@@ -8,6 +8,7 @@ import processing.core.PApplet;
  * default printstacktrace.
  * 
  * @author Max Johnson
+ * @example Chart_Example
  */
 public class ExceptionWriter {
 	
