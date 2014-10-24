@@ -11,7 +11,8 @@ import me.max.chartly.components.data.DataSet;
 public interface Chart {
 
 	/**
-	 * Draws the graph
+	 * Draws the graph at the provided coordinates
+	 * 
 	 * @param x Bottom left corner X-Coord
 	 * @param y Bottom left corner Y-Coord
 	 */

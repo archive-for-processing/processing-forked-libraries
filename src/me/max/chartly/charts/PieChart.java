@@ -4,17 +4,19 @@ import java.util.Iterator;
 
 import me.max.chartly.Chartly;
 import me.max.chartly.DataUtils;
+import me.max.chartly.Defaults;
 import me.max.chartly.components.color.Looks;
 import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
 import me.max.chartly.exceptions.ExceptionWriter;
 import me.max.chartly.exceptions.MissingInformationException;
-import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
 
 /**
  * Represents a PieChart
+ * Draws the data based off of arcs proportional to 
+ * its values' sum
  * 
  * @author Max Johnson
  */
@@ -26,18 +28,15 @@ public class PieChart implements Chart {
 	private Looks looks;
 	
 	/**
-	 * Constructor
+	 * Creates a new piechart with the given radius.
+	 * and an empty DataSet
+	 * 
 	 * @param radius Radius (in pixels)
 	 */
 	public PieChart(float radius) {
 		data = new DataSet();
-		
-		//Default to center
-		x = Chartly.app.width/2;
-		y = Chartly.app.height/2;
 		this.radius = radius;
-		
-		font = Chartly.app.createFont("Helvetica", 12);
+		this.looks = Defaults.getLooks();
 	}
 	
 	@Override
@@ -56,13 +55,13 @@ public class PieChart implements Chart {
 		this.x = x; 
 		this.y = y;
 		
-		float r = PConstants.PI / 2; //90 degrees	
+		float r = PConstants.PI / 2; // Start at 90 degrees	
 		Iterator<DataPair> it = data.getData().iterator();	
 		
 		while(it.hasNext()) {
 			//Chart
 			DataPair current = it.next();
-			float percent = dataToPercent(current.value);
+			float percent = DataUtils.dataToPercent(max, current.value);
 			float dr = DataUtils.percentToRadians(percent);
 			
 			Chartly.app.stroke(looks.getAxisColor());
@@ -115,16 +114,24 @@ public class PieChart implements Chart {
 		return this;
 	}
 	
-	private float dataToPercent(float f) {
-		return PApplet.map(f, 0, max, 0, 100);
-	}
-	
+	/**
+	 * Ensures that the graph has all of the things it needs
+	 * before drawing it.
+	 * 
+	 * @throws MissingInformationException Thrown if no data is provided.
+	 */
 	private void testComplete() throws MissingInformationException {
 		if (this.data.getData().isEmpty()) {
 			throw MissingInformationException.noData();
 		}
 	}
 	
+	/**
+	 * Incredibly complex algorithm takes the radius, and returns it
+	 * without modification.
+	 * 
+	 * @return the radius
+	 */
 	public float getRadius() {
 		return this.radius;
 	}

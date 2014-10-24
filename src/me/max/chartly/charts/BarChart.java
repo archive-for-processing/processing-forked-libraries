@@ -59,13 +59,13 @@ public class BarChart extends AxisChart {
 	
 	/**
 	 * Provides the height in units and the increment of the yaxis
-	 * @param end Max height (in units)
-	 * @param incr distance between labels on YAxis
+	 * @param top Max height (in units)
+	 * @param increment distance between labels on YAxis
 	 * @return this
 	 */
-	public BarChart setYLabels(float end, float incr) {
-		this.max_y_scale = end;
-		this.y_axis_increment = incr;
+	public BarChart setYLabels(float top, float increment) {
+		this.max_y_scale = top;
+		this.y_axis_increment = increment;
 		return this;
 	}
 	

@@ -14,6 +14,9 @@ public class Defaults {
 	private static PFont font;
 	private static Looks looks;
 	
+	/**
+	 * Loads the default defaults.
+	 */
 	public static void create() {
 		setFont(Chartly.app.createFont("Helvetica", 12));
 		setLooks(new Looks(0, new int[] {

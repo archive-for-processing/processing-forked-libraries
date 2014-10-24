@@ -18,18 +18,45 @@ public class ExceptionWriter {
 		h3("Error Message: " + ex.getMessage());
 	}
 	
+	/**
+	 * Prints a formatted string
+	 * Result:
+	 * -=-=-=- Example -=-=-=-
+	 * 
+	 * @param string the raw message.
+	 */
 	private static void h1(String string) {
 		_println("-=-=-=- " + string + " -=-=-=-");
 	}
 	
+	/**
+	 * Prints a formatted string
+	 * Result:
+	 * ------- Example -------
+	 * 
+	 * @param string the raw message.
+	 */
 	private static void h2(String string) {
 		_println("------- " + string + " -------");
 	}
 	
+	/**
+	 * Prints a formatted string
+	 * Result:
+	 * - Example
+	 * 
+	 * @param string the raw message.
+	 */
 	private static void h3(String string) {
 		_println("- " + string);
 	}
 	
+	/**
+	 * Uses PApplet's print function to print a message
+	 * to the applet console.
+	 * 
+	 * @param string the formatted string.
+	 */
 	private static void _println(String string) {
 		PApplet.println(string);
 	}

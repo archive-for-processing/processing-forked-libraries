@@ -27,6 +27,9 @@ public abstract class AxisChart implements Chart {
 	
 	/**
 	 * Draws the axes of the graph
+	 * Called after the rest of the graph is drawn
+	 * so that it will be on top.
+	 * 
 	 * @param x Bottom left corner's x-coord
 	 * @param y Bottom left corner's y-coord
 	 */

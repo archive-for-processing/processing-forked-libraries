@@ -16,7 +16,8 @@ import me.max.chartly.exceptions.MissingInformationException;
 public class LineChart extends AxisChart {
 	
 	/**
-	 * Creates a new BarChart object with the specified width and height
+	 * Creates a new LineChart object with the specified width and height
+	 * 
 	 * @param width Width (in pixels)
 	 * @param height Height (in pixels)
 	 */

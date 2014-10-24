@@ -2,6 +2,7 @@ package me.max.chartly;
 
 import java.text.DecimalFormat;
 
+import processing.core.PApplet;
 import processing.core.PConstants;
 
 /**
@@ -46,6 +47,10 @@ public class DataUtils {
 			floats[i] = (float) ints[i];
 		}
 		return floats;
+	}
+	
+	public static float dataToPercent(float max, float f) {
+		return PApplet.map(f, 0, max, 0, 100);
 	}
 	
 }
