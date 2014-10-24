@@ -6,13 +6,10 @@ A Processing Chart-Building Library.
 Chartly was built with the intention to allow users to display data quickly, dynamicly, and simply, without having to worry about complex data storage, sorting, and shape-rendering.
 
 ### About
-I started developement on Chartly as a School Project for Coding as Art
-It is forked from the Processing Library template.
+I started developement on Chartly as a school project for Coding as Art. It is forked from the Processing Library template.
 Submitted: October 24, 2014
 
-Chartly was designed to allow users to quickly represent 
-their data in a way that is both easy to understand
-and largely customizable.
+Chartly was designed to allow users to quickly represent their data in a way that is both easy to understand and largely customizable.
 
 Data given is transformed into customizable charts
 Each Chart type has its description of how it is drawn.
