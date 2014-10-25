@@ -14,10 +14,11 @@ void setup() {
 
 void draw() {
   background(0);
-  equal.eq();
-  equal.eq("MIX");
-  equal.eq("RIGHT",250, 250);
-  equal.eq("LEFT",10, 250, 250, 200);
-  equal.eq("MIX",250, height - 50, 30, 50, 30);
-}
+  equal.eq();//SAME
+  equal.eq("MIX");//SAME
+  equal.eq("LEFT", 0, height/2);
+  equal.eq("RIGHT", width/2, height/2 - 2, 0, 0, 255);
+  equal.eq("MIX", 30, 20, 255, 255, 0, 100, 20);
+  equal.eq("MIX", 50, 100, 100, 100, 100, 10, 20, 10);
+  }
 
