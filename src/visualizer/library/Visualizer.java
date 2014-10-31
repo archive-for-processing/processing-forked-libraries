@@ -30,54 +30,51 @@ package visualizer.library;
 import processing.core.*;
 import ddf.minim.*;
 
-
 public class Visualizer {
-	
+
 	/**
 	 * myParent is a reference to the parent sketch
 	 */
-	public static PApplet Parent;	
-	
+	public static PApplet Parent;
+
 	/**
 	 * Minim reference + var name
 	 */
 	public static Minim minim;
-	
+
 	/**
 	 * Minim reference + var name
 	 */
 	public static AudioPlayer song;
-	
+
 	/**
 	 * Height of proccesing window
 	 */
 	public static int height;
-	
-	/** 
+
+	/**
 	 * Width of proccesing window
 	 */
 	public static int width;
-	
+
 	/**
-	* Defaults
-	* Amount of data points/second given
-	*/
+	 * Defaults Amount of data points/second given
+	 */
 	public static int sampleRate = 44100;
-	
+
 	/**
-     *Amount of points remembered (Needs to be larger for slower computers)
+	 * Amount of points remembered (Needs to be larger for slower computers)
 	 */
 	public static int bufferSize = 2048;
-	
+
 	public final static String VERSION = "##library.prettyVersion##";
-	
-	
 
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the library.
 	 * 
-	 * @param theParent The project that created the class
+	 * @param theParent
+	 *            The project that created the class
 	 */
 	public Visualizer(PApplet theParent) {
 		Parent = theParent;
@@ -86,27 +83,29 @@ public class Visualizer {
 		width = Parent.width;
 		welcome();
 	}
-	
-	
+
 	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
+		System.out
+				.println("##library.name## ##library.prettyVersion## by ##author##");
 	}
-	
-	
+
 	public String sayHello() {
 		return "hello library.";
 	}
-	
+
 	/**
-	 * @param song to play and be analyzed, amount of points remembered, dataPoints/second
+	 * @param song
+	 *            to play and be analyzed, amount of points remembered,
+	 *            dataPoints/second
 	 */
-	public void songSet(String songName){
+	public void songSet(String songName) {
 		song = minim.loadFile(songName, bufferSize);
 		song.play();
 	}
-	public void songSet(String songName, int bufferSize){
+
+	public void songSet(String songName, int bufferSize) {
 		Visualizer.bufferSize = bufferSize;
-		song = minim.loadFile(songName,Visualizer.bufferSize);
+		song = minim.loadFile(songName, Visualizer.bufferSize);
 		song.play();
 	}
 }
