@@ -46,6 +46,9 @@ public class Eq {
 		if (w == 0) {
 			if (error != true) {
 				PApplet.println("ERROR: X restriction is too small either increase window size");
+				PApplet.println("FIXED: X restriction change to"
+						+ fft.avgSize());
+				w = 1;
 				error = true;
 			}
 		}
@@ -59,7 +62,7 @@ public class Eq {
 	 * eq
 	 * 
 	 * @param input
-	 *            : LEFT RIGHT or MIX(the audio to analyze with fft)
+	 *            LEFT RIGHT or MIX(the audio to analyze with fft)
 	 */
 	public void eq(String input) {
 		Visualizer.Parent.rectMode(1);
@@ -85,11 +88,11 @@ public class Eq {
 	 * eq
 	 * 
 	 * @param input
-	 *            : LEFT RIGHT or MIX(the audio to analyze with fft)
+	 *            LEFT RIGHT or MIX(the audio to analyze with fft)
 	 * @param x
-	 *            : Xposition (from left corner)
+	 *            Xposition (from left corner)
 	 * @param y
-	 *            : Ypostition "               "
+	 *            Ypostition "               "
 	 */
 	public void eq(String input, int x, int y) {
 		Visualizer.Parent.rectMode(1);
@@ -115,17 +118,17 @@ public class Eq {
 	 * eq
 	 * 
 	 * @param input
-	 *            : LEFT RIGHT or MIX(the audio to analyze with fft)
+	 *            LEFT RIGHT or MIX(the audio to analyze with fft)
 	 * @param x
-	 *            : Xposition (from left corner)
+	 *            Xposition (from left corner)
 	 * @param y
-	 *            : Ypostition "               "
+	 *            Ypostition "               "
 	 * @param r
-	 *            : red fill value
+	 *            red fill value
 	 * @param g
-	 *            : green "      "
+	 *            green "      "
 	 * @param b
-	 *            : blue " 	  "
+	 *            blue " 	  "
 	 */
 	public void eq(String input, int x, int y, int r, int g, int b) {
 		Visualizer.Parent.rectMode(1);
@@ -151,22 +154,22 @@ public class Eq {
 	 * eq
 	 * 
 	 * @param input
-	 *            : LEFT RIGHT or MIX(the audio to analyze with fft)
+	 *            LEFT RIGHT or MIX(the audio to analyze with fft)
 	 * @param x
-	 *            : Xposition (from left corner)
+	 *            Xposition (from left corner)
 	 * @param y
-	 *            : Ypostition "               "
+	 *            Ypostition "               "
 	 * @param r
-	 *            : red fill value
+	 *            red fill value
 	 * @param g
-	 *            : green "      "
+	 *            green "      "
 	 * @param b
-	 *            : blue " 	  "
+	 *            blue " 	  "
 	 * @param sizex
-	 *            : Length restriciton
+	 *            Length restriciton
 	 * @param sizey
-	 *            : Height restriction (Does not scale down, just sets a max
-	 *            where the line cuts off)
+	 *            Height restriction (Does not scale down, just sets a max where
+	 *            the line cuts off)
 	 */
 	public void eq(String input, int x, int y, int r, int g, int b, int sizex,
 			int sizey) {
@@ -199,25 +202,25 @@ public class Eq {
 	 * eq
 	 * 
 	 * @param input
-	 *            : LEFT RIGHT or MIX(the audio to analyze with fft)
+	 *            LEFT RIGHT or MIX(the audio to analyze with fft)
 	 * @param x
-	 *            : Xposition (from left corner)
+	 *            Xposition (from left corner)
 	 * @param y
-	 *            : Ypostition "               "
+	 *            Ypostition "               "
 	 * @param r
-	 *            : red fill value
+	 *            red fill value
 	 * @param g
-	 *            : green "      "
+	 *            green "      "
 	 * @param b
-	 *            : blue " 	  "
+	 *            blue " 	  "
 	 * @param sizex
-	 *            : Length restriciton
+	 *            Length restriciton
 	 * @param sizey
-	 *            : Height restriction (Does not scale down, just sets a max
-	 *            where the line cuts off)
+	 *            Height restriction (Does not scale down, just sets a max where
+	 *            the line cuts off)
 	 * @param amount
-	 *            : amount of lines (tells minim how many lines the fft should
-	 *            be averaged to)
+	 *            amount of lines (tells minim how many lines the fft should be
+	 *            averaged to)
 	 */
 	public void eq(String input, int x, int y, int r, int g, int b, int sizex,
 			int sizey, int amount) {
