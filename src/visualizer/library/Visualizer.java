@@ -66,7 +66,9 @@ public class Visualizer {
 	 * Amount of points remembered (Needs to be larger for slower computers)
 	 */
 	public static int bufferSize = 2048;
-
+	/**
+	 * Version
+	 */
 	public final static String VERSION = "##library.prettyVersion##";
 
 	/**
@@ -84,25 +86,27 @@ public class Visualizer {
 		welcome();
 	}
 
+	/**
+	 * Welcome message
+	 */
 	private void welcome() {
 		System.out
 				.println("##library.name## ##library.prettyVersion## by ##author##");
 	}
 
-	public String sayHello() {
-		return "hello library.";
-	}
-
 	/**
-	 * @param song
-	 *            to play and be analyzed, amount of points remembered,
-	 *            dataPoints/second
+	 * Sets the song that the other classes will analyze
+	 * @param songName name of the song to be analyzed
 	 */
 	public void songSet(String songName) {
 		song = minim.loadFile(songName, bufferSize);
 		song.play();
 	}
-
+	/**
+	 * songSet
+	 * @param songName Name of song
+	 * @param bufferSize Amount of points to use for calculations
+	 */
 	public void songSet(String songName, int bufferSize) {
 		Visualizer.bufferSize = bufferSize;
 		song = minim.loadFile(songName, Visualizer.bufferSize);
