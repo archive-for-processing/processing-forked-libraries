@@ -12,4 +12,7 @@ void draw(){
   background(0);
   wave.wf();
   wave.wf("LEFT");
+  wave.wf("MIX", 100);
+  wave.wf("RIGHT", 300, width/2);
+  wave.wf("LEFT", 300, 0, width/2);
 }
