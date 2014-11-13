@@ -2,5 +2,16 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/patrick/git/Autodesk.Processing.LibG/lib/core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/patrick/git/Autodesk.Processing.LibG/lib/autodesk.libg.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/patrick/git/Autodesk.Processing.LibG/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/patrick/git/Autodesk.Processing.LibG/lib/autodesk.libg.preloader.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/patrick/git/Autodesk.Processing.LibG/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
