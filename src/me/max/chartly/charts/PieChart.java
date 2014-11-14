@@ -25,6 +25,10 @@ public class PieChart implements Chart {
 	private DataSet data;
 	private float x,y,radius,max;
 	private Looks looks;
+	private String title;
+	
+	private final float TOP_TITLE = 7;
+	private final float LABEL = 9;
 	
 	/**
 	 * Creates a new piechart with the given radius.
@@ -41,6 +45,7 @@ public class PieChart implements Chart {
 		data = new DataSet();
 		this.radius = radius;
 		this.looks = Defaults.getLooks();
+		this.title = null;
 	}
 	
 	@Override
@@ -62,8 +67,10 @@ public class PieChart implements Chart {
 		float r = PConstants.PI / 2; // Start at 90 degrees	
 		Iterator<DataPair> it = data.getData().iterator();	
 		
+		
+		Chartly.app.textSize((radius)/LABEL);
 		while(it.hasNext()) {
-			//Chart
+			// Chart
 			DataPair current = it.next();
 			float percent = DataUtils.dataToPercent(max, current.value);
 			float dr = DataUtils.percentToRadians(percent);
@@ -73,7 +80,7 @@ public class PieChart implements Chart {
 			
 			Chartly.app.arc(x, y, radius * 2, radius * 2, r, r+dr);
 			
-			//Labeling
+			// Labeling
 			double tx = (1.1 * radius) * Math.cos(r + dr/2); 
 			double ty = (1.1 * radius) * Math.sin(r + dr/2);
 			
@@ -83,8 +90,16 @@ public class PieChart implements Chart {
 			Chartly.app.text(current.label + " " + DataUtils.floatToFormattedString(percent) + "%", x, y);
 			Chartly.app.popMatrix();
 
-			//incrementation
+			// incrementation
 			r+=dr;			
+		}
+		
+		if (title != null) {
+			Chartly.app.textSize((radius) / TOP_TITLE);
+			Chartly.app.textAlign(PConstants.CENTER);
+			Chartly.app.stroke(looks.getAxisColor());
+			Chartly.app.fill(looks.getAxisColor());
+			Chartly.app.text(title, x, (float) (y - (1.11 *radius) - radius/LABEL));
 		}
 		
 		Chartly.cleaner.restore();
@@ -116,6 +131,24 @@ public class PieChart implements Chart {
 	public PieChart setLooks(Looks scheme) {
 		this.looks = scheme;
 		return this;
+	}
+	
+	/**
+	 * Sets the title of the chart
+	 * @param title new title
+	 * @return this
+	 */
+	public PieChart setTitle(String title) {
+		this.title = title;
+		return this;
+	}
+	
+	/**
+	 * Get the title of this chart
+	 * @return title
+	 */
+	public String getTitle() {
+		return this.title;
 	}
 	
 	/**
