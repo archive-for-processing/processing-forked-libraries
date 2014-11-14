@@ -58,7 +58,6 @@ public class BarChart extends AxisChart {
 			);
 			count++;
 		}
-		
 		super.draw(x, y);
 	}
 	
@@ -116,6 +115,12 @@ public class BarChart extends AxisChart {
 	@Override
 	public BarChart setTitles(String xtitle, String ytitle, String title) {
 		super.setTitles(xtitle, ytitle, title);
+		return this;
+	}
+	
+	@Override
+	public BarChart showLabels(boolean show) {
+		super.showLabels(show);
 		return this;
 	}
 

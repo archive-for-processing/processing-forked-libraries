@@ -64,12 +64,13 @@ public class PieChart implements Chart {
 		this.x = x; 
 		this.y = y;
 		
-		float r = PConstants.PI / 2; // Start at 90 degrees	
+		float r = PConstants.PI / 2;
 		Iterator<DataPair> it = data.getData().iterator();	
 		
 		
 		Chartly.app.textSize((radius)/LABEL);
 		while(it.hasNext()) {
+			
 			// Chart
 			DataPair current = it.next();
 			float percent = DataUtils.dataToPercent(max, current.value);

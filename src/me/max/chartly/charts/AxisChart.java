@@ -22,6 +22,7 @@ public abstract class AxisChart implements Chart {
 	protected PFont font;
 	protected Looks looks;
 	
+	private boolean showYLabels = true;
 	private String xtitle, ytitle, title;
 	private static final float TOP_TITLE = 7, AXIS_TITLE = 9, LABEL = 10, AXIS_WIDTH = 100;
 	
@@ -56,13 +57,15 @@ public abstract class AxisChart implements Chart {
 		Chartly.app.rect(x, y, y_axis_height/AXIS_WIDTH, -y_axis_height);
 
 		// Y-Axis Labels
-		int ycount = 0;
-		float pxincr = incrToPixels();
-		Chartly.app.textSize(y_axis_height/pxincr);
-		for (int i = 0; i <= y_axis_height; i+=pxincr) {
-			Chartly.app.textAlign(PConstants.RIGHT);
-			Chartly.app.text(DataUtils.floatToFormattedString(y_axis_increment * ycount), x - 3, y - (pxincr * ycount) + Chartly.app.getFont().getSize()/2);
-			ycount++;
+		if (showYLabels) {
+			int ycount = 0;
+			float pxincr = incrToPixels();
+			Chartly.app.textSize(y_axis_height/pxincr);
+			for (int i = 0; i <= y_axis_height; i+=pxincr) {
+				Chartly.app.textAlign(PConstants.RIGHT);
+				Chartly.app.text(DataUtils.floatToFormattedString(y_axis_increment * ycount), x - 3, y - (pxincr * ycount) + Chartly.app.getFont().getSize()/2);
+				ycount++;
+			}
 		}
 		
 		// Titles
@@ -148,6 +151,11 @@ public abstract class AxisChart implements Chart {
 	 */
 	public float getHeight() {
 		return this.y_axis_height;
+	}
+	
+	public AxisChart showLabels(boolean show) {
+		this.showYLabels = show;
+		return this;
 	}
 
 }

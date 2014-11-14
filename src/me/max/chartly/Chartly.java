@@ -41,6 +41,11 @@ import processing.core.*;
  */
 public class Chartly {
 
+	/*
+	 * To-Do
+	 * Fix buffer logic on axes
+	 */
+	
 	// Processing app using this library.
 	public static PApplet app;
 	public static Cleaner cleaner;

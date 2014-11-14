@@ -117,4 +117,10 @@ public class LineChart extends AxisChart {
 		return this;
 	}
 
+	@Override
+	public LineChart showLabels(boolean show) {
+		super.showLabels(show);
+		return this;
+	}
+
 }
