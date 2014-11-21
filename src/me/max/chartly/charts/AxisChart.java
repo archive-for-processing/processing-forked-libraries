@@ -5,6 +5,7 @@ import processing.core.PConstants;
 import processing.core.PFont;
 import me.max.chartly.Chartly;
 import me.max.chartly.DataUtils;
+import me.max.chartly.Formatting;
 import me.max.chartly.components.color.Looks;
 import me.max.chartly.components.data.DataPair;
 import me.max.chartly.components.data.DataSet;
@@ -18,13 +19,12 @@ import me.max.chartly.exceptions.MissingInformationException;
 public abstract class AxisChart implements Chart {
 
 	protected DataSet data;
-	protected float current_x, current_y, x_axis_width, y_axis_height, max_y_scale, y_axis_increment;
+	protected float current_x, current_y, x_axis_length, y_axis_height, max_y_scale, y_axis_increment;
 	protected PFont font;
 	protected Looks looks;
 	
 	private boolean showYLabels = true;
 	private String xtitle, ytitle, title;
-	private static final float TOP_TITLE = 7, AXIS_TITLE = 9, LABEL = 10, AXIS_WIDTH = 100;
 	
 	/**
 	 * Draws the axes of the graph
@@ -42,7 +42,7 @@ public abstract class AxisChart implements Chart {
 		Chartly.app.fill(this.getLooks().getAxisColor());
 
 		// X Axis
-		Chartly.app.rect(x, y, x_axis_width, y_axis_height/AXIS_WIDTH);
+		Chartly.app.rect(x, y, x_axis_length, Formatting.axisAxisWidthFromAxisLength(x_axis_length));
 
 		// X-Axis Labels
 		optimizeLabelFontSize();
@@ -54,7 +54,7 @@ public abstract class AxisChart implements Chart {
 		}
 
 		// Y Axis
-		Chartly.app.rect(x, y, y_axis_height/AXIS_WIDTH, -y_axis_height);
+		Chartly.app.rect(x, y, Formatting.axisAxisWidthFromAxisLength(y_axis_height), -y_axis_height);
 
 		// Y-Axis Labels
 		if (showYLabels) {
@@ -69,16 +69,17 @@ public abstract class AxisChart implements Chart {
 		}
 		
 		// Titles
-		titleFontSize(TOP_TITLE);
+		titleFontSize(Formatting.axisMainTitleSizeFromHeight(y_axis_height));
 		Chartly.app.textAlign(PConstants.CENTER, PConstants.BOTTOM);
 		if (title != null) {
-			Chartly.app.text(title, x + x_axis_width/2, y - y_axis_height - 20);
+			Chartly.app.text(title, x + x_axis_length/2, y - y_axis_height - 20);
 		}
 		
-		titleFontSize(AXIS_TITLE);
+		titleFontSize(Formatting.axisAxisTitleFromAxisLength(x_axis_length));
 		if (xtitle != null) {
-			Chartly.app.text(xtitle, x + x_axis_width/2, y + 40);
+			Chartly.app.text(xtitle, x + x_axis_length/2, y + 40);
 		}
+		titleFontSize(Formatting.axisAxisTitleFromAxisLength(y_axis_height));
 		if (ytitle != null) {
 			Chartly.app.pushMatrix();
 			Chartly.app.translate(x - 30, y - y_axis_height/2);
@@ -99,7 +100,7 @@ public abstract class AxisChart implements Chart {
 	}
 	
 	private float getTextDistanceFactor(int count) {
-		float w = (float) (x_axis_width/(1.5 * data.size() + .5)); //Math done on whiteboard.
+		float w = (float) (x_axis_length/(1.5 * data.size() + .5)); //Math done on whiteboard.
 		return (float) (w + w * 1.5 * (count));
 	}
 	
@@ -112,13 +113,13 @@ public abstract class AxisChart implements Chart {
 
 	private void optimizeLabelFontSize() {
 		float max_size = Float.MAX_VALUE;
-		float contrainer = (float) (2 * (x_axis_width/(1.5 * data.size() + .5)));
+		float contrainer = (float) (2 * (x_axis_length/(1.5 * data.size() + .5)));
 		for (DataPair pair : data.getData()) {
 			String string = pair.label;
 			float local_size = 0;
 			do {
 				Chartly.app.textSize(++local_size);
-			} while (Chartly.app.textWidth(string) < contrainer && local_size < y_axis_height/LABEL);
+			} while (Chartly.app.textWidth(string) < contrainer && local_size < Formatting.labelSizeFromAxisLength(y_axis_height, data.getData().size()));
 			if (local_size < max_size) max_size = local_size;
 		}
 		Chartly.app.textSize(max_size);
@@ -142,7 +143,7 @@ public abstract class AxisChart implements Chart {
 	 * @return the width (in pixels)
 	 */
 	public float getWidth() {
-		return this.x_axis_width;
+		return this.x_axis_length;
 	}
 	
 	/**

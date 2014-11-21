@@ -29,7 +29,7 @@ public class BarChart extends AxisChart {
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
 		looks = Defaults.getLooks();
-		this.x_axis_width = width;
+		this.x_axis_length = width;
 		this.y_axis_height = height;
 	}
 	
@@ -46,7 +46,7 @@ public class BarChart extends AxisChart {
 		
 		Chartly.app.textFont(font);
 		
-		float w = (float) (x_axis_width/(1.5 * data.size() + .5)); //Math done on whiteboard.
+		float w = (float) (x_axis_length/(1.5 * data.size() + .5)); //Math done on whiteboard.
 		int count = 0;
 		for (DataPair pair : data.getData()) {
 			int c = looks.next();
@@ -80,7 +80,7 @@ public class BarChart extends AxisChart {
 	 * @return this
 	 */
 	public BarChart resize(float width, float height) {
-		this.x_axis_width = width == 0 ? this.x_axis_width : width;
+		this.x_axis_length = width == 0 ? this.x_axis_length : width;
 		this.y_axis_height = height == 0 ? this.y_axis_height : height;
 		return this;
 	}

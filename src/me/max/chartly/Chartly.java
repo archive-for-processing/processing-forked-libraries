@@ -44,6 +44,7 @@ public class Chartly {
 	/*
 	 * To-Do
 	 * Fix buffer logic on axes
+	 * Better font sizes
 	 */
 	
 	// Processing app using this library.

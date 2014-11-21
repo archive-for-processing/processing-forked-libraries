@@ -31,7 +31,7 @@ public class LineChart extends AxisChart {
 		data = new DataSet();
 		font = Chartly.app.createFont("Helvetica", 12);
 		looks = Defaults.getLooks();
-		this.x_axis_width = width;
+		this.x_axis_length = width;
 		this.y_axis_height = height;
 	}
 	
@@ -48,7 +48,7 @@ public class LineChart extends AxisChart {
 		
 		Chartly.app.textFont(font);
 		
-		float w = (float) (x_axis_width/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
+		float w = (float) (x_axis_length/(1.5 * data.getData().size() + .5)); //Math done on whiteboard.
 		int count = 0;
 		float[] previous = new float[]{Float.MAX_VALUE, Float.MIN_VALUE}; //placeholders
 		for (DataPair pair : data.getData()) {
