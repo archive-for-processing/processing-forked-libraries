@@ -15,16 +15,7 @@ public class Input {
 		click = dclick = released = press = false;
 		kclick = kreleased = kpress = false;
 		pressCount = 0;
-	}
 
-	public void act() {
-		mouseWheel = 0;
-		if (press) {
-			pressCount++;
-		}
-		click = dclick = released = false;
-		kclick = kreleased = false;
-		
 		ENTER = new Key();
 	    BACKSPACE = new Key();
 	    ALT = new Key();
@@ -34,6 +25,16 @@ public class Input {
 	    ABAJO = new Key();
 	    IZQUIERDA = new Key();
 	    DERECHA = new Key();
+	}
+
+	public void update() {
+		mouseWheel = 0;
+		if (press) {
+			pressCount++;
+		}
+		click = dclick = released = false;
+		kclick = kreleased = false;
+	
 	}
 
 	public void mpress() {
