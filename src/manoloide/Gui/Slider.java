@@ -5,7 +5,7 @@ public class Slider extends Elemento {
 	float val, min_val, max_val;
 
 	public Slider(String name, int x, int y, int w, int h, float min_val,
-			float max_val, float val) {
+		float max_val, float val) {
 		super(null, name, x, y, w, h);
 		this.min_val = min_val;
 		this.max_val = max_val;
@@ -17,7 +17,7 @@ public class Slider extends Elemento {
 	}
 
 	public Slider(Gui gui, String name, int x, int y, int w, int h,
-			float min_val, float max_val, float val) {
+		float min_val, float max_val, float val) {
 		super(gui, name, x, y, w, h);
 		this.min_val = min_val;
 		this.max_val = max_val;
@@ -53,7 +53,7 @@ public class Slider extends Elemento {
 					posY = y + h;
 				}
 				val = (min_val + (max_val - min_val)
-						* ((posY - w / 2 - y) / (h - w)));
+					* ((posY - w / 2 - y) / (h - w)));
 				if (val < min_val) {
 					val = min_val;
 				} else if (val > max_val) {
@@ -67,7 +67,7 @@ public class Slider extends Elemento {
 					posX = x + w;
 				}
 				val = (min_val + (max_val - min_val)
-						* ((posX - h / 2 - x) / (w - h)));
+					* ((posX - h / 2 - x) / (w - h)));
 				if (val < min_val) {
 					val = min_val;
 				} else if (val > max_val) {
@@ -84,10 +84,10 @@ public class Slider extends Elemento {
 		gui.applet.rect(x, y, w, h);
 		gui.applet.fill(gui.paleta.get(1));
 		if (vertical) {
-			float pos = x;// - ((w - h) * ((val - min_val) / (max_val - min_val)));
+			float pos = y + ((h - w) * ((val - min_val) / (max_val - min_val)));
 			gui.applet.rect(x, pos, w, w);
 		}else{
-			float pos = y;// - ((h - w) * ((val - min_val) / (max_val - min_val)));
+			float pos = x + ((w - h) * ((val - min_val) / (max_val - min_val)));
 			gui.applet.rect(pos, y, h, h);
 		}
 		if (gui.applet.abs(max_val - min_val) >= 20) {

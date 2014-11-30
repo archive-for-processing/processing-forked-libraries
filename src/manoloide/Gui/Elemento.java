@@ -17,6 +17,7 @@ public class Elemento {
 		this.y = y; 
 		this.w = w; 
 		this.h = h;
+		visible = true;
 	}
 	public void update(int x, int y){
 	}

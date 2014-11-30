@@ -14,6 +14,7 @@ public class Panel extends Contenedor{
 	public void update(int x, int y){
 		x = this.x + x;
 		y = this.y + y;
+		if(!visible) return;
 		for(int i = 0; i < elementos.size(); i++){
 			Elemento e = elementos.get(i);
 			e.update(x, y);
@@ -22,6 +23,7 @@ public class Panel extends Contenedor{
 	public void draw(int x, int y){
 		x = this.x + x;
 		y = this.y + y;
+		if(!visible) return;
 		gui.applet.noStroke();
 		gui.applet.fill(gui.paleta.get(0));
 		gui.applet.rect(x, y, w, h);

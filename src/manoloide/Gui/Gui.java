@@ -15,7 +15,7 @@ public class Gui {
 	public Gui(PApplet p, Input input){
 		this.applet = p;
 		this.input = input;
-		paleta = new Paleta(applet.color(0,(int)(255*0.2)), applet.color(255));
+		paleta = new Paleta(applet.color(5,(int)(255*0.2)), applet.color(250));
 		contenedores = new ArrayList<Contenedor>();
 		x = 0;
 		y = 0;
@@ -27,10 +27,12 @@ public class Gui {
 		}
 	}
 	public void draw(){
+		applet.pushStyle();
 		for(int i = 0; i < contenedores.size(); i++){
 			Contenedor c = contenedores.get(i);
 			c.draw(x, y);
 		}
+		applet.popStyle();
 	}
 	public void add(Contenedor c){
 		c.gui = this;
