@@ -11,7 +11,9 @@ In order to use the library, the main Processing applet will have to implement t
 
 Multiple CountdownTimers can run inside the applet, in which case the timers will have their own unique id when needed to be distinguished.
 
-## How the CountdownTimer Operates
+## How It Works
+
+### Operation Behavior
 
 Once a configured timer starts, the first onTickEvent will be triggered after a period of tick interval has passed.
 Subsequent onTickEvents will follow until the time left is equal or less than the tick interval.
@@ -33,6 +35,28 @@ onTickEvent   (timeLeftUntilFinish=15)
 onTickEvent   (timeLeftUntilFinish=5)  
 onFinishEvent (timeLeftUntilFinish=0) 
 
+### Operation States
+
+The timer has two booleans for representing its states: `isRunning` and `isPaused`.
+This was intended in order to differentiate a not-running timer that has never started yet and a not-running timer that was stopped in the middle.
+
+By using the two booleans, there can be three possible states.
+
+* isRunning() == false && isPaused() == false  
+  A timer that has not started yet, has finished running, or has been reset.
+
+* isRunning() == true && isPaused() == false  
+  A timer that has started and is currently running.
+
+* isRunning() == false && isPaused() == true  
+  A timer that has started but is not currently running (i.e. stopped before being finished).
+
+A state consisting isRunning() == true && isPaused == true cannot happen, since a timer cannot simultaneously stop and run at the same time.
+
+As a summary, each boolean can be used for checking the following conditions:  
+- isRunning(): is the timer currently running or not?  
+- isPaused(): if not timer is not running, has the timer finished or not?
+
 ## Installing the Library
 
 The official method for installing Processing libraries can be found [here](http://wiki.processing.org/w/How_to_Install_a_Contributed_Library).
@@ -42,18 +66,19 @@ In case the library needs to be downloaded manually, you can download it from [h
 
 ### Creating a CountdownTimer
 
-A CountdownTimer should be created using the static factory method `CountdownTimer.getNewCountdownTimer(PApplet)`.
+All CountdownTimers are managed through the CountdownTimerService.
+A CountdownTimer should be created using the static factory method `CountdownTimerService.getNewCountdownTimer(PApplet)`.
 Several examples of creating a CountdownTimer are:
 
 ```java
 // creates a new timer that has not been configured and started
-CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this);
+CountdownTimer timer = CountdownTimerService.getNewCountdownTimer(this);
 
 // creates a new timer that has been configured to trigger ticks every 1000 ms and run for a total of 5000 ms
-CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000);
+CountdownTimer timer = CountdownTimerService.getNewCountdownTimer(this).configure(1000, 5000);
 
 // creates and configures a new timer and starts it right away
-CountdownTimer timer = CountdownTimer.getNewCountdownTimer(this).configure(1000, 5000).start();
+CountdownTimer timer = CountdownTimerService.getNewCountdownTimer(this).configure(1000, 5000).start();
 ```
 
 A CountdownTimer **MUST** be configured at least once before being started, or else an IllegalStateException will be thrown.
@@ -69,11 +94,11 @@ It won't make sense for a CountdownTimer to start when it doesn't know how long 
 
     Starts the timer with the most recent tick interval and timer duration configuration. If the timer was stopped before the finish time, the method call will resume the timer from where it was stopped. Starting an already running timer will have no effect.
 
-* __stop()__
+* __stop(StopBehavior)__
 
-    Interrupts the timer to stop after the currently running interval has been completed. Attempts to stop a timer that was already stopped or reset will have no effect.
+    Interrupts the timer to stop running, based on the intended stop behavior. Attempts to stop a timer that was already stopped or reset will have no effect.
 
-* __reset()__
+* __reset(StopBehavior)__
 
     Stops the timer and resets it to the most recent configuration. If the method was called while the timer was running, it will first stop the timer by effectively calling stop(). Attempts to reset a timer that was already reset or stopped will have no effect.
 

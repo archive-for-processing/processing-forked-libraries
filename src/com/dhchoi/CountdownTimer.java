@@ -22,8 +22,8 @@
  *
  * @author      Dong Hyun Choi
  * @created     Mar 26, 2014
- * @modified    Sep 13, 2014
- * @version     0.9.1 (2)
+ * @modified    Feb 7, 2015
+ * @version     0.9.2 (3)
  *
  * Possible updates:
  *  - TODO: change the id concept to label concept and let users apply labels to timers
@@ -35,16 +35,15 @@ package com.dhchoi;
 
 import processing.core.*;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.*;
 import java.lang.reflect.Method;
 
-/**
- * @example CountdownTimerExample
- */
 public class CountdownTimer {
+    public enum StopBehavior {
+        STOP_IMMEDIATELY, STOP_AFTER_INTERVAL
+    }
+    
     // processing related fields
     private final PApplet mApp;
     // callback event related fields
@@ -52,11 +51,8 @@ public class CountdownTimer {
     private static final String ON_FINISH_EVENT_NAME = "onFinishEvent";
     private Method onTickEvent;
     private Method onFinishEvent;
-    // timerIdMap related fields
-    private final int mId;
-    private static int timerIdCounter = -1;
-    private static Map<Integer, CountdownTimer> timerIdMap = new HashMap<Integer, CountdownTimer>();
     // timer related fields
+    private final int mId;
     private final TimeUnit mTimeUnit = TimeUnit.MILLISECONDS;
     private ScheduledExecutorService mScheduledExecutorService = getNewScheduledExecutorService();
     private long mTimerDuration = 0;
@@ -72,7 +68,7 @@ public class CountdownTimer {
 
             if(mTimeLeftAtStartOfTick <= 0) {
                 invokeMethod(onFinishEvent, mId);
-                stop();
+                stop(StopBehavior.STOP_AFTER_INTERVAL);
             }
             else {
                 // perform tick and get tick performance time
@@ -84,7 +80,7 @@ public class CountdownTimer {
                 // no time left, so finish timer
                 if(tickPerformanceTime > mTimeLeftAtStartOfTick) {
                     invokeMethod(onFinishEvent, mId);
-                    stop();
+                    stop(StopBehavior.STOP_AFTER_INTERVAL);
                 }
                 else {
                     // get next closest scheduled time
@@ -103,31 +99,20 @@ public class CountdownTimer {
         }
     };
 
-
     /**
-     * Returns a new timer that can be used inside the main Processing applet.
-     * The first created timer will always have an id of 0.
-     * All subsequently created timers will have an id that is 1 higher than the previously created timer's id
-     * (e.g. second created timer will have id 1, third created timer will have id 2, and so on).
-     *
+     * Constructor for creating a CountdownTimer.
+     * 
      * @param app the main Processing applet
-     * @return a newly created CountdownTimer
+     * @param id the id for the timer
      */
-    public static CountdownTimer getNewCountdownTimer(PApplet app) {
-        timerIdCounter++;
-        timerIdMap.put(timerIdCounter, new CountdownTimer(app, timerIdCounter));
-
-        return getCountdownTimerForId(timerIdCounter);
-    }
-
-    private CountdownTimer(PApplet app, int id) {
+    CountdownTimer(PApplet app, int id) {
         mId = id;
         mApp = app;
         mApp.registerMethod("dispose", this);
 
         try {
-            onTickEvent = mApp.getClass().getMethod(ON_TICK_EVENT_NAME, new Class[] {int.class, long.class});
-            onFinishEvent = mApp.getClass().getMethod(ON_FINISH_EVENT_NAME, new Class[] {int.class});
+            onTickEvent = mApp.getClass().getMethod(ON_TICK_EVENT_NAME, int.class, long.class);
+            onFinishEvent = mApp.getClass().getMethod(ON_FINISH_EVENT_NAME, int.class);
         } catch (NoSuchMethodException e) {
             System.err.println("Applet needs to implement both void " + ON_TICK_EVENT_NAME + "(int timerId, long timeLeftUntilFinish) and void " + ON_FINISH_EVENT_NAME + "(int timerId)");
             e.printStackTrace();
@@ -220,28 +205,64 @@ public class CountdownTimer {
     }
 
     /**
-     * Interrupts the timer to stop after the currently running interval has been completed.
-     * Attempts to stop a timer that was already stopped or reset will have no effect.
+     * This is effectively the same as calling stop(StopBehavior.STOP_AFTER_INTERVAL).
      *
      * @return the CountdownTimer that has been stopped
      */
+    @Deprecated
     public synchronized final CountdownTimer stop() {
+        return stop(StopBehavior.STOP_AFTER_INTERVAL);
+    }
+
+    /**
+     * Interrupts the timer to stop with the behavior depending on the given StopBehavior.
+     * Based on the parameter, the timer may stop immediately without waiting for the currently running interval to complete,
+     * or it may stop after the currently running interval has completed.
+     * Attempting to stop a timer that was already stopped or reset will have no effect.
+     * 
+     * In case the StopBehavior was set to stop the timer immediately,
+     * there are no guarantees beyond best-effort attempts to stop processing actively executing tasks.
+     * For example, typical implementations will cancel via Thread.interrupt(), so any task that fails to respond to interrupts may never terminate.
+     * This functional limit is bound to the limits of Java.
+     *
+     * @param stopBehavior the intended stop behavior of the timer
+     * @return the CountdownTimer that has been stopped
+     */
+    public synchronized final CountdownTimer stop(StopBehavior stopBehavior) {
         mIsRunning = false;
-        mScheduledExecutorService.shutdown();
+        
+        if(stopBehavior == StopBehavior.STOP_AFTER_INTERVAL) {
+            mScheduledExecutorService.shutdown();
+        }
+        else { // StopConfig.STOP_IMMEDIATELY
+            mScheduledExecutorService.shutdownNow();
+        }
 
         return this;
     }
 
     /**
-     * Stops the timer and resets it to the most recent configuration.
-     * If the method was called while the timer was running, it will first stop the timer by effectively calling stop().
-     * Attempts to reset a timer that was already reset or stopped will have no effect.
+     * This is effectively the same as calling reset(StopBehavior.STOP_AFTER_INTERVAL).
      *
      * @return the CountdownTimer that has been reset
      */
+    @Deprecated
     public synchronized final CountdownTimer reset() {
+        return reset(StopBehavior.STOP_AFTER_INTERVAL);
+    }
+
+    /**
+     * Stops the timer and resets it to the most recent configuration.
+     * If the method was called while the timer was running, it will first stop the timer by effectively calling stop(StopBehavior).
+     * Attempting to reset a timer that was already reset or stopped will have no effect.
+     *
+     * @param stopBehavior the intended stop behavior of the timer
+     * @return the CountdownTimer that has been reset
+     */
+    public synchronized final CountdownTimer reset(StopBehavior stopBehavior) {
         mDoReset = true;
-        return stop();
+
+        return stop(stopBehavior);
     }
 
     /**
@@ -269,25 +290,6 @@ public class CountdownTimer {
      */
     public final int getId() {
         return mId;
-    }
-
-    /**
-     * Returns the timer associated with the corresponding id.
-     *
-     * @param id id of the desired timer
-     * @return the CountdownTimer associated with the corresponding id
-     */
-    public static final CountdownTimer getCountdownTimerForId(int id) {
-        return timerIdMap.get(id);
-    }
-
-    /**
-     * Returns a set of timer ids that have been created.
-     *
-     * @return a set of timer ids that have been created
-     */
-    public static final HashSet<Integer> getTimerIds() {
-        return new HashSet<Integer>(timerIdMap.keySet());
     }
 
     /**
@@ -341,6 +343,52 @@ public class CountdownTimer {
         mScheduledExecutorService.shutdownNow();
     }
 
+    @Override
+    public String toString() {
+        return "(timerId=" + getId() + ")";
+    }
+
+    /**
+     * Returns a new timer that can be used inside the main Processing applet.
+     * The first created timer will always have an id of 0.
+     * All subsequently created timers will have an id that is 1 higher than the previously created timer's id
+     * (e.g. second created timer will have id 1, third created timer will have id 2, and so on).
+     * 
+     * (DEPRECATED: use the CountdownTimerFactory's method instead)
+     *
+     * @param app the main Processing applet
+     * @return a newly created CountdownTimer
+     */
+    @Deprecated
+    public static CountdownTimer getNewCountdownTimer(PApplet app) {
+        return CountdownTimerService.getNewCountdownTimer(app);
+    }
+
+    /**
+     * Returns the timer associated with the corresponding id.
+     * 
+     * (DEPRECATED: use the CountdownTimerFactory's method instead)
+     *
+     * @param id id of the desired timer
+     * @return the CountdownTimer associated with the corresponding id
+     */
+    @Deprecated
+    public static CountdownTimer getCountdownTimerForId(int id) {
+        return CountdownTimerService.getCountdownTimerForId(id);
+    }
+
+    /**
+     * Returns a set of timer ids that have been created.
+     * 
+     * (DEPRECATED: use the CountdownTimerFactory's method instead)
+     *
+     * @return a set of timer ids that have been created
+     */
+    @Deprecated
+    public static HashSet<Integer> getTimerIds() {
+        return CountdownTimerService.getTimerIds();
+    }
+
     private long getSystemTimeMillis() {
         return TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
     }
@@ -358,10 +406,5 @@ public class CountdownTimer {
                 e.printStackTrace();
             }
         }
-    }
-    
-    @Override
-    public String toString() {
-        return "(timerId=" + getId() + ")";
     }
 }
