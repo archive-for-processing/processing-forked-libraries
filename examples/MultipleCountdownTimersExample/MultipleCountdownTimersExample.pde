@@ -1,4 +1,9 @@
+/**
+ * Example of using multiple CountdownTimers in one application.
+ */
+
 import com.dhchoi.CountdownTimer;
+import com.dhchoi.CountdownTimerService;
 
 CountdownTimer redCircleTimer;
 CountdownTimer blueCircleTimer;
@@ -10,8 +15,8 @@ void setup() {
   size(500, 300);
 
   // create timers
-  redCircleTimer = CountdownTimer.getNewCountdownTimer(this).configure(100, 6000).start(); // this timer will have timerId = 0
-  blueCircleTimer = CountdownTimer.getNewCountdownTimer(this).configure(150, 9000).start(); // this timer will have timerId = 1
+  redCircleTimer = CountdownTimerService.getNewCountdownTimer(this).configure(100, 6000).start(); // this timer will have timerId = 0
+  blueCircleTimer = CountdownTimerService.getNewCountdownTimer(this).configure(150, 9000).start(); // this timer will have timerId = 1
 }
 
 void draw() {
@@ -22,7 +27,7 @@ void draw() {
   // show created timers
   fill(0);
   textAlign(CENTER, CENTER);
-  text("Created timerIds: " + CountdownTimer.getTimerIds(), width/2, height/2 - 100);
+  text("Created timerIds: " + CountdownTimerService.getTimerIds(), width/2, height/2 - 100);
   
   // draw red circle
   fill(255, 0, 0);

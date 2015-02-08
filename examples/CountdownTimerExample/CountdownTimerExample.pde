@@ -1,4 +1,9 @@
+/**
+ * Example of using a CountdownTimer with it's basic functions.
+ */
+ 
 import com.dhchoi.CountdownTimer;
+import com.dhchoi.CountdownTimerService;
 
 CountdownTimer timer;
 String timerCallbackInfo = "";
@@ -7,7 +12,7 @@ void setup() {
   size(300, 300);
 
   // create and start a timer that has been configured to trigger onTickEvents every 100 ms and run for 5000 ms
-  timer = CountdownTimer.getNewCountdownTimer(this).configure(100, 5000).start();
+  timer = CountdownTimerService.getNewCountdownTimer(this).configure(100, 5000).start();
 }
 
 void draw() {
@@ -42,11 +47,11 @@ void keyPressed() {
       break;
     case 's':
       println("Stopping timer...");
-      timer.stop();
+      timer.stop(CountdownTimer.StopBehavior.STOP_AFTER_INTERVAL);
       break;
     case 'r':
       println("Resetting timer...");
-      timer.reset();
+      timer.reset(CountdownTimer.StopBehavior.STOP_AFTER_INTERVAL);
       break;
     case 'q':
       println("getTimeLeftUntilNextEvent: " + timer.getTimeLeftUntilNextEvent());
