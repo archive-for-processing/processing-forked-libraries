@@ -66,7 +66,7 @@ In case the library needs to be downloaded manually, you can download it from [h
 
 ### Creating a CountdownTimer
 
-All CountdownTimers are managed through the CountdownTimerService.
+All CountdownTimers are created and managed through the CountdownTimerService.
 A CountdownTimer should be created using the static factory method `CountdownTimerService.getNewCountdownTimer(PApplet)`.
 Several examples of creating a CountdownTimer are:
 
@@ -81,10 +81,10 @@ CountdownTimer timer = CountdownTimerService.getNewCountdownTimer(this).configur
 CountdownTimer timer = CountdownTimerService.getNewCountdownTimer(this).configure(1000, 5000).start();
 ```
 
+### Using a CountdownTimer
+
 A CountdownTimer **MUST** be configured at least once before being started, or else an IllegalStateException will be thrown.
 It won't make sense for a CountdownTimer to start when it doesn't know how long it should run.
-
-### Using a CountdownTimer
 
 * __configure(long tickIntervalMillis, long timerDurationMillis)__
 
@@ -137,26 +137,26 @@ All subsequently created timers will have an id that is 1 higher than the previo
 The id of the timer that is calling the callback event will always be passed along to the callback event method. This can be used to distinguish timers from one another when multiple timers are being used.
 In case you want to perform operations to a timer with a specific id, you can use the following static method to get the timer with the corresponding id:
 
-* __CountdownTimer.getCountdownTimerForId(int id)__
+* __CountdownTimerService.getCountdownTimerForId(int id)__
 
     Returns the timer associated with the corresponding id.
 
 Once the timer with the corresponding id has been found, any necessary operations can be applied to it as usual.
 ```java
 // example of stopping a timer with an id of 5
-CountdownTimer.getCountdownTimerForId(5).stop();
+CountdownTimerService.getCountdownTimerForId(5).stop();
 ```
 
 If you want to check the set of timers that have been created along with its ids, you can use the following static method:
 
-* __CountdownTimer.getTimerIds()__
+* __CountdownTimerService.getTimerIds()__
 
     Returns a set of timer ids that have been created.
 
 ```java
-CountdownTimer.getNewCountdownTimer(this); // new CountdownTimer with id=0
-CountdownTimer.getNewCountdownTimer(this); // new CountdownTimer with id=1
-CountdownTimer.getTimerIds(); // will return a set with ids [0, 1]
+CountdownTimerService.getNewCountdownTimer(this); // new CountdownTimer with id=0
+CountdownTimerService.getNewCountdownTimer(this); // new CountdownTimer with id=1
+CountdownTimerService.getTimerIds(); // will return a set with ids [0, 1]
 ```
     
 
