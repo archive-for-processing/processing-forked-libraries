@@ -1,7 +1,10 @@
 distribution
 
-##IntelliJ
+## IntelliJ
 .idea/
 out/
 *.iml
 *.iws
+
+## Miscellaneous
+miscellaneous/
