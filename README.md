@@ -1,5 +1,9 @@
 ## Picking library for Processing 2
 
+### Disclaimer
+
+This project has no maintainer anymore. You are encouraged to fork if you're ready to breathe new life into it!
+
 ### Downloads
 
 [Picking library website](http://n.clavaud.free.fr/processing/library/picking/)
