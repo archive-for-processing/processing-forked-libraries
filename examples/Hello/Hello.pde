@@ -1,12 +1,12 @@
-import template.library.*;
+import lazer.viz.*;
 
-HelloLibrary hello;
+LazerController controller;
 
 void setup() {
   size(400,400);
   smooth();
   
-  hello = new HelloLibrary(this);
+  controller = new LazerController(this);
   
   PFont font = createFont("",40);
   textFont(font);
@@ -15,5 +15,5 @@ void setup() {
 void draw() {
   background(0);
   fill(255);
-  text(hello.sayHello(), 40, 200);
+  text(controller.get("seaHeight"), 40, 200);
 }

@@ -25,7 +25,7 @@
  * @version     ##library.prettyVersion## (##library.version##)
  */
 
-package template.library;
+package lazer.viz;
 
 
 import processing.core.*;
@@ -42,13 +42,11 @@ import processing.core.*;
  *
  */
 
-public class HelloLibrary {
+public class LazerWrap {
 	
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
 
-	int myVariable = 0;
-	
 	public final static String VERSION = "##library.prettyVersion##";
 	
 
@@ -59,7 +57,7 @@ public class HelloLibrary {
 	 * @example Hello
 	 * @param theParent
 	 */
-	public HelloLibrary(PApplet theParent) {
+	public LazerWrap(PApplet theParent) {
 		myParent = theParent;
 		welcome();
 	}
@@ -82,23 +80,6 @@ public class HelloLibrary {
 		return VERSION;
 	}
 
-	/**
-	 * 
-	 * @param theA
-	 *          the width of test
-	 * @param theB
-	 *          the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
 
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
-	}
 }
 

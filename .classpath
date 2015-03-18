@@ -2,6 +2,15 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/processing-core">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/dario/workspace/libs/core/library"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/dario/workspace/libs/core.jar"/>
+	<classpathentry kind="lib" path="/Users/dario/workspace/libs/core/library/core.jar"/>
+	<classpathentry kind="lib" path="lib/themidibus.jar"/>
+	<classpathentry kind="lib" path="lib/Syphon.jar"/>
+	<classpathentry kind="lib" path="lib/toxiclibscore.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
