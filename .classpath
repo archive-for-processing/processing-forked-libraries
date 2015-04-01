@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/themidibus.jar"/>
 	<classpathentry kind="lib" path="lib/Syphon.jar"/>
 	<classpathentry kind="lib" path="lib/toxiclibscore.jar"/>
+	<classpathentry kind="lib" path="lib/controlP5.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
