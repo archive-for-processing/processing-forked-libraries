@@ -14,10 +14,10 @@ public class Window extends Contenedor{
 	public void update(int x, int y){
 		x = this.x + x;
 		y = this.y + y;
-		int mouseX = gui.applet.mouseX;
-		int mouseY = gui.applet.mouseY;
-		int pmouseX = gui.applet.pmouseX;
-		int pmouseY = gui.applet.pmouseY;
+		int mouseX = gui.input.mouseX;
+		int mouseY = gui.input.mouseY;
+		int pmouseX = gui.input.pmouseX;
+		int pmouseY = gui.input.pmouseY;
 		if(!visible) return;
 		if(mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h) {
 			sobre = true;

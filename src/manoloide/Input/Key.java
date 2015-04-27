@@ -6,7 +6,7 @@ public class Key {
 	public boolean press, click;
 	public int clickCount;
 	
-	public void act() {
+	public void update() {
 		/*
 		if (!focused)
 			release();*/

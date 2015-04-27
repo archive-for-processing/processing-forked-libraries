@@ -3,16 +3,13 @@
  */
 
 import manoloide.Gui.*;
-import manoloide.Input.*;
 
 Gui gui;
-Input input;
 Panel panel; 
 
-void setup() {
+void setup() {  
   size(800, 600); 
-  input = new Input(this);
-  gui = new Gui(this, input);
+  gui = new Gui(this);
   panel = new Panel("panel", 10, 10, 120, 500);
   gui.add(panel);
   panel.add(new Slider("background", 10, 10, 100, 10, 0, 255, 128));
@@ -23,7 +20,6 @@ void setup() {
 }
 
 void draw() {
-  gui.update();
   Slider s = (Slider) panel.get("background");
   if (((Button) panel.get("random")).click) {
     s.set(random(256));
@@ -33,22 +29,4 @@ void draw() {
   noStroke();
   fill(255-s.getInt());
   ellipse(cor.valx, cor.valy, 40, 40);
-  gui.draw();
-  input.update();
-}
-
-void keyPressed() {
-  input.event(true);
-}
-
-void keyReleased() {
-  input.event(false);
-}
-
-void mousePressed() {
-  input.mpress();
-}
-
-void mouseReleased() {
-  input.mreleased();
 }

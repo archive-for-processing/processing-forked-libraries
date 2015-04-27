@@ -2,29 +2,77 @@ package manoloide.Input;
 
 import java.util.ArrayList;
 import processing.core.*;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 
 public class Input {
-	private PApplet myParent;
+	private PApplet a;
 	public boolean click, dclick, press, released, kclick, kpress, kreleased;
-	public int amouseX, amouseY;
+	public int key;
+	public int amouseX, amouseY, pmouseX, pmouseY, mouseX, mouseY;
 	public int pressCount, mouseWheel, timepress;
-	public Key ENTER, BACKSPACE, ALT, CTRL, SHIFT, ARRIBA, ABAJO, IZQUIERDA, DERECHA;
+	public Key ENTER, BACKSPACE, ALT, CTRL, SHIFT, UP, DOWN, LEFT, RIGHT;
 
-	public Input(PApplet myParent) {
-		this.myParent = myParent;
+	public Input(PApplet a) {
+		this.a = a;
 		click = dclick = released = press = false;
 		kclick = kreleased = kpress = false;
 		pressCount = 0;
 
 		ENTER = new Key();
-	    BACKSPACE = new Key();
-	    ALT = new Key();
-	    CTRL = new Key();
-	    SHIFT = new Key();
-	    ARRIBA = new Key();
-	    ABAJO = new Key();
-	    IZQUIERDA = new Key();
-	    DERECHA = new Key();
+		BACKSPACE = new Key();
+		ALT = new Key();
+		CTRL = new Key();
+		SHIFT = new Key();
+		UP = new Key();
+		DOWN = new Key();
+		LEFT = new Key();
+		RIGHT = new Key();
+
+		a.registerMethod("keyEvent", this);
+		a.registerMethod("mouseEvent", this);
+		a.registerMethod("draw", this);
+	}
+
+	public void draw(){
+		update();
+	}
+
+	public void keyEvent(KeyEvent e) {
+		key = e.getKey();
+		switch (e.getAction()) {
+			case KeyEvent.PRESS:
+			event(true);
+			break;
+			case KeyEvent.TYPE:
+			break;
+			case KeyEvent.RELEASE:
+			event(false);
+			break;
+		}
+	}
+
+	public void mouseEvent(MouseEvent e) {
+		a.println(a.frameCount, "input mouse");
+		pmouseX = mouseX;
+		pmouseY = mouseY;
+		mouseX = e.getX();
+		mouseY = e.getY();
+
+		switch (e.getAction()) {
+			case MouseEvent.PRESS:
+			mpress(mouseX, mouseY);
+			break;
+			case MouseEvent.RELEASE:
+			mreleased(mouseX, mouseY);
+			break;
+			case MouseEvent.CLICK:
+			break;
+			case MouseEvent.DRAG:
+			break;
+			case MouseEvent.MOVE:
+			break;
+		}
 	}
 
 	public void update() {
@@ -34,22 +82,32 @@ public class Input {
 		}
 		click = dclick = released = false;
 		kclick = kreleased = false;
-	
+
+		ENTER.update();
+		BACKSPACE.update();
+		ALT.update();
+		CTRL.update();
+		SHIFT.update();
+		UP.update();
+		DOWN.update();
+		LEFT.update();
+		RIGHT.update();
 	}
 
-	public void mpress() {
-		amouseX = myParent.mouseX;
-		amouseY = myParent.mouseY;
+	public void mpress(int mx, int my){
+		amouseX = mx;
+		amouseY = my;
 		click = true;
 		press = true;
 	}
 
-	public void mreleased() {
+	public void mreleased(int mx, int my) {
+		pressCount = 0;
 		released = true;
 		press = false;
-		if (myParent.millis() - timepress < 400)
+		if (a.millis() - timepress < 400)
 			dclick = true;
-		timepress = myParent.millis();
+		timepress = a.millis();
 	}
 
 	public void event(boolean estado) {
@@ -60,14 +118,14 @@ public class Input {
 			kreleased = true;
 			press = false;
 		}
-	    if (myParent.keyCode == 10) ENTER.event(estado);
-	    if (myParent.keyCode == 8) BACKSPACE.event(estado);
-	    if (myParent.keyCode == 18) ALT.event(estado);
-	    if (myParent.keyCode == 17) CTRL.event(estado);
-	    if (myParent.keyCode == 16) SHIFT.event(estado);
-	    if (myParent.keyCode == myParent.UP) ARRIBA.event(estado);
-	    if (myParent.keyCode == myParent.DOWN) ABAJO.event(estado);
-	    if (myParent.keyCode == myParent.LEFT) IZQUIERDA.event(estado);
-	    if (myParent.keyCode == myParent.RIGHT) DERECHA.event(estado);
+		if (a.keyCode == 10) ENTER.event(estado);
+		if (a.keyCode == 8) BACKSPACE.event(estado);
+		if (a.keyCode == 18) ALT.event(estado);
+		if (a.keyCode == 17) CTRL.event(estado);
+		if (a.keyCode == 16) SHIFT.event(estado);
+		if (a.keyCode == a.UP) UP.event(estado);
+		if (a.keyCode == a.DOWN) DOWN.event(estado);
+		if (a.keyCode == a.LEFT) LEFT.event(estado);
+		if (a.keyCode == a.RIGHT) RIGHT.event(estado);
 	}
 }

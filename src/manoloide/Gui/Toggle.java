@@ -17,8 +17,8 @@ public class Toggle extends Elemento {
 		x = this.x + x;
 		y = this.y + y;
 		click = false;
-		int mouseX = gui.applet.mouseX;
-		int mouseY = gui.applet.mouseY;
+		int mouseX = gui.input.mouseX;
+		int mouseY = gui.input.mouseY;
 		if (mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h) {
 			sobre = true;
 		} else

@@ -29,8 +29,8 @@ public class Pad extends Elemento {
 	public void update(int x, int y) {
 		x = this.x + x;
 		y = this.y + y;
-		int mouseX = gui.applet.mouseX;
-		int mouseY = gui.applet.mouseY;
+		int mouseX = gui.input.mouseX;
+		int mouseY = gui.input.mouseY;
 		if (mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h) {
 			sobre = true;
 		} else
