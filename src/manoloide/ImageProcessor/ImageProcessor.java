@@ -9,6 +9,29 @@ public class ImageProcessor implements PConstants{
 		this.applet = applet;
 	}
 
+	public void displace(float dr, float dg, float db){
+		applet.image(displace(applet.g.get(), dr, dg, db), 0, 0);
+	}
+
+	public PImage displace(PImage ori, float dr, float dg, float db){
+		applet.pushStyle();
+		applet.colorMode(RGB);
+		PImage aux = applet.createImage(ori.width, ori.height, RGB);
+		aux.loadPixels();
+		for(int j = 0; j < ori.height; j++){
+			for(int i = 0; i < ori.width; i++){
+				float r = applet.red(ori.get((int)(i+dr),j));//int(i-dr), j);
+				float g = applet.green(ori.get((int)(i+dg),j));//int(i-dg), j);
+				float b = applet.blue(ori.get((int)(i+db),j));//int(i-db), j);
+				int col = applet.color(r, g, b); 
+				aux.set(i, j, col);
+			}
+		}
+		aux.updatePixels();
+		applet.popStyle();
+		return aux;
+	}
+
 	public PImage noise(float amount){
 		return noise(applet.g, amount, false);
 	}
