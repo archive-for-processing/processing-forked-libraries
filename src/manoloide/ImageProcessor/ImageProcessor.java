@@ -4,36 +4,36 @@ import processing.core.*;
 
 public class ImageProcessor implements PConstants{
 	
-	PApplet applet;
+	PApplet a;
 	public ImageProcessor(PApplet applet){
-		this.applet = applet;
+		this.a = applet;
 	}
 
 	public void displace(float dr, float dg, float db){
-		applet.image(displace(applet.g.get(), dr, dg, db), 0, 0);
+		a.image(displace(a.g.get(), dr, dg, db), 0, 0);
 	}
 
 	public PImage displace(PImage ori, float dr, float dg, float db){
-		applet.pushStyle();
-		applet.colorMode(RGB);
-		PImage aux = applet.createImage(ori.width, ori.height, RGB);
+		a.pushStyle();
+		a.colorMode(RGB);
+		PImage aux = a.createImage(ori.width, ori.height, RGB);
 		aux.loadPixels();
 		for(int j = 0; j < ori.height; j++){
 			for(int i = 0; i < ori.width; i++){
-				float r = applet.red(ori.get((int)(i+dr),j));//int(i-dr), j);
-				float g = applet.green(ori.get((int)(i+dg),j));//int(i-dg), j);
-				float b = applet.blue(ori.get((int)(i+db),j));//int(i-db), j);
-				int col = applet.color(r, g, b); 
+				float r = a.red(ori.get((int)(i+dr),j));//int(i-dr), j);
+				float g = a.green(ori.get((int)(i+dg),j));//int(i-dg), j);
+				float b = a.blue(ori.get((int)(i+db),j));//int(i-db), j);
+				int col = a.color(r, g, b); 
 				aux.set(i, j, col);
 			}
 		}
 		aux.updatePixels();
-		applet.popStyle();
+		a.popStyle();
 		return aux;
 	}
 
 	public PImage noise(float amount){
-		return noise(applet.g, amount, false);
+		return noise(a.g, amount, false);
 	}
 
 	public PImage noise(PImage ori, float amount){
@@ -41,50 +41,59 @@ public class ImageProcessor implements PConstants{
 	}
 
 	public PImage noise(float amount, boolean color){
-		return noise(applet.g, amount, color);
+		return noise(a.g, amount, color);
 	}
 
 	public PImage noise(PImage ori, float amount, boolean color){
-		applet.pushStyle();
-		applet.colorMode(RGB);
+		a.pushStyle();
+		a.colorMode(RGB);
 		int w = ori.width;
 		int h = ori.height;
 		ori.loadPixels();
 		for(int i = 0; i < ori.pixels.length; i++){
 			int col;
 			if(color){
-				col = applet.color(applet.random(255),applet.random(255),applet.random(255));
+				col = a.color(a.random(255),a.random(255),a.random(255));
 			}else{
-				col = applet.color(applet.random(255));
+				col = a.color(a.random(255));
 			}
-			ori.pixels[i] = applet.lerpColor(ori.pixels[i], col, amount);
+			ori.pixels[i] = a.lerpColor(ori.pixels[i], col, amount);
 		}
 		ori.updatePixels();
-		applet.popStyle();
+		a.popStyle();
 		return ori;
 	}
 
 	public void vignette(float inte){
-		applet.image(vignette(applet.g.get(), inte), 0, 0);
+		a.image(vignette(a.g.get(), inte), 0, 0);
+	}
+
+	public void vignette(float inte, int nc){
+		a.image(vignette(a.g.get(), inte, nc), 0, 0);
 	}
 
 	public PImage vignette(PImage ori, float inte){
-		applet.pushStyle();
-		applet.colorMode(RGB);
+		return vignette(a.g.get(), inte, a.color(0));
+	}
+
+	public PImage vignette(PImage ori, float inte, int nc){
+		a.pushStyle();
+		a.colorMode(RGB);
 		ori.loadPixels();
 		float cx = ori.width/2;
 		float cy = ori.height/2;
-		float diag = applet.dist(0, 0, cx, cy);
+		int cc = a.color(a.red(nc), a.green(nc), a.blue(nc));
+		float diag = a.dist(0, 0, cx, cy);
 		diag *= diag;
 		for(int j = 0; j < ori.height; j++){
 			for(int i = 0; i < ori.width; i++){
-				float v = applet.pow(cx-i, 2)+applet.pow(cy-j, 2);
-				int col = applet.lerpColor(ori.get(i, j), applet.color(0), applet.map(v, 0, diag, 0, inte)); 
+				float v = a.pow(cx-i, 2)+a.pow(cy-j, 2);
+				int col = a.lerpColor(ori.get(i, j), a.color(cc), a.map(v, 0, diag, 0, inte)); 
 				ori.set(i, j, col);
 			}
 		}
 		ori.updatePixels();
-		applet.popStyle();
+		a.popStyle();
 
 		return ori;
 	}
