@@ -3,7 +3,7 @@
  * A countdown timer for Processing which can trigger callback events during a user-defined set of tick intervals and duration.
  * https://github.com/dhchoi/processing-countdowntimer
  *
- * Copyright (c) 2014 Dong Hyun Choi
+ * Copyright (c) 2015 Dong Hyun Choi
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,8 +22,8 @@
  *
  * @author      Dong Hyun Choi
  * @created     Feb 7, 2015
- * @modified    Feb 7, 2015
- * @version     0.9.2 (3)
+ * @modified    Aug 16, 2015
+ * @version     0.9.3 (4)
  */
 
 package com.dhchoi;
@@ -83,6 +83,24 @@ public class CountdownTimerService {
     }
 
     /**
+     * Removes a {@link CountdownTimer} from the created set of {@link CountdownTimer}s.
+     * If the {@link CountdownTimer} is still running, the {@link CountdownTimer} will not be removed.
+     *
+     * @param timer the intended {@link CountdownTimer} to be removed
+     * @return true if the {@link CountdownTimer} was successfully removed
+     */
+    public static boolean removeCountdownTimer(CountdownTimer timer) {
+        if(timer == null || timer.isRunning()) {
+            return false;
+        }
+
+        timer = null;
+        timerIdMap.remove(timer.getId());
+
+        return true;
+    }
+
+    /**
      * Removes a {@link CountdownTimer} with the corresponding id from the created set of {@link CountdownTimer}s.
      * If the {@link CountdownTimer} is still running, the {@link CountdownTimer} will not be removed.
      * 
@@ -90,13 +108,6 @@ public class CountdownTimerService {
      * @return true if the {@link CountdownTimer} was successfully removed
      */
     public static boolean removeCountdownTimerWithId(int id) {
-        CountdownTimer timer = timerIdMap.get(id);
-        if(timer == null || timer.isRunning()) {
-            return false;
-        }
-        
-        timerIdMap.remove(timer);
-        
-        return true;
+        return removeCountdownTimer(timerIdMap.get(id));
     }
 }
