@@ -3,7 +3,7 @@
  * A countdown timer for Processing which can trigger callback events during a user-defined set of tick intervals and duration.
  * https://github.com/dhchoi/processing-countdowntimer
  *
- * Copyright (c) 2014 Dong Hyun Choi
+ * Copyright (c) 2015 Dong Hyun Choi
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,13 +22,8 @@
  *
  * @author      Dong Hyun Choi
  * @created     Mar 26, 2014
- * @modified    Feb 7, 2015
- * @version     0.9.2 (3)
- *
- * Possible updates:
- *  - TODO: change the id concept to label concept and let users apply labels to timers
- *  - TODO: change callback function params so that timer itself is returned instead of the id/label
- *  - TODO: make it able to delete unused timers from the map of timers created
+ * @modified    Aug 16, 2015
+ * @version     0.9.3 (4)
  */
 
 package com.dhchoi;
@@ -51,6 +46,8 @@ public class CountdownTimer {
     private static final String ON_FINISH_EVENT_NAME = "onFinishEvent";
     private Method onTickEvent;
     private Method onFinishEvent;
+    private boolean isLegacyTickEvent = false;
+    private boolean isLegacyFinishEvent = false;
     // timer related fields
     private final int mId;
     private final TimeUnit mTimeUnit = TimeUnit.MILLISECONDS;
@@ -67,19 +64,34 @@ public class CountdownTimer {
             mTimeLeftAtStartOfTick = mFinishTimeInFuture - getSystemTimeMillis();
 
             if(mTimeLeftAtStartOfTick <= 0) {
-                invokeMethod(onFinishEvent, mId);
+                if(isLegacyFinishEvent) {
+                    invokeMethod(onFinishEvent, mId);
+                }
+                else {
+                    invokeMethod(onFinishEvent, CountdownTimer.this);
+                }
                 stop(StopBehavior.STOP_AFTER_INTERVAL);
             }
             else {
                 // perform tick and get tick performance time
                 // the tick for the ongoing interval before the timer being stopped will always be performed
                 long tickStartTime = getSystemTimeMillis();
-                invokeMethod(onTickEvent, mId, mTimeLeftAtStartOfTick);
+                if(isLegacyTickEvent) {
+                    invokeMethod(onTickEvent, mId, mTimeLeftAtStartOfTick);
+                }
+                else {
+                    invokeMethod(onTickEvent, CountdownTimer.this, mTimeLeftAtStartOfTick);
+                }
                 long tickPerformanceTime = getSystemTimeMillis() - tickStartTime;
 
                 // no time left, so finish timer
                 if(tickPerformanceTime > mTimeLeftAtStartOfTick) {
-                    invokeMethod(onFinishEvent, mId);
+                    if(isLegacyFinishEvent) {
+                        invokeMethod(onFinishEvent, mId);
+                    }
+                    else {
+                        invokeMethod(onFinishEvent, CountdownTimer.this);
+                    }
                     stop(StopBehavior.STOP_AFTER_INTERVAL);
                 }
                 else {
@@ -112,10 +124,28 @@ public class CountdownTimer {
 
         try {
             onTickEvent = mApp.getClass().getMethod(ON_TICK_EVENT_NAME, int.class, long.class);
+            isLegacyTickEvent = true;
+            System.err.println("Please use the new \"void " + ON_TICK_EVENT_NAME + "(CountdownTimer t, long timeLeftUntilFinish)\" callback for better method chaining.");
+        } catch (NoSuchMethodException e1) {
+            try {
+                onTickEvent = mApp.getClass().getMethod(ON_TICK_EVENT_NAME, CountdownTimer.class, long.class);
+            } catch (NoSuchMethodException e2) {
+                System.err.println("Applet needs to implement \"void " + ON_TICK_EVENT_NAME + "(CountdownTimer t, long timeLeftUntilFinish)\"");
+                e2.printStackTrace();
+            }
+        }
+
+        try {
             onFinishEvent = mApp.getClass().getMethod(ON_FINISH_EVENT_NAME, int.class);
-        } catch (NoSuchMethodException e) {
-            System.err.println("Applet needs to implement both void " + ON_TICK_EVENT_NAME + "(int timerId, long timeLeftUntilFinish) and void " + ON_FINISH_EVENT_NAME + "(int timerId)");
-            e.printStackTrace();
+            isLegacyFinishEvent = true;
+            System.err.println("Please use the new \"void " + ON_FINISH_EVENT_NAME + "(CountdownTimer t)\" callback for better method chaining.");
+        } catch (NoSuchMethodException e1) {
+            try {
+                onFinishEvent = mApp.getClass().getMethod(ON_FINISH_EVENT_NAME, CountdownTimer.class);
+            } catch (NoSuchMethodException e2) {
+                System.err.println("Applet needs to implement \"void " + ON_FINISH_EVENT_NAME + "(CountdownTimer t)\"");
+                e2.printStackTrace();
+            }
         }
     }
 
@@ -345,7 +375,7 @@ public class CountdownTimer {
 
     @Override
     public String toString() {
-        return "(timerId=" + getId() + ")";
+        return "CountdownTimer[" + getId() + "](tickInterval:" + mTickInterval + ", timerDuration:" + mTimerDuration + ")";
     }
 
     /**
@@ -354,7 +384,7 @@ public class CountdownTimer {
      * All subsequently created timers will have an id that is 1 higher than the previously created timer's id
      * (e.g. second created timer will have id 1, third created timer will have id 2, and so on).
      * 
-     * (DEPRECATED: use the CountdownTimerFactory's method instead)
+     * (DEPRECATED: use the CountdownTimerService's method instead)
      *
      * @param app the main Processing applet
      * @return a newly created CountdownTimer
@@ -367,7 +397,7 @@ public class CountdownTimer {
     /**
      * Returns the timer associated with the corresponding id.
      * 
-     * (DEPRECATED: use the CountdownTimerFactory's method instead)
+     * (DEPRECATED: use the CountdownTimerService's method instead)
      *
      * @param id id of the desired timer
      * @return the CountdownTimer associated with the corresponding id
@@ -380,7 +410,7 @@ public class CountdownTimer {
     /**
      * Returns a set of timer ids that have been created.
      * 
-     * (DEPRECATED: use the CountdownTimerFactory's method instead)
+     * (DEPRECATED: use the CountdownTimerService's method instead)
      *
      * @return a set of timer ids that have been created
      */
