@@ -30,11 +30,11 @@ void draw() {
   text(timerCallbackInfo, width/2, height/2);
 }
 
-void onTickEvent(int timerId, long timeLeftUntilFinish) {
+void onTickEvent(CountdownTimer t, long timeLeftUntilFinish) {
   timerCallbackInfo = "[tick] - timeLeft: " + timeLeftUntilFinish + "ms";
 }
 
-void onFinishEvent(int timerId) {
+void onFinishEvent(CountdownTimer t) {
   timerCallbackInfo = "[finished]";
 }
 

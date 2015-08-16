@@ -47,13 +47,13 @@ void updateTimeText() {
 }
 
 // this is called once per second when the timer is running
-void onTickEvent(int timerId, long timeLeftUntilFinish) {
+void onTickEvent(CountdownTimer t, long timeLeftUntilFinish) {
   ++elapsedTime;
   updateTimeText();
 }
 
 // this will be called after the timer finishes running for an hour 
-void onFinishEvent(int timerId) {
+void onFinishEvent(CountdownTimer t) {
   exit();
 }
 

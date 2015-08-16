@@ -2,21 +2,51 @@
  * Example of using multiple CountdownTimers in one application.
  */
 
+import java.util.Map;
 import com.dhchoi.CountdownTimer;
 import com.dhchoi.CountdownTimerService;
 
-CountdownTimer redCircleTimer;
-CountdownTimer blueCircleTimer;
-float redCircleRadius = 0;
-float blueCircleRadius = 0;
-float maxCircleRadius = 150;
+Circle redCircle;
+Circle blueCircle;
+Map<CountdownTimer, Circle> timers = new HashMap<CountdownTimer, Circle>();
+
+class Circle {
+  static final float MAX_CIRCLE_RADIUS = 150;
+  
+  public float radius = 0;
+  public long interval;
+  public long duration;
+  public color clr;
+  
+  public Circle(int interval, int duration, color clr) {
+    this.interval = interval; 
+    this.duration = duration;
+    this.clr = clr;
+  }
+  
+  public String toString() {
+    return "Circle(" + hex(this.clr) + ")";
+  }
+}
 
 void setup() {
   size(500, 300);
 
-  // create timers
-  redCircleTimer = CountdownTimerService.getNewCountdownTimer(this).configure(100, 6000).start(); // this timer will have timerId = 0
-  blueCircleTimer = CountdownTimerService.getNewCountdownTimer(this).configure(150, 9000).start(); // this timer will have timerId = 1
+  // create circles
+  redCircle = new Circle(100, 6000, color(255, 0, 0));
+  blueCircle = new Circle(150, 9000, color(0, 0, 255));
+  
+  // associate timers to circles
+  timers.put(
+    CountdownTimerService.getNewCountdownTimer(this).configure(redCircle.interval, redCircle.duration).start(),
+    redCircle
+  );
+  timers.put(
+    CountdownTimerService.getNewCountdownTimer(this).configure(blueCircle.interval, blueCircle.duration).start(),
+    blueCircle
+  );
+  
+  println("Mapped timers to circles: " + timers.toString());
 }
 
 void draw() {
@@ -24,42 +54,25 @@ void draw() {
   noStroke();
   ellipseMode(CENTER);
 
-  // show created timers
-  fill(0);
-  textAlign(CENTER, CENTER);
-  text("Created timerIds: " + CountdownTimerService.getTimerIds(), width/2, height/2 - 100);
-  
   // draw red circle
-  fill(255, 0, 0);
-  ellipse(width/3, height/2, redCircleRadius, redCircleRadius);
+  fill(redCircle.clr);
+  ellipse(width/3, height/2, redCircle.radius, redCircle.radius);
 
   // draw blue circle
-  fill(0, 0, 255);
-  ellipse(width*2/3, height/2, blueCircleRadius, blueCircleRadius);
+  fill(blueCircle.clr);
+  ellipse(width*2/3, height/2, blueCircle.radius, blueCircle.radius);
 }
 
-void onTickEvent(int timerId, long timeLeftUntilFinish) {
+void onTickEvent(CountdownTimer t, long timeLeftUntilFinish) {
   // change the radius of the circle based on which timer it was hooked up to
-  switch (timerId) {
-    case 0:
-      redCircleRadius = map(timeLeftUntilFinish, 6000, 0, 0, maxCircleRadius);
-      break;
-    case 1:
-      blueCircleRadius = map(timeLeftUntilFinish, 9000, 0, 0, maxCircleRadius);
-      break;
-    }
+  Circle c = timers.get(t);
+  c.radius = map(timeLeftUntilFinish, c.duration, 0, 0, Circle.MAX_CIRCLE_RADIUS);
 }
 
-void onFinishEvent(int timerId) {
+void onFinishEvent(CountdownTimer t) {
   // finalize any changes when the timer finishes
-  switch (timerId) {
-    case 0:
-      redCircleRadius = maxCircleRadius;
-      break;
-    case 1:
-      blueCircleRadius = maxCircleRadius;
-      break;
-  }
-
-  println("[timerId:" + timerId + "] finished");
+  Circle c = timers.get(t);
+  c.radius = Circle.MAX_CIRCLE_RADIUS;
+  
+  println("Finished: " + c);
 }
