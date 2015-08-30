@@ -1,4 +1,4 @@
-<project name="GameOverLibrary" default="clean" basedir="../">
+<project name="ARsenicoLibrary" default="clean" basedir="../">
 
     
 <!--	
