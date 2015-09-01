@@ -218,4 +218,4 @@ Any other details about how to use this can be found inside the reference folder
 The library does not require any other dependencies to run, and it has been tested with the following environments:
 
 * __Platforms:__ > OS X Mavericks (10.9), > Windows 7
-* __Processing Version:__ > 2.0, > 3.0
+* __Processing Version:__ >= 2.2.1, >= 3.0
