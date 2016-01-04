@@ -1,3 +1,4 @@
 distribution
 /target/
 /bin/
+.DS_store
