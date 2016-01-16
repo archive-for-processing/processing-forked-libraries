@@ -1,3 +1,9 @@
+#LennyLib
+Processing library for processing images for lenticular printing. 
+
+------------------------
+
+
 The following describes how to set up a Processing Library project in Eclipse and build it successfully, and to make your Library ready for distribution.
 
 ## Import to Eclipse
