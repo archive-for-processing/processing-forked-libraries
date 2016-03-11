@@ -9,6 +9,8 @@ SmartGrid rootGrid;
    manager=new SmartGridManager(this);
    //create your grid here
    rootGrid=manager.CreateGrid();//default 12*12 root grid
+   //add your code here
+   
    //-----------------------
    manager.setup();
    frameRate(60);
