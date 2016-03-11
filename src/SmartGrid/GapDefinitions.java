@@ -7,8 +7,30 @@ class GapItem
   boolean isDynamic;
   float value;
 }
-
-class GapDefinitions
+/**
+ * 
+ * @author qian.fan.jiang
+ * defines a line with several points
+ * <p>
+ * this class is the code concept of smart grid system
+ * to divide a line into several gaps, a dynamic length system is imported from XAML 
+ * <p>
+ * fixed length: a positive float represents the fixed gap size
+ * <p>
+ * dynamic length: a positive float ends with "*" means a dynamic length, the actual size is based on dynamic size unit.
+ * <p>
+ * example:
+ * <p>
+ * "*": a line with 1 gap, the gap size is equal to line size
+ * <p>
+ * "*,*,*": a line with 3 gaps, each gap is 1/3 of line size
+ * <p>
+ * "*,2*": a line with 2 gaps, first gap has 1/3 line size, second is 2/3 line size
+ * <p>
+ * "100,2*,*": a line with 3 gaps, first gap is 100 width(fixed), second is (line size-100)/3*2 ,3rd gap is (line size-100)/3*1
+ * 
+ */
+public class GapDefinitions
 {
   private float total;
   private ArrayList<GapItem> items;
@@ -39,6 +61,11 @@ class GapDefinitions
     }
   }
   
+  /**
+   * get the points of the gap.<br>
+   * number of points=gaps.length+1 as the first point is always 0.
+   * @return float array represents the points of gaps
+   */
   public float[] getData()
   {
     refresh();

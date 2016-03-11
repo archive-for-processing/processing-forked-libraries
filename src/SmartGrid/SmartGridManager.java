@@ -16,25 +16,53 @@ public class SmartGridManager
   }
   
   
-  
+  /**
+   * create a grid with 12*12 cells
+   * this method is equal to CreateGrid("*,*,*,*,*,*,*,*,*,*,*,*","*,*,*,*,*,*,*,*,*,*,*,*")
+   * @return new instance of SmartGrid
+   */
   public SmartGrid CreateGrid()
   {
     return CreateGrid("*,*,*,*,*,*,*,*,*,*,*,*","*,*,*,*,*,*,*,*,*,*,*,*");//default root grid with 12*12 cells
   }
   
+  /**
+   * create a grid with certain rows and columns
+   * @param columns the columns inside the grid
+   * @param rows    the rows inside the grid
+   * @return new instance of SmartGrid
+   */
   public SmartGrid CreateGrid(String columns,String rows)
   {
     //String name="grid_"+str(random(1000));
     return CreateGrid(columns,rows,true);
   }
   
+  /**
+   * create a child grid belongs to an existing grid instance.
+   * new grid will have 1*1 cell by default.
+   * the position of this grid is judged by the cell,row parameters.
+   * @param parent the parent grid instance
+   * @param col the column in parent grid 
+   * @param row the row in parent grid
+   * @param colSpan column span in parent grid
+   * @param rowSpan row span in parent grid
+   * @return new instance of SmartGrid
+   */
   public SmartGrid CreateGrid(SmartGrid parent,int col, int row, int colSpan,int rowSpan)
   {
     SmartGrid result=CreateGrid("*","*");
     result.setParent(parent,col,row,colSpan,rowSpan);
     return result;
   }
-  
+  /**
+   * create a new grid
+   * @param columns column definition
+   * @param rows row definition
+   * @param cbShowPosition show position while drawing, only works with default drawObject
+   * @param cbColors the colors to draw the chessBoard, only works with default drawObject
+   * @return new instance of SmartGrid
+   */
   public SmartGrid CreateGrid(String columns,String rows,boolean cbShowPosition,int...cbColors)//core method
   {
     SmartGrid result=new SmartGrid(app);
@@ -51,7 +79,7 @@ public class SmartGridManager
     grids.add(result);
     return result;
   }
-  void setup()
+  public void setup()
   {
     for(SmartGrid item:grids)
       {
@@ -59,6 +87,11 @@ public class SmartGridManager
       }
   }
   
+  /**
+   * draw all the grid instance.
+   * grids are draw by creation order, grid.drawEnabled will be checked.
+   * @param enableResizeDetect check if application is resized
+   */
   public void draw(boolean enableResizeDetect)
   {
     if(enableResizeDetect)
@@ -100,6 +133,10 @@ public class SmartGridManager
     }
   }
   
+  /**
+   * should be called in parent application. 
+   * this method will route keyPressed() event to the drawing object attached in each grids
+   */
   public void keyPressed()
   {
     for(SmartGrid item:grids)

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import processing.core.*;
 
-class SmartGrid
+public class SmartGrid
 {
   SmartGrid parent;
   private ArrayList<SmartGrid> children;
-  public boolean isDirty=true;
+  boolean isDirty=true;
   private PVector size=new PVector(0,0);
   private PVector position=new PVector(0,0);
   private int pCol,pRow,pColSpan,pRowSpan;
@@ -19,14 +19,31 @@ class SmartGrid
   private PVector projectScale;
   private int previousWidth,previousHeight;
   private int previousMouseX,previousMouseY;
+  /**
+   * set to true will stop the mouse projecting when cursor is outside the grid area
+   */
   public boolean mouseProjectionInboundCheck=false;
+  /**
+   * project the mouse to relative position (to application area) instead of actual position
+   */
   public boolean mouseProjectionSync=false;
+  /**
+   * project the grid to a specified size<br>
+   * leave null will project to it's actual size
+   */
   public PVector projectToRect;
+  /**
+   * set this to false will cause grid invisible to user
+   */
   public boolean drawEnabled=true;
   //public String name;
   GridDrawBase drawingObject;
   private PApplet app;
   
+  /*
+   * constructor 
+   * @param applet the instance of current processing applet
+   */
   public SmartGrid(PApplet applet)
   {
     app=applet;
@@ -36,6 +53,10 @@ class SmartGrid
     projectScale=new PVector();
   }
   
+  /**
+   * attach a drawing object to current grid
+   * @param draw drawing object
+   */
   public void setDrawingObject(GridDrawBase draw)
   {
     if (drawingObject!=null)
@@ -47,6 +68,14 @@ class SmartGrid
     
   }
   
+  /**
+   * attach to a parent grid, this makes current grid become a child grid
+   * @param p parent grid
+   * @param column column
+   * @param row row
+   * @param columnSpan column span
+   * @param rowSpan row span
+   */
   public void setParent(SmartGrid p,int column, int row, int columnSpan, int rowSpan)
   {
     if(parent!=null)
@@ -93,25 +122,32 @@ class SmartGrid
     }
     return result;
   }
-  
+  /**
+   * 
+   * @return column count
+   */
   public int getColumns()
   {
     updateLayout();
     return columnDefinitions.size();
   }
   
+  /**
+   * 
+   * @return row count
+   */
   public int getRows()
   {
     updateLayout();
     return rowDefinitions.size();
   }
   
-  public void updateLayout()
+  void updateLayout()
   {
     updateLayout(false);
   }
   
-  public void updateLayout(boolean forceUpdate)
+  void updateLayout(boolean forceUpdate)
   {
     if (isDirty||forceUpdate)
     {
@@ -162,12 +198,11 @@ class SmartGrid
       }
     }
   }
-
-  public void keyPressed()
-  {
-    drawingObject.keyPressed();
-  }
   
+  /**
+   * project current drawing surface to the grid area
+   * call unProject() when you've finished drawing
+   */
   public void project()
   {
     app.pushStyle();
@@ -224,7 +259,9 @@ class SmartGrid
     app.mouseX=(int)(result.x);
     app.mouseY=(int)(result.y);
   }
-  
+  /**
+   * restore the drawing surface to previous state
+   */
   public void unProject()
   {
     app.width=previousWidth;
@@ -246,8 +283,8 @@ class SmartGrid
     {
       if(sync)
       {
-        result.x=app.map(result.x,0,app.width,0,size.x);
-        result.y=app.map(result.y,0,app.height,0,size.y);
+        result.x=PApplet.map(result.x,0,app.width,0,size.x);
+        result.y=PApplet.map(result.y,0,app.height,0,size.y);
         result.set(result.x/projectScale.x,result.y/projectScale.y);
         return result;
       }
