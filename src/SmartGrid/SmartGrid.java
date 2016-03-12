@@ -97,6 +97,12 @@ public class SmartGrid
     return position;
   }
   
+  public PVector getSize()
+  {
+	  updateLayout();
+	  return size;
+  }
+  
   public PVector getCellPosition(int col,int row,boolean isRelative)
   {
     updateLayout();

@@ -1,6 +1,9 @@
 package SmartGrid;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * user is able to create "owner draw" on each grid by extending 
@@ -24,35 +27,10 @@ public abstract class GridDrawBase
     grid=null;
     app=null;
   }
-  protected void setData(int index, Object value)
-  {
-    SharedData.data[index]=value;
-  }
   
-  protected void saveData(int index, Object value)
-  {
-	  SharedData.persistData[index]=value;
-  }
-  
-  protected Object getData(int index,Object defaultValue)
-  {
-    if (SharedData.data[index]==null)
-    {
-      return defaultValue;
-    }
-    return SharedData.data[index];
-  }
-  
-  protected Object loadData(int index,Object defaultValue)
-  {
-	  if(SharedData.persistData[index]==null)
-	  {
-		  return defaultValue;
-	  }
-	  return SharedData.persistData[index];
-  }
   
   public abstract void setup();
+  public void update(){};
   public void beforeDraw()
   {
     enableBeforeDraw=false;//shut down this feature by default
@@ -65,15 +43,23 @@ public abstract class GridDrawBase
   public void keyPressed()
   {
   }
-  public static class SharedData
+  
+  public void messageReceived(String title,Object message)
   {
-    static Object[] data=new Object[100];
-    static Object[] persistData=new Object[10];
-    static void Clear()
-    {
-    	data=new Object[data.length];
-    }
+	  
   }
+  
+  protected void background(int rgb)
+  {
+	  app.pushStyle();
+	  PVector pos=grid.getPosition();
+	  PVector s=grid.getSize();
+	  app.fill(rgb);
+	  app.rect(pos.x,pos.y,s.x,s.y);
+	  app.popStyle();
+  }
+
+    
 }
 
 

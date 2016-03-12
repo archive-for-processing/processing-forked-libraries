@@ -104,6 +104,12 @@ public class SmartGridManager
         }
       }
     }
+    
+    for(SmartGrid item:grids)
+    {
+      item.drawingObject.update();
+    }
+    
     for(SmartGrid item:grids)
     {
       if(item.drawEnabled && item.drawingObject.enableBeforeDraw)
