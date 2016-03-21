@@ -68,6 +68,11 @@ public class SmartGrid
     
   }
   
+  public GridDrawBase getDrawingObject()
+  {
+	  return drawingObject;
+  }
+  
   /**
    * attach to a parent grid, this makes current grid become a child grid
    * @param p parent grid
@@ -222,7 +227,7 @@ public class SmartGrid
     {
       projectScale.set(1,1,0);
     }
-    projectScale.set(1,1,1);
+    //projectScale.set(1,1,1);
     projectMouse();
     resizeScreen();
   }

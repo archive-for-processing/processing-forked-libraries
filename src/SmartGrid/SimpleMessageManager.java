@@ -43,7 +43,7 @@ public class SimpleMessageManager implements iMessageManager {
 	public void sendMessage(String title,Object message)
     {
     	MessageTopic target=getByTitle(title);
-    	if(target==null)
+    	if(target!=null)
     	{
     		for (iMessageClient item:target.subscribers)
     		{
