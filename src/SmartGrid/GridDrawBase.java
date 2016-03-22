@@ -12,7 +12,7 @@ import processing.core.PVector;
  * @author qian.fan.jiang
  *
  */
-public abstract class GridDrawBase
+public abstract class GridDrawBase implements iMessageClient
 {
   protected SmartGrid grid;
   protected PApplet app;
@@ -47,6 +47,16 @@ public abstract class GridDrawBase
   public void messageReceived(String title,Object message)
   {
 	  
+  }
+  
+  protected void registerMessage(String title)
+  {
+	  SimpleMessageManager.getInstance().register(this, title);
+  }
+  
+  protected void sendMessage(String title,Object message)
+  {
+	  SimpleMessageManager.getInstance().sendMessage(title, message);
   }
   
   protected void background(int rgb)
