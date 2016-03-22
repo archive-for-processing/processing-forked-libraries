@@ -49,10 +49,10 @@ public class SmartGridManager
    * @param rowSpan row span in parent grid
    * @return new instance of SmartGrid
    */
-  public SmartGrid CreateGrid(SmartGrid parent,int col, int row, int colSpan,int rowSpan)
+  public SmartGrid CreateGrid(SmartGrid parent,int row, int col, int rowSpan,int colSpan)
   {
     SmartGrid result=CreateGrid("*","*");
-    result.setParent(parent,col,row,colSpan,rowSpan);
+    result.setParent(parent,row,col,rowSpan,colSpan);
     return result;
   }
   /**

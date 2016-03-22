@@ -81,7 +81,7 @@ public class SmartGrid
    * @param columnSpan column span
    * @param rowSpan row span
    */
-  public void setParent(SmartGrid p,int column, int row, int columnSpan, int rowSpan)
+  public void setParent(SmartGrid p,int row , int column, int rowSpan , int columnSpan)
   {
     if(parent!=null)
     {
@@ -108,7 +108,7 @@ public class SmartGrid
 	  return size;
   }
   
-  public PVector getCellPosition(int col,int row,boolean isRelative)
+  public PVector getCellPosition(int row,int col,boolean isRelative)
   {
     updateLayout();
     PVector result=cellPosition[row][col].copy();
@@ -123,7 +123,7 @@ public class SmartGrid
     return result;
   }
   
-  public PVector getCellSize(int col, int row,boolean isRelative)
+  public PVector getCellSize(int row, int col,boolean isRelative)
   {
     updateLayout();
     PVector result=cellSize[row][col].copy();
@@ -183,9 +183,9 @@ public class SmartGrid
     }
     else
     {
-      PVector pos1=parent.getCellPosition(pCol,pRow,false);//top left cell XY
-      PVector pos2=parent.getCellPosition(pCol+pColSpan,pRow+pRowSpan,false);//bottom right cell XY
-      PVector size2=parent.getCellSize(pCol+pColSpan,pRow+pRowSpan,false);//bottom right cell size
+      PVector pos1=parent.getCellPosition(pRow,pCol,false);//top left cell XY
+      PVector pos2=parent.getCellPosition(pRow+pRowSpan,pCol+pColSpan,false);//bottom right cell XY
+      PVector size2=parent.getCellSize(pRow+pRowSpan,pCol+pColSpan,false);//bottom right cell size
       position=pos1;
       size=pos2.add(size2).sub(pos1);
     }
@@ -194,8 +194,8 @@ public class SmartGrid
   {
     columnDefinitions.setTotal(size.x);
     rowDefinitions.setTotal(size.y);
-    int rows=columnDefinitions.size();
-    int cols=rowDefinitions.size();
+    int rows=rowDefinitions.size();
+    int cols=columnDefinitions.size();
     cellPosition=new PVector[rows][cols];
     cellSize=new PVector[rows][cols];
     float[] dataX=columnDefinitions.getData();
@@ -204,8 +204,8 @@ public class SmartGrid
     {
       for(int c=0;c<cols;c++)
       {
-        cellPosition[r][c]=new PVector(dataX[r],dataY[c]);
-        cellSize[r][c]=new PVector(dataX[r+1],dataY[c+1]).sub(cellPosition[r][c]);
+        cellPosition[r][c]=new PVector(dataX[c],dataY[r]);
+        cellSize[r][c]=new PVector(dataX[c+1],dataY[r+1]).sub(cellPosition[r][c]);
       }
     }
   }
