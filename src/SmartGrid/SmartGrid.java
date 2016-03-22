@@ -19,6 +19,7 @@ public class SmartGrid
   private PVector projectScale;
   private int previousWidth,previousHeight;
   private int previousMouseX,previousMouseY;
+  private boolean isInProject=false;
   /**
    * set to true will stop the mouse projecting when cursor is outside the grid area
    */
@@ -129,7 +130,7 @@ public class SmartGrid
     PVector result=cellSize[row][col].copy();
     if(isRelative)
     {
-      result.set(result.x*projectScale.x,result.y*projectScale.y);
+      result.set(result.x/projectScale.x,result.y/projectScale.y);
     }
     return result;
   }
@@ -216,6 +217,11 @@ public class SmartGrid
    */
   public void project()
   {
+	if (isInProject)
+	{
+		throw new RuntimeException("repeated project() call, possible missing unProject() call");
+	}
+	isInProject=true;
     app.pushStyle();
     projectXY();
     if(projectToRect!=null)
@@ -281,6 +287,7 @@ public class SmartGrid
     app.mouseY=previousMouseY;
     app.popMatrix();   
     app.popStyle();
+    isInProject=false;
   }
   
   public PVector getMouseXY(boolean checkInbound,boolean sync)

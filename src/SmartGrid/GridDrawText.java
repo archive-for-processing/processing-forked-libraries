@@ -7,7 +7,7 @@ public class GridDrawText extends GridDrawBase{
 	public String text;
 	public PFont font; 
 	public float textSize;
-	
+	public int textColor;
 	@Override
 	public void setup() {
 		// TODO Auto-generated method stub
@@ -21,6 +21,7 @@ public class GridDrawText extends GridDrawBase{
 		{
 			app.pushStyle();
 			app.textSize(textSize);
+			app.fill(textColor);
 			app.textAlign(app.CENTER,app.CENTER);
 			app.text(text, app.width/2, app.height/2);
 			app.popStyle();
