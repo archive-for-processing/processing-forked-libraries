@@ -1,6 +1,6 @@
 package funGUI;
 
-public class IntegerOutput extends NumOutput {
+public class IntegerOutput extends SliderOutput {
 	IncrementalSlider s;
 	
 	public IntegerOutput(float x, float y, float w, float h, IncrementalSlider slider) {

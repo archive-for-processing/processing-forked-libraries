@@ -29,20 +29,20 @@ public class DifficultyOptionList extends OptionList {
 	
 	public int difficultyRating() {
 		int n = 0;
-		switch(options[selectedOption].label.charAt(0)) {
-		case 'E':
+		switch(options[selectedOption].label) {
+		case "Easy":
 			n = 1;
 			break;
-		case 'I':
+		case "Intermediate":
 			n = 2;
 			break;
-		case 'M':
+		case "Medium":
 			n = 3;
 			break;
-		case 'D':
+		case "Difficult":
 			n = 4;
 			break;
-		case 'H':
+		case "Hard":
 			n = 5;
 			break;
 		default:

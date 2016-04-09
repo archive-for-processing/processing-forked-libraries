@@ -95,6 +95,7 @@ public class Calculator extends Frame {
 	}
 	
 	
+	@Override
 	public String returnName() {
 		return("Calculator");
 	}

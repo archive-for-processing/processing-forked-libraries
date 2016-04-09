@@ -464,6 +464,7 @@ public class RectButton extends Button {
 		beginningHeight = p.height;
 	}
 	
+	@Override
 	public String returnName() {
 		return("RectButton");
 	}

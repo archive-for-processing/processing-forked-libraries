@@ -24,6 +24,7 @@ public class FunGUIFrame extends Frame implements FunGUIObject {
 		return(this.y);
 	}
 	
+	@Override
 	public String returnName() {
 		return("FunGUIFrame");
 	}

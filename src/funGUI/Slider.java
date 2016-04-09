@@ -228,6 +228,7 @@ public class Slider extends Frame implements PConstants {
 		return(max);
 	}
 	
+	@Override
 	public String returnName() {
 		return("Slider");
 	}

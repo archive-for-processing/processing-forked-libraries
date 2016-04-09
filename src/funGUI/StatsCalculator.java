@@ -41,6 +41,7 @@ class StatsCalculator implements Stats {
 		return(floats.size());
 	}
 
+	@Override
 	public float mean() {
 		float total = 0;
 		for (int i = 0; i < floats.size(); i++) {
@@ -49,19 +50,23 @@ class StatsCalculator implements Stats {
 		return(total / (float)(floats.size()));
 	}
 
+	@Override
 	public float median() {
 		return(q2());
 	}
 
+	@Override
 	public float mode() {
 		// Do I even need this?
 		return 0;
 	}
 
+	@Override
 	public float stdDev() {
 		return((float) (Math.sqrt(variance())));
 	}
 
+	@Override
 	public float variance() {
 		float total = 0;
 		float mean = mean();
@@ -72,6 +77,7 @@ class StatsCalculator implements Stats {
 		return(total);
 	}
 
+	@Override
 	public float q0() {
 		FloatList outs = outliers();
 		if (outs != null) {
@@ -90,6 +96,7 @@ class StatsCalculator implements Stats {
 		return(min());
 	}
 
+	@Override
 	public float q1() {
 		float pos = 0.25f;
 		int position = (int) (pos * floats.size());
@@ -102,6 +109,7 @@ class StatsCalculator implements Stats {
 		return(q1);
 	}
 
+	@Override
 	public float q2() {
 		int medianIndex = (int) (floats.size() / 2.0);
 		float median = 0;
@@ -113,6 +121,7 @@ class StatsCalculator implements Stats {
 		return(median);
 	}
 
+	@Override
 	public float q3() {
 		float pos = 0.75f;
 		int position = (int) (pos * floats.size());
@@ -125,6 +134,7 @@ class StatsCalculator implements Stats {
 		return(q3);
 	}
 
+	@Override
 	public float q4() {
 		FloatList outs = outliers();
 		if (outs != null) {
@@ -143,10 +153,14 @@ class StatsCalculator implements Stats {
 		return(max());
 	}
 	
-		public float iqr() {
+	
+
+	@Override
+	public float iqr() {
 		return(q3() - q1());
 	}
 
+	@Override
 	public boolean outlier(int index) {
 		if (index < q1()) {
 			return(floats.get(index) < q1() - outlierLimit());
@@ -154,10 +168,12 @@ class StatsCalculator implements Stats {
 		return(floats.get(index) > q3() + outlierLimit());
 	}
 
+	@Override
 	public float outlierLimit() {
 		return(iqr() * 1.5f);
 	}
 
+	@Override
 	public FloatList outliers() throws NullPointerException {
 		FloatList outs = new FloatList();
 		for (int i = 0; i < floats.size() * .25; i++) {
@@ -174,14 +190,17 @@ class StatsCalculator implements Stats {
 		return null;
 	}
 
+	@Override
 	public float max() {
 		return(floats.max());
 	}
 
+	@Override
 	public float min() {
 		return(floats.min());
 	}
 
+	@Override
 	public float range() {
 		return(max() - min());
 	}

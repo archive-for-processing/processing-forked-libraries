@@ -399,6 +399,7 @@ public class ToggleButton extends Button implements PConstants {
 		return (!(s1.equals(s2)));
 	}
 	
+	@Override
 	public String returnName() {
 		return("ToggleButton");
 	}

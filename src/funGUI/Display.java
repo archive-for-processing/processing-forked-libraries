@@ -52,6 +52,7 @@ public class Display extends Frame {
 		g.popStyle();
 	}
 	
+	@Override
 	public String returnName() {
 		return("Display");
 	}

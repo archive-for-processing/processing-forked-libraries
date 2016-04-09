@@ -47,6 +47,7 @@ public class ListItem extends Frame {
 		return(true);
 	}
 	
+	@Override
 	public String returnName() {
 		return("ListItem");
 	}
