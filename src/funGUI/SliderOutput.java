@@ -1,4 +1,5 @@
 package funGUI;
+//import processing.core.*;
 
 public class SliderOutput extends NumOutput{
 	Slider s;

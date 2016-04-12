@@ -16,6 +16,43 @@ public class RoundedRectButton extends RectButton implements PConstants {
 	 * @param ny		float, the vertical location of the center of this button
 	 * @param nw		float, the horizontal length of this button
 	 * @param nh		float, the vertical length of this button
+	 * @param ncolors	color, the colors used in this button
+	 * @param ntext		String, the string value of the name of this button
+	 * @param curvature	float, the percent by which to curve the button's corners in
+	 * @param fsize		float, the font size 
+	 */
+	public RoundedRectButton(PApplet p, float nx, float ny, float nw, float nh, int [] ncolors, String ntext, float curvature, float fsize) {
+		super(p, nx, ny, nw, nh, ncolors, ntext);
+		this.curvature = PApplet.constrain(curvature, 0.1f, 1f);
+		calculateRadius();
+		this.fsize = (int) fsize;
+	}
+	
+	/**
+	 * Constructor for the RoundedRectButton class.
+	 * @param p			PApplet, the parent sketch of the object (usually "this")
+	 * @param nx		float, the horizontal location of the center of this button
+	 * @param ny		float, the vertical location of the center of this button
+	 * @param nw		float, the horizontal length of this button
+	 * @param nh		float, the vertical length of this button
+	 * @param ntext		String, the string value of the name of this button
+	 * @param curvature	float, the percent by which to curve the button's corners in
+	 * @param fsize		float, the font size
+	 */
+	public RoundedRectButton(PApplet p, float nx, float ny, float nw, float nh, String ntext, float curvature, float fsize) {
+		super(p, nx, ny, nw, nh, ntext);
+		this.curvature = PApplet.constrain(curvature, 0.1f, 1f);
+		calculateRadius();
+		this.fsize = (int) fsize;
+	}
+	
+	/**
+	 * Constructor for the RoundedRectButton class.
+	 * @param p			PApplet, the parent sketch of the object (usually "this")
+	 * @param nx		float, the horizontal location of the center of this button
+	 * @param ny		float, the vertical location of the center of this button
+	 * @param nw		float, the horizontal length of this button
+	 * @param nh		float, the vertical length of this button
 	 * @param ntext		String, the string value of the name of this button
 	 * @param curvature	float, the percent by which to curve the button's corners in
 	 */

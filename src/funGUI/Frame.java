@@ -98,10 +98,6 @@ public abstract class Frame implements FunGUIObject {
 	public float h() {
 		return (h);
 	}
-	
-	public String returnName() {
-		return("Frame");
-	}
 
 
 	float limitFont(PFont font, float fontSize, String str, float w) {

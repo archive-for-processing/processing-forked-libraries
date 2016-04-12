@@ -1,13 +1,19 @@
 package funGUI;
 import processing.core.*;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 
 public class Calculator extends Frame {
 	RoundButton [][] nums = new RoundButton [3][4];
-	RoundButton [] operations = new RoundButton[4];
+	RoundToggleButton [] operations = new RoundToggleButton[4];
 	boolean pressed = false;
 	String math = "0";
 	PFont font;
 	TextScroll display;
+	int chosenOp = -1;
+	float firstNum = 0;
+	float secondNum = 0;
+	RoundedRectButton equals;
 	
 	public Calculator(PApplet p, float x, float y, float w, float h) {
 		this.p = p;
@@ -17,6 +23,10 @@ public class Calculator extends Frame {
 		this.w = w;
 		this.h = h;
 		display = new TextScroll(p, x, y - 90, 120, 20);
+		
+		int [] colors = {g.color(220), g.color(255, 255, 255), g.color(240, 240, 240)};
+		
+		equals = new RoundedRectButton(p, x + 80, y + 75, 20, 75, colors, "=", .5f, 12);
 		
 		
 		for (int i = 0; i < 3; i++) {
@@ -36,12 +46,16 @@ public class Calculator extends Frame {
 		
 		char [] c = {'÷', 'x', '-', '+'};
 		for (int i = 0; i < operations.length; i++) {
-			operations[i] = new RoundButton(p, x + 80, y + (i - 2) * 25, 10, c[i]);
+			operations[i] = new RoundToggleButton(p, x + 80, y + (i - 2) * 25, 10, c[i]);
 		}
+		
+		p.registerMethod("keyEvent", this);
+		p.registerMethod("mouseEvent", this);
 	}
 	
 	@Override
 	public void display() {
+		equals.draw();
 		for (int i = 0; i < nums.length; i++) {
 			for (int j = 0; j < nums[i].length; j++) {
 				nums[i][j].draw();
@@ -66,12 +80,24 @@ public class Calculator extends Frame {
 
 	void check() {
 		if (!pressed && p.mousePressed && anyPressed() >= 0) {
+			PApplet.println("ChosenOP: " + chosenOp);
 			int n = anyPressed();
 			int n1 = (n >> 8) & 0xF;
 			int n2 = n & 0xF;
+			if (chosenOp >= 0 && firstNum == 0) {
+				firstNum = Float.valueOf(math);
+				PApplet.println("FirstNum: " + firstNum);
+				math = "0";
+			}
 			String s = String.valueOf(nums[n1][n2].c);
 			if (s.equals("c")) {
 				math = "0";
+				firstNum = 0;
+				secondNum = 0;
+				chosenOp = -1;
+				for (int i = 0; i < operations.length; i++) {
+					operations[i].on = false;
+				}
 			} else {
 				if (math.equals("0") && !(s.equals("."))) {
 					math = "";
@@ -80,6 +106,83 @@ public class Calculator extends Frame {
 			}
 		}
 		pressed = p.mousePressed && anyPressed() >= 0;
+		
+		if (operationsPressed() > 0) {
+			if (operationsPressed() > 1) {
+				if (chosenOp < 0) {
+					
+				} else {
+					for (int i = 0; i < operations.length; i++) {
+						if (operations[i].on() && i != chosenOp) {
+							chosenOp = i;
+						} else {
+							operations[i].on = false;
+						}
+					}
+				}
+			} else {
+				for (int i = 0; i < operations.length; i++) {
+					if (operations[i].on()) {
+						chosenOp = i;
+					}
+				}
+			}
+		}
+	}
+	
+	public void keyEvent(KeyEvent k) {
+		if ((k.getKey() == ENTER || k.getKey() == RETURN) && k.getAction() == KeyEvent.RELEASE) {
+			equate();
+		}
+	}
+	
+	public void mouseEvent(MouseEvent m) {
+		if (m.getAction() == MouseEvent.PRESS) {
+			if (equals.clicked() && !equals.pressed) {
+				equate();
+			}
+		}
+	}
+	
+	void equate() {
+		secondNum = Float.valueOf(math);
+		float result = 0;
+		if (chosenOp >= 0) {
+			switch(operations[chosenOp].c) {
+			case '÷':
+				result = firstNum / secondNum;
+				break;
+			case 'x':
+				result = firstNum * secondNum;
+				break;
+			case '-':
+				result = firstNum - secondNum;
+				break;
+			case '+':
+				result = firstNum + secondNum;
+				break;
+			default:
+				break;
+			}
+		}
+		math = String.valueOf(result);
+		firstNum = Float.valueOf(result);
+		secondNum = 0;
+		chosenOp = -1;
+		for (int i = 0; i < operations.length; i++) {
+			operations[i].on = false;
+		}
+		
+	}
+	
+	int operationsPressed() {
+		int total = 0;
+		for (int i = 0; i < operations.length; i++) {
+			if (operations[i].on()) {
+				total++;
+			}
+		}
+		return(total);
 	}
 	
 	int anyPressed() {
