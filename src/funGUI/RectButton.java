@@ -59,7 +59,6 @@ public class RectButton extends Button {
 	 * @param ny		float, the y-coordinate of the location of the button
 	 * @param nw		float, the width of the button
 	 * @param nh		float, the height of the button
-	 * @param ncolors	color [], the colors of the button (0-outside, 1-overlay (for clicked status), 2-inside)
 	 * @param ntext		String, the label for the button
 	 */
 	public RectButton(PApplet p, float nx, float ny, float nw, float nh, String ntext) {

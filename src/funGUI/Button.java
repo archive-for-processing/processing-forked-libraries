@@ -85,7 +85,7 @@ public abstract class Button extends Frame implements PConstants {
 
 	/**
 	 * The boolean function that returns whether or not the mouse is pressed while over the button.
-	 * @return
+	 * @return	boolean, whether it is true or false that the mouse was clicked while hovering over button
 	 */
 	public boolean clicked() {
 		return (p.mousePressed && p.mouseX < x + w * .5
@@ -97,7 +97,7 @@ public abstract class Button extends Frame implements PConstants {
 	 * Finds whether or not the button is clicked when the button is moved by a certain value.
 	 * @param dx	float, the value to displace the button by on the x-axis
 	 * @param dy	float, the value to displace the button by on the y-axis
-	 * @return
+	 * @return	boolean, whether it is true or false that the mouse was clicked over button
 	 */
 	public boolean clicked(float dx, float dy) {
 		// p.println("MX1: " + (x + dx + w * .5));

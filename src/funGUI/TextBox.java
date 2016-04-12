@@ -41,11 +41,12 @@ public class TextBox implements PConstants {
 
 	/**
 	 * Constructor, which involves a text box without a message above it.
-	 * @param p  PApplet, the parent of the sketch, usually "this"
-	 * @param x  float, the x-coordinate of the center of text box
-	 * @param y  float, the y-coordinate of the center of the text box
-	 * @param w  float, the width of the text box
-	 * @param h  float, the height of the text box
+	 * @param p  		PApplet, the parent of the sketch, usually "this"
+	 * @param x  		float, the x-coordinate of the center of text box
+	 * @param y  		float, the y-coordinate of the center of the text box
+	 * @param w  		float, the width of the text box
+	 * @param h  		float, the height of the text box
+	 * @param fontSize	float, the size of the font used
 	 */
 	public TextBox(PApplet p, float x, float y, float w, float h, float fontSize) {
 		init(p, x, y, w, h, fontSize);
@@ -53,12 +54,13 @@ public class TextBox implements PConstants {
 
 	/**
 	 * Constructor that involves a text box with a message above it.
-	 * @param p  PApplet, the parent of the sketch, usually "this"
-	 * @param x  float, the x-coordinate of the center of the text box
-	 * @param y  float, the y-coordinate of the center of the text box
-	 * @param w  float, the width of the text box rectangle
-	 * @param h  float, the height of the text box rectangle
-	 * @param name  String, the message that floats to the left of the text box
+	 * @param p  			PApplet, the parent of the sketch, usually "this"
+	 * @param x  			float, the x-coordinate of the center of the text box
+	 * @param y  			float, the y-coordinate of the center of the text box
+	 * @param w  			float, the width of the text box rectangle
+	 * @param h  			float, the height of the text box rectangle
+	 * @param name  		String, the message that floats to the left of the text box
+	 * @param fontSize		float, the size of the text drawn to the screen
 	 */
 	public TextBox(PApplet p, float x, float y, float w, float h, float fontSize, 
 			String name) {

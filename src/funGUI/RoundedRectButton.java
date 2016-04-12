@@ -16,7 +16,6 @@ public class RoundedRectButton extends RectButton implements PConstants {
 	 * @param ny		float, the vertical location of the center of this button
 	 * @param nw		float, the horizontal length of this button
 	 * @param nh		float, the vertical length of this button
-	 * @param ncolors	color, the colors used in this button
 	 * @param ntext		String, the string value of the name of this button
 	 * @param curvature	float, the percent by which to curve the button's corners in
 	 */
