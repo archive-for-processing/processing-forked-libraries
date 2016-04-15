@@ -8,20 +8,42 @@ class DotPlot extends Plot {
 	FloatList yos;
 	int bg;
 	
+	/**
+	 * The most basic of the DotPlot constructors.
+	 * @param p			PApplet, the parent of the sketch (usually "this")
+	 * @param ex		float, the x-coordinate of the center of the graph
+	 * @param why		float, the y-coordinate of the center of the graph
+	 */
+	DotPlot(PApplet p, float ex, float why) {
+		super(p, ex, why, p.createFont(REG_SANSS_TXT, REGTXTSIZE), REGTXTSIZE);
+		hratio = 1;
+		wratio = 1;
+		yos = new FloatList();
+		bg = g.color(250, 250, 250);
+	}
+	
+	/**
+	 * The most basic of the DotPlot constructors.
+	 * @param p			PApplet, the parent of the sketch (usually "this")
+	 * @param ex		float, the x-coordinate of the center of the graph
+	 * @param why		float, the y-coordinate of the center of the graph
+	 * @param f			PFont, the font used to draw all of the text for the graph
+	 * @param fsize		float, the size of the text desired
+	 */
+	DotPlot(PApplet p, float ex, float why, PFont f, float fsize) {
+		super(p, ex, why, f, fsize);
+		hratio = 1;
+		wratio = 1;
+		yos = new FloatList();
+		bg = g.color(250, 250, 250);
+	}
+	
 	DotPlot(PApplet p, float ex, float why, float w, float h, PFont f, float fsize) {
 		super(p, ex, why, f, fsize);
 		hratio = 1;
 		wratio = 1;
 		this.w = w;
 		this.h = h;
-		yos = new FloatList();
-		bg = g.color(250, 250, 250);
-	}
-	
-	DotPlot(PApplet p, float ex, float why, PFont f, float fsize) {
-		super(p, ex, why, f, fsize);
-		hratio = 1;
-		wratio = 1;
 		yos = new FloatList();
 		bg = g.color(250, 250, 250);
 	}
@@ -53,7 +75,7 @@ class DotPlot extends Plot {
 	}
 
 
-	void draw() {
+	public void draw() {
 		float radius = (w / 2) - 5 * wratio;
 		if (range() > 0) {
 			float r = radius;

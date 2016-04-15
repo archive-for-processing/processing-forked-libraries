@@ -1,7 +1,7 @@
 package funGUI;
 import processing.core.*;
 
-public class MenuItem extends ListItem implements PConstants {
+public class MenuItem extends ListItem {
 	Menu m;
 	int ordinal = 0;
 	public int alignment = CENTER;

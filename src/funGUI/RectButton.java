@@ -279,7 +279,7 @@ public class RectButton extends Button {
 
 	void rolled_over(float mX, float mY) {
 		//for the buttons that do NOT display messages when the user clicks on them
-		if (clickedButton()) {
+		if (clicked()) {
 			rollover = true;
 		} else {
 			rollover = false; //these buttons need to become false right when they are released
@@ -292,7 +292,7 @@ public class RectButton extends Button {
 	@Override
 	public boolean clicked(float mX, float mY) {
 		//for the buttons that do NOT display messages when the user clicks on them
-		return(clickedButton()); //these buttons need to become false right when they are released
+		return(clicked()); //these buttons need to become false right when they are released
 
 	}
 
@@ -301,7 +301,7 @@ public class RectButton extends Button {
 		scheme = newColors;
 	}
 
-	boolean clickedButton() {
+	public boolean clicked() {
 		return(xmin() < p.mouseX && xmax() > p.mouseX && ymin() < p.mouseY && ymax() > p.mouseY && p.mousePressed);
 	}
 

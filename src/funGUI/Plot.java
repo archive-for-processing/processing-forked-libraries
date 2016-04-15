@@ -2,7 +2,7 @@ package funGUI;
 import processing.core.*;
 import processing.data.FloatList;
 
-class Plot implements PConstants {
+class Plot extends Frame {
 	float x, y;
 	float q0, q1, q2, q3, q4;
 	float range, iqr;
@@ -104,6 +104,31 @@ class Plot implements PConstants {
 			}
 		}
 		return ints;
+	}
+
+	@Override
+	public float x() {
+		return x;
+	}
+
+	@Override
+	public float y() {
+		return y;
+	}
+
+	@Override
+	public float h() {
+		return h;
+	}
+
+	@Override
+	public float w() {
+		return w;
+	}
+
+	@Override
+	public String returnName() {
+		return("Plot");
 	}
 
 }

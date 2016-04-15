@@ -9,7 +9,6 @@ public class IntegerOutput extends SliderOutput {
 		
 	}
 
-	@Override
 	public float val() {
 		return(s.increment());
 	}

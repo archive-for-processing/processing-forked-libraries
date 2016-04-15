@@ -1,11 +1,25 @@
 package funGUI;
 
+/**
+ * The Display class represents a filled-in Frame.
+ * While a frame might be capable of describing
+ * an area to be filled in, the Display class goes
+ * into some more of the details. However, it's
+ * only meant to be a slightly more detailed outline
+ * than Frame is. For a display that is actually
+ * meant to be implemented, try the following
+ * classes: FunGUIFrame, TextDisplay, Graph, etc.
+ * @author Audrey Seo
+ *
+ */
 public class Display extends Frame {
 	protected String text, headline;
 	
 	
 	/**
-	 * Constructor for the Display class. Rarely used due to the absence of most implementation in the Display class.
+	 * The basic constructor for the Display class.
+	 * Rarely used due to the absence of most
+	 * implementation in the Display class.
 	 * @param x		float, the x-coordinate of the display's center
 	 * @param y		float, the y-coordinate of the display's center
 	 * @param w		float, the width of the display
@@ -39,6 +53,9 @@ public class Display extends Frame {
 	
 	/**
 	 * Displays the shape, text, etc. of the display.
+	 * It puts together the entire framework for the
+	 * structure of the way things are drawn for many
+	 * of the classes.
 	 */
 	@Override
 	public void draw() {

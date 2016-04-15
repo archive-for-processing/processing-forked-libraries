@@ -1,7 +1,7 @@
 package funGUI;
 import processing.core.*;
 
-public class NumOutput extends Frame implements PConstants {
+public class NumOutput extends Frame {
 	float val = 0.0f;
 	PFont font;
 	String label;

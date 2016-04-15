@@ -4,14 +4,6 @@ import processing.data.*;
 
 class BoxPlot extends Plot {
 	float hratio, wratio;
-	
-	BoxPlot(PApplet p, float ex, float why, float w, float h, PFont f, float fsize) {
-		super(p, ex, why, f, fsize);
-		this.w = w;
-		this.h = h;
-		hratio = 1;
-		wratio = 1;
-	}
 
 	BoxPlot(PApplet p, float ex, float why, PFont f, float fsize) {
 		super(p, ex, why, f, fsize);
@@ -23,6 +15,14 @@ class BoxPlot extends Plot {
 		super(p, ex, why, f, fsize);
 		hratio = hrat;
 		wratio = wrat;
+	}
+	
+	BoxPlot(PApplet p, float ex, float why, float w, float h, PFont f, float fsize) {
+		super(p, ex, why, f, fsize);
+		this.w = w;
+		this.h = h;
+		hratio = 1;
+		wratio = 1;
 	}
 
 	void update(float ex, float why, float wrat, float hrat) {

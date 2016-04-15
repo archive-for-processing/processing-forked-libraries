@@ -13,7 +13,7 @@ import processing.data.StringList;
  * @author Audrey Seo
  *
  */
-public class TextStrip implements PConstants {
+public class TextStrip extends Frame {
 	private float x, y;
 	private float w, h;
 	public String text;
@@ -73,7 +73,7 @@ public class TextStrip implements PConstants {
 		limit();
 	}
 
-	void display() {
+	protected void display() {
 		g.fill(255);
 		g.stroke(30);
 		g.rectMode(CENTER);
@@ -213,7 +213,7 @@ public class TextStrip implements PConstants {
 		return (lines.get(n));
 	}
 
-	public StringList record() {
+	public StringList recordStrings() {
 		return (lines.copy());
 	}
 
@@ -247,5 +247,30 @@ public class TextStrip implements PConstants {
 		g.textFont(font);
 //		textWidth = g.textWidth(text);
 		cursorTimer.reset();
+	}
+
+	@Override
+	public float x() {
+		return x;
+	}
+
+	@Override
+	public float y() {
+		return y;
+	}
+
+	@Override
+	public float h() {
+		return h;
+	}
+
+	@Override
+	public float w() {
+		return w;
+	}
+
+	@Override
+	public String returnName() {		
+		return "TextStrip";
 	}
 }

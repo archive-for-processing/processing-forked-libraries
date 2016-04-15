@@ -18,6 +18,11 @@ public class ListItem extends Frame {
 	protected float beginningW;
 	protected float beginningH;
 	
+	public ListItem(PApplet p, float ex, float why, String label, float width) {
+		init(p, ex, why, label);
+		this.widthLimit = width;
+	}
+	
 	public ListItem(PApplet p, float ex, float why, String label, int numColumns, float width) {
 		init(p, ex, why, label);
 		this.widthLimit = width / numColumns;
