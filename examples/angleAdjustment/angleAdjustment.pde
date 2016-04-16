@@ -4,6 +4,7 @@ Slider theta;
 
 void setup() {
   size(300, 320);
+  // Make a default slider that only determines a percentage
   theta = new Slider(this, width / 2, height - 20, 100, "Theta");
 }
 

@@ -40,6 +40,10 @@ public class NumOutput extends Frame {
 //		PApplet.println("finished init");
 	}
 	
+	public void label(String newLabel) {
+		label = newLabel;
+	}
+	
 //	public void draw(float text) {
 //		g.pushStyle();
 //		g.fill(255);
@@ -56,17 +60,44 @@ public class NumOutput extends Frame {
 	@Override
 	protected void display() {
 //		PApplet.println("displayed");
+		g.textFont(font);
+		float x0 = x() + xOffset();
+		float y0 = yCenter();
 		g.pushStyle();
 		g.fill(255);
 		g.stroke(0);
 		g.rectMode(CENTER);
-		g.rect(x, y, w, h);
+		g.rect(x0, y0, w, h);
 		g.fill(30);
 		g.textFont(font);
 		g.textAlign(LEFT, CENTER);
-		g.text(val, x - (w * .45f), y);
+		g.text(val, xLeft(), y0);
 		g.popStyle();
 //		PApplet.println("done displaying");
+	}
+	
+	protected float xOffset() {
+		g.textFont(font);
+		return((label != null) ? (w + g.textWidth(label) + 30) * .25f : 0);
+	}
+	protected float yCenter() {
+		return(y);
+	}
+	
+	protected float xLeft() {
+		return(x - (w * .45f) + xOffset());
+	}
+	
+	@Override
+	protected void text() {
+		if (label != null) {
+			g.pushStyle();
+			g.textFont(font);
+			g.textAlign(CENTER, CENTER);
+			g.fill(30);
+			g.text(label, x() - xOffset(), y());
+			g.popStyle();
+		}
 	}
 	
 	float val() {

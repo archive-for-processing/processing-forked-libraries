@@ -22,41 +22,28 @@ public class DropDownMenu extends Menu implements PConstants {
 	
 	public DropDownMenu(PApplet p, float ex, float why, String [] optionLabels) {
 		super(p, ex, why, optionLabels, "");
-		this.items = new DropDownMenuItem [optionLabels.length];
-		PFont font = this.p.createFont(REG_SANSS_TXT, REGTXTSIZE);
-		p.textFont(font);
-		FloatList textSizes = new FloatList();
-		for (int i = 0; i < optionLabels.length; i++) {
-			textSizes.append((float) (p.g.textWidth(optionLabels[i]) * 1.2));
-		}
-		for (int i = 0; i < optionLabels.length; i++) {
-			items[i] = new DropDownMenuItem(p, ex, why, optionLabels[i], 1, textSizes.max(), i, this);
-		}
-		
-		this.w = items[0].w;
-		this.h = optionLabels.length * 20;
-		this.g = this.p.g;
-		this.x = ex;
-		this.y = why;
+		init(ex, why, optionLabels);
+//		this.items = new DropDownMenuItem [optionLabels.length];
+//		PFont font = this.p.createFont(REG_SANSS_TXT, REGTXTSIZE);
+//		p.textFont(font);
+//		FloatList textSizes = new FloatList();
+//		for (int i = 0; i < optionLabels.length; i++) {
+//			textSizes.append((float) (p.g.textWidth(optionLabels[i]) * 1.2));
+//		}
+//		for (int i = 0; i < optionLabels.length; i++) {
+//			items[i] = new DropDownMenuItem(p, ex, why, optionLabels[i], 1, textSizes.max(), i, this);
+//		}
+//		
+//		this.w = items[0].w;
+//		this.h = optionLabels.length * 20;
+//		this.g = this.p.g;
+//		this.x = ex;
+//		this.y = why;
 	}
 	
 	public DropDownMenu(PApplet p, float ex, float why, String [] optionLabels, String t) {
 		super(p, ex, why, optionLabels, t);
-		this.items = new DropDownMenuItem [optionLabels.length];
-		PFont font = this.p.createFont("Helvetica", 13);
-		p.textFont(font);
-		FloatList textSizes = new FloatList();
-		for (int i = 0; i < optionLabels.length; i++) {
-			textSizes.append((float) (p.g.textWidth(optionLabels[i]) * 1.2));
-		}
-		for (int i = 0; i < optionLabels.length; i++) {
-			items[i] = new DropDownMenuItem(p, ex, why, optionLabels[i], 1, textSizes.max(), i, this);
-		}
-		
-		w = items[0].w;
-		this.g = this.p.g;
-		x = ex;
-		y = why;
+		init(ex, why, optionLabels);
 	}
 	
 	@Override
@@ -102,18 +89,19 @@ public class DropDownMenu extends Menu implements PConstants {
 	@Override
 	protected void mutuallyExclusive(int i) {
 		if (items[i].selected) {
-			if (selectedOption < 0) {
-				selectedOption = i;
-				if (dropDownSelected) {
-					dropDownSelected = false;
-				}
-			} else if (selectedOption != i) {
-				items[selectedOption].selected = false;
+			if (selectedOption < 0 || selectedOption != i) {
 				selectedOption = i;
 				if (dropDownSelected) {
 					dropDownSelected = false;
 				}
 			}
+//			else if (selectedOption != i) {
+//				items[selectedOption].selected = false;
+//				selectedOption = i;
+//				if (dropDownSelected) {
+//					dropDownSelected = false;
+//				}
+//			}
 		}
 	}
 	
@@ -132,5 +120,23 @@ public class DropDownMenu extends Menu implements PConstants {
 		float amt = 5;
 		return(p.mouseX > x1 - amt && p.mouseX < x1 + amt && p.mouseY > y1 - amt && p.mouseY < y1 + amt && p.mousePressed);
 
+	}
+	
+	void init(float ex, float why, String [] optionLabels) {
+		this.items = new DropDownMenuItem [optionLabels.length];
+		PFont font = this.p.createFont(REG_SANSS_TXT, REGTXTSIZE);
+		p.textFont(font);
+		FloatList textSizes = new FloatList();
+		for (int i = 0; i < optionLabels.length; i++) {
+			textSizes.append((float) (p.g.textWidth(optionLabels[i]) * 1.2));
+		}
+		for (int i = 0; i < optionLabels.length; i++) {
+			items[i] = new DropDownMenuItem(p, ex, why, optionLabels[i], 1, textSizes.max(), i, this);
+		}
+		this.h = optionLabels.length * 20;
+		this.w = items[0].w;
+		this.g = this.p.g;
+		x = ex;
+		y = why;
 	}
 }

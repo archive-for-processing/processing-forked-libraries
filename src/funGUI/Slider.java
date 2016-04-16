@@ -138,7 +138,13 @@ public class Slider extends Frame implements PConstants {
 			total = PApplet.round(range());
 		}
 		float step = (float) (((x + w * .45) - xi) / total);
+		float exp = (float) Math.log10(total);
+		int apprxExp = Math.round(exp);
 		float a = (step < 10) ? 2.5f : 1f;
+		if (apprxExp >= 2) {
+			step = (float) ((w * .9) / 10);
+			a = 1f;
+		}
 		for (int i = 0; i < ((w * .9) / (a * step)) + 1; i++) {
 			g.fill(30);
 			g.strokeWeight((float) (1.5));
@@ -147,7 +153,7 @@ public class Slider extends Frame implements PConstants {
 			g.rect(xi + step * a * i, y, 2, 10);
 		}
 		g.strokeWeight(3);
-		g.line(xi, y, xi + step * total, y);
+		g.line(xi, y, xi + w * .9f, y);
 		g.popStyle();
 	}
 
