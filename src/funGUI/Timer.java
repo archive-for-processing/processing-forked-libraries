@@ -84,4 +84,12 @@ public class Timer {
 			return (endtime - p.millis());
 		return (0);
 	}
+	
+	/**
+	 * Returns the difference between the ending time and the current time.
+	 * @return	int, the absolute number of milliseconds elapsed
+	 */
+	public int absTimeLeft() {
+		return(Math.abs(endtime - p.millis()));
+	}
 }

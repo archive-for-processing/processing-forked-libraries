@@ -15,7 +15,7 @@ import processing.data.*;
  * @author Audrey Seo
  *
  */
-public class TextBox implements PConstants {
+public class TextBox extends Frame {
 	private float x, y;
 	private float w, h;
 	public String text;
@@ -82,8 +82,9 @@ public class TextBox implements PConstants {
 		display();
 		limit();
 	}
-
-	void display() {
+	
+	@Override
+	protected void display() {
 		g.pushStyle();
 		textBox();
 
@@ -319,7 +320,7 @@ public class TextBox implements PConstants {
 		return(paragraph.get(n));
 	}
 
-	public StringList record() {
+	public StringList recordStrings() {
 		return(paragraph.copy());
 	}
 
@@ -365,5 +366,16 @@ public class TextBox implements PConstants {
 //		textWidth = g.textWidth(text);
 		cursorTimer.reset();
 		this.fontSize = fontSize;
+	}
+
+	@Override
+	public String returnName() {
+		return "TextBox";
+	}
+
+	@Override
+	public void record() {
+		PApplet.println("FunGUIObject: " + returnName());
+		
 	}
 }

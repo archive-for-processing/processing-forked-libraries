@@ -59,8 +59,8 @@ public class ToggleButton extends Button implements PConstants {
 	void position() {
 		g.textFont(font);
 		float tw = g.textWidth(label);
-		float half_w = 40 + 20;
-		trueWidth = tw + half_w + 30;
+		float buttonWidth = 40 + 20;
+		trueWidth = tw + buttonWidth + 30;
 //		float wi = tw + half_w + 30; // 30 pixels of padding in between
 //		this.xOffset = 1 - ((tw+15) / wi);
 		this.xOffset = .5f; //PApplet.abs(1  - (tw / (2 * half_w)));

@@ -13,7 +13,7 @@ import processing.data.StringList;
  * @author Audrey Seo
  *
  */
-public class TextScroll implements PConstants {
+public class TextScroll extends Frame {
 	private float x, y;
 	private float w, h;
 	public String text;
@@ -72,8 +72,9 @@ public class TextScroll implements PConstants {
 		display();
 		limit();
 	}
-
-	void display() {
+	
+	@Override
+	protected void display() {
 		g.fill(255);
 		g.stroke(30);
 		g.rectMode(CENTER);
@@ -223,7 +224,7 @@ public class TextScroll implements PConstants {
 		return (lines.get(n));
 	}
 
-	public StringList record() {
+	public StringList recordStrings() {
 		return (lines.copy());
 	}
 
@@ -257,5 +258,40 @@ public class TextScroll implements PConstants {
 		g.textFont(font);
 //		textWidth = g.textWidth(text);
 		cursorTimer.reset();
+	}
+
+	@Override
+	public float x() {
+		return x;
+	}
+
+	@Override
+	public float y() {
+		return y;
+	}
+
+	@Override
+	public float h() {
+		return h;
+	}
+
+	@Override
+	public float w() {
+		return w;
+	}
+
+	@Override
+	public String returnName() {
+		return "TextScroll";
+	}
+
+	@Override
+	public void record() {
+		PApplet.println("FunGUIObject: " + returnName());
+	}
+
+	@Override
+	public void record(String s) {
+		PApplet.println("FunGUIObject: " + returnName() + ": " + s);
 	}
 }
