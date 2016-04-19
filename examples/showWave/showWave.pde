@@ -54,7 +54,10 @@ void drawWave() {
       // The x-coordinates
       float x0 = map(th, 0, TWO_PI, 0, width);
       float x1 = map(th - increment, 0, TWO_PI, 0, width);
+      
       // The y-coordinates
+      //        center y + max-amplitude * a number -1 to 1 * sin((0-100π) * theta)
+      // In this format:  y = yi + A * sin(B*theta)
       float y0 = yi + 100 * amplitude.p() * sin(period.p() * (theta + th));
       float y1 = yi + 100 * amplitude.p() * sin(period.p() * (theta + (th - increment)));
       
