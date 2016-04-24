@@ -64,12 +64,15 @@ public abstract class Particle {
 
 	}
 
-	private static class Recycler extends Particle {
-		private final static Particle mCycleBin = new Recycler(null);
+	private static class Recycler {
+		private final static Particle mCycleBin = new Particle(null) {
+			@Override
+			public void display() {
+			}
+		};
 
-		public Recycler(PApplet p) {
-			super(p);
-			mCycleBin.mCurrent = this;
+		public Recycler() {
+			mCycleBin.mCurrent = mCycleBin;
 		}
 
 		public static void recycle(Particle p) {
@@ -87,10 +90,6 @@ public abstract class Particle {
 			temp.mNext = null;
 
 			return temp;
-		}
-
-		@Override
-		public void display() {
 		}
 
 	}
