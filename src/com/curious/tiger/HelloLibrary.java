@@ -1,4 +1,4 @@
-package template.library;
+package com.curious.tiger;
 
 
 import processing.core.*;

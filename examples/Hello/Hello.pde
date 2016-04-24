@@ -1,4 +1,4 @@
-import template.library.*;
+import com.curious.tiger.*;
 
 HelloLibrary hello;
 
