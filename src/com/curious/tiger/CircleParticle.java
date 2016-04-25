@@ -49,13 +49,50 @@ public class CircleParticle extends Particle implements Alive {
 
 	@Override
 	public int getLifeTime() {
-		// TODO Auto-generated method stub
 		return mLife;
 	}
 
 	@Override
 	public void setLifeTime(int life) {
 		mLife = life;
+
+	}
+
+	public void recycle() {
+		Recycler.recycle(this);
+	}
+
+	public static CircleParticle get() {
+		return Recycler.get() == null ? null : (CircleParticle) Recycler.get();
+	}
+
+	private static class Recycler {
+		private final static Particle mCycleBin = new Particle(null) {
+			@Override
+			public void display() {
+			}
+		};
+
+		public Recycler() {
+			mCycleBin.mCurrent = mCycleBin;
+		}
+
+		public static void recycle(Particle p) {
+			p.mNext = mCycleBin.mCurrent;
+			mCycleBin.mCurrent = p;
+		}
+
+		public static Particle get() {
+			if (mCycleBin.mCurrent == mCycleBin) {
+				return null;
+			}
+
+			Particle temp = mCycleBin.mCurrent;
+			mCycleBin.mCurrent = temp.mNext;
+			temp.mNext = null;
+
+			return temp;
+		}
 
 	}
 

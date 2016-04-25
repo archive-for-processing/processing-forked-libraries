@@ -3,54 +3,27 @@ package com.curious.tiger;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public abstract class Particle {
+public abstract class Particle extends Mover {
 
 	protected Particle mNext = null;
 	protected Particle mCurrent = null;
 
-	protected PApplet mApplet;
-
-	protected PVector mLocation;
-	protected PVector mVelocity;
-	protected PVector mAcceleration;
-
-	protected float mass = 1.0f;
-
 	public Particle(PApplet p) {
-		mApplet = p;
+		super(p);
 	}
 
 	public Particle(PApplet p, float mass) {
-		mApplet = p;
+		super(p);
 		this.mass = mass;
 	}
 
 	public Particle(PApplet p, PVector loc, PVector vel, PVector acc) {
-		this(p);
-		mLocation = loc.get();
-		mVelocity = vel.get();
-		mAcceleration = acc.get();
+		super(p, loc, vel, acc);
 	}
 
 	public Particle(PApplet p, float mass, PVector loc, PVector vel, PVector acc) {
-		this(p);
-		mLocation = loc.get();
-		mVelocity = vel.get();
-		mAcceleration = acc.get();
+		super(p, loc, vel, acc);
 		this.mass = mass;
-	}
-
-	public void update() {
-		mLocation.add(mVelocity);
-		mVelocity.add(mAcceleration);
-		mAcceleration.mult(0);
-	}
-
-	public void applyForce(PVector force) {
-		PVector a = force.get();
-		a.div(mass);
-		mAcceleration.add(a);
-
 	}
 
 	public abstract void display();
@@ -61,7 +34,6 @@ public abstract class Particle {
 
 	public static Particle get() {
 		return Recycler.get();
-
 	}
 
 	private static class Recycler {

@@ -5,9 +5,14 @@ import java.util.Iterator;
 
 import processing.core.PVector;
 
-public class ParticleSystem {
+public abstract class ParticleSystem {
 
-	private ArrayList<Particle> mParticles = new ArrayList<Particle>();
+	protected ArrayList<Particle> mParticles = new ArrayList<Particle>();
+	protected Mover mover;
+
+	public ParticleSystem(Mover m) {
+		mover = m;
+	}
 
 	public void applyForce(PVector force) {
 		if (mParticles.isEmpty()) {
@@ -18,6 +23,12 @@ public class ParticleSystem {
 			p.applyForce(force);
 		}
 	}
+
+	private void appendParticle(Particle p) {
+		mParticles.add(p);
+	}
+
+	public abstract void addParticle();
 
 	public void run() {
 		if (mParticles.isEmpty()) {
