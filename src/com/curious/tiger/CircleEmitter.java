@@ -3,15 +3,10 @@ package com.curious.tiger;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class CircleEmitter extends Emitter {
+public class CircleEmitter extends Mover implements Emitter {
 
 	public CircleEmitter(PApplet p) {
 		super(p);
-		// TODO Auto-generated constructor stub
-	}
-
-	public CircleEmitter(PApplet p, PVector loc, PVector vel, PVector acc) {
-		super(p, loc, vel, acc);
 		// TODO Auto-generated constructor stub
 	}
 
