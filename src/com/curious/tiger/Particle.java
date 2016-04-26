@@ -8,6 +8,8 @@ public abstract class Particle extends Mover {
 	protected Particle mNext = null;
 	protected Particle mCurrent = null;
 
+	protected int mFillColor = 125;
+
 	public Particle(PApplet p) {
 		super(p);
 	}
@@ -28,6 +30,18 @@ public abstract class Particle extends Mover {
 
 	public abstract void display();
 
+	public void restore() {
+
+	}
+
+	public int getFillColor() {
+		return mFillColor;
+	}
+
+	public void setFillColor(int mFillColor) {
+		this.mFillColor = mFillColor;
+	}
+
 	public void recycle() {
 		Recycler.recycle(this);
 	}
@@ -44,10 +58,14 @@ public abstract class Particle extends Mover {
 		};
 
 		public Recycler() {
+		}
+
+		static {
 			mCycleBin.mCurrent = mCycleBin;
 		}
 
 		public static void recycle(Particle p) {
+			p.restore();
 			p.mNext = mCycleBin.mCurrent;
 			mCycleBin.mCurrent = p;
 		}

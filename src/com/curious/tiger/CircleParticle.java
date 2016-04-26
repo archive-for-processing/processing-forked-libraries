@@ -4,9 +4,10 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class CircleParticle extends Particle implements Alive {
+	final static int DEFAULT_LIFE = 255;
 
 	private float mRadius = 5;
-	private int mLife = 255;
+	private int mLife = DEFAULT_LIFE;
 
 	public CircleParticle(PApplet p, PVector loc, PVector vel, PVector acc) {
 		super(p, loc, vel, acc);
@@ -22,6 +23,10 @@ public class CircleParticle extends Particle implements Alive {
 		mRadius = radius;
 	}
 
+	public void restore() {
+		mLife = DEFAULT_LIFE;
+	}
+
 	public void update() {
 		super.update();
 		mLife -= 2;
@@ -32,8 +37,9 @@ public class CircleParticle extends Particle implements Alive {
 
 		mApplet.pushMatrix();
 		mApplet.translate(mLocation.x, mLocation.y);
-		mApplet.fill(125, mLife);
-		mApplet.stroke(0, mLife);
+
+		mApplet.fill(mApplet.color(mFillColor, mLife));
+		// mApplet.stroke(0, mLife);
 		mApplet.ellipse(0, 0, mRadius * 2, mRadius * 2);
 		mApplet.popMatrix();
 
@@ -63,7 +69,8 @@ public class CircleParticle extends Particle implements Alive {
 	}
 
 	public static CircleParticle get() {
-		return Recycler.get() == null ? null : (CircleParticle) Recycler.get();
+		Particle p = Recycler.get();
+		return p == null ? null : (CircleParticle) p;
 	}
 
 	private static class Recycler {
@@ -73,11 +80,12 @@ public class CircleParticle extends Particle implements Alive {
 			}
 		};
 
-		public Recycler() {
+		static {
 			mCycleBin.mCurrent = mCycleBin;
 		}
 
 		public static void recycle(Particle p) {
+			p.restore();
 			p.mNext = mCycleBin.mCurrent;
 			mCycleBin.mCurrent = p;
 		}
