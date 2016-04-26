@@ -3,7 +3,9 @@ package com.curious.tiger;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public abstract class Particle extends Mover {
+public abstract class Particle extends Mover implements Alive {
+	final static int DEFAULT_LIFE = 255;
+	protected int mLife = DEFAULT_LIFE;
 
 	protected Particle mNext = null;
 	protected Particle mCurrent = null;
@@ -26,6 +28,25 @@ public abstract class Particle extends Mover {
 	public Particle(PApplet p, float mass, PVector loc, PVector vel, PVector acc) {
 		super(p, loc, vel, acc);
 		this.mass = mass;
+	}
+
+	@Override
+	public boolean isDead() {
+		if (mLife <= 0) {
+			return true;
+		} else
+			return false;
+	}
+
+	@Override
+	public int getLifeTime() {
+		return mLife;
+	}
+
+	@Override
+	public void setLifeTime(int life) {
+		mLife = life;
+
 	}
 
 	public abstract void display();
@@ -56,9 +77,6 @@ public abstract class Particle extends Mover {
 			public void display() {
 			}
 		};
-
-		public Recycler() {
-		}
 
 		static {
 			mCycleBin.mCurrent = mCycleBin;

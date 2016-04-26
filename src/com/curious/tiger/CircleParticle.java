@@ -3,11 +3,9 @@ package com.curious.tiger;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class CircleParticle extends Particle implements Alive {
-	final static int DEFAULT_LIFE = 255;
+public class CircleParticle extends Particle {
 
 	private float mRadius = 5;
-	private int mLife = DEFAULT_LIFE;
 
 	public CircleParticle(PApplet p, PVector loc, PVector vel, PVector acc) {
 		super(p, loc, vel, acc);
@@ -42,25 +40,6 @@ public class CircleParticle extends Particle implements Alive {
 		// mApplet.stroke(0, mLife);
 		mApplet.ellipse(0, 0, mRadius * 2, mRadius * 2);
 		mApplet.popMatrix();
-
-	}
-
-	@Override
-	public boolean isDead() {
-		if (mLife <= 0) {
-			return true;
-		} else
-			return false;
-	}
-
-	@Override
-	public int getLifeTime() {
-		return mLife;
-	}
-
-	@Override
-	public void setLifeTime(int life) {
-		mLife = life;
 
 	}
 
