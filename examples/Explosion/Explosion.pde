@@ -1,6 +1,6 @@
 import com.curious.tiger.*;
 
-Emitter m;
+CircleEmitter m;
 ParticleSystem ps;
 PVector mGravity;
 
