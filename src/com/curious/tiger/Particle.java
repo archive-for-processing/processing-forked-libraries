@@ -10,7 +10,7 @@ public abstract class Particle extends Mover implements Alive {
 	protected Particle mNext = null;
 	protected Particle mCurrent = null;
 
-	protected int mFillColor = 125;
+	protected int mFillColor = 167;
 
 	public Particle(PApplet p) {
 		super(p);
@@ -52,7 +52,7 @@ public abstract class Particle extends Mover implements Alive {
 	public abstract void display();
 
 	public void restore() {
-
+		mLife = DEFAULT_LIFE;
 	}
 
 	public int getFillColor() {

@@ -21,10 +21,6 @@ public class CircleParticle extends Particle {
 		mRadius = radius;
 	}
 
-	public void restore() {
-		mLife = DEFAULT_LIFE;
-	}
-
 	public void update() {
 		super.update();
 		mLife -= 2;
@@ -35,12 +31,20 @@ public class CircleParticle extends Particle {
 
 		mApplet.pushMatrix();
 		mApplet.translate(mLocation.x, mLocation.y);
-
+		mApplet.noStroke();
 		mApplet.fill(mApplet.color(mFillColor, mLife));
 		// mApplet.stroke(0, mLife);
 		mApplet.ellipse(0, 0, mRadius * 2, mRadius * 2);
 		mApplet.popMatrix();
 
+	}
+
+	public float getRadius() {
+		return mRadius;
+	}
+
+	public void setRadius(float mRadius) {
+		this.mRadius = mRadius;
 	}
 
 	public void recycle() {
