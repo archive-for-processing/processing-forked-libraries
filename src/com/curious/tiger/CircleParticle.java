@@ -5,7 +5,7 @@ import processing.core.PVector;
 
 public class CircleParticle extends Particle {
 
-	private float mRadius = 5;
+	protected float mRadius = 5;
 
 	public CircleParticle(PApplet p, PVector loc, PVector vel, PVector acc) {
 		super(p, loc, vel, acc);

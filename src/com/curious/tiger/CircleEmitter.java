@@ -11,7 +11,6 @@ public class CircleEmitter extends Mover implements Emitter {
 
 	public CircleEmitter(PApplet p) {
 		super(p);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -31,7 +30,6 @@ public class CircleEmitter extends Mover implements Emitter {
 		return cp;
 	}
 
-	@Override
 	public PVector getRandomSize() {
 		int size = (int) (mRandom.nextGaussian() * 5 + 2);
 		return new PVector(size, size);

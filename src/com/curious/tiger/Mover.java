@@ -12,6 +12,7 @@ public class Mover {
 	protected PVector mAcceleration = new PVector();
 
 	protected float mass = 1.0f;
+	protected int mFillColor = 167;
 
 	public Mover(PApplet p) {
 		mApplet = p;
@@ -35,6 +36,14 @@ public class Mover {
 		a.div(mass);
 		mAcceleration.add(a);
 
+	}
+
+	public int getFillColor() {
+		return mFillColor;
+	}
+
+	public void setFillColor(int mFillColor) {
+		this.mFillColor = mFillColor;
 	}
 
 	public PApplet getPApplet() {
