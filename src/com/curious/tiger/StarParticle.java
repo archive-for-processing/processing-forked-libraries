@@ -31,18 +31,22 @@ public class StarParticle extends CircleParticle {
 		mApplet.translate(mLocation.x, mLocation.y);
 		mApplet.rotate(mAngle);
 
-		mApplet.stroke(0, 167, 0);
-		mApplet.line(-mRadius, 0, mRadius, 0);
-		mApplet.line(0, -mRadius, 0, mRadius);
+		// mApplet.stroke(0, 167, 0);
+		// mApplet.line(-mRadius, 0, mRadius, 0);
+		// mApplet.line(0, -mRadius, 0, mRadius);
 
-		mApplet.stroke(mApplet.color(255, 0, 0));
-		mApplet.ellipse(0, 0, mRadius * 2, mRadius * 2);
+		// mApplet.noFill();
+		// mApplet.stroke(mApplet.color(255, 0, 0));
+		// mApplet.ellipse(0, 0, mRadius * 2, mRadius * 2);
 
-		mApplet.stroke(mApplet.color(0, 127));
+		// mApplet.stroke(mApplet.color(0, 127));
+		mApplet.noStroke();
+		mApplet.fill(mFillColor);
 		mApplet.beginShape();
-		for (int i = 0; i < 5; i++) {
-			mApplet.vertex(mPoints[i].x, mPoints[i].y);
+		for (int i = 0; i < 10; i += 2) {
+			mApplet.vertex(mPoints[i % 5].x, mPoints[i % 5].y);
 		}
+
 		mApplet.vertex(mPoints[0].x, mPoints[0].y);
 		mApplet.endShape();
 
