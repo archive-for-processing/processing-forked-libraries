@@ -3,6 +3,17 @@ import processing.core.*;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
+/**
+ * Serves as an actually functional calculator in whatever
+ * GUI interface you need. Very basic, four-functions only:
+ * adding, subtracting, multiplying, and dividing. Also
+ * cannot carry over the last answer. However, it also has
+ * a very functional clearing button. This also serves as
+ * an example of what one may do with the different
+ * components included in the FunGUI library.
+ * @author audrey
+ *
+ */
 public class Calculator extends Frame {
 	RoundButton [][] nums = new RoundButton [3][4];
 	RoundToggleButton [] operations = new RoundToggleButton[4];
@@ -17,6 +28,14 @@ public class Calculator extends Frame {
 	boolean runButtons = false;
 	boolean runKeys = false;
 	
+	/**
+	 * Constructor of the class.
+	 * @param p		PApplet, the parent of the sketch, usually "this"
+	 * @param x		float, the x-coordinate of the center of the calculator
+	 * @param y		float, the y-coordinate of the center of the calculator
+	 * @param w		float, the length along the x-axis of the calculator
+	 * @param h		float, the length along the y-axis of the calculator
+	 */
 	public Calculator(PApplet p, float x, float y, float w, float h) {
 		this.p = p;
 		this.g = p.g;
@@ -55,8 +74,9 @@ public class Calculator extends Frame {
 		p.registerMethod("mouseEvent", this);
 	}
 	
+
 	@Override
-	public void display() {
+	protected void display() {
 		equals.draw();
 		for (int i = 0; i < nums.length; i++) {
 			for (int j = 0; j < nums[i].length; j++) {
@@ -77,7 +97,7 @@ public class Calculator extends Frame {
 	}
 	
 	@Override
-	public void text() {
+	protected void text() {
 		g.pushStyle();
 //		g.textFont(font);
 //		g.textAlign(CENTER, CENTER);
@@ -139,6 +159,11 @@ public class Calculator extends Frame {
 		}
 	}
 	
+	/**
+	 * Triggered when a key event occurs. This should only
+	 * be called by the sketch itself.
+	 * @param k		KeyEvent, the keyboard event that just happened
+	 */
 	public void keyEvent(KeyEvent k) {
 		if ((k.getKey() == ENTER || k.getKey() == RETURN) && k.getAction() == KeyEvent.RELEASE) {
 //			equate();
@@ -146,13 +171,22 @@ public class Calculator extends Frame {
 		}
 	}
 	
+	/**
+	 * Triggered when a mouse event (clicking, releasing,
+	 * etc.) This is only meant to be called by the sketch
+	 * itself.
+	 * @param m		MouseEvent, the mouse event that just occurred
+	 */
 	public void mouseEvent(MouseEvent m) {
 		if (m.getAction() == MouseEvent.PRESS) {
 			runButtons = true;
-//			buttons();
 		}
 	}
 	
+	/**
+	 * Checks the buttons to see if any other functions
+	 * need to be called.
+	 */
 	public void buttons() {
 //		record("Start buttons");
 		if (equals != null) {
