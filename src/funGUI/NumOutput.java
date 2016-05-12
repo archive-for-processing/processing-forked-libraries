@@ -81,7 +81,7 @@ public class NumOutput extends Frame {
 		g.fill(30);
 		g.textFont(font);
 		g.textAlign(LEFT, CENTER);
-		g.text(val, xLeft(), y0);
+		g.text(value(), xLeft(), y0);
 		g.popStyle();
 //		PApplet.println("done displaying");
 	}
