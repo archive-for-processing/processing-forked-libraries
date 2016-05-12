@@ -103,7 +103,8 @@ public class RoundedRectButton extends RectButton implements PConstants {
 		g.noStroke();
 		g.fill(outside);
 //		if (printing) PApplet.println("BackShape - Before");
-		backShape(x(), y(), w(), h());
+//		backShape(x(), y(), w(), h());
+		backShape(x(),y(), w(), h(), r());
 //		if (printing) PApplet.println("BackShape- After");
 		g.popStyle();
 //		float insideW, insideH;
@@ -115,17 +116,16 @@ public class RoundedRectButton extends RectButton implements PConstants {
 		g.rectMode(CENTER);
 		g.noStroke();
 		g.fill(inside);
-		this.innerBackShape(x(), y(), iw(), ih());
-		g.fill(0);
+//		innerBackShape(x(), y(), iw(), ih());\
+		backShape(x(), y(), iw(), ih(), ir());
 		g.popStyle();
 	}
-
-	@Override
-	public void backShape(float xi, float yi, float wi, float hi) {
+	
+	void backOutline(float xi, float yi, float wi, float hi, float r) {
 		float wi2 = (float) (wi * .5);
 		float hi2 = (float) (hi * .5);
-		float partialW = (float) (wi2 - r());
-		float partialH = (float) (hi2 - r());
+		float partialW = (float) (wi2 - r);
+		float partialH = (float) (hi2 - r);
 		//PApplet.println("PartialW: " + partialW);
 		float x1a = xi - wi2;
 		float x1b = xi - partialW;
@@ -155,21 +155,25 @@ public class RoundedRectButton extends RectButton implements PConstants {
 		g.vertex(x2a, y1b);
 		g.vertex(x2b, y1a);
 		g.endShape(CLOSE);
+	}
+	
+	void backCorners(float xi, float yi, float wi, float hi, float r) {
+		float wi2 = (float) (wi * .5);
+		float hi2 = (float) (hi * .5);
+
+		float x1a = xi - wi2;		
+		float x2a = xi + wi2;		
+		float y1a = yi - hi2;		
+		float y2a = yi + hi2;
 		
-//		float diameter = (float) (PApplet.dist(0, 0, r(), r()));
-		float diameter = r() * 2;
-		float radius = diameter * .5f;
+		float diameter = r * 2;
+		float radius = r;
 		float xa = x1a + radius;
 		float xb = x2a - radius;
 		float ya = y1a + radius;
 		float yb = y2a - radius;
 		
-		
-		//float theta = 0;
-//		float dth = HALF_PI;
 		float dth = 0;
-		// First corner - arc
-//		if (printing) PApplet.println("dth???:     " + dth);
 		g.arc(xa, ya, diameter, diameter, PI - dth, 3 * HALF_PI + dth, CHORD);
 		
 		// Second corner - arc
@@ -180,6 +184,70 @@ public class RoundedRectButton extends RectButton implements PConstants {
 		
 		// Fourth corner - arc
 		g.arc(xb, ya, diameter, diameter, -HALF_PI - dth, dth, CHORD);
+	}
+
+	public void backShape(float xi, float yi, float wi, float hi, float r) {
+		backOutline(xi, yi, wi, hi, r);
+		backCorners(xi, yi, wi, hi, r);
+		
+//		float wi2 = (float) (wi * .5);
+//		float hi2 = (float) (hi * .5);
+//		float partialW = (float) (wi2 - r());
+//		float partialH = (float) (hi2 - r());
+//		//PApplet.println("PartialW: " + partialW);
+//		float x1a = xi - wi2;
+//		float x1b = xi - partialW;
+//		
+//		float x2a = xi + wi2;
+//		float x2b = xi + partialW;
+//		
+//		float y1a = yi - hi2;
+//		float y1b = yi - partialH;
+//		
+//		float y2a = yi + hi2;
+//		float y2b = yi + partialH;
+//		
+//		g.beginShape();
+//		// First corner
+//		g.vertex(x1b, y1a);
+//		g.vertex(x1a, y1b);
+//		
+//		// Second corner
+//		g.vertex(x1a, y2b);
+//		g.vertex(x1b, y2a);
+//		// Third corner
+//		g.vertex(x2b, y2a);
+//		g.vertex(x2a, y2b);
+//		
+//		// Fourth corner
+//		g.vertex(x2a, y1b);
+//		g.vertex(x2b, y1a);
+//		g.endShape(CLOSE);
+//		
+////		float diameter = (float) (PApplet.dist(0, 0, r(), r()));
+//		float diameter = r() * 2;
+//		float radius = diameter * .5f;
+//		float xa = x1a + radius;
+//		float xb = x2a - radius;
+//		float ya = y1a + radius;
+//		float yb = y2a - radius;
+//		
+//		
+//		//float theta = 0;
+////		float dth = HALF_PI;
+//		float dth = 0;
+//		// First corner - arc
+////		if (printing) PApplet.println("dth???:     " + dth);
+//		g.arc(xa, ya, diameter, diameter, PI - dth, 3 * HALF_PI + dth, CHORD);
+//		
+//		// Second corner - arc
+//		g.arc(xa, yb, diameter, diameter, HALF_PI - dth, PI + dth, CHORD);
+//		
+//		// Third corner - arc
+//		g.arc(xb, yb, diameter, diameter, -dth, HALF_PI + dth, CHORD);
+//		
+//		// Fourth corner - arc
+//		g.arc(xb, ya, diameter, diameter, -HALF_PI - dth, dth, CHORD);
 	}
 	
 	@Override

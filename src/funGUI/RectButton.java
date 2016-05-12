@@ -52,6 +52,8 @@ public class RectButton extends Button {
 	PApplet p;
 	PGraphics g;
 	
+
+	
 	/**
 	 * Constructor of a rectangular button.
 	 * @param p			PApplet, the parent of the sketch, usually "this"
@@ -63,25 +65,11 @@ public class RectButton extends Button {
 	 * @param ntext		String, the label for the button
 	 */
 	public RectButton(PApplet p, float nx, float ny, float nw, float nh, String ntext) {
-		wid = 20 / w;
-		hei = 20 / h;
-		this.x = nx;
-		this.y = ny;
-		this.w = nw;
-		this.h = nh;
-		this.p = p;
-		this.g = p.g;
-		if (w * wrat() < 26 * wrat() && h * hrat() < 26 * hrat()) {
-			wid = 9/w;
-			hei = 9/w;
-			PApplet.println(ntext);
-		}
+		init(p, nx, ny, nw, nh, ntext, FANCIEST_TXT, PApplet.floor(nh - 20f));
+		
 		scheme = standardColors();
-		buttonText = ntext;
-		font = p.createFont("Baskerville-Italic", 200, true);
-		fsize = PApplet.floor((float) (nh - 20));
-
-		init();
+		inside = scheme[1];
+		outside = scheme[0];
 	}
 
 	/**
@@ -95,25 +83,10 @@ public class RectButton extends Button {
 	 * @param ntext		String, the label for the button
 	 */
 	public RectButton(PApplet p, float nx, float ny, float nw, float nh, int [] ncolors, String ntext) {
-		wid = 20 / w;
-		hei = 20 / h;
-		this.x = nx;
-		this.y = ny;
-		this.w = nw;
-		this.h = nh;
-		this.p = p;
-		this.g = p.g;
-		if (w * wrat() < 26 * wrat() && h * hrat() < 26 * hrat()) {
-			wid = 9/w;
-			hei = 9/w;
-			PApplet.println(ntext);
-		}
+		init(p, nx, ny, nw, nh, ntext, FANCIEST_TXT, PApplet.floor(nh - 20f));
 		scheme = ncolors;
-		buttonText = ntext;
-		font = p.createFont("Baskerville-Italic", 200, true);
-		fsize = PApplet.floor((float) (nh - 20));
-
-		init();
+		inside = scheme[1];
+		outside = scheme[0];
 	}
 	
 	/**
@@ -129,25 +102,11 @@ public class RectButton extends Button {
 	 * @param fontSize  int, the size of the font for the label
 	 */
 	public RectButton(PApplet p, float nx, float ny, float nw, float nh, int [] ncolors, String ntext, String fontName, int fontSize) {
-		wid = 20 / w;
-		hei = 20 / h;
-		this.x = nx;
-		this.y = ny;
-		this.w = nw;
-		this.h = nh;
-		this.p = p;
-		this.g = p.g;
-		if (w * wrat() < 26 * wrat() && h * hrat() < 26 * hrat()) {
-			wid = 9/w;
-			hei = 9/w;
-			PApplet.println(ntext);
-		}
-		scheme = ncolors;
-		buttonText = ntext;
-		font = p.createFont(fontName, 200, true);
-		fsize = fontSize;
+		init(p, nx, ny, nw, nh, ntext, fontName, fontSize);
 
-		init();
+		scheme = ncolors;
+		inside = scheme[1];
+		outside = scheme[0];
 	}
 
 	/**
@@ -163,25 +122,9 @@ public class RectButton extends Button {
 	 * @param nfsize	int, the size of the font
 	 */
 	public RectButton(PApplet p, float nx, float ny, float nw, float nh, int [] ncolors, String ntext, PFont nfont, int nfsize) {
-		wid = 20 / w;
-		hei = 20 / h;
-		this.x = nx;
-		this.y = ny;
-		this.w = nw;
-		this.h = nh;
-		this.p = p;
-		this.g = p.g;
-		if (w * wrat() < 26 * wrat() && h * hrat() < 26 * hrat()) {
-			wid = 9/w;
-			hei = 9/w;
-			PApplet.println(ntext);
-		}
+		init(p, nx, ny, nw, nh, ntext, FANCIEST_TXT, nfsize);
 		scheme = ncolors;
-		buttonText = ntext;
 		font = nfont;
-		fsize = nfsize;
-
-		init();
 	}
 
 	protected int [] standardColors() {
@@ -195,16 +138,18 @@ public class RectButton extends Button {
 	}
 	void update() {
 		change();
-		//		if (buttonMessage != null) {
-		//			buttonMessage.update();
-		//		}
 	}
 
 	void display(String time, PFont displayFont, float fontsize) {
+		g.pushStyle();
 		back();
+		g.popStyle();
+		g.pushStyle();
+		g.fill(0);
 		g.textFont(displayFont, limitFont(displayFont, fontsize, time, w));
 		g.textAlign(CENTER, CENTER);
 		g.text(time, x(), y());
+		g.popStyle();
 	}
 
 	protected void back() {
@@ -212,9 +157,7 @@ public class RectButton extends Button {
 		g.noStroke();
 		g.fill(outside);
 		backShape(x(), y(), w(), h());
-//		float insideW, insideH;
-//		insideW = w - 20 * wratio;
-//		insideH = h - 20 * hratio;
+
 		g.fill(inside);
 		innerBackShape(x(), y(), iw(), ih());
 		g.fill(0);
@@ -236,24 +179,7 @@ public class RectButton extends Button {
 		 *other than mX and mY to allow the function rolled_over */
 		rolled_over(p.mouseX, p.mouseY);
 
-		
-
-//		g.noStroke();
-//		g.rectMode(CENTER);
-//		if ((rollover)) {
-//			g.fill(scheme[0]);
-//			backShape(x(), y(), w(), h());
-//			g.fill(scheme[1]);
-//			backShape(x(), y(), w(), h());
-//			g.fill(scheme[2]);
-//			backShape(x(), y(), iw(), ih());
-//		} else {
-//			g.fill(scheme[0]);
-//			backShape(x(), y(), w(), h());
-//			g.fill(scheme[1]);
-//			backShape(x(), y(), iw(), ih());
-//		}
-		back();
+//		back();
 		display("", font, fsize);
 		
 		if (rollover) {
@@ -343,14 +269,6 @@ public class RectButton extends Button {
 
 	float hrat() {
 		return(p.height/ 400);
-	}
-
-	float ohsix() {
-		return(w * wid);
-	}
-
-	float ohthree() {
-		return(h * hei);
 	}
 
 	@Override
@@ -447,7 +365,20 @@ public class RectButton extends Button {
 		return(fontSize);
 	}
 	
-	void init() {
+	void init(PApplet p, float nx, float ny, float nw, float nh, String text, String fontName, float fontSize) {
+		this.x = nx;
+		this.y = ny;
+		this.w = nw;
+		this.h = nh;
+		this.p = p;
+		this.g = p.g;
+		this.buttonText = text;
+		font = p.createFont(fontName, 200);
+	    this.fsize = Math.round(fontSize);
+	    assignVars();
+	}
+	
+	void assignVars() {
 		//fonts
 		minifont = p.createFont("Menlo-regular", 20);
 		smallfont = p.createFont("FZLTXHK--GBK1-0", 200, true);
@@ -455,8 +386,6 @@ public class RectButton extends Button {
 		mFont = p.createFont("FZLTXHK--GBK1-0", 19, true);
 		myfont1 = p.createFont("FZLTXHK--GBK1-0", 20, true);
 		cGrey15 = g.color(250, 250, 250);
-		inside = scheme[1];
-		outside = scheme[0];
 		sfsize = 15;
 		mfsize = 19;
 

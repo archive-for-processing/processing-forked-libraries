@@ -40,7 +40,7 @@ public class NumOutput extends Frame {
 //		PApplet.println("finished init");
 	}
 	
-	public void label(String newLabel) {
+	public void setLabel(String newLabel) {
 		label = newLabel;
 	}
 	

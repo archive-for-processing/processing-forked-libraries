@@ -90,18 +90,15 @@ public class DropDownMenu extends Menu implements PConstants {
 	protected void mutuallyExclusive(int i) {
 		if (items[i].selected) {
 			if (selectedOption < 0 || selectedOption != i) {
+				PApplet.println("Selected option: " + selectedOption + " New Selected Option: " + i);
+				if (selectedOption != -1) {
+					items[selectedOption].selected = false;
+				}
 				selectedOption = i;
 				if (dropDownSelected) {
 					dropDownSelected = false;
 				}
 			}
-//			else if (selectedOption != i) {
-//				items[selectedOption].selected = false;
-//				selectedOption = i;
-//				if (dropDownSelected) {
-//					dropDownSelected = false;
-//				}
-//			}
 		}
 	}
 	
