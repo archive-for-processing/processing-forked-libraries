@@ -56,6 +56,15 @@ public class NumOutput extends Frame {
 //		g.text(text, x - (w * .45f), y);
 //		g.popStyle();
 //	}
+	@Override
+	public void draw() {
+		// Runs all of the shape-drawing functions
+		g.pushStyle();
+		style();
+		display();
+		text();
+		g.popStyle();
+	}
 	
 	@Override
 	protected void display() {

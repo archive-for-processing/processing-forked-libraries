@@ -38,6 +38,7 @@ public class Label extends NumOutput {
 	public void colorLine(int n) {
 		c = n;
 	}
+
 	
 	@Override
 	protected void display() {
