@@ -63,6 +63,7 @@ public class NumOutput extends Frame {
 		g.textFont(font);
 		float x0 = x() + xOffset();
 		float y0 = yCenter();
+		PApplet.println("x(): " + x() + "x+xOffset(): " + x0);
 		g.pushStyle();
 		g.fill(255);
 		g.stroke(0);
