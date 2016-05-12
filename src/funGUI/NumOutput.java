@@ -110,7 +110,7 @@ public class NumOutput extends Frame {
 		}
 	}
 	
-	float val() {
+	public float value() {
 		if (val == 0 && s != null) {
 			return(s.p());
 		} else {
