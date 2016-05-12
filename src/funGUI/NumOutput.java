@@ -88,7 +88,7 @@ public class NumOutput extends Frame {
 	
 	protected float xOffset() {
 		g.textFont(font);
-		return((label != null) ? (w + g.textWidth(label) + 30) * .5f : 0);
+		return((label != null) ? (w + g.textWidth(label) + 30) * .25f : 0);
 	}
 	protected float yCenter() {
 		return(y);
