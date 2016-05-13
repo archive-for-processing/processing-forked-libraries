@@ -72,7 +72,7 @@ public class NumOutput extends Frame {
 		g.textFont(font);
 		float x0 = x() + xOffset();
 		float y0 = yCenter();
-		PApplet.println("x(): " + x() + "x+xOffset(): " + x0);
+//		PApplet.println("x(): " + x() + "x+xOffset(): " + x0);
 		g.pushStyle();
 		g.fill(255);
 		g.stroke(0);
@@ -81,7 +81,7 @@ public class NumOutput extends Frame {
 		g.fill(30);
 		g.textFont(font);
 		g.textAlign(LEFT, CENTER);
-		g.text(value(), xLeft(), y0);
+		g.text(p.nfc(value(), 3), xLeft(), y0);
 		g.popStyle();
 //		PApplet.println("done displaying");
 	}
@@ -120,6 +120,10 @@ public class NumOutput extends Frame {
 	
 	public void assign(float f) {
 		val = f;
+	}
+	
+	public void assign(String s) {
+		val = Float.valueOf(s);
 	}
 	
 	@Override

@@ -7,7 +7,24 @@ public class RoundedRectButton extends RectButton implements PConstants {
 	float curveRadius = 0.0f;
 	float innerCurveRadius = 0.0f;
 	private boolean printing = false;
+	public boolean border = true;
 	
+	/**
+	 * Most basic constructor for the RoundedRectButton class.
+	 * @param p		PApplet, the parent sketch, usually "this"
+	 * @param nx	float, the horizontal location of the button's center
+	 * @param ny	float, the vertical location of the button's center
+	 * @param nw	float, the width of the button
+	 * @param nh	float, the height of the button
+	 * @param text	String, the label of the button
+	 */
+	public RoundedRectButton(PApplet p, float nx, float ny, float nw, float nh, String text) {
+		super(p, nx, ny, nw, nh, text);
+		this.curvature = PApplet.constrain(curvature, 0.1f, 1f);
+		calculateRadius();
+		this.fsize = (int) fsize;
+		this.font = p.createFont(REG_SANSS_TXT, nh - 3);
+	}
 	
 	/**
 	 * Constructor for the RoundedRectButton class.
@@ -97,28 +114,58 @@ public class RoundedRectButton extends RectButton implements PConstants {
 	}
 	
 	@Override
+	public void draw() {
+		/*Function to display the button
+	     takes no arguments* bc all of the properties of the button are initialized/created by the initializer, new Button()
+		 *other than mX and mY to allow the function rolled_over */
+		rolled_over(p.mouseX, p.mouseY);
+
+//		back();
+		display("", font, fsize);
+		
+		
+		if (rollover) {
+			g.pushStyle();
+			g.fill(scheme[2]);
+			g.noStroke();
+			g.rectMode(CENTER);
+			backing(x(), y(), w(), h(), r());
+			g.popStyle();
+		}
+		
+		drawButtonName();
+	}
+	
+	@Override
 	protected void back() {
 		g.pushStyle();
 		g.rectMode(CENTER);
 		g.noStroke();
-		g.fill(outside);
-//		if (printing) PApplet.println("BackShape - Before");
-//		backShape(x(), y(), w(), h());
-		backShape(x(),y(), w(), h(), r());
-//		if (printing) PApplet.println("BackShape- After");
+		if (border) {
+			g.fill(outside);
+			//		if (printing) PApplet.println("BackShape - Before");
+			//		backShape(x(), y(), w(), h());
+			backing(x(),y(), w(), h(), r());
+			//		if (printing) PApplet.println("BackShape- After");
+
+			//		float insideW, insideH;
+			//		insideW = w - 20 * wratio;
+			//		insideH = h - 20 * hratio;
+
+			g.fill(inside);
+			//		innerBackShape(x(), y(), iw(), ih());\
+			backing(x(), y(), iw(), ih(), ir());
+
+		} else {
+			g.fill(inside);
+			backing(x(), y(), w(), h(), r());
+		}
 		g.popStyle();
-//		float insideW, insideH;
-//		insideW = w - 20 * wratio;
-//		insideH = h - 20 * hratio;
-		
-		
-		g.pushStyle();
-		g.rectMode(CENTER);
-		g.noStroke();
-		g.fill(inside);
-//		innerBackShape(x(), y(), iw(), ih());\
-		backShape(x(), y(), iw(), ih(), ir());
-		g.popStyle();
+
+	}
+	
+	void backing(float xi, float yi, float wi, float hi, float ri) {
+		g.rect(xi, yi, wi, hi, ri);
 	}
 	
 	void backOutline(float xi, float yi, float wi, float hi, float r) {
