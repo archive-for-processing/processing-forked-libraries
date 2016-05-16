@@ -31,6 +31,10 @@ public class RoundButton extends Button {
 		font = p.createFont(REG_SANSS_TXT, REGTXTSIZE);
 	}
 	
+	public void changeFont(int fontSize) {
+		font = p.createFont(REG_SANSS_TXT, fontSize);
+	}
+	
 	@Override
 	public void display() {
 		g.pushStyle();
@@ -50,7 +54,7 @@ public class RoundButton extends Button {
 	public void text() {
 		g.pushStyle();
 		g.fill(30);
-		g.textFont(font, (r / r0) * REGTXTSIZE);
+		g.textFont(font);
 		g.textAlign(CENTER, CENTER);
 		g.text(c, x, y);
 		g.popStyle();
