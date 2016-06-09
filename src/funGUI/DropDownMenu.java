@@ -4,16 +4,14 @@ import processing.core.*;
 import processing.data.FloatList;
 
 /**
- * The DropDownMenu class provides all of your GUI 
+ * The DropDownMenu class provides a fully-functioning
+ * drop-down style menu for a GUI interface. 
  * @author audrey
  *
  */
 public class DropDownMenu extends Menu implements PConstants {
-//	float w;
 	PGraphics g;
 	int c = 0x00FFFF;
-//	float x;
-//	float y;
 	DropDownMenuItem [] items;
 	
 	boolean dropDownSelected = false;

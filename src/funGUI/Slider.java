@@ -26,6 +26,30 @@ public class Slider extends Frame implements PConstants {
 	 * @param p			PApplet, the parent of the sketch, usually "this"
 	 * @param x			float, the x location of the slider's center
 	 * @param y			float, the y location of the slider's center
+	 */
+	public Slider(PApplet p, float x, float y) {
+		init(p, x, y, 0, 1);
+		this.w = 150;
+	}
+	
+	/**
+	 * The constructor of the Slider object. This slider defaults to a minimum of 0 and a maximum of 1.
+	 * @param p			PApplet, the parent of the sketch, usually "this"
+	 * @param x			float, the x location of the slider's center
+	 * @param y			float, the y location of the slider's center
+	 * @param name		String, the label of the slider to display
+	 */
+	public Slider(PApplet p, float x, float y, String name) {
+		init(p, x, y, 0, 1);
+		this.w = 150;
+		this.label = name;
+	}
+	
+	/**
+	 * The constructor of the Slider object. This slider defaults to a minimum of 0 and a maximum of 1.
+	 * @param p			PApplet, the parent of the sketch, usually "this"
+	 * @param x			float, the x location of the slider's center
+	 * @param y			float, the y location of the slider's center
 	 * @param w			float, the width of the slider
 	 */
 	public Slider(PApplet p, float x, float y, float w) {
