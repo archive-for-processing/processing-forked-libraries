@@ -43,7 +43,7 @@ There are two options to import the template project into Eclipse: using a Git [
 1. Add Processing to the project build path.
   * Open your project's "Properties" window. 
   * Under "Java Build Path", select the "Libraries" tab and then "Add External JARs...". 
-  * Locate and add Processing's `core.jar` to your build path. It is recommended that a copy of `core.jar` is located in your Eclipse workspace in a `libs` folder. If the `libs` folder does not exist yet, create it. Read the [section below](#AddingJARs) regarding where to find the `core.jar` file.
+  * Locate and add Processing's `core.jar` to your build path. It is recommended that a copy of `core.jar` is located in your Eclipse workspace in a `libs` folder. If the `libs` folder does not exist yet, create it. Read the [section below](AddingJARs) regarding where to find the `core.jar` file.
   * Confirm the setup with "OK".
 1. Edit the Library properties.
   * Open the `resources` folder inside of your Java project and double-click the `build.properties` file. You should see its contents in the Eclipse editor. 

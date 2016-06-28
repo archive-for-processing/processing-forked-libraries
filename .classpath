@@ -2,5 +2,9 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Applications/Processing.app/Contents/Java/core.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/JOculus.jar"/>
+	<classpathentry kind="lib" path="lib/jovr-0.4.4.0.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
