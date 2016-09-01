@@ -1,7 +1,7 @@
 #!/bin/bash 
 
-TMP=tmp
-NAME=myLib
+TMP=/Users/raissilaabidi/work/rcp216/project/tmp
+NAME=SparkClient
 
 mkdir $TMP
 mkdir $TMP/$NAME 
@@ -10,7 +10,7 @@ mkdir $TMP/$NAME/reference
 
 echo "Copy Library"
 # Library
-cp target/$NAME.jar $TMP/$NAME/library/$NAME.jar
+cp target/$NAME-jar-with-dependencies.jar $TMP/$NAME/library/$NAME.jar
 
 
 echo "Copy the sources" 
@@ -36,7 +36,7 @@ cd $TMP
 
 tar -zcf $NAME.tgz $NAME
 
-mv $NAME.tgz  .. 
+mv $NAME.tgz  /Users/raissilaabidi/work/rcp216/project/output 
 cd .. 
 
 echo "Clean " 
