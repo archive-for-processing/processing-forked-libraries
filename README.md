@@ -1,58 +1,22 @@
-This is another library compilation / distribution template. It works in command line, all is require is bash and maven (and a JDK obviously), so it works directly on OSX and Linux. You can get command line tools for Linux with the [Cygwin](https://www.cygwin.com/) project. 
+This is a Utility library to execute Scala code from Processing on a standalone Spark instance . 
 
 You can also import in Netbeans, and possible Eclipse, or any other IDE that can read Maven projects. 
 
-### Get the sources 
+### Installation 
 
-You can either clone the reposity or download the latest archive in the [Release](https://github.com/poqudrof/processing-library-template/releases) section.
-
-The example comes with an example source file, so it should work out of the box.
-To compile you need : Maven, a [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (Java Development Kit) that's it ! 
-
-
-### Compile
-
-Go to the library folder (cloned or unzipped). 
-To compile, use the *compile.sh* script, or just type
+You need to clone the repository: 
+``` bash
+git clone https://github.com/raissi/processing-spark-client.git
+```
+Then you go under **processing-spark-client** and execute:
 ``` bash
 mvn install
-mvn javadoc:javadoc 
 ```
-
-You must edit your library information in the **pom.xml** and **createLibrary.sh** files.
-
-At least you must set the name of the library, and you should also set groupID and artifactID in the pom following the [Maven rules](https://maven.apache.org/guides/mini/guide-naming-conventions.html). 
-
-
-The library is for Processing 3.0b4, and it will follow the latest version of Processing. 
-To create libraries for Processing 2.2.1 (stable) go in **pom.xml** and replace
-
-``` xml
-<dependency>
-  <groupId>org.processing</groupId>
-  <artifactId>core</artifactId>
-  <version>3.0b4</version>
-</dependency>
-```
-
-by
-
-``` xml 
-<dependency>
-  <groupId>org.processing</groupId>
-  <artifactId>core</artifactId>
-  <version>2.2.1</version>
-</dependency>
-```
-		
-### Deploy 
-
-Use the deployment script :
+After Maven finishes the build, you need to run the deployment script:
 
 ``` bash
 sh createLibrary.sh 
 ```
 
-You will obtain a file name **LibraryName.tgz** that can be shared to the community.
-
+This creates an archive file *SparkClient.tgz* under the folder *out*. Unzip the archive and copy its content in a folder *SparkClient* situated under the library folder of Processing.
 

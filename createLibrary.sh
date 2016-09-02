@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-TMP=/Users/raissilaabidi/work/rcp216/project/tmp
+TMP=tmp/
 NAME=SparkClient
 
 mkdir $TMP
@@ -36,7 +36,7 @@ cd $TMP
 
 tar -zcf $NAME.tgz $NAME
 
-mv $NAME.tgz  /Users/raissilaabidi/work/rcp216/project/output 
+mv $NAME.tgz  ../out/ 
 cd .. 
 
 echo "Clean " 
