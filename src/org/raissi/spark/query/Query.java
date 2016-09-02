@@ -31,7 +31,39 @@ public class Query {
 		return new Query();
 	}
 	
+	/**
+	 * Executes the code by starting a new SparkContext and stopping it after execution. <br/>
+	 * This method is meant to be called only once inside a Java thread.
+	 * @return
+	 */
 	public Object execute(){
+		prepareForExecution();
+		interpreter.open();
+		Object res = executeContent();
+		interpreter.close();
+		return res;
+	}
+	
+	/**
+	 * Executes the code inside a started context. <br/>
+	 * This method can be called multiple times but must be preceded by a call to {@link SparkInterpreter#open()}.
+	 * @return
+	 */
+	public Object executeInContext(){
+		prepareForExecution();
+		return executeContent();
+	}
+
+	private Object executeContent() {
+		InterpreterResult result = interpreter.interpret(content);
+		if(result.code() == Code.ERROR){
+			return result;
+		}
+		Object res = interpreter.resources.get("lastObject");
+		return res;
+	}
+
+	private void prepareForExecution() {
 		if(interpreter == null){
 			throw new IllegalStateException("Interpreter can not be null");
 		}
@@ -42,15 +74,6 @@ public class Query {
 			}
 			content = tmp;
 		}
-		interpreter.open();
-		InterpreterResult result = interpreter.interpret(content);
-		if(result.code() == Code.ERROR){
-			return result;
-		}
-		Object res = interpreter.resources.get("lastObject");
-		
-		interpreter.close();
-		return res;
 	}
 	
 	

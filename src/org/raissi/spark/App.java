@@ -41,6 +41,7 @@ public class App  {
     	 //last = app.interpretQuery(BASE_PATH+"k-means.txt");
     	 
     	System.out.println(last);
+    	repl.open();
     	
     	app.interpretInline();
     	
@@ -54,15 +55,18 @@ public class App  {
     										+ "/Users/raissilaabidi/.m2/repository/info/bliki/wiki/bliki-core/3.0.19/bliki-core-3.0.19.jar");
     	p.setProperty("SPARK_HOME", "usr/local/spark/spark-1.6.1-bin-hadoop2.6");
     	//app = new App(p);
+    	
+    	last = app.interpretQuery(BASE_PATH+"k-means.txt");
+    	repl.close();
     }
     
     public Object interpretQuery(String filePath){
-    	return Query.get().interpreter(repl).queryScriptFile(filePath).execute();
+    	return Query.get().interpreter(repl).queryScriptFile(filePath).executeInContext();
     }
     
     public Object interpretInline(){
     	String code = "val a = 1 + 2 + ${c}";
-    	Object result = Query.get().interpreter(repl).query(code).setParamter("c",15).execute();
+    	Object result = Query.get().interpreter(repl).query(code).setParamter("c",15).executeInContext();
     	System.out.println("--------------"+result);
     	return result;
     }

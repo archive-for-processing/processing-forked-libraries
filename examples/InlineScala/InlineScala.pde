@@ -26,10 +26,16 @@ Integer executeInlineScala(){
     p.setProperty("zeppelin.spark.importImplicit", "true");
 
 	SparkInterpreter repl = new SparkInterpreter(p);
-  
-  String code = "val a = 1 + 2 + ${c}";
-  Object result = Query.get().interpreter(repl).query(code).setParamter("c",15).execute();
-  return (Integer) result;
+    repl.open();
+    
+    String code = "val a = 1 + 2 + ${c}";
+    Object result = Query.get().interpreter(repl).query(code).setParamter("c",15).executeInContext();
+    
+    code = "val b = 1 + a";
+    result = Query.get().interpreter(repl).query(code).executeInContext();
+    repl.close();
+    
+    return (Integer) result;
 }
 
 void draw() {

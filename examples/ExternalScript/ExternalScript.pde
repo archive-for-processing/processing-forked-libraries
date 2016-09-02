@@ -28,7 +28,7 @@ Integer executeExternalScala(){
   SparkInterpreter repl = new SparkInterpreter(p);
   
   Object result = Query.get().interpreter(repl)
-                    .queryScriptFile("/Users/raissilaabidi/work/rcp216/project/processing-library-template/examples/ExternalScript/simple-script.txt")
+                    .queryScriptFile("/Users/raissilaabidi/work/rcp216/project/processing-spark-client/examples/ExternalScript/simple-script.txt")
                     .setParamter("c",15)
                     .execute();
   return (Integer) result;
