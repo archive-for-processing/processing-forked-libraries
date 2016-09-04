@@ -16,7 +16,6 @@ class Point {
     c = _c;
   }
   void process(){
-    //simulate();
     render();
   }
   
@@ -25,7 +24,7 @@ class Point {
     point( p.x, p.y, p.z );
   }
 }
-Point[] points = new Point[1000];
+Point[] points ;
 void setup(){
   size(800,800,P3D);
   points = computeKMeans();
