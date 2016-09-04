@@ -9,6 +9,10 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.rdd.MapPartitionsRDD;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.raissi.spark.interpreter.InterpreterResult;
 import org.raissi.spark.interpreter.SparkInterpreter;
 import org.raissi.spark.query.Query;
@@ -35,15 +39,19 @@ public class App  {
 	  
     public static void main( String[] args ) {
     	//executeDistantSparkClient();
-    	App app = new App();
+    	executeScalaOnSpark();
+    }
+
+	protected static void executeScalaOnSpark() {
+		App app = new App();
     	
     	 Object last = null;
-    	 //last = app.interpretQuery(BASE_PATH+"k-means.txt");
+    	 
     	 
     	System.out.println(last);
     	repl.open();
-    	
-    	app.interpretInline();
+    	//last = app.interpretQuery(BASE_PATH+"k-means.txt");
+    	//app.interpretInline();
     	
     	//Interpret with external jars:
     	Properties p = getSparkTestProperties();
@@ -57,8 +65,25 @@ public class App  {
     	//app = new App(p);
     	
     	last = app.interpretQuery(BASE_PATH+"k-means.txt");
+    	
+    	
+    	//   indices
+    	Vector[] points = (Vector[]) ((MapPartitionsRDD<?,?>)last).collect();
+    	
+    	Object indicesAsObj = Query.get().interpreter(repl).query("indices.toDF()").executeInContext();
+    	@SuppressWarnings("unchecked")
+		List<?> indices = ((Dataset<Integer>)indicesAsObj).collectAsList();
+    	
+    	for(int i = 0; i<points.length; i++){
+    		Vector point = points[i];
+    		double x = point.apply(0);
+    		double y = point.apply(1);
+    		double z = point.apply(2);
+    		int cluster = ((GenericRowWithSchema)indices.get(i)).getInt(0);
+    	}
+    	
     	repl.close();
-    }
+	}
     
     public Object interpretQuery(String filePath){
     	return Query.get().interpreter(repl).queryScriptFile(filePath).executeInContext();
@@ -151,19 +176,10 @@ public class App  {
 		SparkConf conf = new SparkConf().setAppName("Testing from Java").setMaster("spark://MAC122.local:7077")
     			.setJars(new String[]{"/Users/raissilaabidi/work/rcp216/project/spark/spark.jar"});
     	try(JavaSparkContext sc = new JavaSparkContext(conf)){
-	    	List<Integer> data = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
-	    	JavaRDD<Integer> distData = sc.parallelize(data);
-	    	int sum = distData.map(x -> x).reduce((x,y)->x*y);
-	    	System.out.println(sum);
-	    	JavaRDD<String> distFile = sc.textFile("/Users/raissilaabidi/work/rcp216/project/spark/pom.xml");
-	    	sum = distFile.map(s -> s.length()).reduce((a, b) -> a + b);
-	    	System.out.println(sum);
-	    	
-	    	
 	    	JavaRDD<String> lines = sc.textFile("/Users/raissilaabidi/work/rcp216/project/spark/pom.xml");
-	    	JavaPairRDD<String, Integer> pairs = lines.mapToPair(s -> new Tuple2<String, Integer>(s, s.length()));
-	    	JavaPairRDD<String, Integer> counts = pairs.reduceByKey((a, b) -> a + b);
-	    	System.out.println(counts);
+	    	JavaRDD<Integer> lineLengths = lines.map(s -> s.length());
+	    	int totalLength = lineLengths.reduce((a, b) -> a + b);
+	    	System.out.println(totalLength);
     	}finally{
     		
     	}

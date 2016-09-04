@@ -22,8 +22,8 @@ Integer executeInlineScala(){
 	Properties p = new Properties();
     p.setProperty("master", "spark://MAC122.local:7077");
     p.setProperty("spark.app.name", "Inline Scala execution");
-    p.setProperty("zeppelin.spark.maxResult", "1000");
-    p.setProperty("zeppelin.spark.importImplicit", "true");
+    //p.setProperty("zeppelin.spark.maxResult", "1000");
+    //p.setProperty("zeppelin.spark.importImplicit", "true");
 
 	SparkInterpreter repl = new SparkInterpreter(p);
     repl.open();
