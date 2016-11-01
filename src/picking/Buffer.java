@@ -36,8 +36,6 @@ public class Buffer extends processing.opengl.PGraphics3D {
 
   public boolean displayable() { return true; }
 
-  public void callCheckSettings() { super.checkSettings(); }
-
   public void background(int arg) { super.background(0); }
   public void background(float arg) { super.background(0); }
   public void background(float arg, float arg_1) { super.background(0); }

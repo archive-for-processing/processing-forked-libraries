@@ -47,8 +47,9 @@ public class Picker {
   public Picker(PApplet parent) {
     this.parent = parent;
     buffer = (Buffer) parent.createGraphics(parent.width, parent.height, "picking.Buffer");
-    buffer.callCheckSettings();
+    buffer.beginDraw();
     buffer.background(0);
+    buffer.endDraw();
 
     parent.registerMethod("pre", this);
     parent.registerMethod("draw", this);
