@@ -1,53 +1,40 @@
-## Picking library for Processing 2
+# Picking library for Processing 3
 
-### Disclaimer
+## How to install Picking
 
-This project has no maintainer anymore. You are encouraged to fork if you're ready to breathe new life into it!
+### Install with the Contribution Manager
 
-### Downloads
+Add contributed Libraries by selecting the menu item _Sketch_ ??? _Import Library..._ ??? _Add Library..._ This will open the Contribution Manager, where you can browse for Picking, or any other Library you want to install.
 
-[Picking library website](http://n.clavaud.free.fr/processing/library/picking/)
+Not all available Libraries have been converted to show up in this menu. If a Library isn't there, it will need to be installed manually by following the instructions below.
 
-### How to install library Picking
+### Manual Install
 
-#### Install with the "Add Library..." tool
-
-New for Processing 2.0: Add contributed libraries by selecting "Add Library..." 
-from the "Import Library..." submenu within the Sketch menu. Not all available 
-libraries have been converted to show up in this menu. If a library isn't there,
-it will need to be installed manually by following the instructions below.
-
-#### Manual Install
-
-Contributed libraries may be downloaded separately and manually placed within 
-the `libraries` folder of your Processing sketchbook. To find (and change) the 
-Processing sketchbook location on your computer, open the Preferences window 
-from the Processing application (PDE) and look for the "Sketchbook location" 
-item at the top.
-
-Copy the contributed library's folder into the `libraries` folder at this 
-location. You will need to create the `libraries` folder if this is your first 
-contributed library.
+Contributed Libraries may be downloaded separately and manually placed within the `libraries` folder of your Processing sketchbook. To find (and change) the Processing sketchbook location on your computer, open the Preferences window from the Processing application (PDE) and look for the "Sketchbook location" item at the top.
 
 By default the following locations are used for your sketchbook folder: 
-  For Mac users, the sketchbook folder is located inside `~/Documents/Processing`. 
-  For Windows users, the sketchbook folder is located inside 
-    `My Documents/Processing`.
+  * For Mac users, the sketchbook folder is located inside `~/Documents/Processing` 
+  * For Windows users, the sketchbook folder is located inside `My Documents/Processing`
 
-The folder structure for library Picking should be as follows:
+Download Picking from http://n.clavaud.free.fr/processing/library/picking/
 
-    Processing
-      libraries
-        Picking
-          examples
-          library
-            Picking.jar
-          reference
-          src
+Unzip and copy the contributed Library's folder into the `libraries` folder in the Processing sketchbook. You will need to create this `libraries` folder if it does not exist.
 
-Some folders like `examples` or `src` might be missing. After library 
-Picking has been successfully installed, restart the Processing 
-application.
+The folder structure for Library Picking should be as follows:
 
-If you're having trouble, have a look at the [Processing Wiki](http://wiki.processing.org/w/How_to_Install_a_Contributed_Library) for more 
-information.
+```
+Processing
+  libraries
+    Picking
+      examples
+      library
+        Picking.jar
+      reference
+      src
+```
+             
+Some folders like `examples` or `src` might be missing. After Library Picking has been successfully installed, restart the Processing application.
+
+### Troubleshooting
+
+If you're having trouble, have a look at the [Processing Wiki](https://github.com/processing/processing/wiki/How-to-Install-a-Contributed-Library) for more information, or contact the author [Nicolas Clavaud](http://n.clavaud.free.fr/).
