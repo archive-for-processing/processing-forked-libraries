@@ -28,6 +28,7 @@
 package picking;
 
 import processing.core.*;
+import processing.opengl.PShader;
 
 public class Buffer extends processing.opengl.PGraphics3D {
   protected int current_color = 0;
@@ -67,6 +68,13 @@ public class Buffer extends processing.opengl.PGraphics3D {
   public void image(PImage arg, float arg_1, float arg_2) {}
   public void image(PImage arg, float arg_1, float arg_2, float arg_3, float arg_4) {}
   public void image(PImage arg, float arg_1, float arg_2, float arg_3, float arg_4, int arg_5, int arg_6, int arg_7, int arg_8) {}
+
+  public void pushStyle() {}
+  public void popStyle() {}
+  public void style(PStyle s) {}
+
+  public void shader(PShader shader) {}
+  public void shader(PShader shader, int kind) {}
 
   protected void imageImpl(PImage image, float x1, float y1, float x2, float y2, int u1, int v1, int u2, int v2) {}
 
