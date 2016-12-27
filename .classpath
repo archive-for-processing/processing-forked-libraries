@@ -3,6 +3,8 @@
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Processing"/>
-	<classpathentry kind="lib" path="/Users/audrey/git/FunGUI_Library/FunGUI/core.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/processing"/>
+	<classpathentry kind="lib" path="/Users/audrey/Personal/Programming/User Libraries/core.jar"/>
+	<classpathentry kind="lib" path="/Users/audrey/git/Workspace/FunGUI_Library/FunGUI/core.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
