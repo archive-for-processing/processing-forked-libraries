@@ -1,9 +1,6 @@
-A template to build a Library for the Processing programming environment.
+A library that adapts and simplifies the Twitter4j library for use with Processing.
 
-Part of the Processing project - http://processing.org
-
-Copyright 2011-2015 Elie Zananiri
-Copyright 2008-2011 Andreas Shlegel
+Copyright 2015-2017 David Rueter
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
