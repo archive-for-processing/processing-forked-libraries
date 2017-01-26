@@ -8,7 +8,7 @@ Features:
 * Stream statuses from a list of user IDs
 
 ## Installation
-[Download the latest release](../releases/latest), unzip it, and copy the twitterp folder to your Processing/libraries folder.
+[Download the latest release](../../releases/latest), unzip it, and copy the twitterp folder to your Processing/libraries folder.
 
 ## Creating Twittter API credentials
 
