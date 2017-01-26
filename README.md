@@ -1,4 +1,4 @@
-# Twitter library for Processing
+# twitterp: a Twitter library for Processing
 
 Features:
 * Tweet a status
@@ -6,6 +6,9 @@ Features:
 * Stream statuses that match a keyword or set of keywords
 * Stream statuses from a geographic region
 * Stream statuses from a list of user IDs
+
+## Installation
+[Download the latest release](/releases/latest), unzip it, and copy the twitterp folder to your Processing/libraries folder.
 
 ## Creating Twittter API credentials
 
