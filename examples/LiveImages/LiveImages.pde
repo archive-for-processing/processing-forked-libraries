@@ -1,9 +1,9 @@
-import com.davidrueter.twitter.*;
+import twitterp.*;
 import twitter4j.*;
 
 
 TwitterAPI api;
-String lastStatus;
+PImage lastImage;
 
 void setup() {
   size(800,600);
@@ -12,8 +12,7 @@ void setup() {
                               "consumerSecret",
                               "accessToken",
                               "accessTokenSecret");
-  api.user();
-  lastStatus = "";
+  api.filter("Internet");
 }
 
 void draw() {
@@ -21,9 +20,12 @@ void draw() {
   fill(255);
   textAlign(CENTER);
   rectMode(CENTER);
-  text(lastStatus, width/2, height/2, width, height / 4);
+  if (lastImage != null){
+    image(lastImage,0,0);
+  }
 }
 
 void onStatus(Status status){
-  lastStatus = status.getText();
+   
+   lastImage = api.extractFirstImage(status);
 }

@@ -1,4 +1,4 @@
-package com.davidrueter.twitter;
+package twitterp;
 
 
 import java.awt.image.BufferedImage;
@@ -33,6 +33,7 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.media.ImageUpload;
 import twitter4j.media.ImageUploadFactory;
+import twitter4j.MediaEntity;
 
 /**
  * Simplified interface to twitter4j for programming beginners.
@@ -126,9 +127,8 @@ public class TwitterAPI {
 		filter(q);
 	}
 
-	/** Receive all status updates made by a user.
-	 * FIXME FIXME FIXME
-	 */
+	/** Receive user-related events. Not yet implemented!
+	 * 
 	public void user(){
 		initOnStatusCallback();
 		UserStreamAdapter adapter = new UserStreamAdapter(){
@@ -143,7 +143,7 @@ public class TwitterAPI {
 		twitterStream.addListener(adapter);
 		twitterStream.user();
 
-	}
+	}*/
 
 
 
@@ -318,7 +318,7 @@ public class TwitterAPI {
 
 	/** Gets an array of longs, representing the current users's followers.
 	 * 
-	 * @return a long array of foller IDs
+	 * @return a long array of follower IDs
 	 */
 	public long[] getFollowers(){
 		try {
@@ -332,10 +332,39 @@ public class TwitterAPI {
 	/**
 	 * return the version of the Library.
 	 * 
-	 * @return String
+	 * @return version
 	 */
 	public static String version() {
 		return VERSION;
 	}
+
+   /**
+	* Extracts an array of PImages from a given status. 
+	* 
+	* @param status the status to extract images from
+	* @return PImage objects representing the loaded images. Returns a zero-length array if the status contains no images.
+	*/
+	public PImage[] extractImages(Status status){
+      MediaEntity[] media = status.getMediaEntities(); //get the media entities from the status
+	  PImage[] images = new PImage[media.length];
+      for (int i = 0; i < media.length; i++) { //search trough your entities
+		images[i] = myParent.loadImage(media[i].getMediaURL());
+      }
+	  return images;
+	}
+
+  /**
+	* Extracts the first image from the supplied status.
+	* 
+	* @param status the status to extract images from
+	* @return PImage object representing the loaded image. Returns null if the status contains no image.
+	*/
+	public PImage extractFirstImage(Status status){
+      MediaEntity[] media = status.getMediaEntities(); //get the media entities from the status
+	  if (media.length > 0) return myParent.loadImage(media[0].getMediaURL());
+      return null;
+	}
+
+	
 }
 

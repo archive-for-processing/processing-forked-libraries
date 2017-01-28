@@ -1,4 +1,4 @@
-import com.davidrueter.twitter.*;
+import twitterp.*;
 import twitter4j.*;
 
 TwitterAPI api;
