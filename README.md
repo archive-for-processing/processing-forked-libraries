@@ -10,7 +10,7 @@ Features:
 ## Installation
 [Download the latest release](../../releases/latest), unzip it, and copy the twitterp folder to your Processing/libraries folder.
 
-## Creating Twittter API credentials
+## Creating Twitter API credentials
 
 1. Create a new Twitter account, or log in to an existing one.
 2. If you created a new account, make sure to create at least one test tweet.
