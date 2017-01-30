@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Collections;
+import java.util.ArrayList;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -34,6 +36,9 @@ import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.media.ImageUpload;
 import twitter4j.media.ImageUploadFactory;
 import twitter4j.MediaEntity;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+
 
 /**
  * Simplified interface to twitter4j for programming beginners.
@@ -339,7 +344,7 @@ public class TwitterAPI {
 	}
 
    /**
-	* Extracts an array of PImages from a given status. 
+	* Extracts an array of PImages from a given status.
 	* 
 	* @param status the status to extract images from
 	* @return PImage objects representing the loaded images. Returns a zero-length array if the status contains no images.
@@ -363,6 +368,48 @@ public class TwitterAPI {
       MediaEntity[] media = status.getMediaEntities(); //get the media entities from the status
 	  if (media.length > 0) return myParent.loadImage(media[0].getMediaURL());
       return null;
+	}
+
+	/** Search Twitter using the given search query. For more on writing queries, consult Twitter's guide:
+	* https://dev.twitter.com/rest/public/search
+	*/
+
+	public QueryResult search(String queryStr){
+		Query query = new Query(queryStr);
+		return search(query);
+	}
+
+	protected QueryResult search(Query q){
+		try {		
+			QueryResult result = twitter.search(q);
+			return result;
+		} catch (TwitterException e){
+			logThrowable(e);
+			return null;
+		}
+
+	}
+
+	/** 
+	* Search Twitter posts for images using the supplied query string. Returns at most limit images.
+	*/
+	public PImage[] searchImages(String queryStr, int limit){
+		QueryResult result = search(queryStr + " filter:media");
+		ArrayList<PImage> images = new ArrayList<PImage>();
+		while (result != null){
+		
+			for (Status status : result.getTweets()){
+				for (PImage image : extractImages(status)){
+					images.add(image);
+					if (images.size() >= limit) return images.toArray(new PImage[images.size()]);
+				}
+			}
+			if (!result.hasNext()) result = null;
+			else result = search(result.nextQuery());
+
+		}
+
+		return images.toArray(new PImage[images.size()]);
 	}
 
 	
