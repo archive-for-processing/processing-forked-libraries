@@ -20,6 +20,10 @@ public class ViewProjection {
 	public int calibrationPointsNum = 6; //default
 	public static ViewProjection instance;
 
+	//default cube 3d model to be used as simple calibration tool
+	public static boolean useCubeCalibrationModel = false;
+	static float modelScale = 5;
+
 
 
 	public ViewProjection() {}
@@ -45,28 +49,59 @@ public class ViewProjection {
 		return instance.getProjectedCoord(input, projMatrix);
 	}
 
-	
+
 	public static void printMatrix(boolean b){
 		if (instance == null){
 			instance = new ViewProjection();
-			instance.printMatrix = b;
+			ViewProjection.printMatrix = b;
 		}else{
-			instance.printMatrix = b;
+			ViewProjection.printMatrix = b;
 		}
 	}
+
+	
 	
 
 	public static void flipped(boolean b){
 		if (instance == null){
 			instance = new ViewProjection();
-			instance.flipped = b;
+			ViewProjection.flipped = b;
 		}else{
-			instance.flipped = b;
+			ViewProjection.flipped = b;
+		}
+	}
+	
+	public static PVector [] useCubeCalibrationModel(){
+		if (instance == null){
+			instance = new ViewProjection();
+			return getCubeCalibrationModel();
+		}else{
+			return getCubeCalibrationModel();
 		}
 	}
 	
 	
+	public static void setModelScale(float s){
+		if (instance == null){
+			instance = new ViewProjection();
+			ViewProjection.modelScale = s;
+		}else{
+			ViewProjection.modelScale = s;
+		}
+	}
 
+
+	static PVector[] getCubeCalibrationModel(){
+		PVector[] defaultModelVtx = new PVector[6];
+		float s = modelScale;
+		defaultModelVtx[0]=  new PVector( s, -s, s);
+		defaultModelVtx[1]=  new PVector( s, s, s );
+		defaultModelVtx[2]=  new PVector( -s, -s, s); //in this 3D model, this is point index = 0 (-5-5 5)
+		defaultModelVtx[3]=  new PVector( -s, s, s );
+		defaultModelVtx[4]=  new PVector( -s, -s, -s );
+		defaultModelVtx[5]=  new PVector( -s, s, -s );
+		return defaultModelVtx;
+	}
 
 	/**
 	 * builds the left side of the matrix to be computed for 2D and 3D correspondence
@@ -149,7 +184,7 @@ public class ViewProjection {
 
 		Matrix A = new Matrix(ac);
 		Matrix R = new Matrix(rc);
-		
+
 		if(printMatrix){
 			A.print(7, 1);
 			R.print(7, 1);
@@ -164,13 +199,13 @@ public class ViewProjection {
 					(float)result.get(0, 0), (float)result.get(1, 0), (float)result.get(2, 0), (float)result.get(3, 0), 
 					(float)result.get(4, 0), (float)result.get(5, 0), (float)result.get(6, 0), (float)result.get(7, 0), 
 					0f, 0f, (flipped)?1f:-1f, 1f,
-					(float)result.get(8, 0), (float)result.get(9, 0), (float)result.get(10, 0), 1f );
-			
-			
+							(float)result.get(8, 0), (float)result.get(9, 0), (float)result.get(10, 0), 1f );
+
+
 			if(printMatrix){
 				result.print(7, 5);
 			}
-			
+
 			return projMat;
 		}catch(RuntimeException e){
 			System.out.println("Failed creating ViewProjection Matrix");
@@ -185,7 +220,7 @@ public class ViewProjection {
 	 * @param p3d is an array with 3D points
 	 * @return PMatrix3D projection matrix
 	 */
-	 PMatrix3D getViewProjectionMatrix( PVector[] p2d, PVector[]p3d ) {
+	PMatrix3D getViewProjectionMatrix( PVector[] p2d, PVector[]p3d ) {
 
 		if( p3d.length > calibrationPointsNum){
 			calibrationPointsNum = p3d.length;

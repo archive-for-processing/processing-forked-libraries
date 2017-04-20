@@ -22,6 +22,7 @@ PVector [] p2d = new PVector[6];
 PVector center = new PVector();
 PShape model3d;
 float mouseZ;
+boolean useCrossCursor = true;
 
 
 PMatrix3D viewProjMatrix;
@@ -29,19 +30,23 @@ PMatrix3D viewProjMatrix;
 int selVtx = 0;
 
 void setup() {
-  size(600, 300, P3D);
+  fullScreen(P3D);
+  //size(600, 300, P3D);
 
   ViewProjection.flipped(true);
 
+  p3d = ViewProjection.useCubeCalibrationModel(); //this line replaces the block below
 
+  /*
   //default correspondent points of a cube
-  float s = 5; //scale
-  p3d[0]=  new PVector( s, -s, s);
-  p3d[1]=  new PVector( s, s, s );
-  p3d[2]=  new PVector( -s, -s, s); //in this 3D model, this is point index = 0 (-5-5 5)
-  p3d[3]=  new PVector( -s, s, s );
-  p3d[4]=  new PVector( -s, -s, -s );
-  p3d[5]=  new PVector( -s, s, -s );
+   float s = 5; //scale
+   p3d[0]=  new PVector( s, -s, s);
+   p3d[1]=  new PVector( s, s, s );
+   p3d[2]=  new PVector( -s, -s, s); //in this 3D model, this is point index = 0 (-5-5 5)
+   p3d[3]=  new PVector( -s, s, s );
+   p3d[4]=  new PVector( -s, -s, -s );
+   p3d[5]=  new PVector( -s, s, -s );
+   */
 
 
   p2d[0]=  new PVector(199, 113 );
@@ -70,6 +75,10 @@ void setup() {
 
 void keyPressed() {
   if (key == '.') selVtx++;
+
+  else if ( key ==  ESC) {
+    output2Dpoints();
+  }
 }
 
 void draw() {
@@ -111,13 +120,14 @@ void draw() {
   popMatrix();
 
   display2DprojectedVertices();
+  if (useCrossCursor) drawCrossCursor();
 }
 
 
 void display2DprojectedVertices() {
   /*
   displays the position of vertex of a 3D model in its original position (not considering model transformation);
-  */
+   */
   hint(DISABLE_DEPTH_TEST);
   for (int i = 0; i < 6; i++) {
     PVector p0 = ViewProjection.solve( p3d[i], ViewProjection.get(p2d, p3d));
@@ -126,6 +136,15 @@ void display2DprojectedVertices() {
     point(p0.x, p0.y);
   }
   hint(ENABLE_DEPTH_TEST);
+}
+
+
+void drawCrossCursor() {
+  strokeWeight(2);
+  stroke(#00ff00);
+  int x = mouseX, y = mouseY;
+  line(0, y, width, y);
+  line(x, 0, x, height);
 }
 
 
