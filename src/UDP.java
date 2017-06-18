@@ -132,6 +132,21 @@ public class UDP implements Runnable {
 	}
 	
 	/**
+	 * Create a new datagram socket and binds it to the specified port on the 
+	 * local host machine.
+	 * <p>
+	 * Pass <code>zero</code> as port number, will let the system choose an 
+	 * available port.
+	 *
+	 * @param owner			the target object to be call by the receive handler
+	 * @param port			local port to bind
+	 * @param reuseAddress	flag for reuseAddress
+	 */
+	public UDP( Object owner, int port, boolean reuseAddress ) {
+		this( owner, port, null, reuseAddress );
+	}
+	
+	/**
 	 * Create a new datagram socket and binds it to the specified port on the  
 	 * specified local address or multicast group address.
 	 * <p>
@@ -147,6 +162,25 @@ public class UDP implements Runnable {
 	 * @param ip	host address or group address
 	 */
 	public UDP( Object owner, int port, String ip ) {
+		this( owner, port, ip, false );
+	}
+	/**
+	 * Create a new datagram socket and binds it to the specified port on the  
+	 * specified local address or multicast group address.
+	 * <p>
+	 * Pass <code>zero</code> as port number, will let the system choose an 
+	 * available port. The absence of an address, explicitly <code>null</code> 
+	 * as IP address will assign the socket to the Unspecified Address (Also 
+	 * called anylocal or wildcard address). To set up the socket as multicast 
+	 * socket, pass the group address to be joined. If this address is not a 
+	 * valid multicast address, a broadcast socket will be created by default.
+	 *
+	 * @param owner			the target object to be call by the receive handler
+	 * @param port			local port to bind
+	 * @param ip			host address or group address
+	 * @param reuseAddress	flag for reuseAddress
+	 */
+	public UDP( Object owner, int port, String ip, boolean reuseAddress ) {
 		
 		this.owner = owner;
 		
@@ -165,11 +199,19 @@ public class UDP implements Runnable {
 			InetAddress host = (ip==null) ? (InetAddress)null: addr;
 			
 			if ( !addr.isMulticastAddress() ) {
-				ucSocket = new DatagramSocket( port, host );	// as broadcast
+				//ucSocket = new DatagramSocket( port, host );	// as broadcast
+				ucSocket = new DatagramSocket( null );
+				ucSocket.setReuseAddress( true );
+				//ucSocket.setBroadcast( true );
+				ucSocket.bind( new InetSocketAddress( host, port ) );
 				log( "bound socket to host:"+address()+", port: "+port() );
 			}
 			else {							
-				mcSocket = new MulticastSocket( port );			// as multicast
+				//mcSocket = new MulticastSocket( port );			// as multicast
+				mcSocket = new MulticastSocket( null );			// as multicast
+				mcSocket.setReuseAddress( reuseAddress );
+				//mcSocket.setBroadcast( true );
+				mcSocket.bind( new InetSocketAddress( port ) );
 				mcSocket.joinGroup( addr );
 				this.group = addr;
 				log( "bound multicast socket to host:"+address()+
@@ -379,11 +421,13 @@ public class UDP implements Runnable {
 		
 		boolean success	= false;
 		DatagramPacket pa = null;
+		InetAddress addr;
 		
 		try {
-			
-			pa	= new DatagramPacket( buffer, buffer.length, InetAddress.getByName(ip), port );
-				
+			addr = InetAddress.getByName(ip);			
+			//pa	= new DatagramPacket( buffer, buffer.length, InetAddress.getByName(ip), port );
+			pa	= new DatagramPacket( buffer, buffer.length, addr, port );
+
 			// send
 			if ( isMulticast() ) mcSocket.send( pa );
 			else ucSocket.send( pa );
@@ -402,6 +446,15 @@ public class UDP implements Runnable {
 				  ", packet length: "+pa.getLength()+
 				   "\t\n> "+e.getMessage()
 				  );
+		}
+		catch( IllegalArgumentException e ) { 
+			error( "opening socket failed!"+
+				   "\n\t> bad arguments: "+e.getMessage()
+				   );
+		}
+		catch( SecurityException e ) {
+			error( (isMulticast()?"could not joined the group":"warning")+
+					"\n\t> "+e.getMessage()  );
 		}
 		finally{ return success; }
 	}
