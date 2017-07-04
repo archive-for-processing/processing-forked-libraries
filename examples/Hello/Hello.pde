@@ -1,19 +1,18 @@
-import template.library.*;
+import tramontana.library.*;
+import websockets.*;
 
-HelloLibrary hello;
+Tramontana t;
 
-void setup() {
-  size(400,400);
-  smooth();
-  
-  hello = new HelloLibrary(this);
-  
-  PFont font = createFont("",40);
-  textFont(font);
+void setup(){
+ size(480,240);
+ t = new Tramontana(this,"192.168.1.10");
 }
-
-void draw() {
-  background(0);
-  fill(255);
-  text(hello.sayHello(), 40, 200);
+void draw(){
+  background(255);
+  fill(128);
+  text("Hello Tramontana!",width/2-(textWidth("Hello Tramontana!")/2),height/2);
+}
+void mousePressed(){
+  t.makeVibrate();
+  
 }

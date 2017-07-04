@@ -2,5 +2,21 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Applications/Processing.app/Contents/Java/core/library/core.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/javax.servlet-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/jetty-http-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/jetty-io-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/jetty-security-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/jetty-server-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/jetty-servlet-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/jetty-util-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/slf4j-api-1.7.13.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/slf4j-simple-1.7.13.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/websocket-api-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/websocket-client-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/websocket-common-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/websocket-server-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/websocket-servlet-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="/Users/pierluigi.dallarosa/Documents/Processing/libraries/webSockets/library/webSockets.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
