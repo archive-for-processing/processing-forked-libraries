@@ -16,8 +16,10 @@ import processing.data.*;
 /**
  * Tramontana is a platform for interactive spaces.
  * 
- *
+ * @author Pierluigi Dalla Rosa
+ * 
  * @example Hello 
+ * 
  * 
  */
 
@@ -66,7 +68,7 @@ public class Tramontana {
 			params[3]  = float.class;
 			onAttitudeEvent = parent.getClass().getMethod("onAttitudeEvent", params);
         } catch (Exception e) {
-        		System.out.println(e);
+        		
         		// no such method, or an error.. which is fine, just ignore
         }
 		try {
@@ -113,12 +115,13 @@ public class Tramontana {
         		// no such method, or an error.. which is fine, just ignore
         }
 		try {
-			Class<?> params[] = new Class[2];
+			Class<?> params[] = new Class[3];
 			params[0] = String.class;
 			params[1] = int.class;
 			params[2] = int.class;
 			onTouchEvent = parent.getClass().getMethod("onTouchEvent", params);
         } catch (Exception e) {
+        	
         		// no such method, or an error.. which is fine, just ignore
         }
 		try {
@@ -277,7 +280,28 @@ public class Tramontana {
 			
 		
 	}
-	
+	/* EMBEDDED */
+	public void setServoEmbedded(int servoIndex, int value) {
+		
+		socket.sendMessage("{\"m\":\"srv\",\"n\":"+servoIndex+",\"v\":"+value+"}");
+	}
+	public void setRelayEmbedded(int relayIndex, int value) {
+		socket.sendMessage("{\"m\":\"rel\",\"n\":"+relayIndex+",\"v\":"+Math.round(value)+"}");
+	}
+	public void sendSerialMessageEmbedded(String msg)
+	{
+		socket.sendMessage("{\"m\":\"tx\",\"v\":\""+msg+"\"}");
+	}
+	public void setColorEmbedded(int ledIndex,int red, int green, int blue) {
+		socket.sendMessage("{\"m\":\"col\",\"n\":\""+ledIndex+"\",\"r\":\""+Math.floor(red)+"\",\"g\":\""+Math.floor(green)+"\",\"b\":\""+Math.floor(blue)+"\"}");
+	}
+	public void blinkColorEmbedded(int ledIndex,int red, int green, int blue)
+	{
+		socket.sendMessage("{\"m\":\"blk\",\"n\":\""+ledIndex+"\",\"r\":\""+Math.floor(red)+"\",\"g\":\""+Math.floor(green)+"\",\"b\":\""+Math.floor(blue)+"\"}");
+	}
+	public void setAllColorEmbedded(int red, int green, int blue) {
+		socket.sendMessage("{\"m\":\"all\",\"r\":\""+Math.floor(red)+"\",\"g\":\""+Math.floor(green)+"\",\"b\":\""+Math.floor(blue)+"\"}");;
+	}
 	/* ACTUATION */
 	/**
 	 * Actuate the haptic engine.

@@ -16,6 +16,7 @@ import processing.core.PApplet;
 /**
  * 
  * @author Lasse Steenbock Vestergaard
+ * @author modified by pierluigi.dallarosa
  *
  * Class responsible for handling all websocket events 
  *
