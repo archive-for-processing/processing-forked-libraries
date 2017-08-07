@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="processing-library-template:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/processing_library_template_jar</output-path>
+    <root id="archive" name="processing-library-template.jar">
+      <element id="module-output" name="processing-library-template" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/processing-core.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

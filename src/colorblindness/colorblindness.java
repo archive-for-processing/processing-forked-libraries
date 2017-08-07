@@ -19,15 +19,11 @@ public class colorblindness {
 
 
 
-    public colorblindness(PApplet theParent, boolean createTable) {
+    public colorblindness(PApplet theParent) {
         myParent = theParent;
         welcome();
 
         colors = new int[256][256][256];
-
-        if(createTable){
-            //call to create lookuptable
-        }
 
     }
 
@@ -75,30 +71,40 @@ public class colorblindness {
         BufferedImage img = open(imageName);
         int width = img.getWidth();
         int height = img.getHeight();
+        double temp;
 
         double factor = 0.28;
 
         for(int i=0;i<height;i++) {
             for (int j = 0; j < width; j++) {
-                Color myColor = new Color(img.getRGB(i,j));
-                double newRed = (1 - (myColor.getRed()/255) * factor) + myColor.getRed()/255;
-                double newGreen = (1 - (myColor.getGreen()/255) * factor) + myColor.getGreen()/255;
+                Color myColor = new Color(img.getRGB(j,i));
+                temp = myColor.getRed();
+                double newRed = ((1 - (temp/255)) * factor) + temp/255;
+                temp = myColor.getGreen();
+                double newGreen = ((1 - (temp/255)) * factor) + myColor.getGreen()/255;
                 double newBlue;
+                temp = myColor.getBlue();
                 if(newRed > newGreen){
-                    newBlue = myColor.getBlue()/255 - (myColor.getBlue()/255 * factor);
+                    newBlue = temp/255 - (temp/255 * factor);
                 }else{
-                    newBlue = (1 - (myColor.getBlue()/255) * factor) + myColor.getBlue()/255;
+                    newBlue = ((1 - (temp/255)) * factor) + temp/255;
                 }
 
                 Color newColor = new Color((int) (newRed * 255),(int) (newGreen * 255), (int) (newBlue*255));
 
+
+
                 int rgb = newColor.getRGB();
 
-                img.setRGB(i,j,rgb);
+                img.setRGB(j,i,rgb);
 
-                saveImage(savePath, img);
+
             }
         }
+
+        saveImage(savePath, img);
+
+        System.out.print("Saved Successfully");
 
     }
 
@@ -111,37 +117,34 @@ public class colorblindness {
         double protanope[][] = {{0, 2.02344, -2.52581}, {0, 1, 0}, {0, 0, 1}};
         double deutranope[][] = {{1, 0, 0}, {0.494207, 0, 1.24827}, {0, 0, 1}};
         double tritanope[][] = {{1, 0, 0}, {0, 1, 0}, {-0.395913, 0.801109, 0}};
-        double toRGB[][] = {{17.8824, 43.5161, 4.11935}, {3.45565, 27.1554, 3.86714}, {0.0299566, 0.184309, 1.46709}};
+        double toRGB[][] = {{0.08094444, -0.1305044, 0.116721066}, {-0.010248533514, 0.05401932663599884, -0.11361470821404349}, {-0.0003652969378610491, -0.004121614685876285, 0.6935114048608589}};
 
-        for(int i=0;i<height;i++) {
+        for(int i=1;i<height;i++) {
             for (int j = 0; j < width; j++) {
-                Color myColor = new Color(img.getRGB(i, j));
-                current[0][0] = myColor.getRed() / 255;
-                current[1][0] = myColor.getGreen() / 255;
-                current[2][0] = myColor.getBlue() / 255;
+                Color myColor = new Color(img.getRGB(j, i));
+
+                double temp = myColor.getRed();
+                current[0][0] = temp/255;
+                temp = myColor.getGreen();
+                current[1][0] = temp / 255;
+                temp = myColor.getBlue();
+                current[2][0] = temp / 255;
+                //if(i==height-1 && j==width-1){
+                System.out.print(current[0][0]+ "," + current[1][0] + "," + current[2][0]);
 
                 current = multiplyMatrices(toLMS, current);
-                switch (type){
-                    case 1:
-                        current = multiplyMatrices(protanope,current);
-                        break;
-                    case 2:
-                        current = multiplyMatrices(deutranope,current);
-                        break;
-                    case 3:
-                        current = multiplyMatrices(tritanope,current);
-                        break;
-                    default:
-                        //throw error
-                        break;
+
+                if(type == 1){
+                    current = multiplyMatrices(protanope,current);
                 }
 
                 current = multiplyMatrices(toRGB,current);
+
                 Color newColor = new Color((int) (current[0][0] * 255),(int) (current[1][0] * 255), (int) (current[2][0]*255));
 
                 int rgb = newColor.getRGB();
 
-                img.setRGB(i,j,rgb);
+                img.setRGB(j,i,rgb);
             }
         }
 

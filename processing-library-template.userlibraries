@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="src">
+    <archive path="/Users/mycomputer/Downloads/processing-core.jar" />
+  </library>
+</eclipse-userlibraries>
+
