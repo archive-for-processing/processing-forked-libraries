@@ -1,6 +1,7 @@
 package bontempos.ProjectionMatrix;
 
 import processing.core.*;
+import processing.event.MouseEvent;
 
 
 /**
@@ -14,49 +15,119 @@ public class UnprojectedView {
 
 	// processing PApplet class
 	static PApplet parent;
+	static PGraphics g;
 	static int mouseOverTol = 5; 
+
+	//default for mouse 3D picking. Plane can be changed if desired;
+	static float ZCenter = 0f; //assuming world, but maybe its better if its the picking 3d obj center
+	static PVector planePos;
+	static PVector planeRot;
+	public static PVector mousePos;
 
 	public static UnprojectedView instance;		
 
-	/**
-	 * a Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the Library.
-	 * 
-	 * @example Hello
-	 * @param theParent is processing sketch 
-	 */
 	public UnprojectedView(){}
 
 
+	public static PVector solve(PApplet p , PVector input) {
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		parent = p;
+		return UnprojectedView.getProjectedCoord(input);
+	}
+	
 	public static PVector solve(PVector input) {
 		if (instance == null) {
 			instance = new UnprojectedView();
-			return instance.getProjectedCoord(input,getMatrixLocalToWindow());
 		}
-		return instance.getProjectedCoord(input, getMatrixLocalToWindow());
+		if(parent != null){
+			return UnprojectedView.getProjectedCoord(input);
+		}else{
+			System.out.println("UNPROJECTED VIEW ERROR: Parent PApplet is null");
+			return null;
+		}
 	}
 
 
+	public static void setMouseOverTol(int mouseOverTol) {
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		UnprojectedView.mouseOverTol = mouseOverTol;
+	}
 
 
+	public static boolean mouseOver3DPoint(PVector input){
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		return isMouseOver3DPoint(input);
+	}
+	
+	public static boolean p2dOver3DPoint(PVector input2d, PVector input3d){
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		return is2DPointOver3DPoint(input2d, input3d);
+	}
+
+	public static void setWindow3DPicking(PApplet p){
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		parent = p;
+		//p.registerMethod("mouseEvent", instance);
+		ZCenter = 0f; //assuming world, but maybe its better if its the picking 3d obj center
+		planePos = new PVector(parent.width/2, parent.height/2, ZCenter ); 
+		planeRot = new PVector( 0, 0, 1 );     
+
+	}
 
 
 
 
 	/**
-	 * converts 3D coordinate to its correspondent projection in 2D coord
+	 * converts 3D coordinate to its correspondent projection in window 2D coord
 	 * @param input 3D point in space
-	 * @param projMatrix projection matrix to be used
 	 * @return output 2D point in projection coord.
 	 */
-	public PVector getProjectedCoord(PVector input, PMatrix3D projMatrix) {
+	public static PVector getProjectedCoord(PVector input) {
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		PMatrix3D mat = getMatrixLocalToWindow(); 
 		float [] in = { input.x, input.y, input.z, 1f };
 		float [] out = new float[4];
-		projMatrix.mult(in, out);
-		return new PVector( out[0]/out[3], out[1]/out[3] ); //maybe needs one variation to use out[2]
+		mat.mult(in, out);
+		return new PVector( out[0]/out[3], out[1]/out[3] ); 
+	}
+
+	public static PVector getPointOnPlane(PApplet papplet, float screen_x, float screen_y, PVector planePosition, PVector planeDirection){
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		parent = papplet;
+		return UnprojectedView.getUnProjectedPointOnPlane(screen_x, screen_y, planePosition, planeDirection);
 	}
 
 
+	public static PVector getPointOnDepth(){
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		return UnprojectedView.getUnProjectedPointOnPlane(parent.mouseX, parent.mouseY, planePos, planeRot);
+	}
+
+	public static PVector getPointOnDepth(PVector objectCenter){
+		if (instance == null) {
+			instance = new UnprojectedView();
+		}
+		////TODO dont use planeRot, but a plane aligned to camera plane
+		PVector cameraPlaneRot = getCameraPosition().normalize();
+		//System.out.println("cameraPlaneRot: " + cameraPlaneRot);
+		return UnprojectedView.getUnProjectedPointOnPlane(parent.mouseX, parent.mouseY, objectCenter, cameraPlaneRot);
+	}
 
 
 
@@ -68,13 +139,12 @@ public class UnprojectedView {
 	 *  @planeDirection plane normal 
 	 *  @return output 2D point coord of given screen coord on a plane
 	 */
-	public PVector getUnProjectedPointOnPlane(float screen_x, float screen_y, PVector planePosition, PVector planeDirection) {
+	static PVector getUnProjectedPointOnPlane(float screen_x, float screen_y, PVector planePosition, PVector planeDirection) {
 
 		PVector f = planePosition.copy(); // Position of the plane
 		PVector n = planeDirection.copy(); // The direction of the plane ( normal vector )
 		PVector w = unProject(screen_x, screen_y, -1f); // 3 -dimensional coordinate corresponding to a point on the screen
-		PVector e = getEyePosition(); // Viewpoint position
-
+		PVector e = getCameraPosition(); // Viewpoint position
 		// Computing the intersection of  
 		f.sub(e);
 		w.sub(e);
@@ -87,7 +157,7 @@ public class UnprojectedView {
 
 
 	// Function to get the position of the viewpoint in the current coordinate system
-	PVector getEyePosition() {
+	public static PVector getCameraPosition() {
 		PMatrix3D mat = (PMatrix3D)parent.getMatrix(); //Get the model view matrix
 		mat.invert();
 		return new PVector( mat.m03, mat.m13, mat.m23 );
@@ -96,7 +166,7 @@ public class UnprojectedView {
 
 
 	//Function to perform the conversion to the local coordinate system ( reverse projection ) from the window coordinate system
-	PVector unProject(float winX, float winY, float winZ) {
+	static PVector unProject(float winX, float winY, float winZ) {
 		PMatrix3D mat = getMatrixLocalToWindow();  
 		mat.invert();
 
@@ -131,21 +201,24 @@ public class UnprojectedView {
 	}
 
 
-	
-	//test of mouse is over a 3D point within tolerance (mouseOverTol)
-	public boolean mouseOver3DPoint(PVector pointPosition) {
-
-		boolean result = false;
-		PVector vp = getProjectedCoord (pointPosition, getMatrixLocalToWindow());
-		if (vp.x > parent.mouseX-mouseOverTol && vp.x < parent.mouseX+mouseOverTol &&
-				vp.y > parent.mouseY-mouseOverTol && vp.y < parent.mouseY+mouseOverTol) {
-			result  = true;
+	//test of 2d screen point is over a 3D point within tolerance (mouseOverTol)
+	static boolean is2DPointOver3DPoint(PVector point2d, PVector pointPosition) {
+		PVector vp = getProjectedCoord (pointPosition);
+		if (vp.x > point2d.x-mouseOverTol && vp.x < point2d.x+mouseOverTol &&
+				vp.y > point2d.y-mouseOverTol && vp.y < point2d.y+mouseOverTol) {
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 
-	
+	//test of mouse is over a 3D point within tolerance (mouseOverTol)
+	static boolean isMouseOver3DPoint(PVector pointPosition) {
+		return is2DPointOver3DPoint( new PVector(parent.mouseX,parent.mouseY), pointPosition);
+	}
+
+
+
 	/**
 	 * returns the transformed position of a point multiplied by its rotation angle
 	 * rotates around world center
@@ -191,7 +264,28 @@ public class UnprojectedView {
 	}
 
 
+	public void mouseEvent(MouseEvent event) {
+		int x = event.getX();
+		int y = event.getY();
 
+		switch (event.getAction()) {
+		case MouseEvent.PRESS:
+			// do something for the mouse being pressed
+			break;
+		case MouseEvent.RELEASE:
+			// do something for mouse released
+			break;
+		case MouseEvent.CLICK:
+			// do something for mouse clicked
+			break;
+		case MouseEvent.DRAG:
+			// do something for mouse dragged
+			break;
+		case MouseEvent.MOVE:
+			//mousePos = getUnProjectedPointOnPlane( x, y, planePos, planeRot );
+			break;
+		}
+	}
 
 
 

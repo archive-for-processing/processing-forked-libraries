@@ -1,28 +1,42 @@
+/**
+  * This generates a View * Projection matrix with 3-dimensional collection of correspondent points, between a 2D plane (projection) and its 3D coord.
+ * to be multiplied by a model matrix (identity). 
+ *
+ * @author       Anderson Sudario
+ * @version      1.0
+ * 2017
+ */
+
+
 package bontempos.ProjectionMatrix;
 
+
 import Jama.*;
+import processing.core.PApplet;
 import processing.core.PMatrix3D;
 import processing.core.PVector;
 
-
-
-/**
- * This generates a View * Projection matrix
- * to be multiplied by a model matrix (identity) and use
- *
- * @example Hello 
- */
 
 public class ViewProjection {
 
 	public static boolean printMatrix = false;
 	public static boolean flipped = false;
-	public int calibrationPointsNum = 6; //default
+	public static int calibrationPointsNum = 6; //default
 	public static ViewProjection instance;
 
 	//default cube 3d model to be used as simple calibration tool
 	public static boolean useCubeCalibrationModel = false;
 	static float modelScale = 5;
+	
+	//TODO -> should these 2 values be inside an arrayList? because in cases where multiple instances of this class are created
+	public  PVector [] p3d = new PVector[calibrationPointsNum];
+	public  PVector [] p2d = new PVector[calibrationPointsNum];
+	
+	//experimental
+	static ProjectionUtils utils;
+
+	
+
 
 
 
@@ -34,9 +48,8 @@ public class ViewProjection {
 	public static PMatrix3D get(PVector[] p2d, PVector[]p3d) {
 		if (instance == null) {
 			instance = new ViewProjection();
-			return instance.getViewProjectionMatrix(p2d, p3d);
 		}
-		return instance.getViewProjectionMatrix(p2d, p3d);
+		return ViewProjection.getViewProjectionMatrix(p2d, p3d);
 	}
 
 
@@ -44,7 +57,6 @@ public class ViewProjection {
 	public static PVector solve(PVector input, PMatrix3D projMatrix) {
 		if (instance == null) {
 			instance = new ViewProjection();;
-			return instance.getProjectedCoord(input, projMatrix);
 		}
 		return instance.getProjectedCoord(input, projMatrix);
 	}
@@ -53,43 +65,64 @@ public class ViewProjection {
 	public static void printMatrix(boolean b){
 		if (instance == null){
 			instance = new ViewProjection();
-			ViewProjection.printMatrix = b;
-		}else{
-			ViewProjection.printMatrix = b;
 		}
+		ViewProjection.printMatrix = b;
 	}
 
-	
-	
+	public static PVector[] getP2D(){
+		if (instance == null){
+			instance = new ViewProjection();
+		}
+		return instance.p2d;
+	}
+
 
 	public static void flipped(boolean b){
 		if (instance == null){
 			instance = new ViewProjection();
-			ViewProjection.flipped = b;
-		}else{
-			ViewProjection.flipped = b;
 		}
+		ViewProjection.flipped = b;
+
 	}
-	
+
 	public static PVector [] useCubeCalibrationModel(){
 		if (instance == null){
 			instance = new ViewProjection();
-			return getCubeCalibrationModel();
-		}else{
-			return getCubeCalibrationModel();
 		}
+		return getCubeCalibrationModel();
 	}
-	
-	
+
+
 	public static void setModelScale(float s){
 		if (instance == null){
 			instance = new ViewProjection();
-			ViewProjection.modelScale = s;
-		}else{
-			ViewProjection.modelScale = s;
 		}
+		ViewProjection.modelScale = s;
 	}
 
+	public static void set3Dpoints(PVector [] p3d){
+		if (instance == null){
+			instance = new ViewProjection();
+		}
+		instance.p3d = p3d;
+	}
+	
+	public static void set2Dpoints(PVector [] p2d){
+		if (instance == null){
+			instance = new ViewProjection();
+		}
+		instance.p3d = p2d;
+	}
+	
+	public static void loadProjectionMatrix(){
+		if (instance == null){
+			instance = new ViewProjection();
+		}
+		if(utils == null){
+			System.out.println("Enable Utils in setup: ViewProjection.enableUtils(this);");
+		}
+		 utils.loadMatrix();
+	}
 
 	static PVector[] getCubeCalibrationModel(){
 		PVector[] defaultModelVtx = new PVector[6];
@@ -103,14 +136,36 @@ public class ViewProjection {
 		return defaultModelVtx;
 	}
 
+
+	static public ProjectionUtils enableUtils(PApplet p){
+		if(instance == null) instance = new ViewProjection();
+		utils = new ProjectionUtils(p);
+		utils.parentMat = instance;
+		utils.setKeyShortcuts(true);
+		return utils;
+	}
+
+	//TODO why does it need to be inside Utils and used from this class?
+	public static float [] getRotation(PMatrix3D mat){
+		if (instance == null){
+			instance = new ViewProjection();
+		}
+		if(utils == null){
+			System.out.println("Enable Utils in setup: ViewProjection.enableUtils(this);");
+		}
+		return utils.getEulerAngles(mat);
+	}
+
 	/**
 	 * builds the left side of the matrix to be computed for 2D and 3D correspondence
 	 * @param p2d the points in a plane correspondent to 3D points projection
 	 * @param p3d the spatial 3D points
 	 */
-	double [][] makeMatrixA3D ( PVector[] p2d, PVector[]p3d ) {
+	static double [][] makeMatrixA3D ( PVector[] p2d, PVector[]p3d ) {
+		
+		updateVectors(p2d,p3d);
 
-		int ptsNum = p2d.length;
+		int ptsNum = calibrationPointsNum; //p2d.length;
 
 		double [] tmpAc = new double[ ptsNum * 11 * 2 ];
 		int j = 0;
@@ -155,10 +210,25 @@ public class ViewProjection {
 
 
 
+	private static void updateVectors(PVector [] vec2d, PVector [] vec3d) {
+		if(instance == null){
+			System.out.println("Can't use this function without defining a projection matrix");
+			return;
+		}
+		for(int i = 0; i < calibrationPointsNum; i++){
+			instance.p2d[i] = vec2d[i];
+			instance.p3d[i] = vec3d[i];
+		}
+		
+	}
+
+
+
+
 	/**
 	 * builds the right side of the matrix to be computed
 	 */
-	double[][] makeMatrixR(PVector [] vec2d) { //just one row, but using [][] is for convenience.
+	static double[][] makeMatrixR(PVector [] vec2d) { //just one row, but using [][] is for convenience.
 		int j = 0;
 		int ptsNum = vec2d.length;
 		double [][] m = new double[ptsNum*2][1]; //this is  u and v from projector (only col 0 is used)
@@ -180,11 +250,11 @@ public class ViewProjection {
 	 * @param rc Matrix right side
 	 * @return PMatrix3D projection matrix
 	 */
-	PMatrix3D makeProjectionMatrix(double[][] ac, double[][]rc) {
+	static PMatrix3D makeProjectionMatrix(double[][] ac, double[][]rc) {
 
 		Matrix A = new Matrix(ac);
 		Matrix R = new Matrix(rc);
-
+		
 		if(printMatrix){
 			A.print(7, 1);
 			R.print(7, 1);
@@ -193,6 +263,12 @@ public class ViewProjection {
 		try{
 			Matrix tmpA = A.transpose().times(A);
 			Matrix tmpR = A.transpose().times(R);
+			
+			if(printMatrix){
+				tmpA.print(7, 1);
+				tmpR.print(7, 1);
+			}
+
 			Matrix result = tmpA.inverse().times(tmpR);
 
 			PMatrix3D projMat = new PMatrix3D(
@@ -220,10 +296,12 @@ public class ViewProjection {
 	 * @param p3d is an array with 3D points
 	 * @return PMatrix3D projection matrix
 	 */
-	PMatrix3D getViewProjectionMatrix( PVector[] p2d, PVector[]p3d ) {
+	static PMatrix3D getViewProjectionMatrix( PVector[] p2d, PVector[]p3d ) {
 
 		if( p3d.length > calibrationPointsNum){
 			calibrationPointsNum = p3d.length;
+			p2d = new PVector[calibrationPointsNum];
+			p3d = new PVector[calibrationPointsNum];
 		}
 
 		if( p2d.length == p3d.length){
@@ -253,14 +331,28 @@ public class ViewProjection {
 
 
 
+	/*
+	 * @invisible
+	 */
 
 
 
-
-
-
-
+	//TODO -> will fail in scenes where multiple matrices are being used.
+	public static PMatrix3D update() {
+		if (instance == null) {
+			instance = new ViewProjection();
+		}
+			return getViewProjectionMatrix(instance.p2d, instance.p3d);
+	}
 
 
 }
 
+/*	
+
+  PGraphics pg = parent.g;
+		if ((pg instanceof PGraphics3D) == false ) {
+			PApplet.println("The keystone library will not work with 2D graphics as the renderer because it relies on texture mapping. " +
+					"Try P3D or OPENGL.");
+		}
+ */

@@ -1,10 +1,11 @@
-/* //<>//
+ //<>//
+/*
   Example of using Projection Matirx class
  
  This class generates a View*Projection (view multiplied by projection) matrix based on
  point correspondences between a 3D model and it's projected coordinate on a projector view.
  
- I am finally able to use it with the Processing native PGraphics3D!
+ it can be used to calibrate a kinect projector system
  
  This example shows a calibration model (Cube) using the minimal (6) point-calibration method.
  Hold keys 1 to 6 to change the calibration points and see how it affects the projection.
@@ -14,15 +15,17 @@
 import bontempos.ProjectionMatrix.*;
 import java.util.HashSet;
 
-ArrayList<PVector> objVtxList;
+//import peasy.*;
+//PeasyCam cam;
 
+ArrayList<PVector> objVtxList;
 
 PVector [] p3d = new PVector[6];
 PVector [] p2d = new PVector[6];
-PVector center = new PVector();
 PShape model3d;
-float mouseZ;
-boolean useCrossCursor = false;
+
+PMatrix3D model = new PMatrix3D(); // world 3D matrix
+
 
 
 PMatrix3D viewProjMatrix;
@@ -33,22 +36,16 @@ void setup() {
   //fullScreen(P3D);
   size(600, 300, P3D);
 
-  ViewProjection.enableUtils(this);
+  //cam = new PeasyCam(this, 100);
+  //cam.beginHUD();
+
+  initKinect();
+
+  ViewProjection.enableUtils(this); //enables shortcut for calibration and save/load
   ViewProjection.flipped(true);
 
-  p3d = ViewProjection.useCubeCalibrationModel(); //this line replaces the block below
-
-  /*
-  //default correspondent points of a cube
-   float s = 5; //scale
-   p3d[0]=  new PVector( s, -s, s);
-   p3d[1]=  new PVector( s, s, s );
-   p3d[2]=  new PVector( -s, -s, s); //in this 3D model, this is point index = 0 (-5-5 5)
-   p3d[3]=  new PVector( -s, s, s );
-   p3d[4]=  new PVector( -s, -s, -s );
-   p3d[5]=  new PVector( -s, s, -s );
-   */
-
+  ViewProjection.setModelScale(20); //center to wall dist. A box() obj must be double this size
+  p3d = ViewProjection.useCubeCalibrationModel();
 
   p2d[0]=  new PVector(199, 113 );
   p2d[1]=  new PVector( 195, 181 );
@@ -59,71 +56,84 @@ void setup() {
 
 
   viewProjMatrix = ViewProjection.get(p2d, p3d);
-
-  /*the above line is creating this matrix
-   viewProjMatrix = new PMatrix3D(
-   -004.7986, -002.4045, -002.3774, 253.9886, 
-   -002.8312, 006.1314, 006.2057, 219.9871, 
-   0f, 0f, -1, 1f, 
-   000.0059, -000.0094, 000.0147, 1
-   );
-   */
-
+  
+  
   model3d = loadShape("box10.obj");
   buildObjVertexList(model3d);
+
+  //cam.endHUD();
 }
 
 
-void keyPressed() {
-  
-  if (key == '.') selVtx++;
-
-  else if ( key ==  ESC) {
-    output2Dpoints();
-  }
-}
 
 void draw() {
   background(0);
-
   //identity matrix to represent the model default transformations (translation, rotation, scale)
-  PMatrix3D model = new PMatrix3D();
+  model = new PMatrix3D();
 
+  //ZOOM IN
+ if (keyPressed && key == 'h') {
+    model.scale(1.1);
+  }
 
   //press 0 to rotate the model
-  if (keyPressed && key == '0')model.rotateY(radians(0.5));
-  
+  if (keyPressed && key == '0') {
+    model.rotateY( radians(1));
+  }
+  if (keyPressed && key == '9') {
+    model.rotateY( radians(-1));
+  }
+
+
+  if (keyPressed && key == 'O') {
+    model.rotateZ( radians(1));
+  }
+  if (keyPressed && key == 'I') {
+    model.rotateZ( radians(-1));
+  }
+
+  if (keyPressed && key == 'A') {
+    model.translate( -1, 0, 0);
+  }
+  if (keyPressed && key == 'D') {
+    model.translate( 1, 0, 0);
+  }
+  if (keyPressed && key == 'W') {
+    model.translate( 0, 0, -1);
+  }
+  if (keyPressed && key == 'S') {
+    model.translate( 0, 0, 1);
+  }
+
+
   //update 2d points and recalibrate matrix
-  if (keyPressed) viewProjMatrix = ViewProjection.update();
+  else if (keyPressed && key >= '1' && key <= '6') {
+    viewProjMatrix = ViewProjection.updateP2D();
+  }else if (keyPressed && key == 'l'){
+    viewProjMatrix = ViewProjection.updateP2D();
+  }
 
 
   //move mouse left to right to change light orientation
-  directionalLight(255, 255, 255, map(mouseX, 0, width, -1, 1), 0, 1); // invert last parameter if all black depending on the model normals
+  //directionalLight(255, 255, 255, map(mouseX, 0, width, -1, 1), 0, 1); // invert last parameter if all black depending on the model normals
 
-  //chKeyCommands();
-  
 
   viewProjMatrix.apply(model);
+  
   pushMatrix();
   applyMatrix(viewProjMatrix);
-  shape(model3d, 0, 0);
 
-  noStroke();
-  fill(#ff0000);
-  pushMatrix();
-  translate(20, 0);
-  //processing default box object can also be loaded and used on the projection
-  box(10);
-  popMatrix();
+  
+  noFill();
+  strokeWeight(1);
+  box(40);
+  drawKMatrix();
+  // shape(model3d, 0, 0);
+  buildPointCloud();  
+  popMatrix();  
+  // display2DprojectedVertices();
 
-  stroke(-1);
-  strokeWeight(5);
-  PVector pp =  getObjVertex(selVtx);
-  point(pp.x, pp.y, pp.z);
-  popMatrix();
-
-  display2DprojectedVertices();
-  if (useCrossCursor) drawCrossCursor();
+  
 }
 
 
@@ -142,13 +152,7 @@ void display2DprojectedVertices() {
 }
 
 
-void drawCrossCursor() {
-  strokeWeight(2);
-  stroke(#00ff00);
-  int x = mouseX, y = mouseY;
-  line(0, y, width, y);
-  line(x, 0, x, height);
-}
+
 
 
 PVector getObjVertex(PShape obj, int index) {
@@ -183,19 +187,6 @@ void buildObjVertexList(PShape obj) {
 
 
 
-//void chKeyCommands() {
-//  if (keyPressed ) {
-//    if ( key >= 1 + '0' && key <= 6 + '0') {
-//      viewProjMatrix = ViewProjection.updateP2D();
-//      //int index = (key - '0') - 1;
-//      //p2d[index] = new PVector(mouseX, mouseY);      
-//      //viewProjMatrix = ViewProjection.get(p2d, p3d);
-//    } //else if (key == 'c') {
-//      //useCrossCursor =! useCrossCursor;
-//    //} 
-//    show2Dpoints();
-//  }
-//}
 
 void show2Dpoints() {
   stroke(-1);
@@ -211,30 +202,15 @@ void show2Dpoints() {
 
 void output2Dpoints() {
   println("------ 2D points ------");
-    for (int i = 0; i < 6; i++) {        
+  for (int i = 0; i < 6; i++) {        
     println("point ", i, "["+p2d[i].x, ",", p2d[i].y+"]");
   }
 }
 
 
-/*
-import bontempos.ProjectionMatrix.*;
-
-ProjectionUtils u;
-
-void setup() {
-  //fullScreen(P3D);
-  size(600, 300, P3D);
-  u = new ProjectionUtils(this);
-  u.setKeyShortcuts(true);
-  u.setLineColor(#ff0000);
-  u.setScreenFrame(true);
-  u.setLineWeight(2);
+void keyPressed() {
+  if (key == '.') selVtx++;
+  else if ( key ==  ESC) {
+    output2Dpoints();
+  }
 }
-
-void draw(){
-  background(-1);
-  //camera();
-  rotateY(PI/6);
-}
-*/

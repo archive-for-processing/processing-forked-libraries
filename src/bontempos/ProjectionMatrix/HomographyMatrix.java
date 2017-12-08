@@ -4,6 +4,15 @@ import Jama.Matrix;
 import processing.core.PMatrix3D;
 import processing.core.PVector;
 
+/**
+* This generates a Homographic Matrix
+* this is used to transform a PVector plane (2D) (defined by 4 corners) into another plane coord system (2D) (defined by other 4 corners)
+*
+* @author       Anderson Sudario
+* @version      1.0
+* 2017
+*/
+
 public class HomographyMatrix {
 
 	public static boolean printMatrix = false;
@@ -17,10 +26,7 @@ public class HomographyMatrix {
 
 
 
-
 	public HomographyMatrix(){	}
-
-
 
 
 	public static double[][] get(PVector[] source, PVector[]target) {
@@ -174,11 +180,10 @@ public class HomographyMatrix {
 			return homographyMat;
 		}catch(RuntimeException e){
 			System.out.println("Failed creating Homography plane");
-			return null;
+			//return null;
+			return homographyMatrix;
 		}
 	}
-
-
 
 
 
@@ -193,7 +198,7 @@ public class HomographyMatrix {
 
 		if( source.length == target.length){
 			homographyMatrix = makeHomographyMatrix( makeMatrixAHomography(source, target), makeMatrixR(target) );
-			System.out.println("R homograph matrix OK");
+			//System.out.println("R homograph matrix OK");
 
 			return homographyMatrix;
 		}
@@ -215,6 +220,8 @@ public class HomographyMatrix {
 		Matrix in = new Matrix( new double[][]{{input.x, input.y, 1f }});
 
 		in = in.transpose();
+		//in.print(5,1);
+		//System.out.println("getHomographyCoord");
 		hMatrix = hMatrix.times(in);	
 
 
@@ -223,7 +230,6 @@ public class HomographyMatrix {
 
 		return new PVector( out.x/out.z, out.y/out.z );
 	}
-
 
 
 	/**
