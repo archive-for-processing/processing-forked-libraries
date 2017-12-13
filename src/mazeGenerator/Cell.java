@@ -1,6 +1,8 @@
 package mazeGenerator;
 /**
  * The class Cell is the basic entity a maze consists of.
+ * 
+ * @author AmazingGroup
  */
 
 import java.util.ArrayList;

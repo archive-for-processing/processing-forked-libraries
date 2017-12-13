@@ -5,6 +5,9 @@ package mazeGenerator;
  * concrete strategy to the interface MazeCreator. 
  * Kruskal creates mazes with many, but rather short dead ends and is based on the Kruskal
  * algorithm for calculating the minimum spanning tree in a graph.
+ * 
+ * 
+ *  @author AmazingGroup
  */
 
 import java.util.Collections;
