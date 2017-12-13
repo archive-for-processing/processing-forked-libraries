@@ -2,5 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/KerstinJ/Documents/RUC/AI/processing-3.3.6-windows64/processing-3.3.6/core/library/core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/KerstinJ/Documents/Processing/libraries/controlP5/library/controlP5.jar"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
