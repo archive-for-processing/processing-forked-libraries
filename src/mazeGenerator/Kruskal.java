@@ -1,19 +1,18 @@
 package mazeGenerator;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 /** 
  * This class implements the Kruskal algorithm for creating mazes. It implements the
  * concrete strategy to the interface MazeCreator. 
  * Kruskal creates mazes with many, but rather short dead ends and is based on the Kruskal
- * algorithm for calculating the minimum spanning tree in a graph.
+ * algorithm for calculating the minimum spanning tree of a graph.
  * 
  * 
  *  @author AmazingGroup
  */
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
 
 public class Kruskal implements MazeCreator {
 
@@ -79,7 +78,7 @@ public class Kruskal implements MazeCreator {
 			Set<Cell> firstSet = new HashSet<Cell>();
 			Set<Cell> secondSet = new HashSet<Cell>();
 
-			// iterate over all sets in setsOfCells to find the one including the cell of
+			// iterate over all sets in setsOfCells to find the one including the cells on the
 			// edge
 			for (Set<Cell> iterator : setsOfCells) {
 				if (iterator.contains(contents[0])) {

@@ -1,48 +1,51 @@
 package mazeGenerator;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 /** 
- * This class implements the Hunt and Kill algorithm for creating mazes.
- * It implements the concrete steps of the Template Method in the class RecursiveStrategy.
+ * This class implements the Hunt and Kill algorithm for creating mazes. It creates perfect mazes with
+ * rather many and long dead ends. It implements the concrete steps of the Template Method in the class 
+ * RecursiveStrategy.
  * 
  * @author AmazingGroup
  */
 
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class HuntAndKill extends RecursiveStrategy {
 
   // defines when basic mode and hunting mode are called
-  public Cell handleCases(ArrayList<Cell> neighbours, Cell current) {
+  public boolean handleCases(ArrayList<Cell> neighbours) {
+	
     int random = ThreadLocalRandom.current().nextInt(0, 10);
 
-    // if the cell has neighbours, that have not been visited yet and no random
-    // initializing of hunting mode
+    // if the cell has neighbours, that have not been visited yet and randomly in 20% of the cases
     if (neighbours.size() > 0 && !(random % 5 == 0)) {
-      return basicMode(neighbours, current);
+      return true;
     }
 
     // handle hunting mode
     else {
-      return huntMode(neighbours, current);
+      return false;
     }
 
   }
 
   public Cell huntMode(ArrayList<Cell> neighbours, Cell current) {
-    // System.out.println("Dead End! Moving into hunting mode");
 
-    mainLoop:
+	  mainLoop:
 
-    // iterate over all cells until one is found, which has a already visited
-    // neighbour
+    // iterate over all cells
     for (int i = 0; i < mazeFields.length; i++) {
       for (int j = 0; j < mazeFields.length; j++) {
 
+    	//find a cell that has not been visited yet
         if (mazeFields[i][j].getStatus() == false) {
 
           ArrayList<Cell> neighbourList = mazeFields[i][j].getNeighbours();
+          
+          //iterates over all its neighbours
           for (Cell c : neighbourList) {
+        	  
+        	//if one neighbour is found, that has been visited
             if (c.getStatus() == true) {
               c.addConnection(mazeFields[i][j]);
 

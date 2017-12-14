@@ -1,12 +1,16 @@
 package mazeGenerator;
+import processing.core.PApplet;
 /**
  * This class represents the walls in the maze grid. There exists walls 
- * on all outer edges and between each pair of adjacent cells.
+ * on all outer edges and between each pair of adjacent cells. The variable
+ * solid indicates whether a wall is existing in the generated maze. If solid
+ * is set to false, this means the actual non-existence of a wall, thus a path
+ * between two cells.
  * 
  *  @author AmazingGroup
  */
 
-import processing.core.PApplet;
+
 
 public class Wall {
 	private int posX;

@@ -1,23 +1,24 @@
 package mazeGenerator;
+import java.util.ArrayList;
 /** 
  * This class implements the Recursive Backtracking algorithm for creating mazes.
- * It creates a long winding path with few dead ends.
+ * It creates perfect mazes with a long winding solution path and few dead ends.
  * 
  * @author AmazingGroup
  */
-import java.util.ArrayList;
+
 
 public class RecursiveBacktracker extends RecursiveStrategy {
 
-  public Cell handleCases(ArrayList<Cell> neighbours, Cell current) {
+  public boolean handleCases(ArrayList<Cell> neighbours) {
 
     // if the cell has neighbours, that have not been visited yet
     if (neighbours.size() > 0) {
-      return basicMode(neighbours, current);
+      return true;
     }
 
     else {
-      return huntMode(neighbours, current);
+      return false;
     }
   }
 

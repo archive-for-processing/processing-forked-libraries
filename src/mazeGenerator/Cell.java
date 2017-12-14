@@ -1,11 +1,12 @@
 package mazeGenerator;
+import java.util.ArrayList;
 /**
- * The class Cell is the basic entity a maze consists of.
- * 
+ * The class Cell is the basic entity a maze consists of.A cell represents one square field in the grid
+ * that later forms a maze. A cell has up to four neighbours, * meaning diagonally adjacent cells are
+ * not considered neighbours (von Neumann neighbourhood).
+ *  
  * @author AmazingGroup
  */
-
-import java.util.ArrayList;
 
 public class Cell {
 	private boolean visited; // visited by algorithm
@@ -14,7 +15,6 @@ public class Cell {
 	private ArrayList<Cell> neighbours; // stores between two and four neighboring cells of the Cell
 	private Wall[] walls; // walls[0]: up; walls[1]: right; walls[2]:down; walls[3]:left
 
-	// constructor; arguments: position of cell, PApplet
 	public Cell(int width, int height) {
 
 		walls = new Wall[4];
@@ -29,8 +29,6 @@ public class Cell {
 		// empty ArrayList for storing neighbors is initialized
 		neighbours = new ArrayList<Cell>();
 
-		// empty ArrayList for storing connected cells is initialized
-		// connectedCells = new ArrayList<Cell>();
 	}
 
 	/**
@@ -44,12 +42,11 @@ public class Cell {
 		this.visited = visited;
 	}
 
-	// getter-method for reading status of cell
 	public boolean getStatus() {
 		return visited;
 	}
 
-	// getter-method returning all neighbors of a cell
+	// returning all neighbors of a cell
 	public ArrayList<Cell> getNeighbours() {
 		return neighbours;
 	}
@@ -59,9 +56,9 @@ public class Cell {
 		neighbours.add(neighbour);
 	}
 
-	// setter-method, adds one connection
+	// setter-method, add one connection between two adjacent cells
 	public void addConnection(Cell connectedCell) {
-		// the wall between the cells is set as unsolid
+		// the wall both cells share is found and set as unsolid
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
 				if (this.walls[i].equals(connectedCell.walls[j])) {
@@ -83,7 +80,6 @@ public class Cell {
 		walls[2] = down;
 	}
 
-	// DEBUG overriding default toString-method
 	public String toString() {
 		return "[" + widthPosition + "][" + heightPosition + "]";
 	}

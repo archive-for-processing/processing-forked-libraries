@@ -1,14 +1,17 @@
 package mazeGenerator;
-/**
-*The class RecursiveStrategy provides the Template Methods for the classes Kruskal and RecursiveBacktracker.
-*The methods setUpStructure() and basicMode() are shared among Kruskal and RecursiveBacktracker and therefore implemented.
-*The methods huntMode() and handleCases() differ and therefore remain abstract here. 
-*
-* @author AmazingGroup
-*/
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
+
+/**
+*The class RecursiveStrategy provides the Template Methods for the classes Kruskal and RecursiveBacktracker.
+*The methods setUpStructure() and basicMode() are shared among Kruskal and RecursiveBacktracker and therefore
+*implemented. The methods huntMode() and handleCases() differ and therefore remain abstract here. 
+*
+*
+* @author AmazingGroup
+*/
+
 
 public abstract class RecursiveStrategy implements MazeCreator {
   Stack<Cell> backTrackingStack; // stack stores the already visited cells for backtracking
@@ -64,7 +67,12 @@ public abstract class RecursiveStrategy implements MazeCreator {
         }
       }
 
-      current = handleCases(neighbourList, current);
+      if(handleCases(neighbourList)){
+    	  current = basicMode(neighbourList,current);
+      }
+      else{
+    	  current = huntMode(neighbourList,current);
+      }
     }
 
     Wall[] wallsOfGoalCell = endpoint.getWalls();
@@ -72,7 +80,7 @@ public abstract class RecursiveStrategy implements MazeCreator {
 
   }
 
-  abstract Cell handleCases(ArrayList<Cell> neighbours, Cell current);
+  abstract boolean handleCases(ArrayList<Cell> neighbours);
 
   public Cell basicMode(ArrayList<Cell> neighbours, Cell current) {
     // temp variable saves the current cell

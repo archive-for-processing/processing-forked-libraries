@@ -1,12 +1,14 @@
 package mazeGenerator;
 
+import processing.core.PApplet;
+
 /**
- * Stores and manages entire mazes consisting of walls and cells
+ * Stores and manages entire mazes consisting of walls and cells. When the constructor is called,
+ * all elements that the maze needs are initialized and structured.
  * 
  *  @author AmazingGroup
  */
 
-import processing.core.PApplet;
 
 public class Maze {
 	private int width; // width of maze
