@@ -200,33 +200,24 @@ import controlP5.*;
     }
   }
 
-  public void drawCountdown(){
-  //time needed for level in seconds start from zero
-    int neededTime = Math.round((time.time() / 1000) - timeOnPause); 
-  
-    int barTimerWidth = displayWidth; //width of timer rectangle
-    int stepSize = barTimerWidth/allowedTimeForLevel; //decreasing rectangle for this amount
-    int timer = stepSize*neededTime;
-    
-    println(neededTime);
+  public void drawCountdown() {
+    // time needed for level in seconds start from zero
+    int neededTime = Math.round((time.time() / 1000) % 60 - timeOnPause);
 
-    if (neededTime < allowedTimeForLevel)
-    {
-    
-    fill(0,255,0);
-    rect(0+timer/2,displayHeight-displayHeight/11,(displayWidth)-(timer),displayHeight/18);
-    fill(0);
-    
+    int barTimerWidth = displayWidth; // width of timer rectangle
+    int stepSize = barTimerWidth / allowedTimeForLevel; // decreasing rectangle for this amount
+    int timer = stepSize * neededTime;
+
+    if (neededTime < allowedTimeForLevel) {
+
+      fill(0, 255, 0);
+      rect(0 + timer / 2, displayHeight - displayHeight / 11, (displayWidth) - (timer), displayHeight / 18);
+      fill(0);
+
+    } else {
+      fill(255, 0, 0);
     }
-    else
-    {
-      timer = 0;
-      fill(255,0,0);
-      
-    }
-    
-    text(allowedTimeForLevel-neededTime,displayWidth/2,displayHeight-displayHeight/20);
-    fill(0);
+    text(allowedTimeForLevel - neededTime, displayWidth / 2, displayHeight - displayHeight / 20);
   }
 
   public void drawStatistics() {
@@ -374,25 +365,25 @@ import controlP5.*;
     if (complexity == 1) {
       creat = new Kruskal();// set strategy for maze creation
       size = 5;
-      allowedTimeForLevel = 20;
+      allowedTimeForLevel = 10;
     }
 
     if (complexity == 2) {
       creat = new Kruskal();// set strategy for maze creation
       size = 7;
-      allowedTimeForLevel = 22;
+      allowedTimeForLevel = 17;
     }
 
     if (complexity == 3) {
       creat = new RecursiveBacktracker();// set strategy for maze creation
       size = 5;
-      allowedTimeForLevel = 15;
+      allowedTimeForLevel = 9;
     }
 
     if (complexity == 4) {
       creat = new RecursiveBacktracker();// set strategy for maze creation
       size = 9;
-      allowedTimeForLevel = 23;
+      allowedTimeForLevel = 16;
     }
     if (complexity == 5) {
       creat = new RecursiveBacktracker();// set strategy for maze creation
@@ -409,7 +400,7 @@ import controlP5.*;
     if (complexity == 7) {
       creat = new RecursiveBacktracker();// set strategy for maze creation
       size = 7;
-      allowedTimeForLevel = 25;
+      allowedTimeForLevel = 15;
     }
     if (complexity == 8) {
       creat = new HuntAndKill();// set strategy for maze creation
@@ -431,13 +422,13 @@ import controlP5.*;
     if (complexity == 11) {
       creat = new RecursiveBacktracker();// set strategy for maze creation
       size = 15;
-      allowedTimeForLevel = 41;
+      allowedTimeForLevel = 33;
     }
 
     if (complexity == 12) {
       creat = new HuntAndKill();// set strategy for maze creation
       size = 5;
-      allowedTimeForLevel = 19;
+      allowedTimeForLevel = 14;
     }
 
     if (complexity == 13) {
@@ -454,13 +445,13 @@ import controlP5.*;
     if (complexity == 15) {
       creat = new HuntAndKill();// set strategy for maze creation
       size = 11;
-      allowedTimeForLevel = 34;
+      allowedTimeForLevel = 39;
     }
 
     if (complexity == 16) {
       creat = new HuntAndKill();// set strategy for maze creation
       size = 9;
-      allowedTimeForLevel = 20;
+      allowedTimeForLevel = 36;
     }
 
     if (complexity == 17) {
@@ -472,12 +463,12 @@ import controlP5.*;
     if (complexity == 18) {
       creat = new HuntAndKill();// set strategy for maze creation
       size = 15;
-      allowedTimeForLevel = 35;
+      allowedTimeForLevel = 44;
     }
     if (complexity == 19) {
       creat = new HuntAndKill();// set strategy for maze creation
       size = 17;
-      allowedTimeForLevel = 30;
+      allowedTimeForLevel = 55;
     }
 
     if (complexity == 20) {
@@ -491,7 +482,6 @@ import controlP5.*;
       size = 19;
       allowedTimeForLevel = 50;
     }
-    
     if (complexity > 21) {
       creat = new HuntAndKill();// set strategy for maze creation
       size = size + 2;
