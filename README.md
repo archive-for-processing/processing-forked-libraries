@@ -8,15 +8,14 @@
 Copy the MazeCreator library's folder into the "libraries" folder at this location. 
 You will need to create the "libraries" folder if this is your first contributed library. </p>
 <p> The folder structure for library controlP5 should be as follows </p>
-<p>
-Processing
-  libraries
-    MazeCreator
-      examples
-      library
-        MazeCreator.jar
-      reference
-      src
+<p> Processing
+<div style="text-indent:10px;">libraries</div>
+<div style="text-indent:20px;">MazeCreator</div>
+<div style="text-indent:30px;"> examples</div>
+<div style="text-indent:30px;"> library</div> 
+<div style="text-indent:40px;">MazeCreator.jar</div> 
+<div style="text-indent:30px;">reference</div>    
+<div style="text-indent:30px;">src</div>         
  </p>                     
                       
-Note that you might need to restart Processing to get access to the library. </p>
+<p>Note that you might need to restart Processing to get access to the library. </p>
