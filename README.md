@@ -10,13 +10,13 @@ You will need to create the "libraries" folder if this is your first contributed
 <p> The folder structure for library controlP5 should be as follows </p>
 <section>
 Processing
-<p>libraries</p>
-<dl><p>MazeCreator</p></dl>
-<dl><p style="text-indent:30px;"> examples</p></dl>
-<p style="text-indent:30px;"> library</p> 
-<dl><p style="text-indent:40px;">MazeCreator.jar</p> <dl>
-<p style="text-indent:30px;">reference</p>    
-<p style="text-indent:30px;">src</p>  
+<p>--libraries</p>
+<dl><p>----MazeCreator</p></dl>
+<dl><p style="text-indent:30px;">------examples</p></dl>
+<p style="text-indent:30px;">------library</p> 
+<dl><p style="text-indent:40px;">--------MazeCreator.jar</p> <dl>
+<p style="text-indent:30px;">------reference</p>    
+<p style="text-indent:30px;">------src</p>  
 </dl>                         
 </section>
 <p>Note that you might need to restart Processing to get access to the library. </p>
