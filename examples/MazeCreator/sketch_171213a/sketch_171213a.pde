@@ -4,20 +4,17 @@ import controlP5.*;
 
   boolean goalReached = false; // goal of the current level reached
 
-  private int size = 5; // size of maze in cells
-
+  private int size; // size of maze in cells
   private int gameSize = displayWidth / 2; // size of maze in pixel
+  private int cellSize; // size of one cell in pixel
 
-  private int cellSize = gameSize / size; // size of one cell in pixel
-
-  private MazeCreator creat = new RecursiveBacktracker(); // chosen maze creation // strategy
-
-  private Player p = new Player(cellSize); // initialize player
-
-  private Maze maze = new Maze(size, size, this, creat, cellSize); // initialize new
+  private MazeCreator creat; // chosen maze creation // strategy
+  private Maze maze; // initialize new
   // maze
+  
+  private Player p; // initialize player
 
-  private int allowedTimeForLevel = 20;
+  private int allowedTimeForLevel;
 
   private ControlP5 cp5; // library for buttons and timer
 
@@ -26,27 +23,24 @@ import controlP5.*;
 
   private Bang continueButton; // button to continue game
   private Bang pauseButton; // button to pause game
-  private boolean paused = false; // is game paused
-  // private Bang resetHighScore; //button to reset highscore
-
-  private int timeOnPause = 0; // how long was game paused
-
+  private boolean paused; // is game paused
+  private int timeOnPause; // how long was game paused
+  private ControlTimer pauseTimer;
+  
   private ControlTimer time = new ControlTimer();
 
   // set starting cell for maze creation
-  private int startingIndex1 = 0;
-  private int startingIndex2 = ThreadLocalRandom.current().nextInt(0, maze.getHeight());;
+  private int startingIndex1;
+  private int startingIndex2;
 
   // set end point -> goal
-  private int endIndex1 = size - 1;
-  private int endIndex2 = ThreadLocalRandom.current().nextInt(0, maze.getHeight());
+  private int endIndex1;
+  private int endIndex2;
 
-  private int complexityClass = 12; // initial level
+  private int complexityClass; //level
 
-  private ControlTimer pauseTimer;
   // Level statistics
   int highestLevel = complexityClass;
-
 
   /**
    * Processing methods
@@ -59,6 +53,7 @@ import controlP5.*;
 
   // set up buttons and place them on their initial position at the screen
   public void setup() {
+    complexityClass = 12; // initial level
     pushMatrix();
     translate(displayWidth / 4, 0);
     cp5 = new ControlP5(this);
@@ -208,8 +203,6 @@ import controlP5.*;
     int stepSize = barTimerWidth/allowedTimeForLevel; //decreasing rectangle for this amount
     int timer = stepSize*neededTime;
     
-    println(neededTime);
-
     if (neededTime < allowedTimeForLevel)
     {
     
