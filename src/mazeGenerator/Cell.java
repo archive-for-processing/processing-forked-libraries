@@ -1,8 +1,8 @@
 package mazeGenerator;
 import java.util.ArrayList;
 /**
- * The class Cell is the basic entity a maze consists of.A cell represents one square field in the grid
- * that later forms a maze. A cell has up to four neighbours, * meaning diagonally adjacent cells are
+ * The class Cell is the basic entity a maze consists of. A cell represents one square field in the grid
+ * that later forms a maze. A cell has up to four neighbours, meaning diagonally adjacent cells are
  * not considered neighbours (von Neumann neighbourhood).
  *  
  * @author AmazingGroup
