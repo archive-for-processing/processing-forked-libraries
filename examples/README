@@ -1,1 +1,3 @@
-add examples for your Library here.
+This folder includes example Processing sketches that use the MazeGenerator library.
+Note that for running the sketch "MazeGame", you will need to have the Processing library
+ControlP5 imported. http://www.sojamo.de/libraries/controlP5/ (effective 12-17-2017).
