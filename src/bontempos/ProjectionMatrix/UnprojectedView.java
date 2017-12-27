@@ -80,7 +80,7 @@ public class UnprojectedView {
 		//p.registerMethod("mouseEvent", instance);
 		ZCenter = 0f; //assuming world, but maybe its better if its the picking 3d obj center
 		planePos = new PVector(parent.width/2, parent.height/2, ZCenter ); 
-		planeRot = new PVector( 0, 0, 1 );     
+		planeRot = new PVector( 0, 0, 1 );   //z pointing the camera  
 
 	}
 
