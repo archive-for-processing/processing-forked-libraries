@@ -2,7 +2,7 @@
 
 ### Install with the Contribution Manager
 
-Add contributed Libraries by selecting the menu item _Sketch_ â†’ _Import Library..._ â†’ _Add Library..._ This will open the Contribution Manager, where you can browse for ##library.name##, or any other Library you want to install.
+Add contributed Libraries by selecting the menu item _Sketch_ ¡æ _Import Library..._ ¡æ _Add Library..._ This will open the Contribution Manager, where you can browse for ##library.name##, or any other Library you want to install.
 
 Not all available Libraries have been converted to show up in this menu. If a Library isn't there, it will need to be installed manually by following the instructions below.
 
@@ -14,7 +14,7 @@ By default the following locations are used for your sketchbook folder:
   * For Mac users, the sketchbook folder is located inside `~/Documents/Processing` 
   * For Windows users, the sketchbook folder is located inside `My Documents/Processing`
 
-Download ##library.name## from ##library.url##
+Download ##library.name## from [here](https://github.com/Shinhoo/Wooting-Keyboard-Library/blob/master/distribution/WootingKeyboard-1/download/WootingKeyboard-1.zip).
 
 Unzip and copy the contributed Library's folder into the `libraries` folder in the Processing sketchbook. You will need to create this `libraries` folder if it does not exist.
 

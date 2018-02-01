@@ -57,7 +57,7 @@ public class WootingManager {
 	}
 
 	/**
-	 * Get IO of the keyboard devices connected to the computer
+	 * Get the Wooting keyboard devices connected to the computer
 	 */
 	public void getWootingDevices() {
 		try {
@@ -82,7 +82,7 @@ public class WootingManager {
 	}
 
 	/**
-	 * Close the IO of the keyboard devices connected to the computer
+	 * Close the Wooting keyboard devices connected to the computer
 	 */
 	public void closeWootingDevices() {
 		// close devices
@@ -101,7 +101,7 @@ public class WootingManager {
 	}
 
 	/**
-	 * Open the IO input from the keyboard devices
+	 * Open the Wooting keyboard devices
 	 */
 	public void openWootingDevices() {
 		int i = 0;
@@ -156,12 +156,18 @@ public class WootingManager {
 			System.out.println("Quit: WootingManager");
 	}
 
+	/**
+	 * Change to all key tracking mode
+	 */
 	public void setAllMode() {
 		for (KeyValue s : KeyValue.values()) {
 			keyMap.put(s, true);
 		}
 	}
 
+	/**
+	 * Change to text key(Alphabet, Number, etc) tracking mode
+	 */
 	public void setTextMode() {
 		for (KeyValue s : KeyValue.values()) {
 			if (s.getValue() < 16 || s.getValue() > 85)
@@ -171,6 +177,10 @@ public class WootingManager {
 		}
 	}
 
+	/**
+	 * Change to custom key tracking mode
+	 * @param Key list
+	 */
 	public void setCustomMode(ArrayList<KeyValue> list) {
 		for (KeyValue s : KeyValue.values()) {
 			keyMap.put(s, false);
@@ -180,6 +190,11 @@ public class WootingManager {
 		}
 	}
 
+	/**
+	 * Parse raw data into log string
+	 * @param data
+	 * @return log
+	 */
 	public String parseLog(byte[] data) {
 		String result = "";
 		for (int i = 0; i < data.length; i = i + 2) {
@@ -194,6 +209,11 @@ public class WootingManager {
 		return result;
 	}
 
+	/**
+	 * Parsing raw data into Hash map data
+	 * @param data
+	 * @return HashMap<KeyValue, Integer>
+	 */
 	public HashMap<KeyValue, Integer> parseData(byte[] data) {
 		HashMap<KeyValue, Integer> result = new HashMap<KeyValue, Integer>();
 		for (KeyValue s : KeyValue.values()) {

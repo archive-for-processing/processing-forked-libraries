@@ -3,6 +3,7 @@ package org.kiml;
 import java.util.HashMap;
 
 /**
+ * Enum Class for Key code
  * @author Shinhoo Park
  *
  */
@@ -26,6 +27,11 @@ public enum KeyValue {
 		this.value = v;
 	}
 
+	/**
+	 * Return the KeyValue to the Key Number
+	 * @param Key Number
+	 * @return KeyValue
+	 */
 	public static KeyValue getKey(int k) {
 		if (keyArray == null) {
 			initMapping();
@@ -33,6 +39,10 @@ public enum KeyValue {
 		return keyArray.get(k);
 	}
 	
+	/**
+	 * Return the Key Number
+	 * @return Key Number
+	 */
 	public int getValue() {
 		return value;
 	}
