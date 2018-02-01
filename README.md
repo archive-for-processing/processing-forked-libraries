@@ -63,13 +63,13 @@ void setup()
 * Tracking All of key
 
 ```java
-    wManager.setAllMode();
+	wManager.setAllMode();
 ```
 
 * Tracking Alphabet, number, arrow and function key
 
 ```java
-    wManager.setTextMode();
+	wManager.setTextMode();
 ```
 
 * Tracking selected keys 
@@ -98,8 +98,7 @@ The following callback events need to be implemented inside the main Processing 
     A log string consists of pairs of key names and depth values.
     
 ```
-    ex) A: 145 / S: 202 / d: 44 /
-    
+	ex) A: 145 / S: 202 / d: 44 /
 ```
     
 * `HashMap<KeyValue, Integer> parseData(byte[] data)`  
