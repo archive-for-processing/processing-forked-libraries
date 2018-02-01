@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 /**
  * Enum Class for Key code
- * @author Shinhoo Park
+ * @author Shinhoo Park @ KAIST Interactive Media Lab
  *
  */
 

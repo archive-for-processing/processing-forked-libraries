@@ -1,6 +1,7 @@
 package org.kiml;
 
 import java.io.IOException;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Vector;
@@ -8,6 +9,10 @@ import java.util.Vector;
 import com.codeminders.hidapi.HIDDevice;
 
 import processing.core.PApplet;
+
+/**
+ * @author Shinhoo Park @ KAIST Interactive Media Lab
+ */
 
 public class WootingReadManager {
 	private boolean Debug = false;
