@@ -1,6 +1,6 @@
 ## Introduction
 
-This library can be used to analyze the raw data of the Wooting Keyboard.
+This library can be used to analyze the raw data of the [Wooting Keyboard(https://www.wooting.nl/)](https://www.wooting.nl/).
 The library will trigger onReadEvents when recieve raw data from Wooting keyboard. This data can be parsed into data of type String or HashMap through parseLog and parseData functions.
 
 ## How to install WootingKeyboard
