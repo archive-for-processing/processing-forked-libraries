@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <pattern value="fixlib.Fixlib" method="alpha" />
+    <pattern value="fixlib.Fixlib" method="init" />
+    <pattern value="fixlib.Fixlib" method="makeShape" />
+    <pattern value="fixlib.Fixlib" method="ranPalFill100" />
+    <pattern value="fixlib.Fixlib" method="ranPalFill" />
+    <pattern value="fixlib.Fixlib" method="ranPalStroke100" />
+    <pattern value="fixlib.Fixlib" method="ranPalStroke" />
+    <pattern value="fixlib.Fixlib" method="getRanColor" />
+    <pattern value="fixlib.Fixlib" method="hexagon" />
+    <pattern value="fixlib.Fixlib" method="circle" />
+    <pattern value="fixlib.Fixlib" method="paletteGridFull" />
+    <pattern value="fixlib.Fixlib" method="paletteGrid" />
+    <pattern value="fixlib.Fixlib" method="getImgColors" />
+    <pattern value="fixlib.Fixlib" method="getMax" />
+    <pattern value="fixlib.Fixlib" method="nextFib" />
+    <pattern value="fixlib.Fixlib" method="star" />
+    <pattern value="fixlib.Fixlib" method="bitHeart" />
+    <pattern value="fixlib.Fixlib" method="evenOddStroke" />
+    <pattern value="fixlib.Fixlib" method="evenOddFill" />
+    <pattern value="fixlib.Fixlib" method="drawLissajous" />
+    <pattern value="fixlib.Fixlib" method="circleGrid" />
+    <pattern value="fixlib.Fixlib" method="trunk" />
+    <pattern value="fixlib.Fixlib" method="randStroke100" />
+    <pattern value="fixlib.Fixlib" method="randFill" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/classes" />
+  </component>
+</project>

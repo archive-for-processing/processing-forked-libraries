@@ -1,19 +1,33 @@
-import template.library.*;
+import fixlib.*;
 
-HelloLibrary hello;
+Fixlib fix = Fixlib.init(this);
 
+
+/***/
 void setup() {
-  size(400,400);
-  smooth();
-  
-  hello = new HelloLibrary(this);
-  
-  PFont font = createFont("",40);
-  textFont(font);
+    background(-1);
+    size( displayWidth, displayHeight);
+    smooth();
+
 }
 
+/**
+    TODO: fix the glitches, the make a better sample
+*/
 void draw() {
-  background(0);
-  fill(255);
-  text(hello.sayHello(), 40, 200);
+
+    strokeWeight(random(4));
+    stroke(random(255));
+    noFill();
+    fix.trunk( width/2, height/2 );
+
+    //strokeWeight(2);
+    //fill(random(255));
+    //fix.circleGrid( frameCount % width/2, frameCount % height/2) ;
+
+    if(frameCount>(width+height)){
+        println("peace out");
+        exit();
+    }
+
 }
