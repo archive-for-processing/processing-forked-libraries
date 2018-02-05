@@ -19,7 +19,7 @@ By default the following locations are used for your sketchbook folder:
   * For Mac users, the sketchbook folder is located inside `~/Documents/Processing` 
   * For Windows users, the sketchbook folder is located inside `My Documents/Processing`
 
-Download WootingKeyboard from [here](https://github.com/Shinhoo/Wooting-Keyboard-Library/raw/master/distribution/WootingKeyboard-1/download/WootingKeyboard-1.zip).
+Download WootingKeyboard from [here](https://github.com/Shinhoo/Wooting-Keyboard-Library/releases/download/lastest/WootingKeyboard.zip).
 
 Unzip and copy the contributed Library's folder into the `libraries` folder in the Processing sketchbook. You will need to create this `libraries` folder if it does not exist.
 
