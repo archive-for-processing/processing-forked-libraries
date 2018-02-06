@@ -97,7 +97,7 @@ public final class Fixlib implements PConstants {
 	public void trunk(float x, float y ) {
 
 //	TODO: fix app.frameCount to ACTUALLY grab the frameCount of this lib's parent -> app
-		app.g.ellipse( x, y, app.frameCount, app.frameCount );
+		app.g.ellipse( x, y, app.frameCount, app.frameCount%(app.height/2) );
 	}
 
 
