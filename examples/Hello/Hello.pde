@@ -9,12 +9,17 @@ void setup() {
     size( displayWidth, displayHeight);
     smooth();
 
+    textSize(42);
+    text( fix.pdeName(), 11, height-100 );
 }
 
 /**
     TODO: fix the glitches, the make a better sample
 */
 void draw() {
+
+
+
 
     strokeWeight(random(4));
     stroke(random(255));
