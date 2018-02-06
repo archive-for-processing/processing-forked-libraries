@@ -10,25 +10,21 @@ void setup() {
     smooth();
 
     textSize(42);
+    fill(#EF2018);
     text( fix.pdeName(), 11, height-100 );
 }
 
-/**
-    TODO: fix the glitches, the make a better sample
-*/
+/***/
 void draw() {
 
+    stroke(frameCount%255);
+    fill(random(frameCount%width), random(height), frameCount%42, 88);
+
+    beginShape();
+        shape( fix.shapeJous( random(frameCount%width), random(height), 42, frameCount%42 ) );
 
 
-
-    strokeWeight(random(4));
-    stroke(random(255));
-    noFill();
-    fix.trunk( width/2, height/2 );
-
-    //strokeWeight(2);
-    //fill(random(255));
-    //fix.circleGrid( frameCount % width/2, frameCount % height/2) ;
+    endShape();
 
     if(frameCount>(width+height)){
         println("peace out");

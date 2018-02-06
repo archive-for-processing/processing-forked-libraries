@@ -4,6 +4,7 @@ import processing.core.*;
 import java.util.ArrayList;
 
 
+
 /**
  * FixLib is your new utility library.  House all your helper code here, and
  * keep the main sketch.pde as light as possible ( setup, draw, exit, artDaily )
@@ -127,7 +128,7 @@ public final class Fixlib implements PConstants {
 
 	//////////////////////////////////////////////////////
 	//
-	
+	// TODO: deprecate and replace w/ shapeJous
 	public void drawLissajous(float a, float b, float amp )
 	{
 		//  float amp = 33;
@@ -141,6 +142,44 @@ public final class Fixlib implements PConstants {
 			app.g.noFill();
 			app.g.ellipse(x, y, sz, sz);
 		}
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Lissajous PShape maker
+	 * @param a     X coordinate
+	 * @param b     Y coordinate
+	 * @param amp   Amplitude or size
+	 * @param inc   Loop magic incrementer [ 1 - 36 supported ]. (360 / inc) = number of points in returned PShape
+	 * @return  PShape containing vertices in the shape of a lissajous pattern
+	 */
+	public PShape shapeJous( float a, float b, float amp, int inc )
+	{
+		//  PROTOTYPING : trying to locate universal ideal INCrementor for lisajouss loop
+		//  Ideal range is someplace between 1 and 36
+		if( ( inc < 1 ) || ( inc > 36 ) ) {
+			inc = 1;
+		}
+
+		PShape shp = app.createShape();
+		shp.beginShape(POLYGON);
+
+		float x, y;
+
+
+
+		for ( int t = 0; t <= 160  ; t+=inc)  //  160 is the NEW hotness -> slightly less points, no blank frames 9-36
+		{
+			//  NEW HOTNESS!
+			x = a - amp * app.cos((a * t * TWO_PI)/360);
+			y = b - amp * app.sin((b * t * TWO_PI)/360);
+
+			//  Z mods INC
+			shp.vertex(x, y, t%inc);
+		}
+
+		shp.endShape(CLOSE);
+
+		return shp;
 	}
 
 
