@@ -95,9 +95,7 @@ public final class Fixlib implements PConstants {
 	//  Draw an organic ellipse growing outwards like the trunk of a tree
 	//	TODO : is this used in any sketch?  seems dumb
 	public void trunk(float x, float y ) {
-
-//	TODO: fix app.frameCount to ACTUALLY grab the frameCount of this lib's parent -> app
-		app.g.ellipse( x, y, app.frameCount, app.frameCount%(app.height/2) );
+		app.g.ellipse( x, y, app.frameCount%(app.width/2) , app.frameCount%(app.height/2) );
 	}
 
 
