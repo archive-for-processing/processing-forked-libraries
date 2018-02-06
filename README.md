@@ -7,7 +7,7 @@ The library will trigger onReadEvents when recieve raw data from Wooting keyboar
 
 ### Install with the Contribution Manager
 
-Add contributed Libraries by selecting the menu item _Sketch_ ¡æ _Import Library..._ ¡æ _Add Library..._ This will open the Contribution Manager, where you can browse for WootingKeyboard, or any other Library you want to install.
+Add contributed Libraries by selecting the menu item _Sketch_ -> _Import Library..._ -> _Add Library..._ This will open the Contribution Manager, where you can browse for WootingKeyboard, or any other Library you want to install.
 
 Not all available Libraries have been converted to show up in this menu. If a Library isn't there, it will need to be installed manually by following the instructions below.
 
@@ -110,4 +110,6 @@ The following callback events need to be implemented inside the main Processing 
 * __Platforms:__ > OS X Mavericks (10.9), > Windows 7
 * __Processing Version:__ >= 2.2.1, >= 3.0
 
-
+## Acknowledgement
+I would like to thank Prof. Byungjoo Lee and Dr. Sunjun Kim for their supports and comments on this library.
+Also I would like to thank Eunji Park for her tests.
