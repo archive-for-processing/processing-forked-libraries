@@ -638,8 +638,17 @@ public final class Fixlib implements PConstants {
 		}
 	}
 
-	//////////////////////////////////////////////////////////////////////////
-	//  HEXAGON inspired by http://www.rdwarf.com/lerickson/hex/index.html
+
+	/**
+	 * Draw a hexagon out of supplied starting point and size
+	 *
+	 * @see  HEXAGON inspired by http://www.rdwarf.com/lerickson/hex/index.html
+	 *
+	 * @param startX
+	 * @param startY
+	 * @param shapeSize
+	 */
+	//	TODO: replace this with a PShape hexagon generator
 	public void hexagon( float startX, float startY, float shapeSize ) {
 
 		app.g.line( startX, (float)(startY+(shapeSize*.5)), (float)(startX+(shapeSize*.25)), startY );
@@ -651,12 +660,39 @@ public final class Fixlib implements PConstants {
 		app.g.line( (float)(startX+(shapeSize*.25)), startY+shapeSize, startX, (float)(startY+(shapeSize*.5)) );
 	}
 
+	/**
+	 * Draw a hexagon w/ints
+	 * @param startX
+	 * @param startY
+	 * @param shapeSize
+	 */
+	public void hexagon( int startX, int startY, int shapeSize ) {
+		hexagon((float)startX, (float)startY, (float)shapeSize);
+	}
+
 	////////////////////////////////////////////////////
 	//  Return a random Color from supplied palette
 	
 	public int getRanColor(ArrayList palette)
 	{
 		return (int)palette.get( (int)app.random( palette.size()-1) );
+	}
+
+
+	/**
+	 * Return a random vector based on supplied x,y and sz
+	 * @param x
+	 * @param y
+	 * @param sz
+	 * @return PVector
+	 */
+	public PVector GetRandVector( float x, float y, float sz )
+	{
+		return new PVector(
+				x - (int)( app.cos(app.radians( app.random(360) )) * sz ),
+				y - (int)( app.sin(app.radians( app.random(360) )) * sz ),
+				app.random(-sz,sz)
+		);
 	}
 
 
