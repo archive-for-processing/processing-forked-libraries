@@ -1,6 +1,8 @@
 package fixlib;
 
 import processing.core.*;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 
@@ -73,12 +75,12 @@ public final class Fixlib implements PConstants {
 	//  *NOTE : P2D, P3D, and OPENGL renderer settings allow stroke() and fill() settings to be altered
 	public void makeShape( float v1, float v2, float v3, float v4, float v5, float v6, float v7, float v8, int MODE ) {
 
-		app.g.beginShape(MODE);
-			app.g.vertex( v1, v2 );
-			app.g.vertex( v3, v4 );
-			app.g.vertex( v5, v6 );
-			app.g.vertex( v7, v8 );
-		app.g.endShape();
+		app.beginShape(MODE);
+			app.vertex( v1, v2 );
+			app.vertex( v3, v4 );
+			app.vertex( v5, v6 );
+			app.vertex( v7, v8 );
+		app.endShape();
 	}
 
 
@@ -96,7 +98,7 @@ public final class Fixlib implements PConstants {
 	//  Draw an organic ellipse growing outwards like the trunk of a tree
 	//	TODO : is this used in any sketch?  seems dumb
 	public void trunk(float x, float y ) {
-		app.g.ellipse( x, y, app.frameCount%(app.width/2) , app.frameCount%(app.height/2) );
+		app.ellipse( x, y, app.frameCount%(app.width/2) , app.frameCount%(app.height/2) );
 	}
 
 
@@ -111,9 +113,9 @@ public final class Fixlib implements PConstants {
 
 		// circle grid
 		for ( int a = 0; a < (gWidth*gHeight)/2; a+= inc ) {
-			app.g.smooth();
+			app.smooth();
 
-			app.g.ellipse( x, y, sz, sz );
+			app.ellipse( x, y, sz, sz );
 
 			if ( x < gWidth ) {
 				x += sz;
@@ -139,8 +141,8 @@ public final class Fixlib implements PConstants {
 		{
 			x = a - amp * app.sin(a * t * PI/180);
 			y = b - amp * app.sin(b * t * PI/180);
-			app.g.noFill();
-			app.g.ellipse(x, y, sz, sz);
+			app.noFill();
+			app.ellipse(x, y, sz, sz);
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,10 +192,10 @@ public final class Fixlib implements PConstants {
 	
 	public void evenOddFill(int clr ) {
 		if ( app.frameCount % 2 == 0 ) {
-			app.g.fill(255);
+			app.fill(255);
 		}
 		else {
-			app.g.fill(clr);
+			app.fill(clr);
 		}
 	}
 	//////////////////////////////////////////////////////
@@ -202,10 +204,10 @@ public final class Fixlib implements PConstants {
 	//  * INVERTED for evenOddFill() pleasure
 	public void evenOddStroke(int clr ) {
 		if ( app.frameCount % 2 == 0 ) {
-			app.g.stroke(clr, alf);
+			app.stroke(clr, alf);
 		}
 		else {
-			app.g.stroke(0, alf);
+			app.stroke(0, alf);
 		}
 	}
 
@@ -229,16 +231,19 @@ public final class Fixlib implements PConstants {
 
 		int blockSize = 25;
 //		float htSize = 250;
-		app.g.strokeWeight(0.5f);
+
+//	TODO: when should you use app vs app?
+
+		app.strokeWeight(0.5f);
 
 		//  GRID
 		if (grid) {
-			app.g.stroke(0xEFEFEF);//, 50);
+			app.stroke( hexToInt("#EFEFEF") );//, 50);
 
 			for ( int xx = 0 ; xx <= 13; xx++ ) {
 
-				app.g.line( x+(blockSize*xx), 0, x+(blockSize*xx), app.g.height );
-				app.g.line( 0, y+(blockSize*xx), app.g.width, y+(blockSize*xx) );
+				app.line( x+(blockSize*xx), 0, x+(blockSize*xx), app.height );
+				app.line( 0, y+(blockSize*xx), app.width, y+(blockSize*xx) );
 			}
 		}
 		//  GRID
@@ -246,153 +251,154 @@ public final class Fixlib implements PConstants {
 
 
 		//  HEART
-		app.g.stroke(0x333333);
+		app.stroke( hexToInt("#333333") );
 
 		//  white blocks
-		app.g.fill(255);
-		app.g.rect( x+(blockSize*2), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize), y+(blockSize*2), blockSize, blockSize );
+		app.fill(255);
+		app.rect( x+(blockSize*2), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize), y+(blockSize*2), blockSize, blockSize );
 
-		app.g.fill(0);
+		app.fill(0);
 		// TODO: make this smarter
-		app.g.rect( x+(blockSize*2), y, blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y, blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y, blockSize, blockSize );
+		app.rect( x+(blockSize*2), y, blockSize, blockSize );
+		app.rect( x+(blockSize*3), y, blockSize, blockSize );
+		app.rect( x+(blockSize*4), y, blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*8), y, blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y, blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y, blockSize, blockSize );
+		app.rect( x+(blockSize*8), y, blockSize, blockSize );
+		app.rect( x+(blockSize*9), y, blockSize, blockSize );
+		app.rect( x+(blockSize*10), y, blockSize, blockSize );
 
-		app.g.rect( x+(blockSize), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize), y+blockSize, blockSize, blockSize );
 
-		app.g.fill(0xEF0000);
-		app.g.rect( x+(blockSize*3), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize*2), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*11), y+(blockSize*2), blockSize, blockSize );
+		app.fill(hexToInt("#EF0000") );
+		app.rect( x+(blockSize*3), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*11), y+(blockSize*2), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*2), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*11), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*11), y+(blockSize*3), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*2), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*11), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*11), y+(blockSize*4), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*2), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*5), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*2), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*6), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*3), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*7), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*4), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*8), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*5), y+(blockSize*9), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*9), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*9), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*6), y+(blockSize*10), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*10), blockSize, blockSize );
 
-		app.g.fill(0);
-
-
+		app.fill(0);
 
 
-		app.g.rect( x+(blockSize*5), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize), blockSize, blockSize );
 
 
-		app.g.fill(0xEF0000);
-		app.g.rect( x+(blockSize*4), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+blockSize, blockSize, blockSize );
-		app.g.rect( x+blockSize, y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*2), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*9), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*10), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*11), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*10), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*9), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*11), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*2), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize), blockSize, blockSize );
 
-		app.g.fill(0);
-		app.g.rect( x+(blockSize*11), y+blockSize, blockSize, blockSize );
-		app.g.rect( x, y+(blockSize*2), blockSize, blockSize );
-		app.g.rect( x, y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x, y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x, y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+blockSize, y+(blockSize*6), blockSize, blockSize );
-		app.g.rect( x+blockSize, y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*2), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*3), y+(blockSize*9), blockSize, blockSize );
-		app.g.rect( x+(blockSize*4), y+(blockSize*10), blockSize, blockSize );
-		app.g.rect( x+(blockSize*5), y+(blockSize*11), blockSize, blockSize );
-		app.g.rect( x+(blockSize*6), y+(blockSize*12), blockSize, blockSize );
-		app.g.rect( x+(blockSize*7), y+(blockSize*11), blockSize, blockSize );
-		app.g.rect( x+(blockSize*8), y+(blockSize*10), blockSize, blockSize );
-		app.g.rect( x+(blockSize*9), y+(blockSize*9), blockSize, blockSize );
-		app.g.rect( x+(blockSize*10), y+(blockSize*8), blockSize, blockSize );
-		app.g.rect( x+(blockSize*11), y+(blockSize*7), blockSize, blockSize );
-		app.g.rect( x+(blockSize*11), y+(blockSize*6), blockSize, blockSize );
 
-		app.g.rect( x+(blockSize*12), y+(blockSize*5), blockSize, blockSize );
-		app.g.rect( x+(blockSize*12), y+(blockSize*4), blockSize, blockSize );
-		app.g.rect( x+(blockSize*12), y+(blockSize*3), blockSize, blockSize );
-		app.g.rect( x+(blockSize*12), y+(blockSize*2), blockSize, blockSize );
+		app.fill(hexToInt("#EF0000") );
+		app.rect( x+(blockSize*4), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+blockSize, blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+blockSize, blockSize, blockSize );
+		app.rect( x+blockSize, y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*10), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*11), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*10), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*11), y+(blockSize*5), blockSize, blockSize );
+
+		app.fill(0);
+		app.rect( x+(blockSize*11), y+blockSize, blockSize, blockSize );
+		app.rect( x, y+(blockSize*2), blockSize, blockSize );
+		app.rect( x, y+(blockSize*3), blockSize, blockSize );
+		app.rect( x, y+(blockSize*4), blockSize, blockSize );
+		app.rect( x, y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+blockSize, y+(blockSize*6), blockSize, blockSize );
+		app.rect( x+blockSize, y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*2), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*3), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*4), y+(blockSize*10), blockSize, blockSize );
+		app.rect( x+(blockSize*5), y+(blockSize*11), blockSize, blockSize );
+		app.rect( x+(blockSize*6), y+(blockSize*12), blockSize, blockSize );
+		app.rect( x+(blockSize*7), y+(blockSize*11), blockSize, blockSize );
+		app.rect( x+(blockSize*8), y+(blockSize*10), blockSize, blockSize );
+		app.rect( x+(blockSize*9), y+(blockSize*9), blockSize, blockSize );
+		app.rect( x+(blockSize*10), y+(blockSize*8), blockSize, blockSize );
+		app.rect( x+(blockSize*11), y+(blockSize*7), blockSize, blockSize );
+		app.rect( x+(blockSize*11), y+(blockSize*6), blockSize, blockSize );
+
+		app.rect( x+(blockSize*12), y+(blockSize*5), blockSize, blockSize );
+		app.rect( x+(blockSize*12), y+(blockSize*4), blockSize, blockSize );
+		app.rect( x+(blockSize*12), y+(blockSize*3), blockSize, blockSize );
+		app.rect( x+(blockSize*12), y+(blockSize*2), blockSize, blockSize );
+
 	}
 
 
@@ -413,7 +419,7 @@ public final class Fixlib implements PConstants {
 			w = (float)(w / 2.0);
 			h = (float)(h / 2.0);
 
-			app.g.beginShape();
+			app.beginShape();
 			for (int i = 0; i < 2 * n; i++)
 			{
 				dw = w;
@@ -423,10 +429,10 @@ public final class Fixlib implements PConstants {
 					dw = w * proportion;
 					dh = h * proportion;
 				}
-				app.g.vertex(cx + dw * app.cos(startAngle + angle * i),
+				app.vertex(cx + dw * app.cos(startAngle + angle * i),
 						cy + dh * app.sin(startAngle + angle * i));
 			}
-			app.g.endShape(CLOSE);
+			app.endShape(CLOSE);
 		}
 	}
 
@@ -459,7 +465,7 @@ public final class Fixlib implements PConstants {
 	//  Calculate max loop count
 	
 	public float getMax(float shapeSize ) {
-		return ( ( app.g.width * app.g.height ) / shapeSize );
+		return ( ( app.width * app.height ) / shapeSize );
 	}
 
 	/**
@@ -529,12 +535,12 @@ public final class Fixlib implements PConstants {
 
 		for (Object aPall : pall) {
 
-			app.g.noStroke();
+			app.noStroke();
 			tmp = (int)aPall;
-			app.g.fill(tmp, alf * 4);
-			app.g.rect(xx, yy, sz, sz);
+			app.fill(tmp, alf * 4);
+			app.rect(xx, yy, sz, sz);
 
-			if (xx < app.g.width) {
+			if (xx < app.width) {
 				xx += (sz * 1.25);
 			} else {
 				xx = 0;
@@ -542,9 +548,9 @@ public final class Fixlib implements PConstants {
 			}
 		}
 
-		app.g.textFont( app.createFont( "Georgia", 222 ) );
-		app.g.fill(app.random(alf));
-		app.g.text( pall.size(), app.random( alf, app.g.width/3 ), app.random(app.g.height) );
+		app.textFont( app.createFont( "Georgia", 222 ) );
+		app.fill(app.random(alf));
+		app.text( pall.size(), app.random( alf, app.width/3 ), app.random(app.height) );
 	}
 
 
@@ -564,16 +570,16 @@ public final class Fixlib implements PConstants {
 		int tmp;
 		int clridx = 0;  // use this index to walk through the supplied ArrayList of Colors
 
-		for ( int gg = 0; gg < (app.g.height+app.g.width)/2; gg++ ) {
+		for ( int gg = 0; gg < (app.height+app.width)/2; gg++ ) {
 
 
-			app.g.noStroke();
+			app.noStroke();
 			tmp = pall.get(clridx);
-			app.g.fill( tmp, alf*3 );
+			app.fill( tmp, alf*3 );
 
-			app.g.rect( xx, yy, sz, sz );
+			app.rect( xx, yy, sz, sz );
 
-			if ( xx < app.g.width ) {
+			if ( xx < app.width ) {
 				xx += (sz *1.25);
 			}
 			else {
@@ -608,8 +614,8 @@ public final class Fixlib implements PConstants {
 				x = startX - app.cos(app.radians(angle)) * w;
 				y = startY - app.sin(app.radians(angle)) * w;
 
-				app.g.smooth();
-				app.g.ellipse( x, y, w, h );
+				app.smooth();
+				app.ellipse( x, y, w, h );
 			}
 			angle++;
 		}
@@ -631,8 +637,8 @@ public final class Fixlib implements PConstants {
 				x = startX - app.cos(app.radians(angle)) * w;
 				y = startY - app.sin(app.radians(angle)) * w;
 
-				app.g.smooth();
-				app.g.ellipse( x, y, w, h );
+				app.smooth();
+				app.ellipse( x, y, w, h );
 			}
 			angle++;
 		}
@@ -651,13 +657,13 @@ public final class Fixlib implements PConstants {
 	//	TODO: replace this with a PShape hexagon generator
 	public void hexagon( float startX, float startY, float shapeSize ) {
 
-		app.g.line( startX, (float)(startY+(shapeSize*.5)), (float)(startX+(shapeSize*.25)), startY );
-		app.g.line( (float)(startX+(shapeSize*.25)), startY, (float)(startX+(shapeSize*.75)), startY );
-		app.g.line( (float)(startX+(shapeSize*.75)), startY, startX+(shapeSize), (float)(startY+(shapeSize*.5)) );
+		app.line( startX, (float)(startY+(shapeSize*.5)), (float)(startX+(shapeSize*.25)), startY );
+		app.line( (float)(startX+(shapeSize*.25)), startY, (float)(startX+(shapeSize*.75)), startY );
+		app.line( (float)(startX+(shapeSize*.75)), startY, startX+(shapeSize), (float)(startY+(shapeSize*.5)) );
 
-		app.g.line( startX+(shapeSize), (float)(startY+(shapeSize*.5)), (float)(startX+(shapeSize*.75)), startY+shapeSize );
-		app.g.line( (float)(startX+(shapeSize*.75)), startY+shapeSize, (float)(startX+(shapeSize*.25)), startY+shapeSize );
-		app.g.line( (float)(startX+(shapeSize*.25)), startY+shapeSize, startX, (float)(startY+(shapeSize*.5)) );
+		app.line( startX+(shapeSize), (float)(startY+(shapeSize*.5)), (float)(startX+(shapeSize*.75)), startY+shapeSize );
+		app.line( (float)(startX+(shapeSize*.75)), startY+shapeSize, (float)(startX+(shapeSize*.25)), startY+shapeSize );
+		app.line( (float)(startX+(shapeSize*.25)), startY+shapeSize, startX, (float)(startY+(shapeSize*.5)) );
 	}
 
 	/**
@@ -701,65 +707,65 @@ public final class Fixlib implements PConstants {
 	public void ranPalStroke(int[] palette)
 	{
 		// palette
-		app.g.stroke( palette[ (int)( app.random( palette.length-1 ) ) ] , alf );
+		app.stroke( palette[ (int)( app.random( palette.length-1 ) ) ] , alf );
 	}
 	
 	public void ranPalStroke(ArrayList palette)
 	{
 		// palette
-		app.g.stroke( (int)palette.get( (int)app.random( palette.size()-1 ) ), alf );
+		app.stroke( (int)palette.get( (int)app.random( palette.size()-1 ) ), alf );
 	}
 	
 	public void ranPalStroke100(int[] palette)
 	{
 		// palette
-		app.g.stroke( palette[ (int) (app.random( palette.length-1 )) ], 100 );
+		app.stroke( palette[ (int) (app.random( palette.length-1 )) ], 100 );
 	}
 	
 	public void ranPalStroke100(ArrayList palette)
 	{
 		// palette
-		app.g.stroke( (int)palette.get( (int)app.random( palette.size()-1 ) ), 100 );
+		app.stroke( (int)palette.get( (int)app.random( palette.size()-1 ) ), 100 );
 	}
 	public void ranPalFill(int[] palette)
 	{
-		app.g.fill( palette[ (int)(app.random( palette.length-1 )) ], alf );
+		app.fill( palette[ (int)(app.random( palette.length-1 )) ], alf );
 	}
 	
 	public void ranPalFill(ArrayList palette)
 	{
 		// palette
-		app.g.fill( (int)palette.get( (int)app.random( palette.size()-1 ) ), alf );
+		app.fill( (int)palette.get( (int)app.random( palette.size()-1 ) ), alf );
 	}
 	
 	public void ranPalFill100(int[] palette)
 	{
 		// palette
-		app.g.fill( palette[ (int) app.random( palette.length-1 ) ], 100 );
+		app.fill( palette[ (int) app.random( palette.length-1 ) ], 100 );
 	}
 	
 	public void ranPalFill100(ArrayList palette)
 	{
 		// palette
-		app.g.fill( (int)palette.get( (int)app.random( palette.size()-1 ) ), 100 );
+		app.fill( (int)palette.get( (int)app.random( palette.size()-1 ) ), 100 );
 	}
 
 	///////////////////////////////////////////////////////////
 	//  Helper to random(255) stroke
 	public void randFill() {
-		app.g.fill( app.random(255), app.random(255), app.random(255), alf );
+		app.fill( app.random(255), app.random(255), app.random(255), alf );
 	}
 	
 	public void randFill100() {
-		app.g.fill( app.random(255), app.random(255), app.random(255), 100 );
+		app.fill( app.random(255), app.random(255), app.random(255), 100 );
 	}
 	
 	public void randStroke() {
-		app.g.stroke( app.random(255), app.random(255), app.random(255), alf );
+		app.stroke( app.random(255), app.random(255), app.random(255), alf );
 	}
 	
 	public void randStroke100() {
-		app.g.stroke( app.random(255), app.random(255), app.random(255), 100 );
+		app.stroke( app.random(255), app.random(255), app.random(255), 100 );
 	}
 
 
@@ -781,7 +787,14 @@ public final class Fixlib implements PConstants {
 		return pde[pde.length-1];
 	}
 
-
+	/**
+	 * Convert hex color such as #333333 to int value
+	 * @param hexColor
+	 * @return int equivalent
+	 */
+	public int hexToInt( String hexColor ){
+		return Color.decode(hexColor).getRGB();
+	}
 
 }
 
