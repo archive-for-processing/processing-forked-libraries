@@ -1,9 +1,9 @@
 package fixlib;
 
 import processing.core.*;
-
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 
@@ -486,37 +486,15 @@ public final class Fixlib implements PConstants {
 	
 	public ArrayList getImgColors(PImage img, Boolean GToLT )
 	{
-		ArrayList<Integer> alColors = new ArrayList<>();
+		HashSet<Integer> hsColors = new HashSet<Integer>();
 
 		img.loadPixels();
 
-		int Color1, Color2;
-		// TODO: what's a good way to pull DISTINCT Colors with a int[]?
 		for ( int c = 0; c < img.pixels.length; c++ )
 		{
-			if ( alColors.size() == 0 ) {
-				alColors.add( img.pixels[c] );
-			}
-			else
-			{
-
-				if ( ! alColors.contains( img.pixels[ c ] ) )
-				{
-					Color1 = alColors.get( alColors.size()-1 );
-					Color2 = img.pixels[c];
-
-					if ( GToLT ) {
-						if ( Color1 > Color2 )
-							alColors.add( img.pixels[ c ] );
-					}
-					else {
-						if ( Color1 < Color2 )
-							alColors.add( img.pixels[ c ] );
-					}
-				}
-			}
+			hsColors.add(img.pixels[c]);
 		}
-		return alColors;
+		return new ArrayList(hsColors);
 	}
 
 
