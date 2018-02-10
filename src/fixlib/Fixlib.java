@@ -156,6 +156,9 @@ public final class Fixlib implements PConstants {
 	 */
 	public PShape shapeJous( float a, float b, float amp, int inc )
 	{
+		int juicePts = 160; //  160 is the NEW hotness -> slightly less points, no blank frames 9-36
+		int z = 0;
+
 		//  PROTOTYPING : trying to locate universal ideal INCrementor for lisajouss loop
 		//  Ideal range is someplace between 1 and 36
 		if( ( inc < 1 ) || ( inc > 36 ) ) {
@@ -169,14 +172,16 @@ public final class Fixlib implements PConstants {
 
 
 
-		for ( int t = 0; t <= 160  ; t+=inc)  //  160 is the NEW hotness -> slightly less points, no blank frames 9-36
+		for ( int t = 0; t <= juicePts  ; t+=inc)
 		{
 			//  NEW HOTNESS!
 			x = a - amp * app.cos((a * t * TWO_PI)/360);
 			y = b - amp * app.sin((b * t * TWO_PI)/360);
 
-			//  Z mods INC
-			shp.vertex(x, y, t%inc);
+			//	give shapes up and down Z-depth
+			z = ( t < (juicePts*.5) ) ? t : juicePts-t;
+
+			shp.vertex(x, y, z);
 		}
 
 		shp.endShape(CLOSE);
