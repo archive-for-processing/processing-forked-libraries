@@ -11,6 +11,9 @@ import java.util.HashSet;
  * FixLib is your new utility library.  House all your helper code here, and
  * keep the main sketch.pde as light as possible ( setup, draw, exit, artDaily )
  *
+ * NOTE: code dates to 2012
+ * - a lot of "app." code in here, can't be a big static lib
+ *
  */
 
 public final class Fixlib implements PConstants {
@@ -44,6 +47,7 @@ public final class Fixlib implements PConstants {
 		// Anything in here will be called automatically when
 		// the parent sketch shuts down. For instance, this might
 		// shut down a thread used by this library.
+		app = null;
 		thisLib = null;
 	}
 
@@ -139,12 +143,98 @@ public final class Fixlib implements PConstants {
 
 		for ( float t = 0; t <= 360; t += 1)
 		{
-			x = a - amp * app.sin(a * t * PI/180);
-			y = b - amp * app.sin(b * t * PI/180);
+			x = a - amp * PApplet.sin(a * t * PI/180);
+			y = b - amp * PApplet.sin(b * t * PI/180);
 			app.noFill();
 			app.ellipse(x, y, sz, sz);
 		}
 	}
+
+
+	/**
+	 * draw a center line core
+	 draw the wirey outer shine
+	 */
+	public void drawSuns( float x, float y ) {
+
+		float radius1, radius2, radius3, radius4, radius5;
+		float xx1, yy1, xx2, yy2, xx3, yy3, xx4, yy4, xx5, yy5;
+		float angle1, angle2, angle3, angle4, angle5;
+		float startX1, startY1, startX2, startY2, startX3, startY3, startX4, startY4, startX5, startY5;
+
+		app.noFill();
+
+		// init
+		radius1 = 200;
+		radius2 = 300;
+
+		radius3 = 360;
+		radius4 = 500;
+		radius5 = 1000;
+
+		startX1 = startX2 = startX3 = startX4 = startX5 = x;
+		startY1 = startY2 = startY3 = startY4 = startY5 = y;
+
+		angle1 = angle5 = 0;  //50;
+		angle2 = 45;  //100;
+		angle3 = 30;  //150;
+		angle4 = 60;  //200;
+
+
+// draw circles
+		while ( angle1 < 720 ) {
+
+			app.smooth();
+
+
+			xx1 = startX1 - (int)PApplet.cos( PApplet.radians(angle1)) * radius1;
+			yy1 = startY1 - (int)PApplet.sin( PApplet.radians(angle1)) * radius1;
+			if( angle1 % 180 == 0 ) {
+				startX1 += 36;
+				radius1 += app.random(36);
+
+				startX2 += 36;
+				radius2 += app.random(36);
+
+				startX3 += 36;
+				radius3 += app.random(36);
+
+				startX4 += 36;
+				radius4 += app.random(36);
+			}
+
+			xx2 = startX2 - (int)PApplet.cos(PApplet.radians(angle2)) * radius2;
+			yy2 = startY2 - (int)PApplet.sin(PApplet.radians(angle2)) * radius2;
+
+
+			xx3 = startX3 - (int) PApplet.cos(PApplet.radians(angle3)) * radius3 ;
+			yy3 = startY3 - (int) PApplet.sin(PApplet.radians(angle3)) * radius3 ;
+
+			xx4 = startX4 - (int) PApplet.cos(PApplet.radians(angle4)) * radius4 ;
+			yy4 = startY4 - (int) PApplet.sin(PApplet.radians(angle4)) * radius4 ;
+
+			xx5 = startX1 - (int) PApplet.cos(PApplet.radians(angle5)) * radius5 ;
+			yy5 = startY1 - (int) PApplet.sin(PApplet.radians(angle5)) * radius5 ;
+
+
+			app.stroke(0);
+			app.strokeWeight( 5 );
+
+
+
+			angle1 += 5;
+			angle2 += 5;
+			angle3 += 5;
+			angle4 += 5;
+			angle5 += 5;
+		}
+
+
+	}
+
+
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Lissajous PShape maker
@@ -175,8 +265,8 @@ public final class Fixlib implements PConstants {
 		for ( int t = 0; t <= juicePts  ; t+=inc)
 		{
 			//  NEW HOTNESS!
-			x = a - amp * app.cos((a * t * TWO_PI)/360);
-			y = b - amp * app.sin((b * t * TWO_PI)/360);
+			x = a - amp * PApplet.cos((a * t * TWO_PI)/360);
+			y = b - amp * PApplet.sin((b * t * TWO_PI)/360);
 
 			//	give shapes up and down Z-depth
 			z = ( t < (juicePts*.5) ) ? t : juicePts-t;
@@ -434,8 +524,8 @@ public final class Fixlib implements PConstants {
 					dw = w * proportion;
 					dh = h * proportion;
 				}
-				app.vertex(cx + dw * app.cos(startAngle + angle * i),
-						cy + dh * app.sin(startAngle + angle * i));
+				app.vertex(cx + dw * PApplet.cos(startAngle + angle * i),
+						cy + dh * PApplet.sin(startAngle + angle * i));
 			}
 			app.endShape(CLOSE);
 		}
@@ -464,6 +554,18 @@ public final class Fixlib implements PConstants {
 		result = f2;
 
 		return result;
+	}
+
+	/**
+	 * Get next fibonacci number after supplied number
+	 * @param n
+	 * @return
+	 */
+	public int fib(int n) {
+		// TODO: validate this works
+		//	TODO: how does this compare to nextFib()
+		if (n <= 1) return n;
+		return fib(n - 1) + fib(n - 2);
 	}
 
 	//////////////////////////
@@ -502,11 +604,18 @@ public final class Fixlib implements PConstants {
 		return new ArrayList(hsColors);
 	}
 
+	/**
+	 * Make grid of shapes filled with each Color in supplied int[]
+	 * @param pall
+	 */
+	public void paletteGrid( int[] pall ) {
+		paletteGrid( new ArrayList<Integer>() {{ for (int i : pall) add(i); }} );
+	}
 
 
 	///////////////////////////////////////////////////////
 	//  Make grid of shapes filled with each Color in supplied
-	//  int[]
+	//  ArrayList
 	public void paletteGrid( ArrayList pall ) {
 
 		float xx = 0;
@@ -594,8 +703,8 @@ public final class Fixlib implements PConstants {
 			// make circle draw faster by skipping angles
 			if ( angle % 10 == 0 ) {
 
-				x = startX - app.cos(app.radians(angle)) * w;
-				y = startY - app.sin(app.radians(angle)) * w;
+				x = startX - PApplet.cos(PApplet.radians(angle)) * w;
+				y = startY - PApplet.sin(PApplet.radians(angle)) * w;
 
 				app.smooth();
 				app.ellipse( x, y, w, h );
@@ -617,8 +726,8 @@ public final class Fixlib implements PConstants {
 			// make circle draw faster by skipping angles
 			if ( angle % modAngle == 0 ) {
 
-				x = startX - app.cos(app.radians(angle)) * w;
-				y = startY - app.sin(app.radians(angle)) * w;
+				x = startX - PApplet.cos(PApplet.radians(angle)) * w;
+				y = startY - PApplet.sin(PApplet.radians(angle)) * w;
 
 				app.smooth();
 				app.ellipse( x, y, w, h );
@@ -627,11 +736,34 @@ public final class Fixlib implements PConstants {
 		}
 	}
 
+	/**
+	 * lines and circles
+	 * @param r1
+	 * @param a1
+	 * @param r2
+	 * @param a2
+	 */
+	public void radialLine(float r1, float a1, float r2, float a2){
+// TODO : smarten up
+		float x1 = app.width/2  + PApplet.cos(a1)*r1;
+		float y1 = app.height/2 + PApplet.sin(a1)*r1;
+		float x2 = app.width/2  + PApplet.cos(a2)*r2;
+		float y2 = app.height/2 + PApplet.sin(a2)*r2;
+
+		app.line(x1, y1, x2, y2);
+//    fill(255);
+		app.noFill();
+		app.ellipse(x1,y1, TWO_PI, TWO_PI);
+		app.ellipse(x2,y2, TWO_PI, TWO_PI);
+
+		//println([r1,a1,r2,a2]);
+	}
+
 
 	/**
 	 * Draw a hexagon out of supplied starting point and size
 	 *
-	 * @see  HEXAGON inspired by http://www.rdwarf.com/lerickson/hex/index.html
+	 * @see  @hexagon inspired by http://www.rdwarf.com/lerickson/hex/index.html
 	 *
 	 * @param startX
 	 * @param startY
@@ -678,8 +810,8 @@ public final class Fixlib implements PConstants {
 	public PVector GetRandVector( float x, float y, float sz )
 	{
 		return new PVector(
-				x - (int)( app.cos(app.radians( app.random(360) )) * sz ),
-				y - (int)( app.sin(app.radians( app.random(360) )) * sz ),
+				x - (int)( PApplet.cos(PApplet.radians( app.random(360) )) * sz ),
+				y - (int)( PApplet.sin(PApplet.radians( app.random(360) )) * sz ),
 				app.random(-sz,sz)
 		);
 	}
@@ -752,19 +884,71 @@ public final class Fixlib implements PConstants {
 	}
 
 
-	
+	/**
+	 *	Create a SWITCH based drawing system that accepts X, Y, and
+	 *	randomly choose which movement system to fire
+	 * @param x
+	 * @param y
+	 */
+	public void systems( float x, float y )
+	{
+		int pick = PApplet.floor(app.random(0,3));
+
+		app.fill(app.random(21,37),75);
+		app.text( x + " " + y + " " + pick, app.width-x, app.height-y );
+		app.noFill();
+
+		switch( pick ){
+
+			case 0:
+			{
+				x = PApplet.floor( (app.width/2)+PApplet.cos(PApplet.radians(app.frameCount))*(x-y) );
+				y = PApplet.floor( (app.height/2)+PApplet.sin(PApplet.radians(app.frameCount))*(y-x) );
+				app.point( x-PI, y+PI );
+				app.point( y+PI, X-PI );
+			}
+			break;
+
+			case 1:
+			{
+				app.ellipse( x*PApplet.cos(app.frameCount)*PApplet.radians(TWO_PI), y*PApplet.sin(app.frameCount)*PApplet.radians(TWO_PI), alf, alf );
+				app.ellipse( y*PApplet.cos(app.frameCount)*PApplet.radians(TWO_PI), x*PApplet.sin(app.frameCount)*PApplet.radians(TWO_PI), alf, alf );
+			}
+			break;
+
+			case 2:
+			{
+				app.strokeWeight(.75f);
+				app.rect( x, y, TWO_PI+x*app.noise(app.frameCount), TWO_PI+x*app.noise(app.frameCount) );
+				app.rect( y, x, TWO_PI+y*app.noise(app.frameCount), TWO_PI+y*app.noise(app.frameCount) );
+			}
+			break;
+
+			case 3:
+			{
+				app.point( x * PApplet.cos(x)*app.frameCount, y*PApplet.sin(y)*app.frameCount );
+				app.point( y * PApplet.cos(x)*app.frameCount, x*PApplet.sin(y)*app.frameCount );
+
+				app.ellipse( x * PApplet.cos(x)*app.frameCount, y*PApplet.sin(y)*app.frameCount, app.frameCount, app.frameCount );
+				app.ellipse( y * PApplet.cos(x)*app.frameCount, x*PApplet.sin(y)*app.frameCount, app.frameCount, app.frameCount );
+			}
+			break;
+
+		}
+	}
+
+
 	public String getTimestamp() {
 		//  Calendar now = Calendar.getInstance();
 		//  return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM", now);
 
 
-		return ""+ app.month()+ app.day()+ app.year()+ app.hour()+ app.second()+app.millis();
+		return ""+ PApplet.month()+ PApplet.day()+ PApplet.year()+ PApplet.hour()+ PApplet.second()+app.millis();
 	}
 
 
 	//////////////////////////////////////////////////////
 	//  Returns the file name that is calling this function ( minus the .pde )
-	
 	public String pdeName() {
 		String[] pde = app.sketchPath().split( "/");
 		return pde[pde.length-1];
