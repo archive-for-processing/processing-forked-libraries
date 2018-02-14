@@ -616,7 +616,7 @@ public final class Fixlib implements PConstants {
 	///////////////////////////////////////////////////////
 	//  Make grid of shapes filled with each Color in supplied
 	//  ArrayList
-	public void paletteGrid( ArrayList pall ) {
+	public void paletteGrid( ArrayList<Integer> pall ) {
 
 		float xx = 0;
 		float yy = 0;
@@ -794,7 +794,7 @@ public final class Fixlib implements PConstants {
 	////////////////////////////////////////////////////
 	//  Return a random Color from supplied palette
 	
-	public int getRanColor(ArrayList palette)
+	public int getRanColor(ArrayList<Integer> palette)
 	{
 		return (int)palette.get( (int)app.random( palette.size()-1) );
 	}
@@ -825,7 +825,7 @@ public final class Fixlib implements PConstants {
 		app.stroke( palette[ (int)( app.random( palette.length-1 ) ) ] , alf );
 	}
 	
-	public void ranPalStroke(ArrayList palette)
+	public void ranPalStroke(ArrayList<Integer> palette)
 	{
 		// palette
 		app.stroke( (int)palette.get( (int)app.random( palette.size()-1 ) ), alf );
@@ -837,7 +837,7 @@ public final class Fixlib implements PConstants {
 		app.stroke( palette[ (int) (app.random( palette.length-1 )) ], 100 );
 	}
 	
-	public void ranPalStroke100(ArrayList palette)
+	public void ranPalStroke100(ArrayList<Integer> palette)
 	{
 		// palette
 		app.stroke( (int)palette.get( (int)app.random( palette.size()-1 ) ), 100 );
@@ -847,7 +847,7 @@ public final class Fixlib implements PConstants {
 		app.fill( palette[ (int)(app.random( palette.length-1 )) ], alf );
 	}
 	
-	public void ranPalFill(ArrayList palette)
+	public void ranPalFill(ArrayList<Integer> palette)
 	{
 		// palette
 		app.fill( (int)palette.get( (int)app.random( palette.size()-1 ) ), alf );
@@ -859,7 +859,7 @@ public final class Fixlib implements PConstants {
 		app.fill( palette[ (int) app.random( palette.length-1 ) ], 100 );
 	}
 	
-	public void ranPalFill100(ArrayList palette)
+	public void ranPalFill100(ArrayList<Integer> palette)
 	{
 		// palette
 		app.fill( (int)palette.get( (int)app.random( palette.size()-1 ) ), 100 );
