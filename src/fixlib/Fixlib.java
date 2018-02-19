@@ -65,7 +65,7 @@ public final class Fixlib implements PConstants {
 	 *
 	 * @param newAlf integer value to be used for alpha parameter
 	 */
-	public static void alpha(int newAlf) {
+	public void alpha(int newAlf) {
 		alf = newAlf;
 	}
 
@@ -150,87 +150,6 @@ public final class Fixlib implements PConstants {
 		}
 	}
 
-
-	/**
-	 * draw a center line core
-	 draw the wirey outer shine
-	 */
-	public void drawSuns( float x, float y ) {
-
-		float radius1, radius2, radius3, radius4, radius5;
-		float xx1, yy1, xx2, yy2, xx3, yy3, xx4, yy4, xx5, yy5;
-		float angle1, angle2, angle3, angle4, angle5;
-		float startX1, startY1, startX2, startY2, startX3, startY3, startX4, startY4, startX5, startY5;
-
-		app.noFill();
-
-		// init
-		radius1 = 200;
-		radius2 = 300;
-
-		radius3 = 360;
-		radius4 = 500;
-		radius5 = 1000;
-
-		startX1 = startX2 = startX3 = startX4 = startX5 = x;
-		startY1 = startY2 = startY3 = startY4 = startY5 = y;
-
-		angle1 = angle5 = 0;  //50;
-		angle2 = 45;  //100;
-		angle3 = 30;  //150;
-		angle4 = 60;  //200;
-
-
-// draw circles
-		while ( angle1 < 720 ) {
-
-			app.smooth();
-
-
-			xx1 = startX1 - (int)PApplet.cos( PApplet.radians(angle1)) * radius1;
-			yy1 = startY1 - (int)PApplet.sin( PApplet.radians(angle1)) * radius1;
-			if( angle1 % 180 == 0 ) {
-				startX1 += 36;
-				radius1 += app.random(36);
-
-				startX2 += 36;
-				radius2 += app.random(36);
-
-				startX3 += 36;
-				radius3 += app.random(36);
-
-				startX4 += 36;
-				radius4 += app.random(36);
-			}
-
-			xx2 = startX2 - (int)PApplet.cos(PApplet.radians(angle2)) * radius2;
-			yy2 = startY2 - (int)PApplet.sin(PApplet.radians(angle2)) * radius2;
-
-
-			xx3 = startX3 - (int) PApplet.cos(PApplet.radians(angle3)) * radius3 ;
-			yy3 = startY3 - (int) PApplet.sin(PApplet.radians(angle3)) * radius3 ;
-
-			xx4 = startX4 - (int) PApplet.cos(PApplet.radians(angle4)) * radius4 ;
-			yy4 = startY4 - (int) PApplet.sin(PApplet.radians(angle4)) * radius4 ;
-
-			xx5 = startX1 - (int) PApplet.cos(PApplet.radians(angle5)) * radius5 ;
-			yy5 = startY1 - (int) PApplet.sin(PApplet.radians(angle5)) * radius5 ;
-
-
-			app.stroke(0);
-			app.strokeWeight( 5 );
-
-
-
-			angle1 += 5;
-			angle2 += 5;
-			angle3 += 5;
-			angle4 += 5;
-			angle5 += 5;
-		}
-
-
-	}
 
 
 
@@ -497,7 +416,10 @@ public final class Fixlib implements PConstants {
 	}
 
 
-
+	public void star(int n, float cx, float cy, float r, float proportion)
+	{
+		star(n, cx, cy, (float)(2.0 * r), (float)(2.0 * r), 0.0f, proportion);
+	}
 
 
 	///////////////////////////////////////////////////////////
@@ -791,6 +713,31 @@ public final class Fixlib implements PConstants {
 		hexagon((float)startX, (float)startY, (float)shapeSize);
 	}
 
+
+	///////////////////////////////////////////////////////
+// Generate a path between supplied points
+	public ArrayList<PVector> GeneratePath( PVector startPt, PVector endPt, Integer step )
+	{
+		ArrayList<PVector>	path = new ArrayList<PVector>();
+
+		PVector thisPt;
+		PVector lastPt = new PVector(startPt.x, startPt.y);
+
+		while( lastPt.x < endPt.x )
+		{
+// TODO: need better path generation logic
+			thisPt = new PVector(
+					lastPt.x+step,
+					app.random(app.height-step) );
+
+			path.add(thisPt);
+
+			lastPt = thisPt;
+		}
+
+		return path;
+	}
+
 	////////////////////////////////////////////////////
 	//  Return a random Color from supplied palette
 	
@@ -798,6 +745,7 @@ public final class Fixlib implements PConstants {
 	{
 		return (int)palette.get( (int)app.random( palette.size()-1) );
 	}
+
 
 
 	/**
@@ -883,6 +831,54 @@ public final class Fixlib implements PConstants {
 		app.stroke( app.random(255), app.random(255), app.random(255), 100 );
 	}
 
+	///////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Draw a bullseye at specified x/y coordinates
+	 * @param a
+	 * @param b
+	 * @param shapeSize
+	 */
+	public void bullsEye( float a, float b, float shapeSize ){
+
+		int tmp = (int)shapeSize;
+
+		while(  tmp >= 0 ) {
+
+			app.strokeWeight(tmp/24);
+			app.fill(0);
+			app.stroke(255);
+
+			app.ellipse( a, b, tmp, tmp);
+			tmp -= (int)(shapeSize/6);
+		}
+
+
+	}
+
+	/**
+	 * Draw a rect eye ( bullseye w/rect ) at specified x/y coords
+	 * @param a
+	 * @param b
+	 * @param shapeSize
+	 */
+	public void rectEye( float a, float b, float shapeSize ){
+
+		int tmp = (int)shapeSize;
+
+		while(  tmp >= 0 ) {
+
+			app.strokeWeight(tmp/24);
+			app.fill(0);
+			app.stroke(255);
+
+			app.rect( a, b, tmp, tmp, app.random(tmp) );
+
+			tmp -= (int)(shapeSize/6);
+		}
+
+
+	}
 
 	/**
 	 *	Create a SWITCH based drawing system that accepts X, Y, and
@@ -962,6 +958,109 @@ public final class Fixlib implements PConstants {
 	public int hexToInt( String hexColor ){
 		return Color.decode(hexColor).getRGB();
 	}
+
+
+	/**
+	 * draws circle from supplied x, y
+	 * @param XX
+	 * @param YY
+	 * @param maxSize
+	 */
+	public void drawCore( int XX, int YY, int maxSize ) {
+
+		float r = 1;  // 75;
+		float theta = 2;
+
+		int alf = 10;
+		float x;
+		float y;
+
+		app.smooth();
+		app.strokeWeight(.13f);
+
+		while ( theta <= maxSize )
+		{
+			x = (PI*r) * app.cos(theta);
+			y = (PI*r) * app.sin(theta);
+
+			if (x%2==0)app.stroke(255, alf);
+			else if (x%3==0) app.stroke(255, 0, 0, alf);
+			else app.stroke( 109, 109, 109, alf);
+
+			app.ellipse( (int)(XX+x), (int)(YY+y), x, x );
+
+			heart( (int)(YY+y), (int)(XX+x), (int)(y), (int)(y) );
+
+			theta+= 0.25;
+
+			if ( app.frameCount%2==0) {
+				r++;
+				theta+=.5;
+			}
+		}
+	}
+
+
+
+
+	///////////////////////////////////////////////////////////
+//
+//  draw heart
+	public void heart( int x, int y, int w, int h )
+	{
+		app.ellipseMode(RADIUS);
+		app.smooth();
+
+		//  stroke(#EF7519, alf);  // 37
+		app.stroke(hexToInt("#EF1111"), alf);  // 37
+
+		app.strokeWeight(2);
+		//  noFill();
+
+		//  bubbles
+		app.ellipse( x-w, y, w, w);
+		app.ellipse( x+w, y, w, w);
+		//  ellipseMode(MODE)
+		//  MODE	Either CENTER, RADIUS, CORNER, or CORNERS
+
+
+		//  lines
+		app.line( x-(w*2), y, x, y + w*PI);
+		app.line( x+(w*2), y, x, y + w*PI);
+	}
+
+
+	/**
+	 * Makes some text lines
+	 */
+	public void textLines() {
+
+		app.textFont( app.createFont( "Helvetica", 300 ) );
+
+		app.fill(10, app.pow(alf, 1.5f) );//, (alf*4) );
+		// MAKE TEXT BIG
+		app.fill( hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.3f );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.3f );
+		//  & curve
+		app.fill(hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.49f );
+		app.fill(hexToInt("#000021"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.49f );
+		//  & quad
+		app.fill(hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.65f );
+		app.fill(hexToInt("#000021"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.65f );
+
+		//  & triangle
+		app.fill(hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.85f );
+		app.fill(hexToInt("#000021"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.text("lines.lines.lines.lines.lines", 0, app.height*.85f );
+	}
+
+
 
 }
 
