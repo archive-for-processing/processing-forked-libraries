@@ -502,7 +502,7 @@ public final class Fixlib implements PConstants {
 	 * @param img PImage to retrieve colors from
 	 * @return ArrayList of integer colors harvested from @img pixels
 	 */
-	public ArrayList getImgColors(PImage img)
+	public ArrayList<Integer> getImgColors(PImage img)
 	{
 		// 	NOTE: leave FALSE, if user wants true, use getImgColors( img, true );
 		return getImgColors(img, false);
@@ -513,9 +513,9 @@ public final class Fixlib implements PConstants {
 	//  * UPDATE : GToLT = BOOLEAN controlling the Color comparison before
 	//  adding to the ArrayList.
 	
-	public ArrayList getImgColors(PImage img, Boolean GToLT )
+	public ArrayList<Integer> getImgColors(PImage img, Boolean GToLT )
 	{
-		HashSet<Integer> hsColors = new HashSet<Integer>();
+		HashSet<Integer> hsColors = new HashSet<>();
 
 		img.loadPixels();
 
@@ -523,7 +523,7 @@ public final class Fixlib implements PConstants {
 		{
 			hsColors.add(img.pixels[c]);
 		}
-		return new ArrayList(hsColors);
+		return new ArrayList<>(hsColors);
 	}
 
 	/**
@@ -980,8 +980,8 @@ public final class Fixlib implements PConstants {
 
 		while ( theta <= maxSize )
 		{
-			x = (PI*r) * app.cos(theta);
-			y = (PI*r) * app.sin(theta);
+			x = (PI*r) * PApplet.cos(theta);
+			y = (PI*r) * PApplet.sin(theta);
 
 			if (x%2==0)app.stroke(255, alf);
 			else if (x%3==0) app.stroke(255, 0, 0, alf);
@@ -1037,30 +1037,70 @@ public final class Fixlib implements PConstants {
 
 		app.textFont( app.createFont( "Helvetica", 300 ) );
 
-		app.fill(10, app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(10, PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		// MAKE TEXT BIG
-		app.fill( hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill( hexToInt("#210000"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.3f );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.3f );
 		//  & curve
-		app.fill(hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(hexToInt("#210000"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.49f );
-		app.fill(hexToInt("#000021"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(hexToInt("#000021"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.49f );
 		//  & quad
-		app.fill(hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(hexToInt("#210000"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.65f );
-		app.fill(hexToInt("#000021"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(hexToInt("#000021"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.65f );
 
 		//  & triangle
-		app.fill(hexToInt("#210000"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(hexToInt("#210000"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.85f );
-		app.fill(hexToInt("#000021"), app.pow(alf, 1.5f) );//, (alf*4) );
+		app.fill(hexToInt("#000021"), PApplet.pow(alf, 1.5f) );//, (alf*4) );
 		app.text("lines.lines.lines.lines.lines", 0, app.height*.85f );
 	}
 
 
+	/**
+	 * Creates a PVector at a given circle w/radius @radius, and center point @centerX / @centerY at @angle position
+	 * @param centerX
+	 * @param centerY
+	 * @param radius
+	 * @param angle
+	 * @return
+	 */
+	public PVector circleXY( float centerX, float centerY, float radius, float angle )
+	{
+		return new PVector(
+				centerX - (int)( PApplet.cos(PApplet.radians(angle)) * radius ),
+			centerY - (int)( PApplet.sin(PApplet.radians(angle)) * radius )
+                );
+	}
+
+
+	/**
+	 * A utility function that returns true if x is perfect square
+	 * @param x
+	 * @return
+	 */
+	public boolean isPerfectSquare(float x)
+	{
+		int s = (int)PApplet.sqrt(x);
+		return (s*s == x);
+	}
+
+	/**
+	 * Returns true if n is a Fibinacci Number, else false
+	 * @param n
+	 * @return
+	 */
+	public boolean isFibonacci(float n)
+	{
+		// n is Fibinacci if one of 5*n*n + 4 or 5*n*n - 4 or both
+		// is a perferct square
+		return isPerfectSquare(5*n*n + 4) ||
+				isPerfectSquare(5*n*n - 4);
+	}
 
 }
 
