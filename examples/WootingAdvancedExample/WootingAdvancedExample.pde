@@ -1,6 +1,6 @@
 /**
  * Wooting One keyboard visual demonstration
- * @author Sunjun Kim
+ * @author Sunjun Kim (kuaa.net@gmail.com)
  */
 
 import org.kiml.*;
@@ -21,8 +21,8 @@ void setup()
   wManager.setAllMode();
   
   // Select the keyboard layout you use: ANSI / ISO
-  keyboard = new Layout(LayoutType.ISO);
-  //keyboard = new Layout(LayoutType.ANSI);
+  //keyboard = new Layout(LayoutType.ISO);
+  keyboard = new Layout(LayoutType.ANSI);
   
   size(760, 310); // (keyUnit * 19, keyUnit * 7 + 30)
   rectMode(CORNER);
@@ -44,7 +44,12 @@ void draw()
   
     // draw keyboard only if data is available --> otherwise, just return here.
     if(parsedData == null)
+    { 
+      textSize(20);
+      fill(255);
+      text("ERROR: WOOTING NOT FOUND", keyUnit*2, keyUnit*4);
       return;
+    }
       
     // get the amount of the key depression.
     int depressedAmount = parsedData.get(sk.keyName);
@@ -66,4 +71,9 @@ void draw()
 
 void onReadEvent(byte[] buffer) {
   parsedData = wManager.parseData(buffer);
+}
+
+void keyPressed(){
+    // ignore whatever the key pressed. (e.g., esc)
+    key=0;
 }

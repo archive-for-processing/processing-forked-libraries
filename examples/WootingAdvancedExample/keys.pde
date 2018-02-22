@@ -34,10 +34,13 @@ public class Layout {
       case ANSI:
         keys.put(KeyValue.Enter, new SingleKey(12.75, 2, 2.25, 1, KeyValue.Enter));
         keys.put(KeyValue.Backslash, new SingleKey(13.5, 1, 1.5, 1, KeyValue.Backslash));
+        keys.put(KeyValue.ModifierLeftShift, new SingleKey(0, 3, 2.25, 1, KeyValue.ModifierLeftShift));
         break;
       case ISO:
         keys.put(KeyValue.Enter, new SingleKey(13.75, 1, 1.25, 2, KeyValue.Enter));
         keys.put(KeyValue.Backslash, new SingleKey(12.75, 2, 1, 1, KeyValue.Backslash));
+        keys.put(KeyValue.ModifierLeftShift, new SingleKey(0, 3, 1.25, 1, KeyValue.ModifierLeftShift));
+        keys.put(KeyValue.ModifierNone2, new SingleKey(1.25, 3, 1, 1,  KeyValue.ModifierNone2));
         break;    
     }
     
@@ -80,7 +83,6 @@ public class Layout {
     keys.put(KeyValue.L, new SingleKey(9.75, 2, 1, 1, KeyValue.L));
     keys.put(KeyValue.Colon, new SingleKey(10.75, 2, 1, 1, KeyValue.Colon));
     keys.put(KeyValue.Quote, new SingleKey(11.75, 2, 1, 1, KeyValue.Quote));
-    keys.put(KeyValue.ModifierLeftShift, new SingleKey(0, 3, 2.25, 1, KeyValue.ModifierLeftShift));
     keys.put(KeyValue.Z, new SingleKey(2.25, 3, 1, 1, KeyValue.Z));
     keys.put(KeyValue.X, new SingleKey(3.25, 3, 1, 1, KeyValue.X));
     keys.put(KeyValue.C, new SingleKey(4.25, 3, 1, 1, KeyValue.C));
