@@ -1000,7 +1000,52 @@ public final class Fixlib implements PConstants {
 		}
 	}
 
+	/**
+	 * draw frame
+	 */
+	public void drawFrame() {
 
+		app.rectMode(CORNER);
+
+		app.strokeWeight( 100 );
+		app.rect( 0, 0, app.width, app.height);
+
+		app.strokeWeight( 5 );
+		app.rect( 64, 65, app.width-128, app.height-129 );
+
+		app.strokeWeight( 15 );
+		app.rect( 84, 85, app.width-168, app.height-168 );
+
+		//  dashed line
+		app.strokeWeight(6);
+		int x = 110;
+		int y = 110;
+
+		app.strokeCap(PROJECT);
+
+		for ( int pp = 0; pp <= (app.width*app.height); pp++ ) {
+
+			if ( x <= (app.width-110) ) {
+				// top row
+				app.point( x, y );
+				//  bottom row
+				app.point( x, 790 );
+
+				x += 10;
+			}
+			else if ( y <= 780 ) {
+
+				// left row
+				app.point( (app.width-110), y );
+				//  right row
+				app.point( 110, y );
+				y += 10;
+			}
+		}
+
+		app.strokeWeight( 5 );
+		app.rect( 122, 122, app.width-245, app.height-245 );
+	}
 
 
 	///////////////////////////////////////////////////////////
