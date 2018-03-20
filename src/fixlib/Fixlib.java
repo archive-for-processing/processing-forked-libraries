@@ -504,24 +504,20 @@ public final class Fixlib implements PConstants {
 	 */
 	public ArrayList<Integer> getImgColors(PImage img)
 	{
-		// 	NOTE: leave FALSE, if user wants true, use getImgColors( img, true );
-		return getImgColors(img, false);
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//  pull Colors out of image and return int[]
-	//  http://forum.processing.org/topic/extract-Colors-from-images
-	//  * UPDATE : GToLT = BOOLEAN controlling the Color comparison before
-	//  adding to the ArrayList.
-	
-	public ArrayList<Integer> getImgColors(PImage img, Boolean GToLT )
-	{
 		HashSet<Integer> hsColors = new HashSet<>();
 
 		img.loadPixels();
 
 		for ( int c = 0; c < img.pixels.length; c++ )
+// NOTE: this method doesn't work?!?!?
+//		for( int c : img.pixels )
 		{
-			hsColors.add(img.pixels[c]);
+			// Math.abs to address -negative values
+			if(img.pixels[c]<0)
+				hsColors.add( Math.abs( img.pixels[c] ) );
+			else
+				hsColors.add( img.pixels[c] );
+
 		}
 		return new ArrayList<>(hsColors);
 	}
@@ -542,25 +538,24 @@ public final class Fixlib implements PConstants {
 
 		float xx = 0;
 		float yy = 0;
-		float sz = 30;
-		int tmp;
-		// debug
-		//text( pall.size() + " Colors ", sz, sz );
+		float sz = 8;
 
-		for (Object aPall : pall) {
+		app.stroke(0xEFEFEF);
 
-			app.noStroke();
-			tmp = (int)aPall;
-			app.fill(tmp, alf * 4);
+		for (Integer ii : pall) {
+// TODO: this seems redundant
+			app.fill( hexToInt("#"+ PApplet.hex(ii, 6)), alf);
+
 			app.rect(xx, yy, sz, sz);
 
 			if (xx < app.width) {
-				xx += (sz * 1.25);
+				xx += (sz * 1.11);
 			} else {
 				xx = 0;
-				yy += (sz * 1.25);
+				yy += (sz * 1.11);
 			}
 		}
+
 
 		app.textFont( app.createFont( "Georgia", 222 ) );
 		app.fill(app.random(alf));
