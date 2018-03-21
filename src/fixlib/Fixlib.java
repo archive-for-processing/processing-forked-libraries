@@ -4,7 +4,8 @@ import processing.core.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
-
+import java.util.Iterator;
+import java.util.TreeSet;
 
 
 /**
@@ -24,7 +25,7 @@ public final class Fixlib implements PConstants {
 	//	https://processing.github.io/processing-javadocs/core/processing/core/app.html
 	private static PApplet app;	// parent sketch
 	private static Fixlib thisLib = null;
-	private static int alf = 100;
+	private static int alf = 255;	// default to all the way in case alpha isn't specified
 
 
 	private Fixlib() {
@@ -500,16 +501,22 @@ public final class Fixlib implements PConstants {
 	/**
 	 *
 	 * @param img PImage to retrieve colors from
-	 * @return ArrayList of integer colors harvested from @img pixels
+	 * @return ArrayList of integer colors harvested from @img pixels.  This ArrayList's size() will be "about" the
+	 * square root of @img pixel's array length.
 	 */
 	public ArrayList<Integer> getImgColors(PImage img)
 	{
+// TODO: re-visit with better color extracting logic. This rev is better but still missing the best colors from pics
+
+
+		//	get full unique palette
 		HashSet<Integer> hsColors = new HashSet<>();
 
 		img.loadPixels();
 
-		for ( int c = 0; c < img.pixels.length; c++ )
-// NOTE: this method doesn't work?!?!?
+		int c = 0;
+		for ( c = 0; c < img.pixels.length; c++ )
+// TODO: this method doesn't work?!?!?
 //		for( int c : img.pixels )
 		{
 			// Math.abs to address -negative values
@@ -517,9 +524,76 @@ public final class Fixlib implements PConstants {
 				hsColors.add( Math.abs( img.pixels[c] ) );
 			else
 				hsColors.add( img.pixels[c] );
-
 		}
-		return new ArrayList<>(hsColors);
+
+		//	get square root
+		int root = (int)Math.sqrt(hsColors.size());
+
+		//	SORT LIST FIRST
+		TreeSet colorTree = new TreeSet();
+				colorTree.addAll(hsColors);
+
+		// empty
+				hsColors.clear();
+
+		//	create palette with every ROOTnum color
+		c = 0;	// this counter is used in the ROOT logic below
+
+		Iterator<Integer> itr = colorTree.iterator();//colorTree.iterator();
+		while (itr.hasNext()) {
+
+			//	grab the first 2 colors, then every ROOT
+			if( c == root  || (c % root)==0 )
+			{
+				hsColors.add( itr.next() );
+			} else {
+				// NOTE: always advance the iterator
+				itr.next();
+			}
+			// keep track of where we're at since we can't get by index with HashSet
+			c++;
+		}
+
+		// re-use tree for sorting
+		colorTree.clear();
+		colorTree.addAll(hsColors);
+
+		// return the ROOTed color palette
+		return new ArrayList<>(colorTree);//hsColors);
+	}
+
+
+	/**
+	 * Get full color palette from supplied image
+	 *
+	 * @param img
+	 * @return
+	 */
+	public ArrayList<Integer> getImgColorsAll(PImage img)
+	{
+		//	get full unique palette
+		HashSet<Integer> hsColors = new HashSet<>();
+		img.loadPixels();
+
+		int c = 0;
+		for ( c = 0; c < img.pixels.length; c++ )
+// TODO: this method doesn't work?!?!?
+//		for( int c : img.pixels )
+		{
+			// Math.abs to address -negative values
+			if(img.pixels[c]<0)
+				hsColors.add( Math.abs( img.pixels[c] ) );
+			else
+				hsColors.add( img.pixels[c] );
+		}
+
+		// 	SORT LIST BEFORE RETURNING
+		TreeSet colorTree = new TreeSet();
+		colorTree.addAll(hsColors);
+
+		hsColors = null;
+
+		return new ArrayList<>(colorTree);//hsColors);
 	}
 
 	/**
@@ -538,13 +612,15 @@ public final class Fixlib implements PConstants {
 
 		float xx = 0;
 		float yy = 0;
-		float sz = 8;
+		float sz = 16;
 
-		app.stroke(0xEFEFEF);
+		app.stroke(hexToInt("#EFEFEF"));
+		app.strokeWeight(2);
 
 		for (Integer ii : pall) {
 // TODO: this seems redundant
 			app.fill( hexToInt("#"+ PApplet.hex(ii, 6)), alf);
+
 
 			app.rect(xx, yy, sz, sz);
 
@@ -568,7 +644,7 @@ public final class Fixlib implements PConstants {
 	///////////////////////////////////////////////////////
 	//  Make grid of shapes filled with each Color in supplied
 	//  int[], fills entire screen
-	
+	// TODO: this function doesn't appear to work, whereas paletteGrid() does
 	public void paletteGridFull(ArrayList<Integer> pall ) {
 
 		float xx = 0;
