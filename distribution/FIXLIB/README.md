@@ -1,8 +1,8 @@
-## How to install Fixlib
+## How to install FIXLIB
 
 ### Install with the Contribution Manager
 
-Add contributed Libraries by selecting the menu item _Sketch_ → _Import Library..._ → _Add Library..._ This will open the Contribution Manager, where you can browse for Fixlib, or any other Library you want to install.
+Add contributed Libraries by selecting the menu item _Sketch_ → _Import Library..._ → _Add Library..._ This will open the Contribution Manager, where you can browse for FIXLIB, or any other Library you want to install.
 
 Not all available Libraries have been converted to show up in this menu. If a Library isn't there, it will need to be installed manually by following the instructions below.
 
@@ -14,24 +14,24 @@ By default the following locations are used for your sketchbook folder:
   * For Mac users, the sketchbook folder is located inside `~/Documents/Processing` 
   * For Windows users, the sketchbook folder is located inside `My Documents/Processing`
 
-Download Fixlib from http://www.ericfickes.com/fixlib
+Download FIXLIB from http://www.ericfickes.com/fixlib
 
 Unzip and copy the contributed Library's folder into the `libraries` folder in the Processing sketchbook. You will need to create this `libraries` folder if it does not exist.
 
-The folder structure for Library Fixlib should be as follows:
+The folder structure for Library FIXLIB should be as follows:
 
 ```
 Processing
   libraries
-    Fixlib
+    FIXLIB
       examples
       library
-        Fixlib.jar
+        FIXLIB.jar
       reference
       src
 ```
              
-Some folders like `examples` or `src` might be missing. After Library Fixlib has been successfully installed, restart the Processing application.
+Some folders like `examples` or `src` might be missing. After Library FIXLIB has been successfully installed, restart the Processing application.
 
 ### Troubleshooting
 

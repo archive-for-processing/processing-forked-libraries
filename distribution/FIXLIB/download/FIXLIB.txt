@@ -2,7 +2,7 @@
 # UTF-8 supported.
 
 # The name of your Library as you want it formatted.
-name = Fixlib
+name = FIXLIB
 
 # List of authors. Links can be provided using the syntax [author name](url).
 authors = [Eric Fickes](http://www.ericfickes.com)

@@ -1017,8 +1017,11 @@ public final class Fixlib implements PConstants {
 	//////////////////////////////////////////////////////
 	//  Returns the file name that is calling this function ( minus the .pde )
 	public String pdeName() {
-		String[] pde = app.sketchPath().split( "/");
-		return pde[pde.length-1];
+//		String[] pde = app.sketchPath().split( "/");
+//		return pde[pde.length-1];
+
+		String[] pde = app.toString().split( "@");
+		return pde[0];
 	}
 
 	/**
