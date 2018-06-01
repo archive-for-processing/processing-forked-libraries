@@ -1004,24 +1004,23 @@ public final class Fixlib implements PConstants {
 		}
 	}
 
-
+	/**
+	 * Return string timestamp "month day year hour second millis"
+	 * @return
+	 */
 	public String getTimestamp() {
 		//  Calendar now = Calendar.getInstance();
 		//  return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM", now);
-
-
 		return ""+ PApplet.month()+ PApplet.day()+ PApplet.year()+ PApplet.hour()+ PApplet.second()+app.millis();
 	}
 
-
-	//////////////////////////////////////////////////////
-	//  Returns the file name that is calling this function ( minus the .pde )
+	/**
+	 * Call this to return your sketchname without the .pde extension
+	 * @return
+	 */
 	public String pdeName() {
-//		String[] pde = app.sketchPath().split( "/");
-//		return pde[pde.length-1];
-
-		String[] pde = app.toString().split( "@");
-		return pde[0];
+		//String[] pde = app.toString().split( "@");
+		return app.toString().split( "@")[0];
 	}
 
 	/**
