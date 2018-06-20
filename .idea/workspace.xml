@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="736b4e17-53bf-4869-8364-45a175dfe9ac" name="Default" comment="- adjusting paths for working on Windows machine&#10;&#10;- updated pdeName() to be more platform friendly.">
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/download/FIXLIB.zip" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/download/FIXLIB.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/allclasses-frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/allclasses-frame.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/allclasses-noframe.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/allclasses-noframe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/constant-values.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/constant-values.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/deprecated-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/deprecated-list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/Fixlib.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/Fixlib.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/package-frame.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/package-frame.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/package-summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/package-summary.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/package-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/fixlib/package-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/help-doc.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/help-doc.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/index-all.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/index-all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distribution/FIXLIB/reference/overview-tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/distribution/FIXLIB/reference/overview-tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fixlib/Fixlib.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fixlib/Fixlib.java" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/resources/code/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="processing-library-template" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Fixlib.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-87">
+              <caret line="176" selection-start-line="176" selection-end-line="176" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>${user.home}</find>
+      <find>ant-contrib</find>
+      <find>sketchbgoo</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>C:</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/resources/build.properties" />
+        <option value="$PROJECT_DIR$/src/fixlib/Fixlib.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="260" />
+    <option name="y" value="55" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="C:/Program Files/processing-3.3.7/core/library/core.jar!/" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <properties />
+      <listeners />
+    </configuration>
+  </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="736b4e17-53bf-4869-8364-45a175dfe9ac" name="Default" comment="" />
+      <created>1527828656769</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1527828656769</updated>
+    </task>
+    <task id="LOCAL-00001" summary="- adjusting paths for working on Windows machine&#10;&#10;- updated pdeName() to be more platform friendly.">
+      <created>1527833871725</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1527833871725</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="32" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info anchor="right" id="Palette" order="0" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3297414" />
+      <window_info anchor="right" id="Palette&#9;" order="1" />
+      <window_info id="Image Layers" order="0" />
+      <window_info anchor="right" id="Capture Analysis" order="2" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="right" id="Maven Projects" order="3" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32943678" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info id="Capture Tool" order="1" />
+      <window_info id="Designer" order="2" />
+      <window_info content_ui="combo" id="Project" order="5" sideWeight="0.4945534" weight="0.25746268" />
+      <window_info id="Structure" order="6" sideWeight="0.50217867" side_tool="true" visible="true" weight="0.25266525" />
+      <window_info active="true" id="Ant Build" order="7" sideWeight="0.49782136" visible="true" weight="0.25266525" />
+      <window_info id="UI Designer" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" order="4" sideWeight="0.5021552" side_tool="true" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="6" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="5" type="SLIDING" weight="0.4" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32897604" />
+    </layout>
+    <layout-to-restore>
+      <window_info anchor="right" id="Palette" order="0" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="6" weight="0.25" />
+      <window_info anchor="right" id="Capture Analysis" order="2" />
+      <window_info anchor="bottom" id="Run" order="6" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info content_ui="combo" id="Project" order="5" sideWeight="0.49678457" weight="0.25" />
+      <window_info id="Structure" order="6" sideWeight="0.50321543" weight="0.25" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="5" type="SLIDING" weight="0.4" />
+      <window_info id="Ant Build" order="7" visible="true" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="10" weight="0.3297414" />
+      <window_info anchor="bottom" id="Version Control" order="2" weight="0.3297414" />
+      <window_info id="Image Layers" order="0" />
+      <window_info id="Designer" order="2" />
+      <window_info id="UI Designer" order="3" />
+      <window_info anchor="bottom" id="Find" order="5" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
+      <window_info anchor="right" id="Palette&#9;" order="1" />
+      <window_info anchor="bottom" id="Terminal" order="0" />
+      <window_info anchor="bottom" id="Event Log" order="1" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info id="Capture Tool" order="1" />
+      <window_info anchor="bottom" id="Message" order="4" />
+      <window_info active="true" anchor="bottom" id="Messages" order="3" visible="true" weight="0.3297414" />
+      <window_info anchor="right" id="Maven Projects" order="3" />
+      <window_info id="Favorites" order="4" sideWeight="0.5021552" side_tool="true" weight="0.25" />
+    </layout-to-restore>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- adjusting paths for working on Windows machine&#10;&#10;- updated pdeName() to be more platform friendly." />
+    <option name="LAST_COMMIT_MESSAGE" value="- adjusting paths for working on Windows machine&#10;&#10;- updated pdeName() to be more platform friendly." />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+    <buildFile url="file://$PROJECT_DIR$/resources/build.xml">
+      <targetFilters>
+        <filter targetName="init" isVisible="false" />
+        <filter targetName="library.init" isVisible="false" />
+        <filter targetName="library.run" isVisible="false" />
+        <filter targetName="generate.libprops" isVisible="false" />
+        <filter targetName="copyToSketchbook" isVisible="false" />
+        <filter targetName="compile" isVisible="false" />
+        <filter targetName="generate.jar" isVisible="false" />
+        <filter targetName="generate.structure" isVisible="false" />
+        <filter targetName="generate.source" isVisible="false" />
+        <filter targetName="generate.source.win" isVisible="false" />
+        <filter targetName="generate.source.nix" isVisible="false" />
+        <filter targetName="generate.distribution" isVisible="false" />
+        <filter targetName="generate.javadoc" isVisible="false" />
+        <filter targetName="generate.web" isVisible="false" />
+        <filter targetName="parse.file" isVisible="false" />
+        <filter targetName="generate.install.library" isVisible="false" />
+        <filter targetName="generate.zip" isVisible="false" />
+        <filter targetName="processExamples" isVisible="false" />
+        <filter targetName="addExamples" isVisible="false" />
+        <filter targetName="clean" isVisible="false" />
+      </targetFilters>
+      <expanded value="true" />
+    </buildFile>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3696">
+          <caret line="176" selection-start-line="176" selection-end-line="176" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3864">
+          <caret line="193" column="22" lean-forward="true" selection-start-line="193" selection-start-column="22" selection-end-line="193" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Processing/libraries/HYPE/src/main/java/hype/HShape.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="588">
+          <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21441">
+          <caret line="1021" column="10" selection-start-line="1021" selection-start-column="10" selection-end-line="1021" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20874">
+          <caret line="1021" column="10" selection-start-line="1021" selection-start-column="10" selection-end-line="1021" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17357">
+          <caret line="1021" column="10" selection-start-line="1021" selection-start-column="10" selection-end-line="1021" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17357">
+          <caret line="1021" column="10" selection-start-line="1021" selection-start-column="10" selection-end-line="1021" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17306">
+          <caret line="1018" column="18" selection-start-line="1018" selection-start-column="18" selection-end-line="1018" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/build.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="111" column="44" selection-start-line="111" selection-end-line="111" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/build.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="51" selection-start-line="51" selection-end-line="51" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Processing/libraries/HYPE/src/main/java/hype/HShape.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/fixlib/Fixlib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-87">
+          <caret line="176" selection-start-line="176" selection-end-line="176" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>10</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>FIXLIB</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>10</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>core</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

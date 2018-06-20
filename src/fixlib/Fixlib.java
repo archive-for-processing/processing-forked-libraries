@@ -180,8 +180,6 @@ public final class Fixlib implements PConstants {
 
 		float x, y;
 
-
-
 		for ( int t = 0; t <= juicePts  ; t+=inc)
 		{
 			//  NEW HOTNESS!
