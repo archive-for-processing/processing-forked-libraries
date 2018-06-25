@@ -15,8 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import codeandchords.input.Input;
-import codeandchords.input.RecordedInput;
 import controlP5.Button;
 import controlP5.ColorWheel;
 import controlP5.ControlEvent;
@@ -24,6 +22,7 @@ import controlP5.ControlListener;
 import controlP5.ControlP5;
 import controlP5.ScrollableList;
 import controlP5.Toggle;
+import codeandchords.input.Input;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -31,7 +30,8 @@ import processing.core.PImage;
 /**
  * July 2017
  * 
- * Class for creating a sidebar Menu for a Module.
+ * Class for creating a sidebar Menu for a Module;
+ * previously was ModuleTemplate.
  * 
  * @author Emily Meuer
  *
@@ -467,7 +467,7 @@ public class ModuleMenu extends MenuTemplate  {
 	private	boolean	showLyrics;
 	
 	/**	For now, adding this so that the play Button can either start the guide tones or these tracks */
-	private	RecordedInput recInput;
+	//private	RecordedInput recInput;
 	
 	private	boolean	useRecInput;
 	
@@ -490,12 +490,19 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		super(parent, parent.width, parent.height);
 
+		System.out.println("ModuleMenu: made it past super!");
+		
 		this.parent			= parent;
 		this.module			= module;
 		this.input			= input;
+		
+		System.out.println("ModuleMenu: is it the ControlP5?");
 
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
 		this.outsideButtonsCP5.addListener((ControlListener)this);
+		
+
+		System.out.println("ModuleMenu: nope.");
 
 		this.setShowPlayStop(true);
 		this.showPause		= false;
@@ -512,8 +519,10 @@ public class ModuleMenu extends MenuTemplate  {
 		this.rangeOctave	= 3;
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
+
+		System.out.println("ModuleMenu: made it past the harrowing Melody/Instrument instantiation!");
 		
-		
+		/*
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
 				"6_Part_Scale2.wav",
@@ -525,6 +534,7 @@ public class ModuleMenu extends MenuTemplate  {
 		});
 		
 		this.recInput.pause(true);
+		*/
 		this.useRecInput		= true;
 		this.recInputPlaying	= false;
 		
@@ -548,6 +558,8 @@ public class ModuleMenu extends MenuTemplate  {
 */
 		// ColorSelect will be filled in addColorSelect,
 		// and, since global == true, this fill set this.colors, too.
+
+		System.out.println("ModuleMenu: prepare for color initialization.");
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
 
 		this.colors				= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
@@ -588,6 +600,9 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
+		
+
+		System.out.println("ModuleMenu: so much for colors! Let's try for sensitivity controls:");
 
 		this.attRelTranPos	= new int[this.module.getTotalNumInputs()];
 		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
@@ -644,6 +659,8 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.minThreshold	= 101;
 
+
+		System.out.println("ModuleMenu: almost there! Just about to add some ControlP5 groups.");
 		
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
@@ -677,7 +694,7 @@ public class ModuleMenu extends MenuTemplate  {
 		textYVals[0]	=	26;
 		// Given our height = 250 and "hide" (textYVals[0]) starts at [40] - now 26 (1/17),
 		// We want a difference of 27.  This gets that:
-		int	yValDif = (int)((this.module.height - textYVals[0]) / 18);//(textYVals.length + noteYVals.length + modulateYVals.length));
+		int	yValDif = (int)((this.parent.height - textYVals[0]) / 18);//(textYVals.length + noteYVals.length + modulateYVals.length));
 		// ... but no smaller than 25:
 		if(yValDif < 25) {
 			yValDif	= 25;
@@ -695,13 +712,15 @@ public class ModuleMenu extends MenuTemplate  {
 
 		controllerXVals	= new int[] {	
 				0, 
-				(this.module.width / 3) - 20, 
-				((this.module.width / 3) * 2) - 40	
+				(this.parent.width / 3) - 20, 
+				((this.parent.width / 3) * 2) - 40	
 		};
 
+		System.out.println("ModuleMenu: adding the landing menu... ");
 		this.controlP5.controlWindow.setPositionOfTabs(this.leftAlign, this.textYVals[0] - 10);
 		this.addLandingMenu();
-		
+
+		System.out.println("ModuleMenu: adding the outside buttons...");
 		// Add play button, hamburger and menu x:
 		this.addOutsideButtons();
 		
@@ -715,6 +734,7 @@ public class ModuleMenu extends MenuTemplate  {
 			this.amplitudeFollower[i] = 0;
 		}
 		
+		System.out.println("ModuleMenu: karaoke (why not?)! Oh, and color save.");
 		// Karaoke lyrics:
 		this.curLyrics	= new ArrayList<String>();
 		this.colorFileChooser	= new JFileChooser();
@@ -878,7 +898,7 @@ public class ModuleMenu extends MenuTemplate  {
 
 		for(int i = 0; i < shapes.length; i++)
 		{
-			shapes[i] = new Shape(this.module);
+			shapes[i] = new Shape(this.parent);
 
 			for(int j = 0; j < 5; j++)
 			{
@@ -887,7 +907,7 @@ public class ModuleMenu extends MenuTemplate  {
 			} // for - j
 		} // for - i
 
-		this.shapeEditor	= new ShapeEditor(this.module, shapes, this.module, 925, 520, this.controlP5);
+		this.shapeEditor	= new ShapeEditor(this.parent, shapes, this.module, 925, 520, this.controlP5);
 		System.out.println("ModuleMenu.addShapeMenu: this.shapeEditor = " + this.shapeEditor);
 
 		//		this.shapeEditor.setIsRunning(false);
@@ -1922,12 +1942,16 @@ public class ModuleMenu extends MenuTemplate  {
 		} // error checking
 
 		float	curAmp;
+		
+		curAmp = this.input.getAmplitude(inputNum);
+		/*
 		if(!this.recInputPlaying)
 		{
 			curAmp = this.input.getAmplitude(inputNum);
 		} else {
 			curAmp	= this.recInput.getAmplitude(inputNum);
 		}
+		*/
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
@@ -2047,12 +2071,15 @@ public class ModuleMenu extends MenuTemplate  {
 		//current amplitudeFollower value, to the value returned by input.getAmplitude
 		if(followerType == 1)
 		{
+			this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.input.getAmplitude(numInput)) / 2;
+			/*
 			if(!this.recInputPlaying)
 			{
 				this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.input.getAmplitude(numInput)) / 2;
 			} else {
 				this.amplitudeFollower[numInput] = (this.amplitudeFollower[numInput] + this.recInput.getAmplitude(numInput)) / 2;
 			}
+			*/
 		}
 		
 		//this variation of the amplitude follower always moves the follower half way from the
@@ -2062,12 +2089,15 @@ public class ModuleMenu extends MenuTemplate  {
 		if(followerType == 2)
 		{
 			float	amp;
+			amp = this.input.getAmplitude(numInput);
+			/*
 			if(!this.recInputPlaying)
 			{
 				amp = this.input.getAmplitude(numInput);
 			} else {
 				amp	= this.recInput.getAmplitude(numInput);
 			}
+			*/
 			
 			if(this.maxAmplitude[numInput] < amp)
 			{
@@ -2098,13 +2128,15 @@ public class ModuleMenu extends MenuTemplate  {
 		if(followerType == 3)
 		{
 			float amp = 0;
-			
+			amp = this.input.getAmplitude(numInput);
+			/*
 			if(!this.recInputPlaying)
 			{
 				amp = this.input.getAmplitude(numInput);
 			} else {
 				amp	= this.recInput.getAmplitude(numInput);
 			}
+			*/
 			
 			if(amp > this.amplitudeFollower[numInput])
 			{
@@ -2153,12 +2185,15 @@ public class ModuleMenu extends MenuTemplate  {
 		} // error checking
 
 		float	curAmp;
+		curAmp = this.input.getAmplitude(inputNum);
+		/*
 		if(!this.recInputPlaying)
 		{
 			curAmp = this.input.getAmplitude(inputNum);
 		} else {
 			curAmp	= this.recInput.getAmplitude(inputNum);
 		}
+		*/
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
@@ -2272,12 +2307,15 @@ public class ModuleMenu extends MenuTemplate  {
 		this.inputNumErrorCheck(inputNum);
 
 		float	curAmp;
+		curAmp = this.input.getAmplitude(inputNum);
+		/*
 		if(!this.recInputPlaying)
 		{
 			curAmp = this.input.getAmplitude(inputNum);
 		} else {
 			curAmp	= this.recInput.getAmplitude(inputNum);
 		}
+		*/
 
 		if(curAmp < this.pianoThreshold[inputNum])	
 		{
@@ -3134,19 +3172,23 @@ public class ModuleMenu extends MenuTemplate  {
 				//play button
 				if(val)
 				{
+					this.playMelody();
+					/*
 					if(!this.useRecInput)
 					{
-						this.playMelody();						
+						this.playMelody();
 					} else {
 						this.recInput.pause(false);
 						this.recInputPlaying	= true;
 					}
+					*/
 				} else {
 					// Unpauses the pause button so that it is ready to be paused when
 					// play is pressed again:
 					((Toggle)this.outsideButtonsCP5.getController("pause")).setState(false);
 					//				this.showPause	= false;
-					
+					this.melody.stop();
+					/*
 					if(!this.useRecInput)
 					{
 						this.melody.stop();						
@@ -3154,6 +3196,7 @@ public class ModuleMenu extends MenuTemplate  {
 						this.recInput.pause(true);
 						this.recInputPlaying	= false;
 					}
+					*/
 				}
 
 			} // if - play
@@ -3161,6 +3204,8 @@ public class ModuleMenu extends MenuTemplate  {
 			// Pause button:
 			if(controlEvent.getController().getName().equals("pause"))
 			{
+				this.melody.pause(((Toggle)controlEvent.getController()).getBooleanValue());					
+				/*
 				if(!this.useRecInput)
 				{
 					this.melody.pause(((Toggle)controlEvent.getController()).getBooleanValue());					
@@ -3168,6 +3213,7 @@ public class ModuleMenu extends MenuTemplate  {
 					this.recInput.pause(((Toggle)controlEvent.getController()).getBooleanValue());
 					this.recInputPlaying	= !(((Toggle)controlEvent.getController()).getBooleanValue());
 				}
+				*/
 			}
 
 			
@@ -4908,11 +4954,12 @@ public class ModuleMenu extends MenuTemplate  {
 	{
 		return this.recInputPlaying;
 	}
-	
+	/*
 	public RecordedInput getRecInput()
 	{
 		return this.recInput;
 	}
+	*/
 	
 	public boolean getShowLyrics()
 	{

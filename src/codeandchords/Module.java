@@ -1,6 +1,8 @@
 package codeandchords;
 
 import codeandchords.input.RealTimeInput;
+import codeandchords.ModuleMenu;
+import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 /**
@@ -10,10 +12,11 @@ import processing.core.PApplet;
  * 
  * @author Dan Mahota, Emily Meuer
  */
-public abstract class Module extends PApplet {
+public class Module {
 	
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
-	protected	RealTimeInput			input;
+	public	RealTimeInput			input;
+	// TODO ^ private eventually
 	
 	/**	This is the total number of possible inputs; *must* be initialized by child classes!	*/
 	protected	int		totalNumInputs = 1;
@@ -54,6 +57,14 @@ public abstract class Module extends PApplet {
 		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 		}
 	}; // scaleDegrees
+	
+	// TODO - private eventually:
+	public PApplet parent;
+	
+	public Module(PApplet parent)
+	{
+		this.parent	= parent;
+	}
 
 	/**
 	 * Sets the Module size.
@@ -61,27 +72,22 @@ public abstract class Module extends PApplet {
 	public void settings()
 	{
 		//fullscreen();
-		size(925, 520);
+		this.parent.size(925, 520);
 	}
 
-	/**
-	 * Setter for the shapeEditor.isRunning variable
-	 * 
-	 * @param isRunning	indicates whether or not the ShapeEditor should be open (i.e., running)
-	 */
-/*	public void setShapeEditorRunning(boolean isRunning)
+	public void setupModule()
 	{
-		this.shapeEditor.setIsRunning(isRunning);
-	} // setShapeEditorRunning
-*/
-	/**
-	 * Getter for Shape instance variable
-	 * @return	this.shape
-	 */
-/*	public Shape getShape() {
-		return this.shape;
-	} // getShape
-*/	
+		this.input	= new RealTimeInput(16, new AudioContext(), true, this.parent);
+		this.totalNumInputs	= this.input.getAdjustedNumInputs();
+		this.curNumInputs	= 1;
+		
+		this.menu	= new ModuleMenu(this.parent, this, this.input, 12);
+
+		// Setup the menu:
+		this.menu.addLandingMenu();
+		this.menu.addSensitivityMenu(true);
+		this.menu.addColorMenu();
+	} // setupModule
 
 	/**
 	 * Draws the legend at the bottom of the screen.
@@ -96,7 +102,7 @@ public abstract class Module extends PApplet {
 			this.setSquareValues();
 		}
 		
-		this.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
+		this.parent.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
 
 		String[]	legendText	= this.getLegendText();
 		
@@ -109,7 +115,7 @@ public abstract class Module extends PApplet {
 		float	addToLastRect	= (this.rectWidths[inputNum] * scale) - (sideWidth1 * legendText.length);
 		float	sideWidth2	= sideWidth1;
 
-		this.noStroke();
+		this.parent.noStroke();
 		
 		int	scaleDegree;
 		float	xVal	= this.menu.mapCurrentXPos(this.xVals[inputNum]);
@@ -124,23 +130,23 @@ public abstract class Module extends PApplet {
 			
 			// colors is filled all the way and only picked at the desired notes:
 			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
-			this.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
+			this.parent.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
 
 			if (i == goalHuePos) {
-				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * 1.5f), sideWidth2, (sideHeight * 1.5f));
+				this.parent.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * 1.5f), sideWidth2, (sideHeight * 1.5f));
 			} else {
-				this.rect(xVal + (sideWidth1 * i), yVal - sideHeight, sideWidth2, sideHeight);
+				this.parent.rect(xVal + (sideWidth1 * i), yVal - sideHeight, sideWidth2, sideHeight);
 			}
 
-			this.fill(0);			
-			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
+			this.parent.fill(0);			
+			this.parent.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
 		
 			if(debugLegendColors)
 			{
-				this.textSize(12);
-				this.text(("r: " + this.menu.getColors()[inputNum][scaleDegree][0]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 50);
-				this.text(("g: " + this.menu.getColors()[inputNum][scaleDegree][1]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 40);
-				this.text(("b: " + this.menu.getColors()[inputNum][scaleDegree][2]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 30);
+				this.parent.textSize(12);
+				this.parent.text(("r: " + this.menu.getColors()[inputNum][scaleDegree][0]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 50);
+				this.parent.text(("g: " + this.menu.getColors()[inputNum][scaleDegree][1]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 40);
+				this.parent.text(("b: " + this.menu.getColors()[inputNum][scaleDegree][2]), (float) (xVal + (sideWidth1 * i)) + 10, yVal - (sideHeight * 0.4f) - 30);
 			}
 		} // for - i
 
@@ -159,7 +165,7 @@ public abstract class Module extends PApplet {
 			this.setSquareValues();
 		}
 		
-		this.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
+		this.parent.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
 
 		String[]	legendText	= this.getLegendText();
 		
@@ -172,7 +178,7 @@ public abstract class Module extends PApplet {
 		float	addToLastRect	= (this.rectWidths[inputNum] * scale) - (sideWidth1 * legendText.length);
 		float	sideWidth2	= sideWidth1;
 
-		this.noStroke();
+		this.parent.noStroke();
 		
 		int	scaleDegree;
 		float	xVal;
@@ -195,25 +201,30 @@ public abstract class Module extends PApplet {
 			
 			// colors is filled all the way and only picked at the desired notes:
 			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
-			this.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
+			this.parent.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
 
 			if (i == goalHuePos) {
-				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale() * 1.5f), sideWidth2, (sideHeight * this.menu.getCurrentScale() * 1.5f));
+				this.parent.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale() * 1.5f), sideWidth2, (sideHeight * this.menu.getCurrentScale() * 1.5f));
 			} else {
-				this.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale()), sideWidth2, sideHeight * this.menu.getCurrentScale());
+				this.parent.rect(xVal + (sideWidth1 * i), yVal - (sideHeight * this.menu.getCurrentScale()), sideWidth2, sideHeight * this.menu.getCurrentScale());
 			}
 
-			this.fill(0);
-			this.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
+			this.parent.fill(0);
+			this.parent.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
 		} // for - i
 
 	} // legend
 
 	
 	/**
-	 * @return	String[] of text to display in each position of the legend
+	 * Default value is the current scale, but a Module can override this for its own use.
+	 * 
+	 * @return	String[] of text to display in each position of the legend;
 	 */
-	public abstract String[] getLegendText();
+	public String[] getLegendText()
+	{	
+		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
+	} // getLegendText
 	
 	
 	public void setCurNumInputs(int newCurNumInputs)
@@ -229,6 +240,11 @@ public abstract class Module extends PApplet {
 	public int getTotalNumInputs()
 	{
 		return this.totalNumInputs;
+	}
+	
+	public ModuleMenu getModuleMenu()
+	{
+		return this.menu;
 	}
 	
 	// Moved these (drawShape, drawShapes()) to ShapeEditor
@@ -254,8 +270,8 @@ public abstract class Module extends PApplet {
 	{
 		if(this.verticalBarsDemo)
 		{
-			int barWidth = this.width/this.curNumInputs;
-			int val = this.height/2;
+			int barWidth = this.parent.width/this.curNumInputs;
+			int val = this.parent.height/2;
 						
 			this.xVals = new int[this.curNumInputs];
 			this.yVals = new int[this.curNumInputs];
@@ -273,8 +289,8 @@ public abstract class Module extends PApplet {
 				//this.yVals[i] = (int) (val - (amp*val));
 				this.yVals[i] = 0;
 				this.rectWidths[i] = barWidth;
-				//this.rectHeights[i] = (int) (amp * this.height);
-				this.rectHeights[i] = this.height;
+				//this.rectHeights[i] = (int) (amp * this.parent.height);
+				this.rectHeights[i] = this.parent.height;
 			}
 			
 		}
@@ -291,8 +307,8 @@ public abstract class Module extends PApplet {
 				this.rectHeights	= new int[this.curNumInputs];
 				for(int i = 0; i < this.rectWidths.length; i++)
 				{
-					this.rectWidths[i]	= this.width / (this.curNumInputs / 2);
-					this.rectHeights[i]	= this.height / 2;
+					this.rectWidths[i]	= this.parent.width / (this.curNumInputs / 2);
+					this.rectHeights[i]	= this.parent.height / 2;
 				} // for
 
 				this.xVals	= new int[this.curNumInputs];
@@ -315,8 +331,8 @@ public abstract class Module extends PApplet {
 			} // even number of inputs
 			else if(this.curNumInputs == 1)
 			{
-				this.rectWidths		= new int[] {	this.width	};
-				this.rectHeights	= new int[]	{	this.height	};
+				this.rectWidths		= new int[] {	this.parent.width	};
+				this.rectHeights	= new int[]	{	this.parent.height	};
 
 				this.xVals	= new int[] {	0	};
 				this.yVals	= new int[] {	0	};
@@ -324,64 +340,64 @@ public abstract class Module extends PApplet {
 			else if(this.curNumInputs == 3)
 			{
 				this.rectWidths		= new int[] {	
-						this.width,
-						(this.width / 2), (this.width / 2)
+						this.parent.width,
+						(this.parent.width / 2), (this.parent.width / 2)
 				};
 				for(int i = 0; i < this.rectHeights.length; i++)
 				{
-					this.rectHeights[i]	= this.height / 2;
+					this.rectHeights[i]	= this.parent.height / 2;
 				}
 
 				this.xVals	= new int[] { 
 						0,
-						0,	(this.width / 2)
+						0,	(this.parent.width / 2)
 				};
 				this.yVals	= new int[] {
 						0,
-						(this.height / 2), (this.height / 2)
+						(this.parent.height / 2), (this.parent.height / 2)
 				};
 			} // 3
 			else if(this.curNumInputs == 5)
 			{
 				this.rectWidths	= new int[] {
-						(this.width / 2),	(this.width / 2),
-						(this.width / 3), (this.width / 3), (this.width / 3)
+						(this.parent.width / 2),	(this.parent.width / 2),
+						(this.parent.width / 3), (this.parent.width / 3), (this.parent.width / 3)
 				};
 				for(int i = 0; i < this.rectHeights.length; i++)
 				{
-					this.rectHeights[i]	= this.height / 2;
+					this.rectHeights[i]	= this.parent.height / 2;
 				}
 
 				this.xVals	= new int[] {
-						0,				(this.width / 2),	
-						0,	(this.width / 3), ((this.width / 3) * 2)
+						0,				(this.parent.width / 2),	
+						0,	(this.parent.width / 3), ((this.parent.width / 3) * 2)
 				};
 				this.yVals	= new int[] {
 						0,				0,
-						(this.height / 2), (this.height / 2), (this.height / 2)
+						(this.parent.height / 2), (this.parent.height / 2), (this.parent.height / 2)
 				};
 			} // 5
 			else if(this.curNumInputs == 7)
 			{
 				this.rectWidths	= new int[] {
-						(this.width / 2),	(this.width / 2),
-						(this.width / 2), (this.width / 3), (this.width / 3),
-						(this.width / 2),	(this.width / 2)
+						(this.parent.width / 2),	(this.parent.width / 2),
+						(this.parent.width / 2), (this.parent.width / 3), (this.parent.width / 3),
+						(this.parent.width / 2),	(this.parent.width / 2)
 				};
 				for(int i = 0; i < this.rectHeights.length; i++)
 				{
-					this.rectHeights[i]	= this.height / 3;
+					this.rectHeights[i]	= this.parent.height / 3;
 				}
 
 				this.xVals	= new int[] {
-						0,				(this.width / 2),	
-						0,	(this.width / 3), ((this.width / 3) * 2),
-						0,				(this.width / 2)
+						0,				(this.parent.width / 2),	
+						0,	(this.parent.width / 3), ((this.parent.width / 3) * 2),
+						0,				(this.parent.width / 2)
 				};
 				this.yVals	= new int[] {
 						0,				0,
-						(this.height / 3), (this.height / 3), (this.height / 3),
-						(this.height / 3) * 2, (this.height / 3) * 2, (this.height / 3) * 2
+						(this.parent.height / 3), (this.parent.height / 3), (this.parent.height / 3),
+						(this.parent.height / 3) * 2, (this.parent.height / 3) * 2, (this.parent.height / 3) * 2
 				};
 			} // 7
 			else if(this.curNumInputs == 9)
@@ -389,19 +405,19 @@ public abstract class Module extends PApplet {
 				this.rectWidths		= new int[this.curNumInputs];
 				for(int i = 0; i < this.rectWidths.length; i++)
 				{
-					this.rectWidths[i]	= (this.width / 3);
-					this.rectHeights[i]	= (this.height / 3);
+					this.rectWidths[i]	= (this.parent.width / 3);
+					this.rectHeights[i]	= (this.parent.height / 3);
 				} // for
 
 				this.xVals	= new int[] {
-						0, this.width/3, (this.width/3) * 2,
-						0, this.width/3, (this.width/3) * 2,
-						0, this.width/3, (this.width/3) * 2
+						0, this.parent.width/3, (this.parent.width/3) * 2,
+						0, this.parent.width/3, (this.parent.width/3) * 2,
+						0, this.parent.width/3, (this.parent.width/3) * 2
 				};
 				this.yVals	= new int[] {
 						0, 0, 0,
-						this.height/3, this.height/3, this.height/3, 
-						((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
+						this.parent.height/3, this.parent.height/3, this.parent.height/3, 
+						((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2)
 				};
 			} // 9
 			else if(this.curNumInputs == 11)
@@ -411,24 +427,24 @@ public abstract class Module extends PApplet {
 				{
 					if(i < 4 || i > 6)
 					{
-						this.rectWidths[i]	= (this.width / 4);
+						this.rectWidths[i]	= (this.parent.width / 4);
 					} else {
 						// middle row has only 3:
-						this.rectWidths[i]	= (this.width / 3);
+						this.rectWidths[i]	= (this.parent.width / 3);
 					}
 
-					this.rectHeights[i]	= (this.height / 3);
+					this.rectHeights[i]	= (this.parent.height / 3);
 				} // for
 
 				this.xVals	= new int[] {
-						0, this.width/4, this.width/2, (this.width/4) * 3,
-						0, this.width/3, (this.width/3) * 2,
-						0, this.width/4, this.width/2, (this.width/4) * 3,
+						0, this.parent.width/4, this.parent.width/2, (this.parent.width/4) * 3,
+						0, this.parent.width/3, (this.parent.width/3) * 2,
+						0, this.parent.width/4, this.parent.width/2, (this.parent.width/4) * 3,
 				};
 				this.yVals	= new int[] {
 						0, 0, 0, 0,
-						this.height/3, this.height/3, this.height/3, 
-						((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
+						this.parent.height/3, this.parent.height/3, this.parent.height/3, 
+						((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2)
 				};
 			} // 11
 			else if(this.curNumInputs == 12)
@@ -436,19 +452,19 @@ public abstract class Module extends PApplet {
 				this.rectWidths		= new int[this.curNumInputs];
 				for(int i = 0; i < this.rectWidths.length; i++)
 				{
-					this.rectWidths[i]	= (this.width / 4);
-					this.rectHeights[i]	= (this.height / 3);
+					this.rectWidths[i]	= (this.parent.width / 4);
+					this.rectHeights[i]	= (this.parent.height / 3);
 				} // for
 
 				this.xVals	= new int[] {
-						0, this.width/4, this.width/2, (this.width/4) * 3,
-						0, this.width/4, this.width/2, (this.width/4) * 3,
-						0, this.width/4, this.width/2, (this.width/4) * 3,
+						0, this.parent.width/4, this.parent.width/2, (this.parent.width/4) * 3,
+						0, this.parent.width/4, this.parent.width/2, (this.parent.width/4) * 3,
+						0, this.parent.width/4, this.parent.width/2, (this.parent.width/4) * 3,
 				};
 				this.yVals	= new int[] {
 						0, 0, 0, 0,
-						this.height/3, this.height/3, this.height/3, this.height/3, 
-						((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2), ((this.height / 3) * 2)
+						this.parent.height/3, this.parent.height/3, this.parent.height/3, this.parent.height/3, 
+						((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2), ((this.parent.height / 3) * 2)
 				};
 			} // 12
 		} // else - verticalBars

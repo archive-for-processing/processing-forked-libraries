@@ -104,6 +104,7 @@ public abstract class MenuTemplate implements ControlListener {
 	 */
 	public MenuTemplate(PApplet pApp, float appWidth, float appHeight)
 	{
+		System.out.println(" - MenuTemplate constructor: pApp = " + pApp);
 		this.isRunning = false;
 		
 		this.parent = pApp;
@@ -165,6 +166,8 @@ public abstract class MenuTemplate implements ControlListener {
 		this.nextColorWheelId	= 301;
 		this.nextCWTextfieldId	= 401;
 		this.nextToggleId		= 501;
+		
+		System.out.println(" - and..... that's all for MenuTemplate.");
 
 	} // constructor
 	

@@ -1,6 +1,5 @@
 package codeandchords.input;
 
-import codeandchords.input.Input.DisposeHandler;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.UGen;
 import net.beadsproject.beads.data.Sample;
