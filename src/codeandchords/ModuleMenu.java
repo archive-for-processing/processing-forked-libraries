@@ -489,21 +489,14 @@ public class ModuleMenu extends MenuTemplate  {
 	public ModuleMenu(PApplet parent, Module module, Input input, int totalNumColorItems)
 	{
 		super(parent, parent.width, parent.height);
-
-		System.out.println("ModuleMenu: made it past super!");
 		
 		this.parent			= parent;
 		this.module			= module;
 		this.input			= input;
-		
-		System.out.println("ModuleMenu: is it the ControlP5?");
 
 		this.outsideButtonsCP5	= new ControlP5(this.parent);
 		this.outsideButtonsCP5.addListener((ControlListener)this);
 		
-
-		System.out.println("ModuleMenu: nope.");
-
 		this.setShowPlayStop(true);
 		this.showPause		= false;
 		this.showHamburger	= true;
@@ -520,8 +513,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.curKey			= "A";
 		this.majMinChrom	= 2;	// chromatic
 
-		System.out.println("ModuleMenu: made it past the harrowing Melody/Instrument instantiation!");
-		
 		/*
 		this.recInput	= new RecordedInput(this.module, new String[] {
 				"6_Part_Scale1.wav",
@@ -538,28 +529,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.useRecInput		= true;
 		this.recInputPlaying	= false;
 		
-		// From the demos for Cadenza's spring show:
-	/*
-		this.recInput	= new RecordedInput(this.module, new String[] {
-				"6_Part_Scale1.wav",
-				"6_Part_Scale2.wav",
-				"6_Part_Scale3.wav",
-				"6_Part_Scale4.wav",
-				"6_Part_Scale5.wav",
-				"6_Part_Scale6.wav",
-				"6_Part_Scale7.wav",
-				//"cadenza/Here - Melody.wav",
-				"cadenza/Here - Beatbox.wav"
-		});
-		
-		this.recInput.pause(false);
-		this.useRecInput		= true;
-		this.recInputPlaying	= true;
-*/
-		// ColorSelect will be filled in addColorSelect,
-		// and, since global == true, this fill set this.colors, too.
-
-		System.out.println("ModuleMenu: prepare for color initialization.");
 		this.colorSelect		= new ColorWheel[totalNumColorItems];
 
 		this.colors				= new int[this.module.getTotalNumInputs()][totalNumColorItems][3];
@@ -601,9 +570,6 @@ public class ModuleMenu extends MenuTemplate  {
 		this.dichromFlag	= false;
 		this.trichromFlag	= false;
 		
-
-		System.out.println("ModuleMenu: so much for colors! Let's try for sensitivity controls:");
-
 		this.attRelTranPos	= new int[this.module.getTotalNumInputs()];
 		this.attRelTranVals	= new float[this.module.getTotalNumInputs()][3];
 		this.colorCheckpoint		= new int[this.module.getTotalNumInputs()];
@@ -659,9 +625,6 @@ public class ModuleMenu extends MenuTemplate  {
 
 		this.minThreshold	= 101;
 
-
-		System.out.println("ModuleMenu: almost there! Just about to add some ControlP5 groups.");
-		
 		this.controlP5.addGroup("sidebarGroup")
 		.setBackgroundColor(this.parent.color(0))
 		.setSize(this.sidebarWidth, this.parent.height + 1)

@@ -2,7 +2,6 @@ package codeandchords;
 
 import codeandchords.input.RealTimeInput;
 import codeandchords.ModuleMenu;
-import net.beadsproject.beads.core.AudioContext;
 import processing.core.PApplet;
 
 /**
@@ -13,14 +12,13 @@ import processing.core.PApplet;
  * @author Dan Mahota, Emily Meuer
  */
 public class Module {
-	
+
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
-	public	RealTimeInput			input;
-	// TODO ^ private eventually
-	
+	protected	RealTimeInput			input;
+
 	/**	This is the total number of possible inputs; *must* be initialized by child classes!	*/
 	protected	int		totalNumInputs = 1;
-	
+
 	/**	This is the number of inputs currently displaying in the Module	*/
 	protected	int		curNumInputs;
 
@@ -28,23 +26,23 @@ public class Module {
 	protected	int[]	yVals;
 	protected	int[]	rectWidths;
 	protected	int[]	rectHeights;
-	
+
 	protected	boolean	debugLegendColors	= false;
-	
-//	protected	Shape			shape;
-//	protected	Shape[]			shapes;
-	
+
+	//	protected	Shape			shape;
+	//	protected	Shape[]			shapes;
+
 	/**	For Modules with a Shape, this ShapeEditor provides Shape customization Controllers	*/
-//	protected 	ShapeEditor		shapeEditor;
-	
+	//	protected 	ShapeEditor		shapeEditor;
+
 	/**	"Sidebar" Menu, where most basic Controllers will be - global HSB and RGB modulation, etc.	*/
 	protected	ModuleMenu		menu;
-	
+
 	protected	int		currentMenu;
-	
+
 	protected 	boolean		verticalBarsDemo = false;
 	protected 	float[]		amplitude;
-	
+
 	/**	Used by legend() to determine which colors to select for the legend along the bottom	*/
 	private	final	int[][] scaleDegrees = new int[][] {
 		// major:
@@ -57,10 +55,9 @@ public class Module {
 		new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 		}
 	}; // scaleDegrees
-	
-	// TODO - private eventually:
-	public PApplet parent;
-	
+
+	protected PApplet parent;
+
 	public Module(PApplet parent)
 	{
 		this.parent	= parent;
@@ -77,17 +74,18 @@ public class Module {
 
 	public void setupModule()
 	{
-		this.input	= new RealTimeInput(16, new AudioContext(), true, this.parent);
-		this.totalNumInputs	= this.input.getAdjustedNumInputs();
-		this.curNumInputs	= 1;
-		
-		this.menu	= new ModuleMenu(this.parent, this, this.input, 12);
+		this.input  = new RealTimeInput(1, this.parent);
+		this.totalNumInputs  = this.input.getAdjustedNumInputs();
+		this.curNumInputs  = 1;
+
+		this.menu  = new ModuleMenu(this.parent, this, this.input, 12);
 
 		// Setup the menu:
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
-	} // setupModule
+	} // setupModule	
+
 
 	/**
 	 * Draws the legend at the bottom of the screen.
@@ -101,13 +99,13 @@ public class Module {
 			this.curNumInputs		= Math.max(this.curNumInputs, 1);
 			this.setSquareValues();
 		}
-		
+
 		this.parent.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
 
 		String[]	legendText	= this.getLegendText();
-		
-//		float	scale	= 1;
-//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+
+		//		float	scale	= 1;
+		//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
 		float	scale	= this.menu.getCurrentScale();
 
 		float	sideWidth1	=(this.rectWidths[inputNum] * scale) / legendText.length;
@@ -116,7 +114,7 @@ public class Module {
 		float	sideWidth2	= sideWidth1;
 
 		this.parent.noStroke();
-		
+
 		int	scaleDegree;
 		float	xVal	= this.menu.mapCurrentXPos(this.xVals[inputNum]);
 		float	yVal	= this.menu.mapCurrentYPos(this.yVals[inputNum] + this.rectHeights[inputNum]);
@@ -127,7 +125,7 @@ public class Module {
 			{
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
-			
+
 			// colors is filled all the way and only picked at the desired notes:
 			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
 			this.parent.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
@@ -140,7 +138,7 @@ public class Module {
 
 			this.parent.fill(0);			
 			this.parent.text(legendText[i], (float) (xVal + (sideWidth1 * i) + (sideWidth1 * 0.3)), yVal - (sideHeight * 0.3f));
-		
+
 			if(debugLegendColors)
 			{
 				this.parent.textSize(12);
@@ -164,13 +162,13 @@ public class Module {
 			this.curNumInputs		= Math.max(this.curNumInputs, 1);
 			this.setSquareValues();
 		}
-		
+
 		this.parent.textSize(Math.max(24 - (this.curNumInputs * 2), 8));
 
 		String[]	legendText	= this.getLegendText();
-		
-//		float	scale	= 1;
-//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
+
+		//		float	scale	= 1;
+		//		if(this.menu.getIsRunning())	{	scale	= this.menu.getScale();	}
 		float	scale	= this.menu.getCurrentScale();
 
 		float	sideWidth1	=(this.rectWidths[inputNum] * scale) / legendText.length;
@@ -179,7 +177,7 @@ public class Module {
 		float	sideWidth2	= sideWidth1;
 
 		this.parent.noStroke();
-		
+
 		int	scaleDegree;
 		float	xVal;
 		float	yVal;
@@ -198,7 +196,7 @@ public class Module {
 			{
 				sideWidth2	= sideWidth1 + addToLastRect;
 			}
-			
+
 			// colors is filled all the way and only picked at the desired notes:
 			scaleDegree	= this.scaleDegrees[this.menu.getMajMinChrom()][i];
 			this.parent.fill(this.menu.getColors()[inputNum][scaleDegree][0], this.menu.getColors()[inputNum][scaleDegree][1], this.menu.getColors()[inputNum][scaleDegree][2]);
@@ -215,7 +213,7 @@ public class Module {
 
 	} // legend
 
-	
+
 	/**
 	 * Default value is the current scale, but a Module can override this for its own use.
 	 * 
@@ -225,44 +223,29 @@ public class Module {
 	{	
 		return this.menu.getScale(this.menu.getCurKey(), this.menu.getMajMinChrom());
 	} // getLegendText
-	
-	
+
+
 	public void setCurNumInputs(int newCurNumInputs)
 	{
 		this.curNumInputs	= newCurNumInputs;
 	}
-	
+
 	public int getCurNumInputs()
 	{
 		return this.curNumInputs;
 	}
-	
+
 	public int getTotalNumInputs()
 	{
 		return this.totalNumInputs;
 	}
-	
+
 	public ModuleMenu getModuleMenu()
 	{
 		return this.menu;
 	}
-	
-	// Moved these (drawShape, drawShapes()) to ShapeEditor
-	/*
-	protected void drawShape(int shapeIndex)
-	{
-		shapes[shapeIndex].drawShape(this.menu, shapeIndex);
-	}
-	
-	protected void drawShapes()
-	{
-		for(int i = 0; i < this.curNumInputs; i++)
-		{
-			shapes[i].drawShape(this.menu, i);
-		}
-	}
-	*/
-	
+
+
 	/**
 	 * Calculates the x and y values for the squares given the number of inputs.
 	 */
@@ -271,20 +254,19 @@ public class Module {
 		if(this.verticalBarsDemo)
 		{
 			int barWidth = this.parent.width/this.curNumInputs;
-			int val = this.parent.height/2;
-						
+
 			this.xVals = new int[this.curNumInputs];
 			this.yVals = new int[this.curNumInputs];
 			this.rectWidths = new int[this.curNumInputs];
 			this.rectHeights = new int[this.curNumInputs];
-			
+
 			for(int i = 0; i < this.curNumInputs; i++)
 			{
 				//gives value between 0 and 1 to be used as a percent
 				//System.out.println(this.amplitude[i]);
 				float amp = (float) Math.min(1, this.amplitude[i] / 500/*max amp*/);
 				amp = (float) Math.max(amp, .1);
-				
+
 				this.xVals[i] = i * barWidth;
 				//this.yVals[i] = (int) (val - (amp*val));
 				this.yVals[i] = 0;
@@ -292,13 +274,13 @@ public class Module {
 				//this.rectHeights[i] = (int) (amp * this.parent.height);
 				this.rectHeights[i] = this.parent.height;
 			}
-			
+
 		}
 		else
 		{
 			// Rectangles are always the same height, so will be set in a loop every time:
 			this.rectHeights	= new int[this.curNumInputs];
- 
+
 			// Setting xVals and yVals and width and height of rectangles:
 			// Even number of inputs:
 			if(this.curNumInputs % 2 == 0 && this.curNumInputs != 12)
@@ -468,7 +450,759 @@ public class Module {
 				};
 			} // 12
 		} // else - verticalBars
-		
+
 	} // set Square Vals
+
+	/////////////// SciGirls Abstracted Methods /////////////////
+
+	/**
+	 * Returns the scale degree (0 to 11) of the note currently being sung
+	 * into the given input line.
+	 * 
+	 * @param inputNum	number indicating which input to get the note from
+	 * @return	the scale degree of the note currently being sung into that input
+	 */
+	public int getScaleDegree(int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum, "getScaleDegree");
+
+		return (int) ((this.input.getAdjustedFundAsMidiNote(inputNum) - this.menu.getCurKeyEnharmonicOffset() + 3 + 12) % 12);
+	} // getScaleDegree
+
+	/**
+	 * Returns the amplitude of the given input line.
+	 * 
+	 * @param inputNum	number indicating which input to get the amplitude from
+	 * @return		the amplitude of the given input
+	 */
+	public float getAmplitude(int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum, "getAmplitude");
+
+		return this.input.getAmplitude(inputNum);
+	} // getAmplitude
+
+	/**
+	 * Gets the current red value for the given input.
+	 * 
+	 * @param inputNum	input to get the red value for
+	 * @return	red value for this input
+	 */
+	public int getRed(int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum, "getRed");
+
+		return	this.menu.getCurHue()[inputNum][0];
+	}
+
+	/**
+	 * Gets the current green value for the given input.
+	 * 
+	 * @param inputNum	input to get the green value for
+	 * @return	green value for this input
+	 */
+	public int getGreen(int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum, "getGreen");
+
+		return	this.menu.getCurHue()[inputNum][1];
+	}
+
+	/**
+	 * Gets the current blue value for the given input.
+	 * 
+	 * @param inputNum	input to get the blue value for
+	 * @return	blue value for this input
+	 */
+	public int getBlue(int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum, "getBlue");
+
+		return	this.menu.getCurHue()[inputNum][2];
+	}
+
+	/**
+	 * Sets the given input's first color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor0(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor0");
+
+		this.menu.colors[inputNum][0]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's second color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor1(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor1");
+
+		this.menu.colors[inputNum][1]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's third color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor2(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor2");
+
+		this.menu.colors[inputNum][2]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's fourth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor3(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor3");
+
+		this.menu.colors[inputNum][3]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's fifth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor4(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor4");
+
+		this.menu.colors[inputNum][4]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's sixth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor5(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor5");
+
+		this.menu.colors[inputNum][5]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's seventh color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor6(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor6");
+
+		this.menu.colors[inputNum][6]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's eigth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor7(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor7");
+
+		this.menu.colors[inputNum][7]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's ninth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor8(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor8");
+
+		this.menu.colors[inputNum][8]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's tenth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor9(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor9");
+
+		this.menu.colors[inputNum][9]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's eleventh color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor10(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor10");
+
+		this.menu.colors[inputNum][10]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the given input's twelfth color to the given color.
+	 * 
+	 * @param inputNum	input to change the color for
+	 * @param red	red value for the color
+	 * @param green	green value for the color
+	 * @param blue	blue value for the color
+	 */
+	public void setColor11(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor11");
+
+		this.menu.colors[inputNum][11]	= new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		};
+	}
+
+	/**
+	 * Sets the first color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor0forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][0]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the ninth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor1forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][1]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the third color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor2forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][2]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the fourth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor3forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][3]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the fifth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor4forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][4]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the sixth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor5forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][5]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the seventh color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor6forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][6]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the eighth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor7forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][7]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the ninth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor8forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][8]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the tenth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor9forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][9]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the eleventh color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor10forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][10]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Sets the twelfth color to the given color for all inputs.
+	 * @param red
+	 * @param green
+	 * @param blue
+	 */
+	public void setColor11forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.colors[i][11]	= new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			};
+		} // for - through inputs
+	}
+
+	/**
+	 * Set the first color of the scale and makes a trichromatic spectrum
+	 * between that, the 4th and the 8th colors of the scale.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setTrichromColor1(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setTrichromColor1");
+
+		this.menu.trichromatic_ThreeRGB(new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		}, 
+				this.menu.colors[inputNum][4], 
+				this.menu.colors[inputNum][8],
+				inputNum);
+	}
+
+	/**
+	 * Set the 4th color of the scale and makes a trichromatic spectrum
+	 * between the 1st, the 4th and the 8th colors of the scale.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setTrichromColor2(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setTrichromColor2");
+
+		this.menu.trichromatic_ThreeRGB(
+				this.menu.colors[inputNum][0],
+				new int[] { 
+						Math.min(255, Math.max(0, red)),
+						Math.min(255, Math.max(0, green)),
+						Math.min(255, Math.max(0, blue))
+				}, 
+				this.menu.colors[inputNum][8],
+				inputNum);
+	}
+
+	/**
+	 * Set the 8th color of the scale and makes a trichromatic spectrum
+	 * between the 1st, the 4th and the 8th colors of the scale.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setTrichromColor3(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setTrichromColor3");
+
+		this.menu.trichromatic_ThreeRGB(
+				this.menu.colors[inputNum][0], 
+				this.menu.colors[inputNum][4],
+				new int[] { 
+						Math.min(255, Math.max(0, red)),
+						Math.min(255, Math.max(0, green)),
+						Math.min(255, Math.max(0, blue))
+				},
+				inputNum);
+	}
+
+	/**
+	 * Set the 1st color of the scale and makes a trichromatic spectrum
+	 * between the 1st, the 4th and the 8th colors of the scale.
+	 * 
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setTrichromColor1forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.trichromatic_ThreeRGB(
+					new int[] { 
+							Math.min(255, Math.max(0, red)),
+							Math.min(255, Math.max(0, green)),
+							Math.min(255, Math.max(0, blue))
+					}, 
+					this.menu.colors[i][4],
+					this.menu.colors[i][8], 
+					i);
+		}
+	}
+
+	/**
+	 * Set the 4th color of the scale and makes a trichromatic spectrum
+	 * between the 1st, the 4th and the 8th colors of the scale.
+	 * 
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setTrichromColor2forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.trichromatic_ThreeRGB(
+					this.menu.colors[i][0],
+					new int[] { 
+							Math.min(255, Math.max(0, red)),
+							Math.min(255, Math.max(0, green)),
+							Math.min(255, Math.max(0, blue))
+					},
+					this.menu.colors[i][8], 
+					i);
+		}
+	}
+	
+	/**
+	 * Set the 8th color of the scale and makes a trichromatic spectrum
+	 * between the 1st, the 4th and the 8th colors of the scale.
+	 * 
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setTrichromColor3forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.trichromatic_ThreeRGB(
+					this.menu.colors[i][0],
+					this.menu.colors[i][4], 
+					new int[] { 
+							Math.min(255, Math.max(0, red)),
+							Math.min(255, Math.max(0, green)),
+							Math.min(255, Math.max(0, blue))
+					},
+					i);
+		}
+	}
+
+	/**
+	 * Set the first color of the scale and make a dichromatic spectrum
+	 * between that and the last color of the scale.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setDichromColor1(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setDichromColor1");
+
+		this.menu.dichromatic_TwoRGB(new int[] { 
+				Math.min(255, Math.max(0, red)),
+				Math.min(255, Math.max(0, green)),
+				Math.min(255, Math.max(0, blue))
+		}, this.menu.colors[inputNum][11], inputNum);
+	}
+
+	/**
+	 * Set the last color of the scale and make a dichromatic spectrum
+	 * between the first color and this one.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setDichromColor2(int inputNum, int red, int green, int blue)
+	{
+		this.inputNumErrorCheck(inputNum, "setDichromColor2");
+
+		this.menu.dichromatic_TwoRGB(this.menu.colors[inputNum][0], 
+				new int[] { 
+						Math.min(255, Math.max(0, red)),
+						Math.min(255, Math.max(0, green)),
+						Math.min(255, Math.max(0, blue))
+		}, inputNum);
+	}
+
+	/**
+	 * Set the first color of the scale and make a dichromatic spectrum
+	 * between that and the last color of the scale.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setDichromColor1forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.dichromatic_TwoRGB(new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			}, this.menu.colors[i][11], i);
+		}
+	}
+
+	/**
+	 * Set the last color of the scale and make a dichromatic spectrum
+	 * between the first color and this one.
+	 * 
+	 * @param inputNum	input to be affected
+	 * @param red	red value of the color
+	 * @param green	green value of the color
+	 * @param blue	blue value of the color
+	 */
+	public void setDichromColor2forAllInputs(int red, int green, int blue)
+	{
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.dichromatic_TwoRGB(this.menu.colors[i][0], 
+					new int[] { 
+							Math.min(255, Math.max(0, red)),
+							Math.min(255, Math.max(0, green)),
+							Math.min(255, Math.max(0, blue))
+			}, i);
+		}
+	}
+
+	private void inputNumErrorCheck(int inputNum, String method)
+	{
+		if(inputNum < 0)
+		{
+			IllegalArgumentException iae = new IllegalArgumentException("Module." + method + ": parameter " + inputNum + " is less than 0; must be between 0 and " + this.totalNumInputs + ".");
+			throw iae;
+		} else if(inputNum > this.totalNumInputs) {
+			IllegalArgumentException iae = new IllegalArgumentException("Module." + method + ": parameter " + inputNum + " is greater than " + this.totalNumInputs + "; must be between 0 and the total number of inputs.");
+			throw iae;
+		}
+	} // inputNumErrorCheck
+
 
 } // Module
