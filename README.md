@@ -2,6 +2,17 @@ To use this library in Processing, clone this repository and follow the compilat
 
 _From the Readme to the processing/processing-library-template repository from which this repo was forked:_
 
+1. Clone your new repository to your Eclipse workspace.
+  * Open Eclipse and select the File → Import... menu item.
+  * Select Git → Projects from Git, and click "Next >".
+  * Select "URI" and click "Next >". 
+  * Enter your repository's clone URL in the "URI" field. The remaining fields in the "Location" and "Connection" groups will get automatically filled in.
+  * Enter your GitHub credentials in the "Authentication" group, and click "Next >".
+  * Select the `master` branch on the next screen, and click "Next >".
+  * The default settings on the "Local Configuration" screen should work fine, click "Next >".
+  * Make sure "Import existing projects" is selected, and click "Next >".
+  * Eclipse should find and select the `processing-library-template` automatically, click "Finish".
+
 ## Set Up and Compile
 
 1. Edit the Library properties.
