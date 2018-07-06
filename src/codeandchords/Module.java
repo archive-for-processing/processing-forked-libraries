@@ -61,6 +61,8 @@ public class Module {
 	public Module(PApplet parent)
 	{
 		this.parent	= parent;
+		
+		this.parent.registerMethod("draw", this);
 	}
 
 	/**
@@ -71,12 +73,21 @@ public class Module {
 		//fullscreen();
 		this.parent.size(925, 520);
 	}
-
-	public void setupModule()
+	
+	/*
+	 * Called by the sketch immediately after draw;
+	 * simply runs the Menu.
+	 */
+	public void draw()
 	{
-		this.input  = new RealTimeInput(1, this.parent);
+		this.menu.runMenu();
+	}
+
+	public void setupModule(int numInputs)
+	{
+		this.input  = new RealTimeInput(numInputs, this.parent);
 		this.totalNumInputs  = this.input.getAdjustedNumInputs();
-		this.curNumInputs  = 1;
+		this.curNumInputs  = this.totalNumInputs;
 
 		this.menu  = new ModuleMenu(this.parent, this, this.input, 12);
 
@@ -84,6 +95,8 @@ public class Module {
 		this.menu.addLandingMenu();
 		this.menu.addSensitivityMenu(true);
 		this.menu.addColorMenu();
+
+		this.menu.getOutsideButtonsCP5().hide();
 	} // setupModule	
 
 
@@ -533,11 +546,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor0");
 
-		this.menu.colors[inputNum][0]	= new int[] { 
+		this.menu.setColor(0, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -552,11 +565,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor1");
 
-		this.menu.colors[inputNum][1]	= new int[] { 
+		this.menu.setColor(1, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -571,11 +584,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor2");
 
-		this.menu.colors[inputNum][2]	= new int[] { 
+		this.menu.setColor(2, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -590,11 +603,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor3");
 
-		this.menu.colors[inputNum][3]	= new int[] { 
+		this.menu.setColor(3, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -609,11 +622,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor4");
 
-		this.menu.colors[inputNum][4]	= new int[] { 
+		this.menu.setColor(4, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -628,11 +641,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor5");
 
-		this.menu.colors[inputNum][5]	= new int[] { 
+		this.menu.setColor(5, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -647,11 +660,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor6");
 
-		this.menu.colors[inputNum][6]	= new int[] { 
+		this.menu.setColor(6, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -666,11 +679,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor7");
 
-		this.menu.colors[inputNum][7]	= new int[] { 
+		this.menu.setColor(6, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -685,11 +698,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor8");
 
-		this.menu.colors[inputNum][8]	= new int[] { 
+		this.menu.setColor(8, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -704,11 +717,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor9");
 
-		this.menu.colors[inputNum][9]	= new int[] { 
+		this.menu.setColor(9, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -723,11 +736,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor10");
 
-		this.menu.colors[inputNum][10]	= new int[] { 
+		this.menu.setColor(10, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -742,11 +755,11 @@ public class Module {
 	{
 		this.inputNumErrorCheck(inputNum, "setColor11");
 
-		this.menu.colors[inputNum][11]	= new int[] { 
+		this.menu.setColor(11, new int[] { 
 				Math.min(255, Math.max(0, red)),
 				Math.min(255, Math.max(0, green)),
 				Math.min(255, Math.max(0, blue))
-		};
+		}, false);
 	}
 
 	/**
@@ -759,11 +772,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][0]	= new int[] { 
+			this.menu.setColor(0, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -777,11 +790,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][1]	= new int[] { 
+			this.menu.setColor(1, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -795,11 +808,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][2]	= new int[] { 
+			this.menu.setColor(2, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -813,11 +826,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][3]	= new int[] { 
+			this.menu.setColor(3, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -831,11 +844,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][4]	= new int[] { 
+			this.menu.setColor(4, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -849,11 +862,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][5]	= new int[] { 
+			this.menu.setColor(5, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -867,11 +880,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][6]	= new int[] { 
+			this.menu.setColor(6, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -885,11 +898,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][7]	= new int[] { 
+			this.menu.setColor(7, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -903,11 +916,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][8]	= new int[] { 
+			this.menu.setColor(8, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -921,11 +934,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][9]	= new int[] { 
+			this.menu.setColor(9, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -939,11 +952,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][10]	= new int[] { 
+			this.menu.setColor(10, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -957,11 +970,11 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.colors[i][11]	= new int[] { 
+			this.menu.setColor(11, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
-			};
+			}, false);
 		} // for - through inputs
 	}
 
@@ -1083,7 +1096,7 @@ public class Module {
 					i);
 		}
 	}
-	
+
 	/**
 	 * Set the 8th color of the scale and makes a trichromatic spectrum
 	 * between the 1st, the 4th and the 8th colors of the scale.
@@ -1192,6 +1205,37 @@ public class Module {
 		}
 	}
 
+	public void setColor(int scaleDegree, int inputNum)
+	{
+		this.inputNumErrorCheck(inputNum, "setColor");
+
+		this.menu.fadeColor(scaleDegree, inputNum);
+	} // setColor
+	
+	/**
+	 * Set the attack value for this particular input to the given value
+	 * (that is, the time that it will take for a new color to come fully).
+	 * 
+	 * @param inputNum	The input whose attack value is being changed
+	 * @param attackVal	The new attack value
+	 */
+	public void setAttack(int inputNum, int attackVal)
+	{
+		this.menu.setAttRelTranVal(0, inputNum, attackVal);
+	} // setAttack
+	
+	/**
+	 * Set the release value for this particular input to the given value
+	 * (that is, the time that it will take for each color to fade away).
+	 * 
+	 * @param inputNum	The input whose release value is being changed
+	 * @param releaseVal	The new release value
+	 */
+	public void setRelease(int inputNum, int releaseVal)
+	{
+		this.menu.setAttRelTranVal(1, inputNum, releaseVal);
+	} // setRelease
+	
 	private void inputNumErrorCheck(int inputNum, String method)
 	{
 		if(inputNum < 0)
