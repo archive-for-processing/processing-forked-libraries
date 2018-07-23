@@ -1,8 +1,14 @@
 package codeandchords;
 
-import codeandchords.input.RealTimeInput;
+import controlP5.ControlEvent;
+import controlP5.ControlListener;
+import controlP5.ControlP5;
 import codeandchords.ModuleMenu;
+import codeandchords.input.Input;
+import codeandchords.input.RealTimeInput;
+import codeandchords.input.RecordedInput;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * Aug. 16, 2017
@@ -11,10 +17,15 @@ import processing.core.PApplet;
  * 
  * @author Dan Mahota, Emily Meuer
  */
-public class Module {
+public class Module
+{
 
 	/**	Input, because we are assuming that the whole point of a Module is to interact with an Input	*/
-	protected	RealTimeInput			input;
+	protected	Input					input;
+
+	private 	boolean 				isRealTime;
+
+	private 	ControlP5				sciGirlsCP5;
 
 	/**	This is the total number of possible inputs; *must* be initialized by child classes!	*/
 	protected	int		totalNumInputs = 1;
@@ -61,7 +72,7 @@ public class Module {
 	public Module(PApplet parent)
 	{
 		this.parent	= parent;
-		
+
 		this.parent.registerMethod("draw", this);
 	}
 
@@ -73,7 +84,7 @@ public class Module {
 		//fullscreen();
 		this.parent.size(925, 520);
 	}
-	
+
 	/*
 	 * Called by the sketch immediately after draw;
 	 * simply runs the Menu.
@@ -83,9 +94,25 @@ public class Module {
 		this.menu.runMenu();
 	}
 
-	public void setupModule(int numInputs)
+	public void setupModule(int numInputs, boolean useRealTimeInput)
 	{
-		this.input  = new RealTimeInput(numInputs, this.parent);
+		if(useRealTimeInput)
+		{
+			this.input  = new RealTimeInput(numInputs, false, this.parent);
+		}
+		else
+		{
+			this.input = new RecordedInput(this.parent, new String[] { 	
+					"Lead_01.wav",
+					"Beatbox_01.wav",
+					"ALto b_01.wav",
+					"Alto_01.wav",
+					"Sop1_01.wav",
+					"Sop1b_01.wav",
+					"Sop2_01.wav",
+					"Sop2b_01.wav" });
+		}
+
 		this.totalNumInputs  = this.input.getAdjustedNumInputs();
 		this.curNumInputs  = this.totalNumInputs;
 
@@ -97,8 +124,31 @@ public class Module {
 		this.menu.addColorMenu();
 
 		this.menu.getOutsideButtonsCP5().hide();
-	} // setupModule	
 
+		this.menu.setCurKey("G", 0);
+
+		for(int i = 0; i < this.curNumInputs; i++)
+		{
+			this.menu.setPianoThreshold(i, 10);
+		}
+
+	} // setupModule
+
+	public void useRecordings()
+	{
+
+		this.input.stop();
+		this.input = new RecordedInput(this.parent, new String[] { 	
+				"ALto b_01.wav",
+				"Alto_01.wav",
+				"Beatbox_01.wav",
+				"Lead_01.wav",
+				"Sop1_01.wav",
+				"Sop1b_01.wav",
+				"Sop2_01.wav",
+		"Sop2b_01.wav" });
+		this.isRealTime = false;
+	}
 
 	/**
 	 * Draws the legend at the bottom of the screen.
@@ -475,7 +525,7 @@ public class Module {
 	 * @param inputNum	number indicating which input to get the note from
 	 * @return	the scale degree of the note currently being sung into that input
 	 */
-	public int getScaleDegree(int inputNum)
+	public int getMusicalNote(int inputNum)
 	{
 		this.inputNumErrorCheck(inputNum, "getScaleDegree");
 
@@ -488,7 +538,7 @@ public class Module {
 	 * @param inputNum	number indicating which input to get the amplitude from
 	 * @return		the amplitude of the given input
 	 */
-	public float getAmplitude(int inputNum)
+	public float getVolume(int inputNum)
 	{
 		this.inputNumErrorCheck(inputNum, "getAmplitude");
 
@@ -778,6 +828,15 @@ public class Module {
 					Math.min(255, Math.max(0, blue))
 			}, false);
 		} // for - through inputs
+		
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.setColor(1, new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			}, false);
+		} // for - through inputs
 	}
 
 	/**
@@ -790,7 +849,16 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.setColor(1, new int[] { 
+			this.menu.setColor(2, new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			}, false);
+		} // for - through inputs
+		
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.setColor(3, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
@@ -808,7 +876,7 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.setColor(2, new int[] { 
+			this.menu.setColor(4, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
@@ -826,7 +894,16 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.setColor(3, new int[] { 
+			this.menu.setColor(5, new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			}, false);
+		} // for - through inputs
+		
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.setColor(6, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
@@ -844,7 +921,16 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.setColor(4, new int[] { 
+			this.menu.setColor(7, new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			}, false);
+		} // for - through inputs
+		
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.setColor(8, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
@@ -862,7 +948,16 @@ public class Module {
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
-			this.menu.setColor(5, new int[] { 
+			this.menu.setColor(9, new int[] { 
+					Math.min(255, Math.max(0, red)),
+					Math.min(255, Math.max(0, green)),
+					Math.min(255, Math.max(0, blue))
+			}, false);
+		} // for - through inputs
+		
+		for(int i = 0; i < this.menu.colors.length; i++)
+		{
+			this.menu.setColor(10, new int[] { 
 					Math.min(255, Math.max(0, red)),
 					Math.min(255, Math.max(0, green)),
 					Math.min(255, Math.max(0, blue))
@@ -877,96 +972,6 @@ public class Module {
 	 * @param blue
 	 */
 	public void setColor6forAllInputs(int red, int green, int blue)
-	{
-		for(int i = 0; i < this.menu.colors.length; i++)
-		{
-			this.menu.setColor(6, new int[] { 
-					Math.min(255, Math.max(0, red)),
-					Math.min(255, Math.max(0, green)),
-					Math.min(255, Math.max(0, blue))
-			}, false);
-		} // for - through inputs
-	}
-
-	/**
-	 * Sets the eighth color to the given color for all inputs.
-	 * @param red
-	 * @param green
-	 * @param blue
-	 */
-	public void setColor7forAllInputs(int red, int green, int blue)
-	{
-		for(int i = 0; i < this.menu.colors.length; i++)
-		{
-			this.menu.setColor(7, new int[] { 
-					Math.min(255, Math.max(0, red)),
-					Math.min(255, Math.max(0, green)),
-					Math.min(255, Math.max(0, blue))
-			}, false);
-		} // for - through inputs
-	}
-
-	/**
-	 * Sets the ninth color to the given color for all inputs.
-	 * @param red
-	 * @param green
-	 * @param blue
-	 */
-	public void setColor8forAllInputs(int red, int green, int blue)
-	{
-		for(int i = 0; i < this.menu.colors.length; i++)
-		{
-			this.menu.setColor(8, new int[] { 
-					Math.min(255, Math.max(0, red)),
-					Math.min(255, Math.max(0, green)),
-					Math.min(255, Math.max(0, blue))
-			}, false);
-		} // for - through inputs
-	}
-
-	/**
-	 * Sets the tenth color to the given color for all inputs.
-	 * @param red
-	 * @param green
-	 * @param blue
-	 */
-	public void setColor9forAllInputs(int red, int green, int blue)
-	{
-		for(int i = 0; i < this.menu.colors.length; i++)
-		{
-			this.menu.setColor(9, new int[] { 
-					Math.min(255, Math.max(0, red)),
-					Math.min(255, Math.max(0, green)),
-					Math.min(255, Math.max(0, blue))
-			}, false);
-		} // for - through inputs
-	}
-
-	/**
-	 * Sets the eleventh color to the given color for all inputs.
-	 * @param red
-	 * @param green
-	 * @param blue
-	 */
-	public void setColor10forAllInputs(int red, int green, int blue)
-	{
-		for(int i = 0; i < this.menu.colors.length; i++)
-		{
-			this.menu.setColor(10, new int[] { 
-					Math.min(255, Math.max(0, red)),
-					Math.min(255, Math.max(0, green)),
-					Math.min(255, Math.max(0, blue))
-			}, false);
-		} // for - through inputs
-	}
-
-	/**
-	 * Sets the twelfth color to the given color for all inputs.
-	 * @param red
-	 * @param green
-	 * @param blue
-	 */
-	public void setColor11forAllInputs(int red, int green, int blue)
 	{
 		for(int i = 0; i < this.menu.colors.length; i++)
 		{
@@ -1211,7 +1216,7 @@ public class Module {
 
 		this.menu.fadeColor(scaleDegree, inputNum);
 	} // setColor
-	
+
 	/**
 	 * Set the attack value for this particular input to the given value
 	 * (that is, the time that it will take for a new color to come fully).
@@ -1223,7 +1228,7 @@ public class Module {
 	{
 		this.menu.setAttRelTranVal(0, inputNum, attackVal);
 	} // setAttack
-	
+
 	/**
 	 * Set the release value for this particular input to the given value
 	 * (that is, the time that it will take for each color to fade away).
@@ -1235,7 +1240,7 @@ public class Module {
 	{
 		this.menu.setAttRelTranVal(1, inputNum, releaseVal);
 	} // setRelease
-	
+
 	private void inputNumErrorCheck(int inputNum, String method)
 	{
 		if(inputNum < 0)
@@ -1246,7 +1251,7 @@ public class Module {
 			IllegalArgumentException iae = new IllegalArgumentException("Module." + method + ": parameter " + inputNum + " is greater than " + this.totalNumInputs + "; must be between 0 and the total number of inputs.");
 			throw iae;
 		}
-	} // inputNumErrorCheck
+	}
 
 
 } // Module
