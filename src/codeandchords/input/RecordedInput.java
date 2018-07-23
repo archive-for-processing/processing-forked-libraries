@@ -2,9 +2,9 @@ package codeandchords.input;
 
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.core.io.JavaSoundAudioIO;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.data.SampleManager;
-import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.SamplePlayer;
 import processing.core.PApplet;
 
@@ -27,23 +27,19 @@ public class RecordedInput extends Input {
 		{
 			throw new IllegalArgumentException("RecordedInput.constructor: String[] parameter is null.");
 		}
+
+		this.numInputs			= samples.length;
+		this.adjustedNumInputs	= this.numInputs;
 		
 		this.pa	= pApplet;
 		this.ac	= new AudioContext();
 		this.pause	= false;
-		
-		this.numInputs			= samples.length;
-		this.adjustedNumInputs	= this.numInputs;
 		
 		this.disposeHandler	= new DisposeHandler(this.pa, this);
 		
 		this.uGenArrayFromSamples(samples);
 	}
 	
-	// Constructor w/one String
-	
-	// Constructor w/String[]
-
 	public void uGenArrayFromSamples(String[] sampleFilenames)
 	{
 		// Moved this from the constructor:
@@ -100,13 +96,13 @@ public class RecordedInput extends Input {
 		} // for
 
 		this.uGenArray  		= new UGen[this.numInputs];
-		this.gainArray	= new Gain[this.numInputs];
+//		this.gainArray	= new Gain[this.numInputs];
 		for (int i = 0; i < uGenArray.length; i++)
 		{
 			// Samples are not UGens, but SamplePlayers are; thus; make a SamplePlayer to put in uGenArray.
 			uGenArray[i]  = new SamplePlayer(this.ac, SampleManager.getGroup("group").get(i));
 			((SamplePlayer) uGenArray[i]).setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
-			this.gainArray[i]	= new Gain(this.ac, 1);
+//			this.gainArray[i]	= new Gain(this.ac, 1);
 //			this.gainArray[i]	= new Gain(this.ac, 1, 0.5f);
 		} // for
 		

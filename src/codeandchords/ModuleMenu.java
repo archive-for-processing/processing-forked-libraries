@@ -4742,6 +4742,13 @@ public class ModuleMenu extends MenuTemplate  {
 		
 		return this.pianoThreshold[inputNum];
 	}
+	
+	public void setPianoThreshold(int inputNum, int val)
+	{
+		this.inputNumErrorCheck(inputNum);
+		
+		this.pianoThreshold[inputNum]	= val;
+	}
 
 	/**
 	 * Sets the percent slider to the given value
