@@ -9,6 +9,7 @@ import codeandchords.input.RealTimeInput;
 import codeandchords.input.RecordedInput;
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PShape;
 
 /**
  * Aug. 16, 2017
@@ -1252,6 +1253,70 @@ public class Module
 			throw iae;
 		}
 	}
+	
+	public PShape getSuperShape(float a, float m1, float n1, float n2, float n3)
+	{
+		float b = a;
+		float m2 = m1;	
+
+		float[] shape = new float[100];
+
+		int i = 0;
+		float r = 0;
+
+		float increment = (float) (2*Math.PI/100);
+
+		for(float theta = 0; theta < 2*Math.PI; theta += increment)
+		{
+			float part1 = (float) ((1 / a) * Math.cos(theta * m1 / 4));
+			part1 = Math.abs(part1);
+			part1 = (float) Math.pow(part1, n2);
+
+			float part2 = (float) ((1 / b) * Math.sin(theta * m2 / 4));
+			part2 = Math.abs(part2);
+			part2 = (float) Math.pow(part2, n3);
+
+			float part3 = (float) Math.pow(part1 + part2, 1 / n1);
+
+			if (part3 == 0) {
+				r = 0;
+			}
+			else { 
+				r = (1 / part3); 
+			}
+
+			shape[i] = r * 100;
+			
+			i++;
+		}//for()
+
+		PShape pshape = this.parent.createShape();
+
+		pshape.beginShape();
+
+		float x;
+		float y;
+
+		i = 0;
+
+		for(float theta = 0; theta < 2*Math.PI; theta += increment)
+		{
+			x = (float) (shape[i]*Math.cos(theta));
+			y = (float) (shape[i]*Math.sin(theta));
+
+			pshape.vertex(x, y);
+
+			i++;
+
+		}//for()
+
+		return pshape;
+
+		
+
+	}
+
+
 
 
 } // Module
