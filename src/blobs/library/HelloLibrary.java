@@ -1,5 +1,4 @@
-package template.library;
-
+package blobs.library;
 
 import processing.core.*;
 
