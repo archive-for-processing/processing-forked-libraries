@@ -1,4 +1,4 @@
-package template.library;
+package stlr.library;
 
 
 import processing.core.*;
@@ -14,14 +14,14 @@ import processing.core.*;
  * @example Hello 
  */
 
-public class HelloLibrary {
+public class STLr implements PConstants{
 	
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
 
 	int myVariable = 0;
 	
-	public final static String VERSION = "##library.prettyVersion##";
+	public final static String VERSION = "1.0";
 	
 
 	/**
@@ -31,20 +31,10 @@ public class HelloLibrary {
 	 * @example Hello
 	 * @param theParent
 	 */
-	public HelloLibrary(PApplet theParent) {
+	public STLr(PApplet theParent) {
 		myParent = theParent;
-		welcome();
 	}
 	
-	
-	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
-	}
-	
-	
-	public String sayHello() {
-		return "hello library.";
-	}
 	/**
 	 * return the version of the Library.
 	 * 
@@ -54,23 +44,5 @@ public class HelloLibrary {
 		return VERSION;
 	}
 
-	/**
-	 * 
-	 * @param theA
-	 *          the width of test
-	 * @param theB
-	 *          the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
-
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
-	}
 }
 
