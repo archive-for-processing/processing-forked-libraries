@@ -1,6 +1,10 @@
 package stlr.library;
 
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
 import processing.core.*;
 
 /**
@@ -17,9 +21,7 @@ import processing.core.*;
 public class STLr implements PConstants{
 	
 	// myParent is a reference to the parent sketch
-	PApplet myParent;
-
-	int myVariable = 0;
+	PApplet parent;
 	
 	public final static String VERSION = "1.0";
 	
@@ -32,7 +34,7 @@ public class STLr implements PConstants{
 	 * @param theParent
 	 */
 	public STLr(PApplet theParent) {
-		myParent = theParent;
+		parent = theParent;
 	}
 	
 	/**
@@ -43,6 +45,35 @@ public class STLr implements PConstants{
 	public static String version() {
 		return VERSION;
 	}
-
+	
+	public String toSTLasciiformat(PShape obj, String name)
+	{
+		PShape tess = obj.getTessellation();
+		PVector vertex = new PVector();
+		String asciiform = "solid " + name + "\n";
+		for(int i = 0; i < tess.getVertexCount(); i += 3) {
+			asciiform += "facet normal 0 0 0\n";
+			asciiform += "\touter loop\n";
+			for(int j = 0; j < 3; j++) {
+				tess.getVertex(i + j, vertex);
+				asciiform += "\t\tvertex " + vertex.x +
+						" " + vertex.y + " " + vertex.z + "\n";
+			}
+			asciiform += "\tendloop\n";
+			asciiform += "endfacet\n";
+		}
+		asciiform += "endsolid " + name;
+		return asciiform;
+	}
+	
+	public void generateAsciiSTL(PShape obj, String name)
+	{
+		try(OutputStreamWriter out = new OutputStreamWriter(
+				PApplet.createOutput(parent.sketchFile(name + ".stl")))) {
+			out.write(toSTLasciiformat(obj, name));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
 
