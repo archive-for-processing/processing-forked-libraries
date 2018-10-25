@@ -4,6 +4,7 @@ package stlr.library;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
 
 import processing.core.*;
 
@@ -46,24 +47,64 @@ public class STLr implements PConstants{
 		return VERSION;
 	}
 	
-	public String toSTLasciiformat(PShape obj, String name)
-	{
+	public String toSTLasciiformat(PShape obj, String name) {
 		PShape tess = obj.getTessellation();
-		PVector vertex = new PVector();
 		String asciiform = "solid " + name + "\n";
 		for(int i = 0; i < tess.getVertexCount(); i += 3) {
-			asciiform += "facet normal 0 0 0\n";
-			asciiform += "\touter loop\n";
-			for(int j = 0; j < 3; j++) {
-				tess.getVertex(i + j, vertex);
-				asciiform += "\t\tvertex " + vertex.x +
-						" " + vertex.y + " " + vertex.z + "\n";
-			}
-			asciiform += "\tendloop\n";
-			asciiform += "endfacet\n";
+			asciiform += triangle(tess.getVertex(i), tess.getVertex(i + 1), tess.getVertex(i + 2));
 		}
 		asciiform += "endsolid " + name;
 		return asciiform;
+	}
+	
+	private PVector normal(PVector v1, PVector v2, PVector v3) {
+		PVector d1 = PVector.sub(v1, v2);
+		PVector d2 = PVector.sub(v2, v3);
+		PVector norm = new PVector();
+		PVector.cross(d1, d2, norm);
+		norm.normalize();
+		return norm;
+	}
+	
+	private String triangle(PVector v1, PVector v2, PVector v3) {
+		PVector norm = normal(v1, v2, v3);
+		String triangle = "facet normal ";
+		triangle += norm.x + " " + norm.y + " " + norm.z + "\n";
+		triangle += "\touter loop\n";
+		triangle += "\t\tvertex " + v1.x + " " + v1.y + " " + v1.z + "\n";
+		triangle += "\t\tvertex " + v2.x + " " + v2.y + " " + v2.z + "\n";
+		triangle += "\t\tvertex " + v3.x + " " + v3.y + " " + v3.z + "\n";
+		triangle +=  "\tendloop\nendfacet\n";
+		return triangle;
+	}
+	
+	public void generateBinarySTL(PShape obj, String name) {
+		
+		//TODO: I think this fails due to the first octant rule (all positive numbers)
+		
+		PShape tess = obj.getTessellation();
+		try(OutputStream out = PApplet.createOutput(parent.sketchFile(name + ".stl"))) {
+			out.write(new byte[80]); //Empty 80 byte header
+			//Put triangle count
+			out.write(ByteBuffer.allocate(4).putInt(tess.getVertexCount()/3).array());
+			for(int i = 0; i < tess.getVertexCount(); i += 3) {
+				PVector v1 = tess.getVertex(i);
+				PVector v2 = tess.getVertex(i + 1);
+				PVector v3 = tess.getVertex(i + 2);
+				PVector norm = normal(v1, v2, v3);
+				out.write(ftbs(norm.x)); out.write(ftbs(norm.y)); out.write(ftbs(norm.z));
+				out.write(ftbs(v1.x)); out.write(ftbs(v1.y)); out.write(ftbs(v1.z));
+				out.write(ftbs(v2.x)); out.write(ftbs(v2.y)); out.write(ftbs(v2.z));
+				out.write(ftbs(v3.x)); out.write(ftbs(v3.y)); out.write(ftbs(v3.z));
+				out.write(new byte[2]); //Empty two bytes to finish it off
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		};
+	}
+	
+	public byte[] ftbs(float f) {
+		return ByteBuffer.allocate(4).putFloat(f).array();
 	}
 	
 	public void generateAsciiSTL(PShape obj, String name)
