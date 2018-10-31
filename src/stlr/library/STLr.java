@@ -78,7 +78,7 @@ public class STLr implements PConstants{
 		return triangle;
 	}
 	
-	public PShape noodlize(PShape curve, float radius, int rGran, int lGran) {
+	public PShape noodlize(PShape curve, float radius, int lGran, int rGran) {
 		if(curve.getVertexCount() < 4)
 			return null;
 		PVector[][] guide = controlSystem(controlPath(curve, lGran));
@@ -88,22 +88,24 @@ public class STLr implements PConstants{
 		PVector x, y, r1a, r1b, r2a, r2b;
 		//Initialize rings
 		for(int i = 0; i < rGran; i++) {
-			x = PVector.mult(guide[2][0], PApplet.cos(TWO_PI*i/rGran));
-			y = PVector.mult(guide[3][0], PApplet.sin(TWO_PI*i/rGran));
+			x = PVector.mult(guide[2][0], radius*PApplet.cos(TWO_PI*i/rGran));
+			y = PVector.mult(guide[3][0], radius*PApplet.sin(TWO_PI*i/rGran));
 			ring1[i] = PVector.add(guide[0][0], x).add(y);
 			ring2[i] = new PVector();
 		}
 		//Setup shape
 		PShape noodle = parent.createShape();
 		noodle.beginShape(TRIANGLES);
+		noodle.stroke(255, 0, 0, 128);
+		noodle.fill(255, 128);
 		for(int i = 1; i < guide[0].length; i++) {
 			//Swap rings
 			temp = ring1; ring1 = ring2; ring2 = temp;
 			//Fill ring1
 			for(int j = 0; j < rGran; j++) {
-				x = PVector.mult(guide[2][i], PApplet.cos(TWO_PI*i/rGran));
-				y = PVector.mult(guide[3][i], PApplet.sin(TWO_PI*i/rGran));
-				ring1[i].set(guide[0][i]).add(x).add(y);
+				x = PVector.mult(guide[2][i], radius*PApplet.cos(TWO_PI*j/rGran));
+				y = PVector.mult(guide[3][i], radius*PApplet.sin(TWO_PI*j/rGran));
+				ring1[j].set(guide[0][i]).add(x).add(y);
 			}
 			for(int j = 0; j < rGran; j++) {
 				r1a = ring1[j];
@@ -124,13 +126,13 @@ public class STLr implements PConstants{
 		return noodle;
 	}
 	
-	private PVector[] controlPath(PShape curve, int lGran) {
-		PVector[] points = new PVector[(curve.getVertexCount() - 2)*lGran + 1];
+	public PVector[] controlPath(PShape curve, int lGran) {
+		PVector[] points = new PVector[(curve.getVertexCount() - 3)*lGran + 1];
 		PVector p0, p1, p2, p3;
-		p0 = curve.getVertex(0);
-		p1 = curve.getVertex(1);
-		p2 = curve.getVertex(2);
-		p3 = curve.getVertex(3);
+		p1 = curve.getVertex(0);
+		p2 = curve.getVertex(1);
+		p3 = curve.getVertex(2);
+		p0 = new PVector();
 		int i;
 		for(i = 3; i < curve.getVertexCodeCount(); i++) {
 			p0.set(p1);
@@ -140,15 +142,15 @@ public class STLr implements PConstants{
 			for(int j = 0; j < lGran; j++) {
 				points[(i - 3)*lGran + j] = catmullRom(p0, p1, p2, p3, (float)j/lGran);
 			}
-		}
+		} 
 		//Last point is the last non-control point
 		points[points.length - 1] = curve.getVertex(i - 2);
 		return points;
 	}
 	
-	private PVector[][] controlSystem(PVector[] cp) {
+	public PVector[][] controlSystem(PVector[] cp) {
 		//0 - position, 1 - tangent, 2 - binormal, 3 - normal
-		PVector[][] cs = new PVector[3][cp.length];
+		PVector[][] cs = new PVector[4][cp.length];
 		PVector[] tan = new PVector[cp.length - 1];
 		//Clone positions
 		cs[0] = cp;
