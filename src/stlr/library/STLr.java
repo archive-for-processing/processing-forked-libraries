@@ -51,12 +51,19 @@ public class STLr implements PConstants{
 		PShape tess = obj.getTessellation();
 		String asciiform = "solid " + name + "\n";
 		for(int i = 0; i < tess.getVertexCount(); i += 3) {
-			asciiform += triangle(tess.getVertex(i), tess.getVertex(i + 1), tess.getVertex(i + 2));
+			asciiform += facet(tess.getVertex(i), tess.getVertex(i + 1), tess.getVertex(i + 2));
 		}
 		asciiform += "endsolid " + name;
 		return asciiform;
 	}
 	
+	/**
+	 * Calculates surface normal for triangle with clockwise oriented vertices.
+	 * @param v1 First vertex
+	 * @param v2 Second vertex
+	 * @param v3 Third vertex
+	 * @return
+	 */
 	private PVector normal(PVector v1, PVector v2, PVector v3) {
 		PVector d1 = PVector.sub(v1, v2);
 		PVector d2 = PVector.sub(v2, v3);
@@ -66,7 +73,14 @@ public class STLr implements PConstants{
 		return norm;
 	}
 	
-	private String triangle(PVector v1, PVector v2, PVector v3) {
+	/**
+	 * Get the string that represents a facet in STL format for a triangle.
+	 * @param v1 First vertex
+	 * @param v2 Second vertex
+	 * @param v3 Third vertex
+	 * @return String representing the facet
+	 */
+	private String facet(PVector v1, PVector v2, PVector v3) {
 		PVector norm = normal(v1, v2, v3);
 		String triangle = "facet normal ";
 		triangle += norm.x + " " + norm.y + " " + norm.z + "\n";
@@ -78,40 +92,62 @@ public class STLr implements PConstants{
 		return triangle;
 	}
 	
-	public PShape noodlize(PShape curve, float radius, int lGran, int rGran) {
+	/**
+	 * 
+	 * @param curve A PShape with only cubic-spline vertices
+	 * @param radius The radius of the tube
+	 * @param lGran The level of granularity on the curve length
+	 * @param circleGran Detail of the circle
+	 * @return A PShape containing the tube structure
+	 */
+	public PShape noodlize(PShape curve, float radius, int lGran, int circleGran) {
 		if(curve.getVertexCount() < 4)
 			return null;
 		PVector[][] guide = controlSystem(controlPath(curve, lGran));
-		PVector[] ring1 = new PVector[rGran];
-		PVector[] ring2 = new PVector[rGran];
+		PVector[] ring1 = new PVector[circleGran];
+		PVector[] ring2 = new PVector[circleGran];
 		PVector[] temp;
 		PVector x, y, r1a, r1b, r2a, r2b;
 		//Initialize rings
-		for(int i = 0; i < rGran; i++) {
-			x = PVector.mult(guide[2][0], radius*PApplet.cos(TWO_PI*i/rGran));
-			y = PVector.mult(guide[3][0], radius*PApplet.sin(TWO_PI*i/rGran));
+		for(int i = 0; i < circleGran; i++) {
+			x = PVector.mult(guide[2][0], radius*PApplet.cos(TWO_PI*i/circleGran));
+			y = PVector.mult(guide[3][0], radius*PApplet.sin(TWO_PI*i/circleGran));
 			ring1[i] = PVector.add(guide[0][0], x).add(y);
 			ring2[i] = new PVector();
 		}
+		
 		//Setup shape
 		PShape noodle = parent.createShape();
 		noodle.beginShape(TRIANGLES);
 		noodle.stroke(255, 0, 0, 128);
 		noodle.fill(255, 128);
+		
+		//First cap
+		PVector c = guide[0][0];
+		for(int i = 0; i < circleGran; i++) {
+			PVector a = ring1[i];
+			PVector b = ring1[(i + 1) % circleGran];
+			noodle.vertex(c.x, c.y, c.z);
+			noodle.vertex(a.x, a.y, a.z);
+			noodle.vertex(b.x, b.y, b.z);
+		}
+		
 		for(int i = 1; i < guide[0].length; i++) {
 			//Swap rings
-			temp = ring1; ring1 = ring2; ring2 = temp;
+			temp = ring1;
+			ring1 = ring2;
+			ring2 = temp;
 			//Fill ring1
-			for(int j = 0; j < rGran; j++) {
-				x = PVector.mult(guide[2][i], radius*PApplet.cos(TWO_PI*j/rGran));
-				y = PVector.mult(guide[3][i], radius*PApplet.sin(TWO_PI*j/rGran));
+			for(int j = 0; j < circleGran; j++) {
+				x = PVector.mult(guide[2][i], radius*PApplet.cos(TWO_PI*j/circleGran));
+				y = PVector.mult(guide[3][i], radius*PApplet.sin(TWO_PI*j/circleGran));
 				ring1[j].set(guide[0][i]).add(x).add(y);
 			}
-			for(int j = 0; j < rGran; j++) {
+			for(int j = 0; j < circleGran; j++) {
 				r1a = ring1[j];
-				r1b = ring1[(j + 1) % rGran];
+				r1b = ring1[(j + 1) % circleGran];
 				r2a = ring2[j];
-				r2b = ring2[(j + 1) % rGran];
+				r2b = ring2[(j + 1) % circleGran];
 				//Triangle r1a-r1b-r2a
 				noodle.vertex(r1a.x, r1a.y, r1a.z);
 				noodle.vertex(r1b.x, r1b.y, r1b.z);
@@ -122,6 +158,17 @@ public class STLr implements PConstants{
 				noodle.vertex(r1b.x, r1b.y, r1b.z);
 			}
 		}
+		
+		//Second cap
+		c = guide[0][guide[0].length - 1];
+		for(int i = 0; i < circleGran; i++) {
+			PVector a = ring1[i];
+			PVector b = ring1[(i + 1) % circleGran];
+			noodle.vertex(c.x, c.y, c.z);
+			noodle.vertex(b.x, b.y, b.z);
+			noodle.vertex(a.x, a.y, a.z);
+		}
+		
 		noodle.endShape();
 		return noodle;
 	}
