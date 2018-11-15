@@ -47,6 +47,18 @@ public class STLr implements PConstants{
 		return VERSION;
 	}
 	
+	
+	public void generateAsciiSTL(PShape obj, String name)
+	{
+		try(OutputStreamWriter out = new OutputStreamWriter(
+				PApplet.createOutput(parent.sketchFile(name + ".stl")))) {
+			out.write(toSTLasciiformat(obj, name));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public String toSTLasciiformat(PShape obj, String name) {
 		PShape tess = obj.getTessellation();
 		String asciiform = "solid " + name + "\n";
@@ -56,6 +68,7 @@ public class STLr implements PConstants{
 		asciiform += "endsolid " + name;
 		return asciiform;
 	}
+	
 	
 	/**
 	 * Calculates surface normal for triangle with clockwise oriented vertices.
@@ -72,6 +85,7 @@ public class STLr implements PConstants{
 		norm.normalize();
 		return norm;
 	}
+	
 	
 	/**
 	 * Get the string that represents a facet in STL format for a triangle.
@@ -91,6 +105,53 @@ public class STLr implements PConstants{
 		triangle +=  "\tendloop\nendfacet\n";
 		return triangle;
 	}
+	
+	
+	public void generateBinarySTL(PShape obj, String name) {
+		
+		//TODO: I think this fails due to the first octant rule (all positive numbers)
+		PVector lowest = minVertex(obj);
+		PShape tess = obj.getTessellation();
+		try(OutputStream out = PApplet.createOutput(parent.sketchFile(name + ".stl"))) {
+			out.write(new byte[80]); //Empty 80 byte header
+			//Put triangle count
+			out.write(ByteBuffer.allocate(4).putInt(tess.getVertexCount()/3).array());
+			for(int i = 0; i < tess.getVertexCount(); i += 3) {
+				PVector v1 = tess.getVertex(i).add(lowest);
+				PVector v2 = tess.getVertex(i + 1).add(lowest);
+				PVector v3 = tess.getVertex(i + 2).add(lowest);
+				PVector norm = normal(v1, v2, v3);
+				out.write(ftbs(norm.x)); out.write(ftbs(norm.y)); out.write(ftbs(norm.z));
+				out.write(ftbs(v1.x)); out.write(ftbs(v1.y)); out.write(ftbs(v1.z));
+				out.write(ftbs(v2.x)); out.write(ftbs(v2.y)); out.write(ftbs(v2.z));
+				out.write(ftbs(v3.x)); out.write(ftbs(v3.y)); out.write(ftbs(v3.z));
+				out.write(new byte[2]); //Empty two bytes to finish it off
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		};
+	}
+	
+	
+	public PVector minVertex(PShape obj) {
+		PVector l = new PVector(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+		for(int i = 0; i < obj.getVertexCount(); i++) {
+			PVector v = obj.getVertex(i);
+			if(v.x < l.x)
+				l.x = v.x;
+			if(v.y < l.y)
+				l.y = v.y;
+			if(v.z < l.z)
+				l.z = v.z;
+		}
+		return l;
+	}
+	
+	
+	public byte[] ftbs(float f) {
+		return ByteBuffer.allocate(4).putFloat(f).array();
+	}
+	
 	
 	/**
 	 * 
@@ -173,6 +234,7 @@ public class STLr implements PConstants{
 		return noodle;
 	}
 	
+	
 	public PVector[] controlPath(PShape curve, int lGran) {
 		PVector[] points = new PVector[(curve.getVertexCount() - 3)*lGran + 1];
 		PVector p0, p1, p2, p3;
@@ -194,6 +256,7 @@ public class STLr implements PConstants{
 		points[points.length - 1] = curve.getVertex(i - 2);
 		return points;
 	}
+	
 	
 	public PVector[][] controlSystem(PVector[] cp) {
 		//0 - position, 1 - tangent, 2 - binormal, 3 - normal
@@ -225,6 +288,7 @@ public class STLr implements PConstants{
 		return cs;
 	}
 	
+	
 	public float length(PShape curve, int grain) {
 		if(curve.getVertexCodeCount() < 4)
 			return 0;
@@ -254,6 +318,7 @@ public class STLr implements PConstants{
 		return len;
 	}
 	
+	
 	public PVector catmullRom(PVector p0, PVector p1, PVector p2, PVector p3, float t) {
 		PVector tan1 = PVector.sub(p2, p0).mult(0.5f);
 		PVector tan2 = PVector.sub(p3, p1).mult(0.5f);
@@ -262,45 +327,6 @@ public class STLr implements PConstants{
 		interp.add(PVector.mult(p1, (1 + 2*t)*(1 - t)*(1 - t)));
 		interp.add(PVector.mult(p2, t*t*(3 - 2*t)));
 		return interp;
-	}
-	
-	public void generateBinarySTL(PShape obj, String name) {
-		
-		//TODO: I think this fails due to the first octant rule (all positive numbers)
-		
-		PShape tess = obj.getTessellation();
-		try(OutputStream out = PApplet.createOutput(parent.sketchFile(name + ".stl"))) {
-			out.write(new byte[80]); //Empty 80 byte header
-			//Put triangle count
-			out.write(ByteBuffer.allocate(4).putInt(tess.getVertexCount()/3).array());
-			for(int i = 0; i < tess.getVertexCount(); i += 3) {
-				PVector v1 = tess.getVertex(i);
-				PVector v2 = tess.getVertex(i + 1);
-				PVector v3 = tess.getVertex(i + 2);
-				PVector norm = normal(v1, v2, v3);
-				out.write(ftbs(norm.x)); out.write(ftbs(norm.y)); out.write(ftbs(norm.z));
-				out.write(ftbs(v1.x)); out.write(ftbs(v1.y)); out.write(ftbs(v1.z));
-				out.write(ftbs(v2.x)); out.write(ftbs(v2.y)); out.write(ftbs(v2.z));
-				out.write(ftbs(v3.x)); out.write(ftbs(v3.y)); out.write(ftbs(v3.z));
-				out.write(new byte[2]); //Empty two bytes to finish it off
-			}
-		} catch(IOException e) {
-			e.printStackTrace();
-		};
-	}
-	
-	public byte[] ftbs(float f) {
-		return ByteBuffer.allocate(4).putFloat(f).array();
-	}
-	
-	public void generateAsciiSTL(PShape obj, String name)
-	{
-		try(OutputStreamWriter out = new OutputStreamWriter(
-				PApplet.createOutput(parent.sketchFile(name + ".stl")))) {
-			out.write(toSTLasciiformat(obj, name));
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
 
