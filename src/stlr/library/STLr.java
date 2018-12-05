@@ -9,19 +9,14 @@ import java.nio.ByteBuffer;
 import processing.core.*;
 
 /**
- * This is a template class and can be used to start a new processing Library.
- * Make sure you rename this class as well as the name of the example package 'template' 
- * to your own Library naming convention.
- * 
- * (the tag example followed by the name of an example included in folder 'examples' will
- * automatically include the example in the javadoc.)
+ * The STLr class contains functionality to generate STL files from PShape objects.
  *
  * @example Hello 
  */
 
 public class STLr implements PConstants{
 	
-	// myParent is a reference to the parent sketch
+	
 	PApplet parent;
 	
 	public final static String VERSION = "1.0";
@@ -81,7 +76,7 @@ public class STLr implements PConstants{
 	
 	
 	/**
-	 * Calculates surface normal for triangle with clockwise oriented vertices.
+	 * Calculates surface normal for triangle with vertices assumed to be clockwise.
 	 * @param v1 First vertex
 	 * @param v2 Second vertex
 	 * @param v3 Third vertex
@@ -120,7 +115,7 @@ public class STLr implements PConstants{
 	/**
 	 * Generates a binary STL file
 	 * @param obj The shape to be converted
-	 * @param name The name of the file to be writtern
+	 * @param name The name of the file to be written
 	 */
 	public void generateBinarySTL(PShape obj, String name) {
 		
@@ -362,7 +357,7 @@ public class STLr implements PConstants{
 	
 	
 	/**
-	 * 
+	 * Uses a parametric equation for a catmull-rom spline to place a point
 	 * @param p0 First control point
 	 * @param p1 Start point
 	 * @param p2 End point
