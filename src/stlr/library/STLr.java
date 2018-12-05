@@ -11,7 +11,7 @@ import processing.core.*;
 /**
  * The STLr class contains functionality to generate STL files from PShape objects.
  *
- * @example Hello 
+ *
  */
 
 public class STLr implements PConstants{
@@ -76,7 +76,7 @@ public class STLr implements PConstants{
 	
 	
 	/**
-	 * Calculates surface normal for triangle with vertices assumed to be clockwise.
+	 * Calculates surface normal for triangle with vertices assumed to be ordered clockwise.
 	 * @param v1 First vertex
 	 * @param v2 Second vertex
 	 * @param v3 Third vertex
@@ -111,36 +111,35 @@ public class STLr implements PConstants{
 		return triangle;
 	}
 	
-	
-	/**
-	 * Generates a binary STL file
-	 * @param obj The shape to be converted
-	 * @param name The name of the file to be written
-	 */
-	public void generateBinarySTL(PShape obj, String name) {
-		
-		//TODO: I think this fails due to the first octant rule (all positive numbers)
-		PVector lowest = minVertex(obj);
-		PShape tess = obj.getTessellation();
-		try(OutputStream out = PApplet.createOutput(parent.sketchFile(name + ".stl"))) {
-			out.write(new byte[80]); //Empty 80 byte header
-			//Put triangle count
-			out.write(ByteBuffer.allocate(4).putInt(tess.getVertexCount()/3).array());
-			for(int i = 0; i < tess.getVertexCount(); i += 3) {
-				PVector v1 = tess.getVertex(i).add(lowest);
-				PVector v2 = tess.getVertex(i + 1).add(lowest);
-				PVector v3 = tess.getVertex(i + 2).add(lowest);
-				PVector norm = normal(v1, v2, v3);
-				out.write(ftbs(norm.x)); out.write(ftbs(norm.y)); out.write(ftbs(norm.z));
-				out.write(ftbs(v1.x)); out.write(ftbs(v1.y)); out.write(ftbs(v1.z));
-				out.write(ftbs(v2.x)); out.write(ftbs(v2.y)); out.write(ftbs(v2.z));
-				out.write(ftbs(v3.x)); out.write(ftbs(v3.y)); out.write(ftbs(v3.z));
-				out.write(new byte[2]); //Empty two bytes to finish it off
-			}
-		} catch(IOException e) {
-			e.printStackTrace();
-		};
-	}
+//	Unable to determine what is wrong with the binary format structure.
+//	/**
+//	 * Generates a binary STL file
+//	 * @param obj The shape to be converted
+//	 * @param name The name of the file to be written
+//	 */
+//	public void generateBinarySTL(PShape obj, String name) {
+//		
+//		PVector lowest = minVertex(obj);
+//		PShape tess = obj.getTessellation();
+//		try(OutputStream out = PApplet.createOutput(parent.sketchFile(name + ".stl"))) {
+//			out.write(new byte[80]); //Empty 80 byte header
+//			//Put triangle count
+//			out.write(ByteBuffer.allocate(4).putInt(tess.getVertexCount()/3).array());
+//			for(int i = 0; i < tess.getVertexCount(); i += 3) {
+//				PVector v1 = tess.getVertex(i).add(lowest);
+//				PVector v2 = tess.getVertex(i + 1).add(lowest);
+//				PVector v3 = tess.getVertex(i + 2).add(lowest);
+//				PVector norm = normal(v1, v2, v3);
+//				out.write(ftbs(norm.x)); out.write(ftbs(norm.y)); out.write(ftbs(norm.z));
+//				out.write(ftbs(v1.x)); out.write(ftbs(v1.y)); out.write(ftbs(v1.z));
+//				out.write(ftbs(v2.x)); out.write(ftbs(v2.y)); out.write(ftbs(v2.z));
+//				out.write(ftbs(v3.x)); out.write(ftbs(v3.y)); out.write(ftbs(v3.z));
+//				out.write(new byte[2]); //Empty two bytes to finish it off
+//			}
+//		} catch(IOException e) {
+//			e.printStackTrace();
+//		};
+//	}
 	
 	/**
 	 * Creates a PVector containing the minimum x, y, and z values found in the shape
