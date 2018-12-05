@@ -48,6 +48,11 @@ public class STLr implements PConstants{
 	}
 	
 	
+	/**
+	 * Writes the supplied shape into an ascii STL file 
+	 * @param obj A 3D solid PShape object
+	 * @param name The name for the file
+	 */
 	public void generateAsciiSTL(PShape obj, String name)
 	{
 		try(OutputStreamWriter out = new OutputStreamWriter(
@@ -58,7 +63,12 @@ public class STLr implements PConstants{
 		}
 	}
 	
-	
+	/**
+	 * Creates a string that is the ascii representation of an STL model
+	 * @param obj The object to write
+	 * @param name A name for the object
+	 * @return String
+	 */
 	public String toSTLasciiformat(PShape obj, String name) {
 		PShape tess = obj.getTessellation();
 		String asciiform = "solid " + name + "\n";
@@ -75,7 +85,7 @@ public class STLr implements PConstants{
 	 * @param v1 First vertex
 	 * @param v2 Second vertex
 	 * @param v3 Third vertex
-	 * @return
+	 * @return PVector
 	 */
 	private PVector normal(PVector v1, PVector v2, PVector v3) {
 		PVector d1 = PVector.sub(v1, v2);
@@ -107,6 +117,11 @@ public class STLr implements PConstants{
 	}
 	
 	
+	/**
+	 * Generates a binary STL file
+	 * @param obj The shape to be converted
+	 * @param name The name of the file to be writtern
+	 */
 	public void generateBinarySTL(PShape obj, String name) {
 		
 		//TODO: I think this fails due to the first octant rule (all positive numbers)
@@ -132,7 +147,11 @@ public class STLr implements PConstants{
 		};
 	}
 	
-	
+	/**
+	 * Creates a PVector containing the minimum x, y, and z values found in the shape
+	 * @param obj A PShape object
+	 * @return PVector
+	 */
 	public PVector minVertex(PShape obj) {
 		PVector l = new PVector(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
 		for(int i = 0; i < obj.getVertexCount(); i++) {
@@ -148,7 +167,12 @@ public class STLr implements PConstants{
 	}
 	
 	
-	public byte[] ftbs(float f) {
+	/**
+	 * Helper function to break a float into four bytes
+	 * @param f Floating point number
+	 * @return byte[]
+	 */
+	private byte[] ftbs(float f) {
 		return ByteBuffer.allocate(4).putFloat(f).array();
 	}
 	
@@ -160,6 +184,7 @@ public class STLr implements PConstants{
 	 * @param lGran The level of granularity on the curve length
 	 * @param circleGran Detail of the circle
 	 * @return A PShape containing the tube structure
+	 * 
 	 */
 	public PShape noodlize(PShape curve, float radius, int lGran, int circleGran) {
 		if(curve.getVertexCount() < 4)
@@ -235,6 +260,12 @@ public class STLr implements PConstants{
 	}
 	
 	
+	/**
+	 * Generates a set of points along the cubic spline
+	 * @param curve A PShape object assumed to contain vertices of a cubic spline
+	 * @param lGran The number of points to place
+	 * @return PVector[]
+	 */
 	public PVector[] controlPath(PShape curve, int lGran) {
 		PVector[] points = new PVector[(curve.getVertexCount() - 3)*lGran + 1];
 		PVector p0, p1, p2, p3;
@@ -258,6 +289,11 @@ public class STLr implements PConstants{
 	}
 	
 	
+	/**
+	 * Generates a set of coordinate systems for a set of point along a curve
+	 * @param cp The control path for the system
+	 * @return PVector[][]
+	 */
 	public PVector[][] controlSystem(PVector[] cp) {
 		//0 - position, 1 - tangent, 2 - binormal, 3 - normal
 		PVector[][] cs = new PVector[4][cp.length];
@@ -289,6 +325,12 @@ public class STLr implements PConstants{
 	}
 	
 	
+	/**
+	 * Determines the length approximately of a cubic spline curve
+	 * @param curve A PShape object assumed to contain a cubic spline
+	 * @param grain	The level of detail to sample points at
+	 * @return float
+	 */
 	public float length(PShape curve, int grain) {
 		if(curve.getVertexCodeCount() < 4)
 			return 0;
@@ -319,6 +361,15 @@ public class STLr implements PConstants{
 	}
 	
 	
+	/**
+	 * 
+	 * @param p0 First control point
+	 * @param p1 Start point
+	 * @param p2 End point
+	 * @param p3 Second control point
+	 * @param t Interpolation between start and end (0-Start 1-End)
+	 * @return PVector
+	 */
 	public PVector catmullRom(PVector p0, PVector p1, PVector p2, PVector p3, float t) {
 		PVector tan1 = PVector.sub(p2, p0).mult(0.5f);
 		PVector tan2 = PVector.sub(p3, p1).mult(0.5f);
