@@ -2,5 +2,11 @@
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="lib/opencv-400.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/david/git/OpenCV4-for-Processing/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>
