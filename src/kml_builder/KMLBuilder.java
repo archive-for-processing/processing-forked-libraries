@@ -1,7 +1,7 @@
-package template.library;
-
+package kml_builder;
 
 import processing.core.*;
+import processing.data.*;
 
 /**
  * This is a template class and can be used to start a new processing Library.
@@ -14,10 +14,10 @@ import processing.core.*;
  * @example Hello 
  */
 
-public class HelloLibrary {
+public class KMLBuilder {
 	
 	// myParent is a reference to the parent sketch
-	PApplet myParent;
+	static PApplet Parent;
 
 	int myVariable = 0;
 	
@@ -28,23 +28,12 @@ public class HelloLibrary {
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the Library.
 	 * 
-	 * @example Hello
 	 * @param theParent
 	 */
-	public HelloLibrary(PApplet theParent) {
-		myParent = theParent;
-		welcome();
+	public KMLBuilder(PApplet Parent) {
+		KMLBuilder.Parent = Parent;
 	}
 	
-	
-	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
-	}
-	
-	
-	public String sayHello() {
-		return "hello library.";
-	}
 	/**
 	 * return the version of the Library.
 	 * 
@@ -53,24 +42,18 @@ public class HelloLibrary {
 	public static String version() {
 		return VERSION;
 	}
-
+	
 	/**
-	 * 
-	 * @param theA
-	 *          the width of test
-	 * @param theB
-	 *          the height of test
+	 * Overrides saveXML function to facilitate saving KML objects
+	 *
+	 * @param KMLRoot SaveKML KML object to be saved
+	 * @return true if the file was saved successfully
 	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
+	public static boolean saveXML(KMLRoot saveKML) {
+	  XML out = saveKML.getRootNode();
+	  String fileName = saveKML.getFileName();
+	  return(Parent.saveXML(out, fileName));
 	}
 
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
-	}
 }
 
