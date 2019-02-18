@@ -12,7 +12,7 @@ import processing.data.*;
  * @author  Liam James (liam@minimaximize.com)
  * @version 0.2
  * @see     Geometry
- * @since   2019-14-02
+ * @since   2019-02-14
  */
 public class LinearRing extends Geometry<LinearRing> {
   protected boolean                extrude    = false;
@@ -33,6 +33,7 @@ public class LinearRing extends Geometry<LinearRing> {
    * @param c1 Second coordinate in the ring
    * @param c2 Third coordinate in the ring
    * @param cn Any additional coordinates in the ring
+   * @see      Coordinates
    */
   public LinearRing(Coordinates c0, Coordinates c1, Coordinates c2, Coordinates... cn) {
     super("LinearRing");
@@ -56,7 +57,10 @@ public class LinearRing extends Geometry<LinearRing> {
   }
 
   /**
-   * sets the Altitude Mode status for a given Line Ring.
+   * Specifies how altitude components in the <\coordinates\> element are
+   * interpreted.
+   * 
+   * @see                 AltitudeMode
    *
    * @param  altitudeMode altitude Mode for this Line Ring.
    * @return              this object
@@ -70,17 +74,21 @@ public class LinearRing extends Geometry<LinearRing> {
   @Override
   protected XML build(XML base) {
 
-    base = addAttribute(base, "extrude", extrude ? "1" : "0");
-    base = addAttribute(base, "tesselate", tessellate ? "1" : "0");
+    base = addAttribute(base, "extrude", extrude);
+    base = addAttribute(base, "tesselate", tessellate);
     base = addChildElement(base, altitudeMode);
 
-    String cString = "";
+    
+    StringBuilder sb = new StringBuilder();
     for (Coordinates c : coordinates) {
-      cString += c.toString() + "\n";
+      sb.append(c);
+      sb.append("\n");
     }
+    
+    String cString = sb.toString();
+    cString.replaceAll("\n$", "");
     base = addAttribute(base, "coordinates", cString);
 
-    // TODO Auto-generated method stub
-    return null;
+    return base;
   }
 }

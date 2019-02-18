@@ -2,7 +2,7 @@ package kml_builder;
 
 import processing.data.XML;
 
-abstract class KMLObject<T extends KMLObject> implements Buildable{
+abstract class KMLObject<T extends KMLObject> implements Buildable {
   protected final String nodeTag;
   protected String       id     = null;
   protected String       target = null;
@@ -70,7 +70,7 @@ abstract class KMLObject<T extends KMLObject> implements Buildable{
     // Return this object as XML
     return out;
   }
-  
+
   /**
    * The child specific implementation of 'Build' This method is called in the KML
    * object build method.
@@ -79,7 +79,6 @@ abstract class KMLObject<T extends KMLObject> implements Buildable{
    * @return      The processed XML representation of this object
    */
   protected abstract XML build(XML base);
-
 
   /**
    * Helper method for adding attributes during build
@@ -93,6 +92,21 @@ abstract class KMLObject<T extends KMLObject> implements Buildable{
     if (val != null) {
       base.addChild(tag).setContent(val);
     }
+
+    return base;
+  }
+
+  /**
+   * Helper method for adding boolean attributes during build
+   * 
+   * 
+   * @param base The base XML object used in the build
+   * @param tag The string representing the tag of the added attribute
+   * @param val The string representation of the value being added.
+   * @return XML with the attribute element added
+   */
+  protected final XML addAttribute(XML base, String tag, boolean val) {
+    base.addChild(tag).setContent(val ? "1" : "0");
 
     return base;
   }

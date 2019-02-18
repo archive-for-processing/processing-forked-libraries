@@ -23,79 +23,125 @@ import processing.data.XML;
  * time-stamped features. For more information, read Time with AbstractViews in
  * the Time and Animation chapter of the Developer's Guide.
  * 
- * @author Liam James (liam@minimaximize.com)
+ * @author  Liam James (liam@minimaximize.com)
  * @version 0.1
- * @see AbstractView
- * @since 20-04-2018
+ * @see     AbstractView
+ * @since   20-04-2018
  */
 public class Camera extends AbstractView<Camera> {
-  
-  Coordinates coords;
-  Orientation orientation;
-  AltitudeMode altitudeMode;
-  
-	/**
-	 * basic constructor for the Camera to be used by other objects
-	 * 
-	 * @param parent
-	 *            the parent object instantiating this Camera
-	 */
-	protected Camera() {
-		super("Camera");
-	}
 
-	/**
-	 * sets the longitude, latitude and altitude for the Camera
-	 * 
-	 * @param coords
-	 *            Coordinates tuple containing values for longitude, latitude and
-	 *            altitude
-	 * @see Coordinates
-	 */
-	public Camera setLocation(Coordinates coords) {
-	  this.coords = coords;
+  double latitude  = 0;
+  double longitude = 0;
+  double altitude  = 0;
 
-		return this;
-	}
+  double heading = 0;
+  double tilt    = 0;
+  double roll    = 0;
 
-	/**
-	 * Sets the orientation for this camera object
-	 * 
-	 * @param orientation the new Orientation of this camera object
-	 * @return this object
-	 */
-	public Camera setOrientation(Orientation orientation) {
-	  this.orientation = orientation;
+  AltitudeMode altitudeMode = AltitudeMode.CLAMP_TO_GROUND;
 
-		return this;
-	}
+  /**
+   * basic constructor for the Camera to be used by other objects
+   * 
+   * @param parent the parent object instantiating this Camera
+   */
+  protected Camera() {
+    super("Camera");
+  }
 
-	/**
-	 * method for setting the altitude mode for this Camera
-	 * </p>
-	 * Specifies how the altitude specified for the Camera is interpreted. Possible
-	 * values are as follows:
-	 * <ul>
-	 * <li>relativeToGround - (default) Interprets the altitude as a value in meters
-	 * above the ground. If the point is over water, the altitude will be
-	 * interpreted as a value in meters above sea level. See gx:altitudeMode below
-	 * to specify points relative to the sea floor.</li>
-	 * <li>clampToGround - For a camera, this setting also places the camera
-	 * relativeToGround, since putting the camera exactly at terrain height would
-	 * mean that the eye would intersect the terrain (and the view would be
-	 * blocked).</li>
-	 * <li>absolute - Interprets the altitude as a value in meters above sea
-	 * level.</li>
-	 * <ul>
-	 * </p>
-	 * 
-	 * @param mode
-	 *            could be relativeToGround, clampToGround or absolute
-	 * @return this Camera object
-	 */
-	public Camera setAltitudeMode(AltitudeMode mode) {
-	  this.altitudeMode = mode;
+  /**
+   * Sets the Longitude, latitude and Altitude for the Camera position
+   * 
+   * @param  location String containing comma separated tuple containing lon, lat
+   *                  [, alt] coordinates
+   * @return          This object
+   */
+  public Camera setLocation(String location) {
+    String[] coords = location.split(",");
+    
+    Double lon;
+    Double lat;
+    Double alt;
+    
+    try {
+      lon = Double.parseDouble(coords[0]);
+      lat = Double.parseDouble(coords[1]);
+      alt = coords.length > 2 ? Double.parseDouble(coords[2]):0;
+      
+      longitude = lon;
+      latitude = lat;
+      altitude = alt;
+      
+    } catch (NumberFormatException e) {
+      System.err.println("lon, lat, altitude tuple could not be converted to double");
+      e.printStackTrace();
+      
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
 
-		return this;
-	}
+    return this;
+  }
+
+  /**
+   * Sets the Heading, Tilt and Roll of the camera
+   * 
+   * 
+   * @param orientation
+   * @return
+   */
+  public Camera setOrientation(String orientation) {
+    String[] coords = orientation.split(",");
+    
+    Double heading;
+    Double tilt;
+    Double roll;
+    
+    try {
+      heading = Double.parseDouble(coords[0]);
+      tilt = Double.parseDouble(coords[1]);
+      roll = coords.length > 2 ? Double.parseDouble(coords[2]):0;
+      
+      this.heading = heading;
+      this.tilt = tilt;
+      this.roll = roll;
+      
+    } catch (NumberFormatException e) {
+      System.err.println("heading, tilt, roll tuple could not be converted to double");
+      e.printStackTrace();
+      
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return this;
+  }
+
+  /**
+   * method for setting the altitude mode for this Camera
+   * </p>
+   * Specifies how the altitude specified for the Camera is interpreted. Possible
+   * values are as follows:
+   * <ul>
+   * <li>relativeToGround - (default) Interprets the altitude as a value in meters
+   * above the ground. If the point is over water, the altitude will be
+   * interpreted as a value in meters above sea level. See gx:altitudeMode below
+   * to specify points relative to the sea floor.</li>
+   * <li>clampToGround - For a camera, this setting also places the camera
+   * relativeToGround, since putting the camera exactly at terrain height would
+   * mean that the eye would intersect the terrain (and the view would be
+   * blocked).</li>
+   * <li>absolute - Interprets the altitude as a value in meters above sea
+   * level.</li>
+   * <ul>
+   * </p>
+   * 
+   * @param  mode could be relativeToGround, clampToGround or absolute
+   * @return      this Camera object
+   */
+  public Camera setAltitudeMode(AltitudeMode mode) {
+    this.altitudeMode = mode;
+
+    return this;
+  }
 }

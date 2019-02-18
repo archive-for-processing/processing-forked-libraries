@@ -1,100 +1,110 @@
 package kml_builder;
 
+import java.util.ArrayList;
+
 import processing.data.*;
+
 /**
- * Line String class
- * Used to create an XML node with Line String formatting
- * Additionally contains helper Functions to ensure Line String is formatted correctly
+ * Defines a connected set of line segments. Use <\LineStyle>\ to specify the
+ * color, color mode, and width of the line. When a LineString is extruded, the
+ * line is extended to the ground, forming a polygon that looks somewhat like a
+ * wall or fence. For extruded LineStrings, the line itself uses the current
+ * LineStyle, and the extrusion uses the current PolyStyle. See the KML Tutorial
+ * for examples of LineStrings (or paths).
  *
- * @author       Liam James (liam@minimaximize.com)
- * @version      0.1
- * @see          Geometry
- * @since        15-04-2018
+ * @author  Liam James (liam@minimaximize.com)
+ * @version 0.1
+ * @see     Geometry
+ * @since   15-04-2018
  */
 public class LineString extends Geometry<LineString> {
+  private boolean                extrude    = false;
+  private boolean                tessellate = false;
+  private AltitudeMode           altitudeMode;
+  private ArrayList<Coordinates> coordinates;
 
   /**
-   * sets the Extrude status for a given Line String.
-   *
-   * @param status the Extrude status for the Line String
-   * @return this object
-   */
-  public LineString setExtrude(Boolean status) {
-    XML stat;
-    // Check if Scale tags exist
-    stat = getValidChild(this.cursor, EXTRUDE);
-
-    // Set Orientation Content
-    stat.setContent(
-      (status? "1":"0")
-      );   
-
-    return this;
-  }
-  
-  /**
-   * sets the Tessellation mode for a given Line String.
-   *
-   * @param status the Tessellation mode for the Line String
-   * @return this object
-   */
-  public LineString setTessellate(Boolean status) {
-    XML stat;
-    // Check if Scale tags exist
-    stat = getValidChild(this.cursor, TESSELLATE);
-
-    // Set Orientation Content
-    stat.setContent(
-      (status? "1":"0")
-      );   
-
-    return this;
-  }
-
-  /**
-   * sets the Altitude Mode status for a given Line String.
-   *
-   * @param altitudeMode altitude Mode for this Line String.
-   * @return this object
-   */
-  public LineString setAltitudeMode(String altitudeMode) {
-    XML Mode;
-    // Check if Location tags exist
-    Mode = getValidChild(this.cursor, ALTITUDE_MODE);
-
-    Mode.setContent(altitudeMode);
-    return this;
-  }
-
-  /**
-   * Adds a coordinate string to this Line String object
-   *
-   * @param coordTuples tuple array of Line String Objects of Longitude, Latitude, [altitude]
-   * @return this object
-   */
-  public LineString setPointCoords(Coordinates[] coordTuples) {
-    XML coords;
-
-    // Check if Location tags exist
-    coords = getValidChild(this.cursor, COORDINATES);
-
-    String coordString = "";
-    // Set Location Content
-    for (Coordinates tuple : coordTuples) {
-      coordString += tuple.toString() + " ";
-    }
-    coords.setContent(coordString);
-
-    return this;
-  }
-
-  /**
-   * Basic Document Constructor to be used by other class objects
-   * Initialises internal XML objects
+   * Basic Document Constructor to be used by other class objects Initializes
+   * internal XML objects
    *
    * @param parent parent KML Object
    */
-  public LineString(KMLRoot Parent) {
-    super(Parent, LINESTRING);
+  protected LineString(Coordinates c0, Coordinates c1, Coordinates... cn) {
+    super("LineString");
+    coordinates = new ArrayList<Coordinates>();
+
+    coordinates.add(c0);
+    coordinates.add(c1);
+    for (Coordinates c : cn) {
+      coordinates.add(c);
+    }
+  }
+
+  /**
+   * sets the Extrude status for a given Line String.
+   * 
+   * Specifies whether to connect the LineString to the ground. To extrude a
+   * LineString, the altitude mode must be either relativeToGround,
+   * relativeToSeaFloor, or absolute. The vertices in the LineString are extruded
+   * toward the center of the Earth's sphere.
+   *
+   * @param  status boolean Specifies whether to connect the LineString to the
+   *                ground
+   * @return        this object
+   */
+  public LineString setExtrude(boolean status) {
+    this.extrude = status;
+
+    return this;
+  }
+
+  /**
+   * sets the Tessellation mode for a given Line String.
+   * 
+   * Specifies whether to allow the LineString to follow the terrain. To enable
+   * tessellation, the altitude mode must be clampToGround or clampToSeaFloor.
+   * Very large LineStrings should enable tessellation so that they follow the
+   * curvature of the earth (otherwise, they may go underground and be hidden).
+   *
+   * @param  status boolean specifies whether to allow the LineString to follow
+   *                the terrain.
+   * @return        this object
+   */
+  public LineString setTessellate(Boolean status) {
+    this.tessellate = status;
+
+    return this;
+  }
+
+  /**
+   * Specifies how altitude components in the <\coordinates\> element are
+   * interpreted.
+   * 
+   * @see                 AltitudeMode
+   *
+   * @param  altitudeMode altitude Mode for this Line String.
+   * @return              this object
+   */
+  public LineString setAltitudeMode(AltitudeMode altitudeMode) {
+    this.altitudeMode = altitudeMode;
+
+    return this;
+  }
+
+  @Override
+  protected XML build(XML base) {
+    base = addAttribute(base, "extrude", extrude);
+    base = addAttribute(base, "tesselate", tessellate);
+    base = addChildElement(base, altitudeMode);
+
+    StringBuilder sb = new StringBuilder();
+    for (Coordinates c : coordinates) {
+      sb.append(c);
+      sb.append(" ");
+    }
+    String cString = sb.toString();
+    cString.trim();
+    base = addAttribute(base, "coordinates", cString);
+    return base;
   }
 }

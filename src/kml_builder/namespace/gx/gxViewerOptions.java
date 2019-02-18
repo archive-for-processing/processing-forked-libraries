@@ -1,5 +1,7 @@
-package kml_builder;
+package kml_builder.namespace.gx;
 
+import kml_builder.ColorStyle;
+import kml_builder.KMLRoot;
 import processing.data.*;
 
 /**

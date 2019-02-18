@@ -1,5 +1,7 @@
 package kml_builder;
 
+import processing.data.XML;
+
 /**
  * Coordiantes tuple class Stores a Coordinates Tuple containing Longitude,
  * Latitude and Altitude
@@ -22,6 +24,7 @@ public class Coordinates {
 		String out = longitude + "," + latitude + (altitude == 0 ? "" : "," + altitude);
 		return out;
 	}
+	
 
 	/**
 	 * get the object longitude
@@ -49,6 +52,21 @@ public class Coordinates {
 	public double getAltitude() {
 		return altitude;
 	}
+	
+	 /**
+   * Basic constructor for the Coordinates tuple
+   *
+   * @param longitude
+   *            Longitude of the virtual camera (eye point). Angular distance in
+   *            degrees, relative to the Prime Meridian. Values west of the
+   *            Meridian range from −180 to 0 degrees. Values east of the Meridian
+   *            range from 0 to 180 degrees.
+   * @param latitude
+   *            Latitude of the virtual camera. Degrees north or south of the
+   *            Equator (0 degrees). Values range from −90 degrees to 90 degrees.
+   * @return true if the file was saved successfully
+   */
+	public Coordinates() {}
 
 	/**
 	 * Basic constructor for the Coordinates tuple
