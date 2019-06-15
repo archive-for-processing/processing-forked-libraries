@@ -797,7 +797,8 @@ public final class Fixlib implements PConstants {
 // TODO: need better path generation logic
 			thisPt = new PVector(
 					lastPt.x+step,
-					app.random(app.height-step) );
+					app.random(app.height-step),
+					app.random(startPt.z, endPt.z));
 
 			path.add(thisPt);
 
