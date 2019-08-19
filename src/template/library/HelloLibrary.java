@@ -3,20 +3,9 @@ package template.library;
 
 import processing.core.*;
 
-/**
- * This is a template class and can be used to start a new processing Library.
- * Make sure you rename this class as well as the name of the example package 'template' 
- * to your own Library naming convention.
- * 
- * (the tag example followed by the name of an example included in folder 'examples' will
- * automatically include the example in the javadoc.)
- *
- * @example Hello 
- */
-
 public class HelloLibrary {
 	
-	// myParent is a reference to the parent sketch
+
 	PApplet myParent;
 
 	int myVariable = 0;
@@ -45,30 +34,70 @@ public class HelloLibrary {
 	public String sayHello() {
 		return "hello library.";
 	}
-	/**
-	 * return the version of the Library.
-	 * 
-	 * @return String
-	 */
+	
 	public static String version() {
 		return VERSION;
 	}
 
-	/**
-	 * 
-	 * @param theA the width of test
-	 * @param theB the height of test
-	 */
+
 	public void setVariable(int theA, int theB) {
 		myVariable = theA + theB;
 	}
 
-	/**
-	 * 
-	 * @return int
-	 */
+
 	public int getVariable() {
 		return myVariable;
 	}
+	
+	void drawPolygon(float cenx, float ceny, float radius, int numVertices) {
+  drawPolygon(cenx, ceny, radius, radius, numVertices, 0);
+}
+
+
+void drawPolygon(float cenx, float ceny, float radius, int numVertices, float startTheta) {
+  drawPolygon(cenx, ceny, radius, radius, numVertices, startTheta);
+}
+
+
+void drawPolygon(float cenx, float ceny, float xRadius, float yRadius, int numVertices, float startTheta) {
+  float theta = startTheta;
+  float dTheta = TWO_PI / numVertices;
+  beginShape();
+  for (int i=0; i<numVertices; i++) {
+    vertex(cenx + xRadius*cos(theta), 
+      ceny + yRadius*sin(theta));
+    theta += dTheta;
+  }
+  endShape(CLOSE);
+}
+
+
+void drawPolygon(float cenx, float ceny, float radius, float[] angles) {
+  drawPolygon(cenx, ceny, radius, radius, angles);
+}
+
+
+void drawPolygon(float cenx, float ceny, float xRadius, float yRadius, float[] angles) {
+  beginShape();
+  for (int i=0; i<angles.length; i++) {
+    vertex(cenx + xRadius*cos(angles[i]), 
+      ceny + yRadius*sin(angles[i]));
+  }
+  endShape(CLOSE);
+	
+	
+	// runway connect-disconnect
+	
+	void connect() {
+  OscMessage m = new OscMessage("/server/connect");
+  oscP5.send(m, myBroadcastLocation);
+}
+
+void disconnect() {
+  OscMessage m = new OscMessage("/server/disconnect");
+  oscP5.send(m, myBroadcastLocation);
+}
+
+	
 }
 
