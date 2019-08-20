@@ -9,7 +9,17 @@ import processing.core.*;
 		 System.out.println("processing library for posenet and runway ml");
 	}
 	
-	
+	void health(a){
+	float health = a;
+	}
+void hit(x){
+health -= x
+}
+score(){
+score = health**1/2
+	return score;
+
+}
 
 	
 	void drawPolygon(float cenx, float ceny, float radius, int numVertices) {
