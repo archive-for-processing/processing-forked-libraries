@@ -2,52 +2,15 @@ package template.library;
 
 
 import processing.core.*;
-
-public class HelloLibrary {
 	
-
-	PApplet myParent;
-
-	int myVariable = 0;
 	
-	public final static String VERSION = "##library.prettyVersion##";
-	
-
-	/**
-	 * a Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the Library.
-	 * 
-	 * @example Hello
-	 * @param theParent the parent PApplet
-	 */
-	public HelloLibrary(PApplet theParent) {
-		myParent = theParent;
-		welcome();
+	 void welcome() {
+		System.out.println("rupo 0.0 by Shrey; github:@itsShreyArora");
+		 System.out.println("processing library for posenet and runway ml");
 	}
 	
 	
-	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
-	}
-	
-	
-	public String sayHello() {
-		return "hello library.";
-	}
-	
-	public static String version() {
-		return VERSION;
-	}
 
-
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
-
-
-	public int getVariable() {
-		return myVariable;
-	}
 	
 	void drawPolygon(float cenx, float ceny, float radius, int numVertices) {
   drawPolygon(cenx, ceny, radius, radius, numVertices, 0);
@@ -75,6 +38,8 @@ void drawPolygon(float cenx, float ceny, float xRadius, float yRadius, int numVe
 void drawPolygon(float cenx, float ceny, float radius, float[] angles) {
   drawPolygon(cenx, ceny, radius, radius, angles);
 }
+
+
 
 
 void drawPolygon(float cenx, float ceny, float xRadius, float yRadius, float[] angles) {
