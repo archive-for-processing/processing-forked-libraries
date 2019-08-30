@@ -5,7 +5,7 @@ import processing.core.*;
 	
 	
 	 void welcome() {
-		System.out.println("rupo 0.0 by Shrey; github:@itsShreyArora");
+		System.out.println("MotionGame 0.0 by Shrey; github:@itsShreyArora");
 		 System.out.println("processing library for posenet and runway ml");
 	}
 	
@@ -30,6 +30,10 @@ score = health**1/2
 void drawPolygon(float cenx, float ceny, float radius, int numVertices, float startTheta) {
   drawPolygon(cenx, ceny, radius, radius, numVertices, startTheta);
 }
+
+
+void makeatracefunction(){}
+//TRACE BODY!
 
 
 void drawPolygon(float cenx, float ceny, float xRadius, float yRadius, int numVertices, float startTheta) {
