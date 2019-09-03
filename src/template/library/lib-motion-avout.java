@@ -13,10 +13,10 @@ import processing.core.*;
 	float health = a;
 	}
 void hit(x){
-health -= x
+
 }
 score(){
-score = health**1/2
+score = health**1/2;
 	return score;
 
 }
