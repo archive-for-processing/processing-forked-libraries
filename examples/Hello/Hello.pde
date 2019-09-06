@@ -1,4 +1,4 @@
-import template.library.*;
+import button.library.*;
 
 HelloLibrary hello;
 
