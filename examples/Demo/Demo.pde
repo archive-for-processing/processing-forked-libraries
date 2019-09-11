@@ -1,7 +1,7 @@
 import processing.button.*;
 
-Mouse mouse;
-Button myButton, b2;
+Mouse mouse = Mouse.INSTANCE;
+Button myButton;
 
 void setup() {
     //frameRate(fps); // <- Need to slow things down?
@@ -9,15 +9,11 @@ void setup() {
     background(255);
 
     int w = 100, h = 30;
-    int x = -(w/2), y = (height/4); // 
+    int x = -(w/2), y = (height/4); // position our button nicely
 
     myButton = new RectButton(this, "click me", x, y, w, h);
     myButton.setEventHandler(new myButtonEventHandler());
     
-    b2 = new RectButton(this, "click me2", x + 50, y, w, h);
-    b2.setEventHandler(new myButtonEventHandler());
-    
-    mouse = Mouse.INSTANCE;
 }
 
 void draw() {
