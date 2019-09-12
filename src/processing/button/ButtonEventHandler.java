@@ -10,8 +10,8 @@ public abstract class ButtonEventHandler {
 
     public ButtonEventHandler() {
         String[] builtins = { "wait", "equals", "toString", "hashCode", "getClass", "notify", "notifyAll" };
-        String[] events = { "whenHovering", "onPressRelease", "onHoverStart", "whenNotPressed", 
-            "whenPressed", "whenNotHovering", "onHoverEnd", "onPressStart" };
+        String[] events = { "onPressStart", "whenPressed", "onPressRelease", "onHoverStart", "whenHovering",
+                "onHoverEnd" };
 
         final Set<String> allowedMethodNames = new HashSet<String>();
         allowedMethodNames.addAll(Arrays.asList(builtins));
@@ -24,7 +24,11 @@ public abstract class ButtonEventHandler {
         if (!allowedMethodNames.equals(allMethods)) {
             allMethods.removeAll(allowedMethodNames);
             throw new IllegalStateException(
-                "ButtonEventHandler is only overrideable. Following methods not allowed <" + allMethods + ">");
+                "methods of class ButtonEventHandler are only overrideable."
+                + "\nfollowing methods not allowed:"
+                + "\n\t<" + allMethods + ">"
+                + "\navailable methods to override:"
+                + "\n\t" + "<" + Arrays.asList(events) + ">");
         }
     }
 
@@ -38,9 +42,6 @@ public abstract class ButtonEventHandler {
     public void onHoverEnd() {
     }
 
-    public void whenNotHovering() {
-    }
-
     // ------------------------------------------------------------------------------------
 
     public void onPressStart() {
@@ -52,8 +53,6 @@ public abstract class ButtonEventHandler {
     public void onPressRelease() {
     }
 
-    public void whenNotPressed() {
-    }
 }
 
 final class DisabledButtonEventHandler extends ButtonEventHandler {

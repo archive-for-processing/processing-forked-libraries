@@ -58,7 +58,7 @@ class myButtonEventHandler extends ButtonEventHandler {
         text("STILL PRESSED...", -75, -30);
     }
 
-    public void onPressRelease() {
+    public void onPresRelease() {
         print("PRESS RELEASED");
         text("PRESS RELEASED", -75, 0);
     }
