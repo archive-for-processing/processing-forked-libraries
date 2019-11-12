@@ -22,8 +22,8 @@ public class DancingDrawings {
 	OscP5 oscClient;
 	OscProperties properties;
 
-	int oscValue = 0;
-	int aftertouch = 0;
+	float discreteValue = 0;
+	float continuousValue = 0;
 	String listeningAddress = null;
 	
 	public final static String VERSION = "##library.prettyVersion##";
@@ -45,7 +45,7 @@ public class DancingDrawings {
 		System.out.println(properties.toString());
 
 		oscClient = new OscP5(this, properties);
-		oscValue = 0;
+		discreteValue = 0;
 		welcome();
 	}
 	
@@ -59,7 +59,7 @@ public class DancingDrawings {
 		System.out.println(properties.toString());
 
 		oscClient = new OscP5(this, properties);
-		oscValue = 0;
+		discreteValue = 0;
 		welcome();
 	}
 	
@@ -69,11 +69,11 @@ public class DancingDrawings {
 	}
 	
 	
-	public int getValue() {
-		return oscValue;
+	public float getNormalizedDiscreteStepValue() {
+		return discreteValue;
 	}
-	public int getAftertouch() {
-		return aftertouch;
+	public float getNormalizedContinuousValue() {
+		return continuousValue;
 	}
 	/**
 	 * return the version of the Library.
@@ -83,23 +83,6 @@ public class DancingDrawings {
 	public static String version() {
 		return VERSION;
 	}
-
-//	/**
-//	 * 
-//	 * @param theA the width of test
-//	 * @param theB the height of test
-//	 */
-//	public void setVariable(int theA, int theB) {
-//		myVariable = theA + theB;
-//	}
-//
-//	/**
-//	 * 
-//	 * @return int
-//	 */
-//	public int getVariable() {
-//		return myVariable;
-//	}
 	
 	public void oscEvent(OscMessage m) {
 		String listenTo = "/dancing-drawings";
@@ -107,12 +90,12 @@ public class DancingDrawings {
 			listenTo = listeningAddress;
 		}
 		
-		if (m.checkAddrPattern(listenTo)) {
-			oscValue = m.get(0).intValue();
+		if (m.checkAddrPattern(listenTo + "/discrete")) {
+			discreteValue = m.get(0).floatValue();
 		}
 		
-		if (m.checkAddrPattern("/aftertouch")) {
-			aftertouch = m.get(0).intValue();
+		if (m.checkAddrPattern(listenTo + "/continuous")) {
+			continuousValue = m.get(0).floatValue();
 		}
 	}
 }

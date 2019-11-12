@@ -12,5 +12,13 @@ void setup() {
 void draw() {
   background(100, 30, 30);
   fill(255);
-  ellipse(width/2 + dancingDrawings.getValue(), height/2 + dancingDrawings.getValue(), 40, 40);
+  // call getNormalizedDiscreteStepValue() to get discrete value, useful for interfaces that have buttons or keys
+  // the interface that sends OSC should send normalized discrete step values to /dancing-drawings-discrete
+  float step = dancingDrawings.getNormalizedDiscreteStepValue();
+  ellipse(
+    step * width,
+    step * height,
+    40,
+    40
+  );
 }
